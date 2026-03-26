@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WIND 환각 계산기</title>
+  <title>윈드 환각 계산기 ver1.0</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
   <!-- Firebase REST API (CSP 호환, eval 없음) -->
   <script>
@@ -460,9 +460,9 @@
       font-size: 10px; font-weight: 800; font-family: 'Nunito', sans-serif;
       padding: 2px 7px; border-radius: 6px; flex-shrink: 0; letter-spacing: .5px;
     }
-    .grade-최상급 { background: #fff0f6; color: #e0508a; border: 1px solid #f5c8de; }
-    .grade-상급   { background: #f0eeff; color: var(--a1); border: 1px solid var(--border2); }
-    .grade-2등급  { background: #f0f9ff; color: #5ab5e0; border: 1px solid #c5e8f7; }
+    .grade-1등급 { background: #fff0f6; color: #e0508a; border: 1px solid #f5c8de; }
+    .grade-2등급   { background: #f0eeff; color: var(--a1); border: 1px solid var(--border2); }
+    .grade-2등급  { background: #f0eeff; color: var(--a1); border: 1px solid var(--border2); }
     .grade-일반   { background: #f5f5f5; color: #999; border: 1px solid #e0e0e0; }
 
     .pet-attr-row {
@@ -567,8 +567,8 @@
       <select class="f-input" id="s-grade">
         <option value="일반">일반</option>
         <option value="2등급">2등급</option>
-        <option value="상급">상급</option>
-        <option value="최상급">최상급</option>
+        <option value="2등급">2등급</option>
+        <option value="1등급">1등급</option>
       </select>
       <div class="f-section">속성</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
@@ -603,8 +603,8 @@
       <select class="f-input" id="f-grade">
         <option value="일반">일반</option>
         <option value="2등급">2등급</option>
-        <option value="상급">상급</option>
-        <option value="최상급">최상급</option>
+        <option value="2등급">2등급</option>
+        <option value="1등급">1등급</option>
       </select>
       <div class="f-section">속성</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
@@ -641,8 +641,11 @@
     <!-- Header -->
     <div class="page-head">
       <div class="wind-badge"><div class="wind-badge-dot"></div>WIND SERVER</div>
-      <h1 class="page-title">환각 계산기</h1>
-      <p class="page-sub">🌸 pet hallucination calculator 🌸</p>
+      <h1 class="page-title">윈드 환각 계산기</h1>
+      <div style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f0eeff,#ffeef6);border:1.5px solid var(--border2);border-radius:99px;padding:3px 12px;font-size:10px;font-weight:800;color:var(--a1);letter-spacing:1.5px;font-family:'Nunito',sans-serif;margin-bottom:4px;">
+        ✦ ver 1.0 ✦
+      </div>
+      <p class="page-sub">🌸 Pet Growth Calculator 🌸</p>
       <div class="deco-dots">
         <div class="deco-dot" style="background:var(--a1)"></div>
         <div class="deco-dot" style="background:var(--a2)"></div>
@@ -654,12 +657,11 @@
 
     <!-- Notice -->
     <div class="notice">
-      이 계산기는 정보의 불균형을 해소하고자<br>
-      <em>짜얄님</em>과 <em>유미님</em>이 함께 만드신 계산기를 토대로<br>
-      <em>윈드서버 루믹스</em>가 제작하였습니다.<br><br>
-      모든 계산 결과가 정확하다고 할 수 없습니다.<br>
-      단순 참고용으로 사용해주세요 🌷<br>
-      <small>※ 펫 데이터는 서버에 자동 저장됩니다</small>
+      <div style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#fff0f6,#fff8e1);border:1.5px solid #f5c8de;border-radius:99px;padding:4px 14px;font-size:11px;font-weight:800;color:#e0508a;letter-spacing:1px;margin-bottom:12px;font-family:'Nunito',sans-serif;">
+        ⚠ 주의
+      </div><br>
+      <span style="font-size:14px;font-weight:700;color:var(--t1);">계산기의 모든 내용이<br>정확하다고 할 수 없습니다.</span><br><br>
+      <span style="font-size:12px;color:var(--t2);">환각 계산기는 어디까지나<br>단순 참고용으로 사용해주세요 🌷</span>
     </div>
 
     <!-- Pet select -->
@@ -799,22 +801,22 @@ const DEFAULT_PETS = {
   "우리": {initialCoefficient:10,healthCoefficient:24,attackCoefficient:24,defenseCoefficient:24,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":9.92,"atk":1.77,"def":1.77,"agi":1.46},obtain:"마리너스 앞마당 포획",routeType:"포획",mount:true},
   "두리": {initialCoefficient:20,healthCoefficient:25,attackCoefficient:29,defenseCoefficient:13,agilityCoefficient:26,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":4,"화":6,"풍":0},sg:{"hp":10.27,"atk":2.05,"def":1.3,"agi":1.57},obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:false},
   "얼룩우리": {initialCoefficient:15,healthCoefficient:22,attackCoefficient:24,defenseCoefficient:30,agilityCoefficient:17,grade:"일반",attrs:["지"],attr:{"지":10,"수":0,"화":0,"풍":0},sg:{"hp":9.81,"atk":1.84,"def":2.12,"agi":1.11},obtain:"마리너스 앞마당 포획",routeType:"포획",mount:true},
-  "환생얼룩우리": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:20,agilityCoefficient:30,grade:"최상급",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.92,"def":1.54,"agi":1.64},obtain:"1환생 보상",routeType:"퀘스트",mount:true},
+  "환생얼룩우리": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:20,agilityCoefficient:30,grade:"1등급",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.92,"def":1.54,"agi":1.64},obtain:"1환생 보상",routeType:"퀘스트",mount:true},
   "불그리": {initialCoefficient:10,healthCoefficient:23,attackCoefficient:31,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.78,"atk":2.07,"def":1.26,"agi":1.71},obtain:"출시예정",routeType:"기타",mount:false},
-  "실버우리": {initialCoefficient:20,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:19,agilityCoefficient:31,grade:"최상급",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.92,"def":1.5,"agi":1.69},obtain:"카루타나 복권 1등",routeType:"복권",mount:true},
+  "실버우리": {initialCoefficient:20,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:19,agilityCoefficient:31,grade:"1등급",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.92,"def":1.5,"agi":1.69},obtain:"카루타나 복권 1등",routeType:"복권",mount:true},
   "부비": {initialCoefficient:15,healthCoefficient:51,attackCoefficient:33,defenseCoefficient:16,agilityCoefficient:12,grade:"일반",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":14.08,"atk":2.18,"def":1.45,"agi":0.78},obtain:"사이너스 섬(동608 남208) 포획",routeType:"포획",mount:true},
   "부이비": {initialCoefficient:16,healthCoefficient:52,attackCoefficient:36,defenseCoefficient:14,agilityCoefficient:12,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":4,"화":6,"풍":0},sg:{"hp":14.32,"atk":2.32,"def":1.38,"agi":0.78},obtain:"쟈루 섬(동357 남183) 포획",routeType:"포획",mount:true},
-  "골드부비": {initialCoefficient:25,healthCoefficient:49,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:13,grade:"상급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":3,"풍":7},sg:{"hp":13.75,"atk":2.26,"def":1.36,"agi":0.83},obtain:"퀴즈 마스터(모가로스) 퀘스트",routeType:"퀘스트",mount:true},
-  "얼룩부이비": {initialCoefficient:23,healthCoefficient:49,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:12,grade:"상급",attrs:["지"],attr:{"지":10,"수":0,"화":0,"풍":0},sg:{"hp":13.8,"atk":2.18,"def":1.54,"agi":0.78},obtain:"퀴즈 마스터(오르곤) 퀘스트",routeType:"퀘스트",mount:true},
+  "골드부비": {initialCoefficient:25,healthCoefficient:49,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:13,grade:"2등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":3,"풍":7},sg:{"hp":13.75,"atk":2.26,"def":1.36,"agi":0.83},obtain:"퀴즈 마스터(모가로스) 퀘스트",routeType:"퀘스트",mount:true},
+  "얼룩부이비": {initialCoefficient:23,healthCoefficient:49,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:12,grade:"2등급",attrs:["지"],attr:{"지":10,"수":0,"화":0,"풍":0},sg:{"hp":13.8,"atk":2.18,"def":1.54,"agi":0.78},obtain:"퀴즈 마스터(오르곤) 퀘스트",routeType:"퀘스트",mount:true},
   "꼬미": {initialCoefficient:22,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:16,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":6,"풍":4},sg:{"hp":9.76,"atk":1.95,"def":1.44,"agi":1.62},obtain:"라토토 대복도(동196 남123) 포획",routeType:"포획",mount:false},
   "꼬비": {initialCoefficient:20,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:19,agilityCoefficient:27,grade:"일반",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.86,"def":1.58,"agi":1.62},obtain:"라토토 대복도(동147 남42) 포획",routeType:"포획",mount:false},
   "꼬비오": {initialCoefficient:18,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["풍"],attr:{"지":0,"수":0,"화":0,"풍":10},sg:{"hp":9.81,"atk":1.85,"def":1.48,"agi":1.73},obtain:"라토토 동굴 3 - 3 전역 포획",routeType:"포획",mount:false},
   "꼬꼬비": {initialCoefficient:16,healthCoefficient:22,attackCoefficient:26,defenseCoefficient:16,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":3,"풍":7},sg:{"hp":9.76,"atk":1.9,"def":1.43,"agi":1.67},obtain:"라토토 동굴 3 - 4층(동8 남19) 포획",routeType:"포획",mount:false},
   "토루루": {initialCoefficient:19,healthCoefficient:23,attackCoefficient:26,defenseCoefficient:22,agilityCoefficient:28,grade:"일반",attrs:["지", "풍"],attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.88,"atk":1.86,"def":1.68,"agi":1.61},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
-  "타이혼": {initialCoefficient:30,healthCoefficient:22,attackCoefficient:32,defenseCoefficient:17,agilityCoefficient:32,grade:"최상급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.52,"atk":2.05,"def":1.41,"agi":1.73},obtain:"후르도 복권 1등",routeType:"복권",mount:false},
-  "라이혼": {initialCoefficient:30,healthCoefficient:25,attackCoefficient:28,defenseCoefficient:24,agilityCoefficient:29,grade:"상급",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.09,"atk":1.9,"def":1.73,"agi":1.59},obtain:"정령 레이드",routeType:"레이드",mount:false},
-  "라나프": {initialCoefficient:28,healthCoefficient:19,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:29,grade:"상급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.13,"atk":2.02,"def":1.48,"agi":1.66},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
-  "모나시프": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:32,grade:"상급",attrs:["풍"],attr:{"지":0,"수":0,"화":0,"풍":10},sg:{"hp":9.48,"atk":1.96,"def":1.45,"agi":1.73},obtain:"채석장의 비밀 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "타이혼": {initialCoefficient:30,healthCoefficient:22,attackCoefficient:32,defenseCoefficient:17,agilityCoefficient:32,grade:"1등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.52,"atk":2.05,"def":1.41,"agi":1.73},obtain:"후르도 복권 1등",routeType:"복권",mount:false},
+  "라이혼": {initialCoefficient:30,healthCoefficient:25,attackCoefficient:28,defenseCoefficient:24,agilityCoefficient:29,grade:"2등급",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.09,"atk":1.9,"def":1.73,"agi":1.59},obtain:"정령 레이드",routeType:"레이드",mount:false},
+  "라나프": {initialCoefficient:28,healthCoefficient:19,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:29,grade:"2등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.13,"atk":2.02,"def":1.48,"agi":1.66},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
+  "모나시프": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:32,grade:"2등급",attrs:["풍"],attr:{"지":0,"수":0,"화":0,"풍":10},sg:{"hp":9.48,"atk":1.96,"def":1.45,"agi":1.73},obtain:"채석장의 비밀 퀘스트 보상",routeType:"퀘스트",mount:false},
   "오투투": {initialCoefficient:20,healthCoefficient:19,attackCoefficient:22,defenseCoefficient:14,agilityCoefficient:33,grade:"일반",attrs:["지", "풍"],attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.44,"atk":1.74,"def":1.36,"agi":2.01},obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:true},
   "투투": {initialCoefficient:17,healthCoefficient:23,attackCoefficient:22,defenseCoefficient:11,agilityCoefficient:33,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":10.14,"atk":1.75,"def":1.22,"agi":2.01},obtain:"쟈루 섬(동295 남368) 포획",routeType:"포획",mount:true},
   "다고스": {initialCoefficient:18,healthCoefficient:30,attackCoefficient:34,defenseCoefficient:18,agilityCoefficient:23,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":8,"화":2,"풍":0},sg:{"hp":10.76,"atk":2.16,"def":1.48,"agi":1.31},obtain:"사이너스(동186 남153) 포획",routeType:"포획",mount:true},
@@ -842,7 +844,7 @@ const DEFAULT_PETS = {
   "아토라지": {initialCoefficient:20,healthCoefficient:49,attackCoefficient:30,defenseCoefficient:13,agilityCoefficient:19,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":13.75,"atk":2.03,"def":1.31,"agi":1.12},obtain:"벽청의 동굴B 4층(동21 남19) 포획",routeType:"포획",mount:true},
   "아리노스": {initialCoefficient:26,healthCoefficient:46,attackCoefficient:30,defenseCoefficient:15,agilityCoefficient:19,grade:"일반",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":13.28,"atk":2.03,"def":1.39,"agi":1.12},obtain:"코스 포인트 상점",routeType:"코스",mount:true},
   "타르노로스": {initialCoefficient:23,healthCoefficient:48,attackCoefficient:32,defenseCoefficient:12,agilityCoefficient:19,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":7,"화":3,"풍":0},sg:{"hp":13.61,"atk":2.12,"def":1.26,"agi":1.12},obtain:"코스 포인트 상점",routeType:"코스",mount:true},
-  "복우리": {initialCoefficient:20,healthCoefficient:23,attackCoefficient:29,defenseCoefficient:14,agilityCoefficient:22,grade:"상급",attrs:["지", "풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":10.084,"atk":2.109,"def":1.386,"agi":1.417},obtain:"샴기르 경비병 시험 퀘스트",routeType:"퀘스트",mount:false},
+  "복우리": {initialCoefficient:20,healthCoefficient:23,attackCoefficient:29,defenseCoefficient:14,agilityCoefficient:22,grade:"2등급",attrs:["지", "풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":10.084,"atk":2.109,"def":1.386,"agi":1.417},obtain:"샴기르 경비병 시험 퀘스트",routeType:"퀘스트",mount:false},
   "푸우리": {initialCoefficient:20,healthCoefficient:27,attackCoefficient:32,defenseCoefficient:16,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":7,"화":3,"풍":0},sg:{"hp":10.283,"atk":2.06,"def":1.376,"agi":1.591},obtain:"300명 이벤트 페트",routeType:"이벤트",mount:true},
   "푸푸": {initialCoefficient:13,healthCoefficient:17,attackCoefficient:20,defenseCoefficient:10,agilityCoefficient:32,grade:"일반",attrs:["지", "풍"],attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.286,"atk":1.72,"def":1.203,"agi":2.098},obtain:"쟈쟈마을 앞마당 포획",routeType:"포획",mount:true},
   "우푸": {initialCoefficient:15,healthCoefficient:18,attackCoefficient:21,defenseCoefficient:7,agilityCoefficient:33,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":6,"풍":4},sg:{"hp":9.458,"atk":1.769,"def":1.045,"agi":2.156},obtain:"쟈쟈마을 앞마당 포획",routeType:"포획",mount:true},
@@ -876,9 +878,9 @@ const DEFAULT_PETS = {
   "기라돈": {initialCoefficient:23,healthCoefficient:29,attackCoefficient:31,defenseCoefficient:25,agilityCoefficient:19,grade:"일반",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":10.568,"atk":2.041,"def":1.784,"agi":1.116},obtain:"폐허가 된 탄광 4층(동47 남27) 포획",routeType:"포획",mount:true},
   "투르돈": {initialCoefficient:27,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:19,agilityCoefficient:20,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":3,"화":7,"풍":0},sg:{"hp":10.172,"atk":2.278,"def":1.565,"agi":1.212},obtain:"가우린 섬(동237 남80) 포획",routeType:"포획",mount:true},
   "고르고": {initialCoefficient:27,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:20,agilityCoefficient:21,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":9,"풍":1},sg:{"hp":9.951,"atk":2.288,"def":1.561,"agi":1.211},obtain:"폐허가 된 탄광 4층(동45 남27) 포획",routeType:"포획",mount:true},
-  "휴보": {initialCoefficient:18,healthCoefficient:26,attackCoefficient:28,defenseCoefficient:25,agilityCoefficient:16,grade:"상급",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":10.122,"atk":1.956,"def":1.822,"agi":1.014},obtain:"황금색 페트(카난) 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "휴보": {initialCoefficient:18,healthCoefficient:26,attackCoefficient:28,defenseCoefficient:25,agilityCoefficient:16,grade:"2등급",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":10.122,"atk":1.956,"def":1.822,"agi":1.014},obtain:"황금색 페트(카난) 퀘스트 보상",routeType:"퀘스트",mount:false},
   "포보": {initialCoefficient:19,healthCoefficient:28,attackCoefficient:23,defenseCoefficient:26,agilityCoefficient:14,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":10.634,"atk":1.788,"def":1.927,"agi":0.952},obtain:"고야산 동굴 4층 전역 포획",routeType:"포획",mount:false},
-  "쿠보": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:26,defenseCoefficient:26,agilityCoefficient:17,grade:"상급",attrs:["수", "화"],attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":10.122,"atk":1.864,"def":1.864,"agi":1.064},obtain:"베르가 포획 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "쿠보": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:26,defenseCoefficient:26,agilityCoefficient:17,grade:"2등급",attrs:["수", "화"],attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":10.122,"atk":1.864,"def":1.864,"agi":1.064},obtain:"베르가 포획 퀘스트 보상",routeType:"퀘스트",mount:false},
   "토로쟈": {initialCoefficient:21,healthCoefficient:25,attackCoefficient:26,defenseCoefficient:25,agilityCoefficient:16,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":3,"화":7,"풍":0},sg:{"hp":10.222,"atk":1.927,"def":1.881,"agi":1.055},obtain:"속임수의 동굴 최하층 입구 포획",routeType:"포획",mount:false},
   "부르보": {initialCoefficient:20,healthCoefficient:23,attackCoefficient:25,defenseCoefficient:24,agilityCoefficient:20,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":4,"풍":6},sg:{"hp":9.913,"atk":1.87,"def":1.824,"agi":1.261},obtain:"마쥬의 미로 3층 전역 포획",routeType:"포획",mount:false},
   "카쿠": {initialCoefficient:20,healthCoefficient:20,attackCoefficient:26,defenseCoefficient:16,agilityCoefficient:24,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":9.496,"atk":1.948,"def":1.467,"agi":1.524},obtain:"쟈루 섬(동81 남1140) 포획",routeType:"포획",mount:true},
@@ -887,7 +889,7 @@ const DEFAULT_PETS = {
   "카우": {initialCoefficient:20,healthCoefficient:15,attackCoefficient:27,defenseCoefficient:19,agilityCoefficient:26,grade:"일반",attrs:["지", "풍"],attr:{"지":7,"수":0,"화":0,"풍":3},sg:{"hp":8.747,"atk":1.996,"def":1.611,"agi":1.631},obtain:"숲의 동굴 4층(동14 남8) 포획",routeType:"포획",mount:true},
   "베르가": {initialCoefficient:24,healthCoefficient:23,attackCoefficient:29,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],attr:{"지":6,"수":4,"화":0,"풍":0},sg:{"hp":9.965,"atk":2.048,"def":1.445,"agi":1.519},obtain:"쟈루 섬(동442 남634) 포획",routeType:"포획",mount:true},
   "베루루": {initialCoefficient:23,healthCoefficient:21,attackCoefficient:30,defenseCoefficient:13,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":3,"풍":7},sg:{"hp":9.604,"atk":2.081,"def":1.293,"agi":1.673},obtain:"쟈루 섬(동357 남680) 포획",routeType:"포획",mount:true},
-  "노르노르": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:31,defenseCoefficient:18,agilityCoefficient:31,grade:"상급",attrs:["지", "풍"],attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.856,"atk":2.012,"def":1.457,"agi":1.686},obtain:"마리너스 복권 1등",routeType:"복권",mount:true},
+  "노르노르": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:31,defenseCoefficient:18,agilityCoefficient:31,grade:"2등급",attrs:["지", "풍"],attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.856,"atk":2.012,"def":1.457,"agi":1.686},obtain:"마리너스 복권 1등",routeType:"복권",mount:true},
   "고반케스": {initialCoefficient:18,healthCoefficient:29,attackCoefficient:35,defenseCoefficient:19,agilityCoefficient:16,grade:"일반",attrs:["지", "수"],attr:{"지":4,"수":6,"화":0,"풍":0},sg:{"hp":10.766,"atk":2.288,"def":1.575,"agi":1.014},obtain:"쟈루 섬(동231 남557) 포획",routeType:"포획",mount:false},
   "쟈그라": {initialCoefficient:22,healthCoefficient:28,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:17,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":10.617,"atk":2.374,"def":1.483,"agi":1.064},obtain:"쿠오해저터널 1층[쿠오](동20 남35) 포획",routeType:"포획",mount:false},
   "쟈그": {initialCoefficient:23,healthCoefficient:31,attackCoefficient:34,defenseCoefficient:17,agilityCoefficient:16,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":11.013,"atk":2.238,"def":1.481,"agi":1.014},obtain:"쿠오해저터널 1층[쟈루](동11 남31) 포획",routeType:"포획",mount:false},
@@ -898,12 +900,12 @@ const DEFAULT_PETS = {
   "루이": {initialCoefficient:22,healthCoefficient:51,attackCoefficient:27,defenseCoefficient:24,agilityCoefficient:9,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":8,"화":2,"풍":0},sg:{"hp":14.036,"atk":1.927,"def":1.799,"agi":0.641},obtain:"벽청의 동굴B 8층(동19 남13) 포획",routeType:"포획",mount:true},
   "무이": {initialCoefficient:20,healthCoefficient:54,attackCoefficient:26,defenseCoefficient:24,agilityCoefficient:9,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":14.558,"atk":1.894,"def":1.808,"agi":0.641},obtain:"쿠르의 해저통로(동47 남32) 포획",routeType:"포획",mount:true},
   "씨보스": {initialCoefficient:21,healthCoefficient:51,attackCoefficient:26,defenseCoefficient:26,agilityCoefficient:9,grade:"일반",attrs:["지", "수"],attr:{"지":2,"수":8,"화":0,"풍":0},sg:{"hp":14.083,"atk":1.889,"def":1.889,"agi":0.641},obtain:"쿠르의 해저통로(동47 남32) 포획",routeType:"포획",mount:true},
-  "투이": {initialCoefficient:24,healthCoefficient:50,attackCoefficient:31,defenseCoefficient:23,agilityCoefficient:9,grade:"상급",attrs:["수", "화"],attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":13.988,"atk":2.107,"def":1.765,"agi":0.641},obtain:"3환생 보상",routeType:"퀘스트",mount:true},
+  "투이": {initialCoefficient:24,healthCoefficient:50,attackCoefficient:31,defenseCoefficient:23,agilityCoefficient:9,grade:"2등급",attrs:["수", "화"],attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":13.988,"atk":2.107,"def":1.765,"agi":0.641},obtain:"3환생 보상",routeType:"퀘스트",mount:true},
   "다이노": {initialCoefficient:25,healthCoefficient:38,attackCoefficient:27,defenseCoefficient:36,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],attr:{"지":9,"수":1,"화":0,"풍":0},sg:{"hp":11.993,"atk":1.915,"def":2.3,"agi":0.498},obtain:"유리의 동굴 14층 전역 포획",routeType:"포획",mount:true},
   "다이노스": {initialCoefficient:26,healthCoefficient:42,attackCoefficient:26,defenseCoefficient:32,agilityCoefficient:7,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":12.563,"atk":1.87,"def":2.126,"agi":0.546},obtain:"칠흑의 동굴 18층 전역 포획",routeType:"포획",mount:true},
   "프라키토스": {initialCoefficient:24,healthCoefficient:37,attackCoefficient:36,defenseCoefficient:28,agilityCoefficient:6,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":2,"화":8,"풍":0},sg:{"hp":11.851,"atk":2.3,"def":1.958,"agi":0.498},obtain:"세르노스 섬 전역 포획",routeType:"포획",mount:true},
   "스텐토스": {initialCoefficient:28,healthCoefficient:40,attackCoefficient:26,defenseCoefficient:35,agilityCoefficient:5,grade:"일반",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":12.231,"atk":1.87,"def":2.255,"agi":0.451},obtain:"코스 포인트 상점",routeType:"코스",mount:true},
-  "프리토스": {initialCoefficient:28,healthCoefficient:37,attackCoefficient:32,defenseCoefficient:27,agilityCoefficient:10,grade:"상급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":2,"풍":8},sg:{"hp":11.803,"atk":2.114,"def":1.901,"agi":0.688},obtain:"샴기르 복권 1등",routeType:"복권",mount:true},
+  "프리토스": {initialCoefficient:28,healthCoefficient:37,attackCoefficient:32,defenseCoefficient:27,agilityCoefficient:10,grade:"2등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":2,"풍":8},sg:{"hp":11.803,"atk":2.114,"def":1.901,"agi":0.688},obtain:"샴기르 복권 1등",routeType:"복권",mount:true},
   "만모": {initialCoefficient:27,healthCoefficient:50,attackCoefficient:27,defenseCoefficient:25,agilityCoefficient:8,grade:"일반",attrs:["지", "수"],attr:{"지":9,"수":1,"화":0,"풍":0},sg:{"hp":13.846,"atk":1.924,"def":1.839,"agi":0.593},obtain:"가우린 채석장 3층(동21 남15) 포획",routeType:"포획",mount:true},
   "만모르": {initialCoefficient:24,healthCoefficient:51,attackCoefficient:31,defenseCoefficient:20,agilityCoefficient:10,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":2,"화":8,"풍":0},sg:{"hp":14.083,"atk":2.1,"def":1.63,"agi":0.688},obtain:"가우린 채석장 5층(동25 남26) 포획",routeType:"포획",mount:true},
   "마모나스": {initialCoefficient:26,healthCoefficient:52,attackCoefficient:27,defenseCoefficient:24,agilityCoefficient:10,grade:"일반",attrs:["지", "수"],attr:{"지":7,"수":3,"화":0,"풍":0},sg:{"hp":14.273,"atk":1.934,"def":1.806,"agi":0.688},obtain:"가우린 섬(동133 남47) 포획",routeType:"포획",mount:true},
@@ -920,8 +922,8 @@ const DEFAULT_PETS = {
   "오가로스": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:33,defenseCoefficient:25,agilityCoefficient:20,grade:"일반",attrs:["지", "수"],attr:{"지":6,"수":4,"화":0,"풍":0},sg:{"hp":10.141,"atk":2.124,"def":1.782,"agi":1.163},obtain:"아스마르 광산 6층(동37 남38) 포획",routeType:"포획",mount:true},
   "오르곤": {initialCoefficient:26,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:21,agilityCoefficient:21,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":8,"화":2,"풍":0},sg:{"hp":10.521,"atk":2.259,"def":1.618,"agi":1.211},obtain:"퀴즈 마스터(카루타나) 퀘스트 보상",routeType:"퀘스트",mount:true},
   "모가로스": {initialCoefficient:27,healthCoefficient:23,attackCoefficient:37,defenseCoefficient:20,agilityCoefficient:25,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":2,"화":8,"풍":0},sg:{"hp":9.761,"atk":2.288,"def":1.561,"agi":1.401},obtain:"퀴즈 마스터(마리너스) 퀘스트 보상",routeType:"퀘스트",mount:true},
-  "골로스": {initialCoefficient:28,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:25,agilityCoefficient:21,grade:"최상급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.713,"atk":2.207,"def":1.78,"agi":1.211},obtain:"5환생 보상",routeType:"퀘스트",mount:true},
-  "프이토": {initialCoefficient:26,healthCoefficient:19,attackCoefficient:22,defenseCoefficient:25,agilityCoefficient:29,grade:"상급",attrs:["지", "풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.083,"atk":1.657,"def":1.79,"agi":1.658},obtain:"쟈쟈 복권 1등",routeType:"복권",mount:false},
+  "골로스": {initialCoefficient:28,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:25,agilityCoefficient:21,grade:"1등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.713,"atk":2.207,"def":1.78,"agi":1.211},obtain:"5환생 보상",routeType:"퀘스트",mount:true},
+  "프이토": {initialCoefficient:26,healthCoefficient:19,attackCoefficient:22,defenseCoefficient:25,agilityCoefficient:29,grade:"2등급",attrs:["지", "풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.083,"atk":1.657,"def":1.79,"agi":1.658},obtain:"쟈쟈 복권 1등",routeType:"복권",mount:false},
   "카우거": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:16,agilityCoefficient:30,grade:"일반",attrs:["지", "풍"],attr:{"지":7,"수":0,"화":0,"풍":3},sg:{"hp":9.856,"atk":2.143,"def":1.373,"agi":1.638},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
   "샤크론": {initialCoefficient:24,healthCoefficient:30,attackCoefficient:35,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":10.806,"atk":2.207,"def":1.395,"agi":1.401},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
   "크랩": {initialCoefficient:20,healthCoefficient:39,attackCoefficient:29,defenseCoefficient:32,agilityCoefficient:5,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":12.041,"atk":1.993,"def":2.122,"agi":0.451},obtain:"포우렌의 섬(동491 남717) 포획",routeType:"포획",mount:false},
@@ -965,8 +967,8 @@ const DEFAULT_PETS = {
   "익시노돈": {initialCoefficient:23,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:9,agilityCoefficient:36,grade:"일반",attrs:["풍"],attr:{"지":0,"수":0,"화":0,"풍":10},sg:{"hp":9.86,"atk":1.93,"def":1.1,"agi":2.09},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
   "라그노스": {initialCoefficient:24,healthCoefficient:34,attackCoefficient:36,defenseCoefficient:31,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],attr:{"지":9,"수":1,"화":0,"풍":0},sg:{"hp":11.42,"atk":2.3,"def":2.09,"agi":0.5},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
   "모사크": {initialCoefficient:22,healthCoefficient:31,attackCoefficient:38,defenseCoefficient:15,agilityCoefficient:22,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":10.95,"atk":2.34,"def":1.36,"agi":1.26},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
-  "크루거": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:29,grade:"상급",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.05,"atk":2.11,"def":1.47,"agi":1.59},obtain:"스라인 복권 1등",routeType:"복권",mount:true},
-  "황금복덩이": {initialCoefficient:20,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:20,agilityCoefficient:27,grade:"상급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":2,"풍":8},sg:{"hp":9.86,"atk":1.86,"def":1.63,"agi":1.62},obtain:"복덩이(어려움) 레이드",routeType:"레이드",mount:false},
+  "크루거": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:29,grade:"2등급",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.05,"atk":2.11,"def":1.47,"agi":1.59},obtain:"스라인 복권 1등",routeType:"복권",mount:true},
+  "황금복덩이": {initialCoefficient:20,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:20,agilityCoefficient:27,grade:"2등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":2,"풍":8},sg:{"hp":9.86,"atk":1.86,"def":1.63,"agi":1.62},obtain:"복덩이(어려움) 레이드",routeType:"레이드",mount:false},
   "크로아치": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:19,agilityCoefficient:21,grade:"일반",attrs:["지", "수"],attr:{"지":7,"수":3,"화":0,"풍":0},sg:{"hp":10.43,"atk":2.25,"def":1.52,"agi":1.21},obtain:"얼음성 크로아치의 방 전역 포획",routeType:"포획",mount:false},
   "타키온": {initialCoefficient:22,healthCoefficient:25,attackCoefficient:31,defenseCoefficient:13,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":6,"화":4,"풍":0},sg:{"hp":10.122,"atk":2.072,"def":1.27,"agi":1.658},obtain:"오만의 방 복도 전역 포획",routeType:"포획",mount:false},
   "그램고르": {initialCoefficient:26,healthCoefficient:33,attackCoefficient:32,defenseCoefficient:24,agilityCoefficient:16,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":11.186,"atk":2.095,"def":1.753,"agi":0.973},obtain:"그램고르의 방 전역 포획",routeType:"포획",mount:false},
@@ -1094,6 +1096,10 @@ const DEFAULT_PETS = {
   "독호": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:15,agilityCoefficient:29,grade:"일반",attrs:["지"],attr:{"지":10,"수":0,"화":0,"풍":0},sg:{"hp":9.998,"atk":2.188,"def":1.333,"agi":1.591},obtain:"펫 코인 상점",routeType:"펫코인페트",mount:false},
   "마우": {initialCoefficient:26,healthCoefficient:30,attackCoefficient:37,defenseCoefficient:15,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.853,"atk":2.297,"def":1.357,"agi":1.401},obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:false},
   "암풍": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:35,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":10.521,"atk":2.195,"def":1.255,"agi":1.638},obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:false},
+  "아마란스": {initialCoefficient:26,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:15,agilityCoefficient:28,grade:"2등급",attrs:["수","화"],attr:{"지":0,"수":8,"화":2,"풍":0},sg:{"hp":10.568,"atk":2.247,"def":1.350,"agi":1.543},obtain:"경험치 상점",routeType:"상점",mount:false},
+  "그리프스": {initialCoefficient:26,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:33,grade:"2등급",attrs:["지","풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.903,"atk":2.141,"def":1.286,"agi":1.781},obtain:"경험치 상점",routeType:"상점",mount:false},
+  "메카비스": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:34,defenseCoefficient:16,agilityCoefficient:30,grade:"일반",attrs:["화","풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":10.046,"atk":2.148,"def":1.378,"agi":1.638},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
+  "메카카키": {initialCoefficient:17,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:9,agilityCoefficient:39,grade:"일반",attrs:["화","풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.856,"atk":2.036,"def":1.053,"agi":2.066},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
 };
 let petData = { ...DEFAULT_PETS };
 
@@ -1205,7 +1211,7 @@ function renderPetList() {
   document.getElementById("pet-list-title").textContent = `등록된 페트 (${names.length})`;
   cont.innerHTML = "";
 
-  const gradeOrder = {"최상급":0,"상급":1,"2등급":2,"일반":3,"":4};
+  const gradeOrder = {"1등급":0,"2등급":1,"일반":2,"":3};
   names.sort((a,b)=>{
     const ga=gradeOrder[petData[a]?.grade||""]??5, gb=gradeOrder[petData[b]?.grade||""]??5;
     if(ga!==gb) return ga-gb;
@@ -1648,5 +1654,35 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
 
 loadSharedPets();
 </script>
+
+<!-- Footer -->
+<div style="text-align:center;padding:32px 16px 40px;margin-top:20px;font-family:'Noto Sans KR',sans-serif;">
+  <!-- 구분선 장식 -->
+  <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:20px;">
+    <div style="height:1px;width:40px;background:linear-gradient(90deg,transparent,var(--border2));"></div>
+    <div style="display:flex;gap:5px;">
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--a1);"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--a2);"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--a3);"></div>
+    </div>
+    <div style="height:1px;width:40px;background:linear-gradient(90deg,var(--border2),transparent);"></div>
+  </div>
+  <!-- 내용 카드 -->
+  <div style="display:inline-block;background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:16px 24px;box-shadow:var(--shadow);line-height:2;">
+    <div style="font-size:11px;color:var(--t3);margin-bottom:6px;">
+      해당 계산기는 <span style="color:var(--a1);font-weight:700;">짜얄 페트계산기</span> 기반으로 제작되었습니다 🌸
+    </div>
+    <div style="font-size:12px;color:var(--t2);">
+      만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">루믹스</span>
+      &nbsp;
+      <span style="color:var(--t4);">·</span>
+      &nbsp; 영감주신 분 &nbsp;<span style="background:linear-gradient(135deg,var(--a2),#ffb3d1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">chidgeot</span>
+    </div>
+  </div>
+  <!-- 카피라이트 -->
+  <div style="margin-top:14px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">
+    © 윈드 환각 계산기 ver 1.0
+  </div>
+</div>
 </body>
 </html>
