@@ -852,7 +852,7 @@ const DEFAULT_PETS = {
   "베로로크": {initialCoefficient:19,healthCoefficient:29,attackCoefficient:14,defenseCoefficient:32,agilityCoefficient:13,grade:"일반",attrs:["지", "수"],attr:{"지":7,"수":3,"화":0,"풍":0},sg:{"hp":11.047,"atk":1.411,"def":2.277,"agi":0.936},obtain:"쿠링마을가는 동굴1층(동9 남12) 포획",routeType:"포획",mount:true},
   "베로보크": {initialCoefficient:23,healthCoefficient:30,attackCoefficient:13,defenseCoefficient:31,agilityCoefficient:14,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":11.208,"atk":1.36,"def":2.226,"agi":0.989},obtain:"아름산의 동굴 지하7층(동42 남21) 포획",routeType:"포획",mount:true},
   "베로포리": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:14,defenseCoefficient:28,agilityCoefficient:13,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":3,"화":7,"풍":0},sg:{"hp":10.74,"atk":1.46,"def":2.11,"agi":1},obtain:"속임수의 동굴 3번(동22 남21) 포획",routeType:"포획",mount:true},
-  "노북이": {initialCoefficient:14,healthCoefficient:19,attackCoefficient:17,defenseCoefficient:33,agilityCoefficient:8,grade:"일반",attrs:["지", "풍"],attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.57,"atk":1.64,"def":2.44,"agi":0.75},obtain:"사이너스(동545 남389)포획",routeType:"포획",mount:true},
+  "노북이": {initialCoefficient:14,healthCoefficient:20,attackCoefficient:18,defenseCoefficient:34,agilityCoefficient:9,grade:"일반",attrs:["지","풍"],attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.573,"atk":1.635,"def":2.435,"agi":0.749},obtain:"사이너스(동545 남389)포획",routeType:"포획",mount:true},
   "북이": {initialCoefficient:14,healthCoefficient:18,attackCoefficient:18,defenseCoefficient:34,agilityCoefficient:7,grade:"일반",attrs:["지", "풍"],attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.41,"atk":1.69,"def":2.49,"agi":0.69},obtain:"사이너스(동570 남416) 포획",routeType:"포획",mount:true},
   "깡북이": {initialCoefficient:12,healthCoefficient:19,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.74,"atk":1.8,"def":2.4,"agi":0.8},obtain:"쿠오산소동굴 3층(동15 남20) 포획",routeType:"포획",mount:true},
   "돌북이": {initialCoefficient:12,healthCoefficient:19,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["지", "풍"],attr:{"지":9,"수":0,"화":0,"풍":1},sg:{"hp":9.6,"atk":1.66,"def":2.72,"agi":0.45},obtain:"쿠오산소동굴 4층(동23 남38) 포획",routeType:"포획",mount:true},
@@ -1458,7 +1458,13 @@ petNameInput.addEventListener("input",()=>{
   const q=petNameInput.value.trim(); suggEl.innerHTML="";
   if(!q){ suggEl.style.display="none"; return; }
   const qcs=getChosung(q);
-  const matches=Object.keys(petData).filter(n=>n.includes(q)||getChosung(n).includes(qcs)).sort((a,b)=>a.localeCompare(b,'ko-KR'));
+  const all=Object.keys(petData);
+  // 정렬: 완전일치 → 앞부분 일치 → 포함 → 초성 일치
+  const exact   = all.filter(n => n === q);
+  const starts  = all.filter(n => n !== q && n.startsWith(q));
+  const includes= all.filter(n => !n.startsWith(q) && n.includes(q));
+  const chosung = all.filter(n => !n.includes(q) && getChosung(n).includes(qcs));
+  const matches = [...exact, ...starts, ...includes, ...chosung];
   if(!matches.length){ suggEl.style.display="none"; return; }
   matches.forEach(m=>{
     const li=document.createElement("div"); li.className="sugg-item"; li.textContent=m;
@@ -1467,6 +1473,32 @@ petNameInput.addEventListener("input",()=>{
   });
   suggEl.style.display="block";
 });
+// 엔터 입력 시 첫 번째 후보로 즉시 선택
+petNameInput.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const q = petNameInput.value.trim();
+    if (!q) return;
+    // 완전 일치하는 펫이 있으면 바로 선택
+    if (petData[q]) { selectPet(q); suggEl.style.display="none"; return; }
+    // 없으면 첫 번째 후보 선택
+    const first = suggEl.querySelector(".sugg-item");
+    if (first) { selectPet(first.textContent); suggEl.style.display="none"; }
+  }
+  // 방향키로 목록 탐색
+  if (e.key === "ArrowDown") {
+    const items = suggEl.querySelectorAll(".sugg-item");
+    if (items.length) { e.preventDefault(); items[0].focus(); }
+  }
+});
+// 목록 항목에서 방향키 탐색
+suggEl.addEventListener("keydown", e => {
+  const items = [...suggEl.querySelectorAll(".sugg-item")];
+  const idx = items.indexOf(document.activeElement);
+  if (e.key === "ArrowDown" && idx < items.length-1) { e.preventDefault(); items[idx+1].focus(); }
+  if (e.key === "ArrowUp") { e.preventDefault(); idx > 0 ? items[idx-1].focus() : petNameInput.focus(); }
+  if (e.key === "Enter" && idx >= 0) { selectPet(items[idx].textContent); suggEl.style.display="none"; }
+});
+// 목록 항목 tabindex 추가는 renderSugg에서 처리
 document.addEventListener("click",e=>{ if(!e.target.closest(".sugg-wrap")) suggEl.style.display="none"; });
 
 /* ──── admin login/logout ──── */
