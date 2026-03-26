@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WIND 환각 계산기</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVTpV_Yq4GFZ6a7UkWQk4FnwuK5tzmoyM",
+      authDomain: "wind-972a1.firebaseapp.com",
+      databaseURL: "https://wind-972a1-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "wind-972a1",
+      storageBucket: "wind-972a1.firebasestorage.app",
+      messagingSenderId: "166348268878",
+      appId: "1:166348268878:web:505436908a753e46802a1f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // 전역에 노출
+    window._fbSet = (path, data) => set(ref(db, path), data);
+    window._fbOnValue = (path, cb) => onValue(ref(db, path), cb);
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:      #faf9ff;
+      --bg2:     #f3f0ff;
+      --white:   #ffffff;
+      --s1:      #f8f7ff;
+      --s2:      #f0eeff;
+      --border:  #e8e3ff;
+      --border2: #d4cbff;
+      --a1:      #9b87f5;   /* soft lavender */
+      --a2:      #f587b8;   /* soft pink */
+      --a3:      #87d4f5;   /* soft sky */
+      --a4:      #f5c887;   /* soft peach */
+      --a5:      #87f5c0;   /* soft mint */
+      --t1:      #3d3560;
+      --t2:      #7b72a8;
+      --t3:      #b0a8d4;
+      --t4:      #d4cff0;
+      --ok:      #6dd5a0;
+      --err:     #f57878;
+      --shadow:  0 4px 24px rgba(155,135,245,0.12);
+      --shadow2: 0 8px 32px rgba(155,135,245,0.18);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 15% 20%, rgba(155,135,245,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 85% 80%, rgba(245,135,184,0.07) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(135,212,245,0.05) 0%, transparent 60%);
+    }
+
+    /* ─── Sidebar ─── */
+    .sidebar {
+      width: 300px; min-height: 100vh;
+      background: var(--white);
+      border-right: 1.5px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; left: -300px; top: 0; z-index: 200;
+      transition: left .32s cubic-bezier(.4,0,.2,1);
+      overflow-y: auto;
+      box-shadow: 4px 0 24px rgba(155,135,245,0.08);
+    }
+    .sidebar.open { left: 0; }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+    .sb-head {
+      padding: 20px 16px 14px;
+      border-bottom: 1.5px solid var(--border);
+      position: sticky; top: 0;
+      background: var(--white); z-index: 5;
+    }
+    .sb-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 900; font-size: 15px;
+      color: var(--a1); margin-bottom: 12px;
+    }
+    .sb-logo-dot {
+      width: 8px; height: 8px; background: var(--a1);
+      border-radius: 50%; animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
+    .io-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+    .btn-pill {
+      padding: 9px 6px; font-size: 11px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      border: 1.5px solid transparent; border-radius: 12px;
+      cursor: pointer; transition: all .18s; line-height: 1.45; text-align: center;
+    }
+    .btn-lav { background: #f0eeff; color: var(--a1); border-color: var(--border2); }
+    .btn-lav:hover { background: var(--a1); color: #fff; border-color: var(--a1); }
+    .btn-pnk { background: #fff0f6; color: var(--a2); border-color: #f5c8de; }
+    .btn-pnk:hover { background: var(--a2); color: #fff; border-color: var(--a2); }
+    .btn-sky { background: #f0f9ff; color: #5ab5e0; border-color: #c5e8f7; font-size: 11px; }
+    .btn-sky:hover { background: var(--a3); color: #fff; border-color: var(--a3); }
+    .btn-pch { background: #fffbf0; color: #d4943a; border-color: #f5deb0; font-size: 11px; }
+    .btn-pch:hover { background: var(--a4); color: #fff; border-color: var(--a4); }
+
+    /* add form */
+    .add-form {
+      overflow: hidden; max-height: 0;
+      transition: max-height .3s ease;
+      background: var(--s1);
+      border-bottom: 1.5px solid var(--border);
+    }
+    .add-form.open { max-height: 700px; }
+    .add-form-inner { padding: 14px; }
+    .f-section {
+      font-size: 10px; letter-spacing: 1.5px; color: var(--t3);
+      text-transform: uppercase; margin: 10px 0 5px;
+      font-family: 'Nunito', sans-serif; font-weight: 700;
+    }
+    .f-section:first-child { margin-top: 0; }
+    .f-input {
+      width: 100%; padding: 8px 11px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; color: var(--t1); font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif; margin-bottom: 4px;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    .f-input:focus { outline: none; border-color: var(--a1); box-shadow: 0 0 0 3px rgba(155,135,245,.1); }
+    .f-input::placeholder { color: var(--t4); }
+    .btn-submit {
+      width: 100%; padding: 9px; margin-top: 6px;
+      background: linear-gradient(135deg, var(--a1), #b8a6ff);
+      color: #fff; border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .18s;
+      box-shadow: 0 3px 12px rgba(155,135,245,.25);
+    }
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(155,135,245,.35); }
+    .btn-submit:active { transform: scale(.98); }
+
+    /* pet list */
+    .pet-section { padding: 10px 12px; flex: 1; }
+    .pet-sec-title {
+      font-size: 10px; letter-spacing: 2px; color: var(--t3);
+      text-transform: uppercase; margin-bottom: 8px;
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+    }
+    .pet-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 10px; margin-bottom: 5px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; cursor: pointer; transition: all .15s;
+    }
+    .pet-item:hover { border-color: var(--a1); box-shadow: 0 3px 12px rgba(155,135,245,.12); transform: translateY(-1px); }
+    .pet-item.active { border-color: var(--a1); background: #f5f0ff; box-shadow: 0 3px 14px rgba(155,135,245,.15); }
+    .pet-item-name { font-size: 13px; font-weight: 600; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 6px; color: var(--t1); }
+    .pet-item-btns { display: flex; gap: 4px; flex-shrink: 0; }
+    .btn-sm {
+      padding: 3px 8px; font-size: 11px; font-weight: 700;
+      border: 1.5px solid transparent; border-radius: 7px;
+      cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all .13s;
+    }
+    .btn-edit-sm { background: #fffbf0; color: #c8843a; border-color: #f5deb0; }
+    .btn-edit-sm:hover { background: var(--a4); color: #fff; }
+    .btn-del-sm { background: #fff5f5; color: var(--err); border-color: #f5c5c5; }
+    .btn-del-sm:hover { background: var(--err); color: #fff; }
+
+    /* edit form */
+    .edit-form { padding: 9px; background: var(--s2); border-radius: 10px; margin-top: 6px; border: 1.5px solid var(--border); }
+    .edit-form input {
+      width: 100%; padding: 6px 9px; background: var(--white);
+      border: 1.5px solid var(--border); border-radius: 8px;
+      color: var(--t1); font-size: 12px;
+      font-family: 'Noto Sans KR', sans-serif; margin-bottom: 4px;
+    }
+    .edit-form input:focus { outline: none; border-color: var(--a1); }
+    .btn-save {
+      width: 100%; padding: 7px; background: var(--ok);
+      color: #fff; border: none; border-radius: 8px;
+      font-size: 12px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: background .15s;
+    }
+    .btn-save:hover { background: #5bc98e; }
+
+    /* toggle btn */
+    .toggle-btn {
+      position: fixed; top: 16px; left: 16px; z-index: 300;
+      width: 42px; height: 42px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; color: var(--a1); font-size: 19px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .18s; box-shadow: var(--shadow);
+    }
+    .toggle-btn:hover { border-color: var(--a1); box-shadow: var(--shadow2); transform: scale(1.05); }
+    .toggle-btn.sb-open { left: 314px; }
+
+    /* main */
+    .main { flex: 1; margin-left: 0; transition: margin-left .32s cubic-bezier(.4,0,.2,1); min-height: 100vh; }
+    .main.shifted { margin-left: 300px; }
+    .main-inner { max-width: 520px; margin: 0 auto; padding: 24px 18px 80px; }
+
+    /* header */
+    .page-head { text-align: center; padding: 18px 0 26px; }
+    .wind-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #f0eeff, #ffeef6);
+      border: 1.5px solid var(--border2); border-radius: 99px;
+      padding: 4px 14px; font-size: 11px; font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      color: var(--a1); letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .wind-badge-dot { width: 6px; height: 6px; background: var(--a2); border-radius: 50%; }
+    .page-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 34px; font-weight: 900; letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--a1) 0%, var(--a2) 60%, var(--a4) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1.15; margin-bottom: 6px;
+    }
+    .page-sub { font-size: 12px; color: var(--t3); font-family: 'Nunito', sans-serif; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* decorative dots */
+    .deco-dots { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
+    .deco-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+    /* notice */
+    .notice {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 18px; padding: 18px 20px;
+      font-size: 13px; color: var(--t2); line-height: 1.85;
+      text-align: center; margin-bottom: 18px;
+      box-shadow: var(--shadow);
+      position: relative; overflow: hidden;
+    }
+    .notice::before {
+      content: '✦';
+      position: absolute; top: 10px; left: 14px;
+      font-size: 14px; color: var(--a1); opacity: .3;
+    }
+    .notice::after {
+      content: '✦';
+      position: absolute; bottom: 10px; right: 14px;
+      font-size: 14px; color: var(--a2); opacity: .3;
+    }
+    .notice em { color: var(--a1); font-style: normal; font-weight: 700; }
+    .notice small { color: var(--t4); font-size: 11px; }
+
+    /* card */
+    .card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 20px; margin-bottom: 14px;
+      box-shadow: var(--shadow); transition: box-shadow .2s;
+    }
+    .card:hover { box-shadow: var(--shadow2); }
+    .card-title {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--t3); margin-bottom: 14px;
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .card-title::before {
+      content: ''; display: block; width: 10px; height: 10px;
+      border-radius: 50%; background: linear-gradient(135deg, var(--a1), var(--a2));
+    }
+
+    /* fields */
+    .field { margin-bottom: 12px; position: relative; }
+    .field-label {
+      font-size: 12px; font-weight: 700; color: var(--t2);
+      margin-bottom: 5px; display: block; letter-spacing: .3px;
+    }
+    .field-input {
+      width: 100%; padding: 11px 14px;
+      background: var(--s1); border: 1.5px solid var(--border);
+      border-radius: 12px; color: var(--t1); font-size: 15px;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: border-color .18s, box-shadow .18s, background .18s;
+    }
+    .field-input:focus {
+      outline: none; border-color: var(--a1); background: #fff;
+      box-shadow: 0 0 0 4px rgba(155,135,245,.1);
+    }
+    .field-input::placeholder { color: var(--t4); }
+
+    /* suggestions */
+    .sugg-wrap { position: relative; }
+    .suggestions {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+      background: var(--white); border: 1.5px solid var(--a1);
+      border-top: none; border-radius: 0 0 14px 14px;
+      max-height: 160px; overflow-y: auto;
+      box-shadow: 0 12px 32px rgba(155,135,245,.15);
+    }
+    .sugg-item {
+      padding: 10px 14px; cursor: pointer; font-size: 14px;
+      border-bottom: 1px solid var(--border); transition: background .13s; color: var(--t1);
+    }
+    .sugg-item:last-child { border-bottom: none; }
+    .sugg-item:hover { background: var(--s1); color: var(--a1); }
+
+    /* stat grid */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-field { position: relative; }
+    .stat-badge {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 10px; font-weight: 800; font-family: 'Nunito', sans-serif;
+      pointer-events: none; letter-spacing: .5px;
+    }
+    .badge-atk { color: var(--a2); }
+    .badge-def { color: var(--a1); }
+    .badge-agi { color: #5acba8; }
+    .badge-hp  { color: #d4943a; }
+
+    /* calc btn */
+    .btn-calc {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--a1) 0%, var(--a2) 100%);
+      color: #fff; border: none; border-radius: 16px;
+      font-size: 16px; font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer; transition: all .2s; letter-spacing: .5px;
+      box-shadow: 0 4px 20px rgba(155,135,245,.3);
+    }
+    .btn-calc:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(155,135,245,.42); }
+    .btn-calc:active { transform: scale(.99); }
+
+    /* loading */
+    .loading {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 10px; padding: 30px; color: var(--a1); font-size: 14px;
+    }
+    .spinner {
+      width: 34px; height: 34px;
+      border: 3px solid var(--border2);
+      border-top-color: var(--a1); border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* result */
+    .result-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 24px; margin-top: 14px;
+      box-shadow: var(--shadow); animation: fadeUp .3s ease;
+    }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+    .result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 13px 0; border-bottom: 1.5px solid var(--border);
+    }
+    .result-row:last-of-type { border-bottom: none; }
+    .result-label { font-size: 13px; color: var(--t2); font-weight: 600; }
+    .result-val { font-family: 'Nunito', sans-serif; font-weight: 900; }
+    .result-prob   { font-size: 28px; color: var(--a1); }
+    .result-appear { font-size: 24px; color: #5acba8; }
+    .result-expect { font-size: 24px; color: #d4943a; }
+    .result-msg {
+      font-size: 12px; color: var(--t3); text-align: center;
+      margin-top: 10px; font-style: italic;
+    }
+    .result-err { color: var(--err); text-align: center; font-size: 14px; padding: 8px 0; font-weight: 600; }
+
+    /* result decoration strip */
+    .result-strip {
+      height: 4px; border-radius: 99px;
+      background: linear-gradient(90deg, var(--a1), var(--a2), var(--a4));
+      margin-bottom: 20px;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 500;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 12px 18px; font-size: 13px;
+      color: var(--t1); box-shadow: var(--shadow2);
+      animation: toastIn .25s ease; max-width: 240px; font-weight: 600;
+    }
+    @keyframes toastIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .toast.ok  { border-color: var(--ok);  color: #3d9e6e; }
+    .toast.err { border-color: var(--err); color: var(--err); }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--a1); }
+
+    @media (max-width: 500px) {
+      .main-inner { padding: 14px 12px 80px; }
+      .page-title  { font-size: 26px; }
+      .toggle-btn.sb-open { left: auto; right: 16px; }
+    }
+
+    /* ─── Admin mode ─── */
+    .admin-lock-btn {
+      width: 100%; margin-top: 6px;
+      padding: 8px 6px; font-size: 11px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif;
+      border: 1.5px dashed var(--border2); border-radius: 12px;
+      cursor: pointer; transition: all .18s; text-align: center;
+      background: transparent; color: var(--t3);
+    }
+    .admin-lock-btn:hover { border-color: var(--a1); color: var(--a1); background: #f5f0ff; }
+    .admin-lock-btn.active { background: linear-gradient(135deg,#f0eeff,#ffeef6); color: var(--a1); border-color: var(--a1); border-style: solid; }
+
+    .admin-pw-wrap {
+      overflow: hidden; max-height: 0; transition: max-height .3s ease;
+      background: var(--s1); border-bottom: 1.5px solid var(--border);
+    }
+    .admin-pw-wrap.open { max-height: 120px; }
+    .admin-pw-inner { padding: 12px 14px; display: flex; gap: 6px; }
+    .admin-pw-inner input {
+      flex: 1; padding: 8px 11px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; color: var(--t1); font-size: 13px;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .admin-pw-inner input:focus { outline: none; border-color: var(--a1); }
+    .admin-pw-inner button {
+      padding: 8px 14px; background: var(--a1); color: #fff;
+      border: none; border-radius: 10px; font-size: 12px; font-weight: 700;
+      font-family: 'Noto Sans KR', sans-serif; cursor: pointer; white-space: nowrap;
+    }
+    .admin-pw-inner button:hover { background: #8a74e8; }
+
+    /* admin-only areas hidden by default */
+    .admin-only { display: none !important; }
+    body.admin-mode .admin-only { display: flex !important; }
+    body.admin-mode .admin-only-grid { display: grid !important; }
+    body.admin-mode .btn-row { display: grid !important; }
+    .btn-row { display: none; }
+
+    /* ─── Pet info badges ─── */
+    .pet-grade {
+      font-size: 10px; font-weight: 800; font-family: 'Nunito', sans-serif;
+      padding: 2px 7px; border-radius: 6px; flex-shrink: 0; letter-spacing: .5px;
+    }
+    .grade-최상급 { background: #fff0f6; color: #e0508a; border: 1px solid #f5c8de; }
+    .grade-상급   { background: #f0eeff; color: var(--a1); border: 1px solid var(--border2); }
+    .grade-2등급  { background: #f0f9ff; color: #5ab5e0; border: 1px solid #c5e8f7; }
+    .grade-일반   { background: #f5f5f5; color: #999; border: 1px solid #e0e0e0; }
+
+    .pet-attr-row {
+      display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px;
+    }
+    .pet-attr {
+      font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
+      font-family: 'Nunito', sans-serif;
+    }
+    .attr-지 { background: #e8f5e9; color: #388e3c; border: 1px solid #c8e6c9; }
+    .attr-수 { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; }
+    .attr-화 { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+    .attr-풍 { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
+    .attr-무 { background: #f5f5f5; color: #616161; border: 1px solid #e0e0e0; }
+
+    .pet-obtain {
+      font-size: 10px; color: var(--t3); margin-top: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .pet-item { flex-direction: column; align-items: stretch; cursor: pointer; }
+    .pet-item-top { display: flex; align-items: center; justify-content: space-between; }
+    .pet-item-info { padding: 0 2px 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ───── Sidebar ───── -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">
+      <div class="sb-logo-dot"></div>
+      Pet Manager
+    </div>
+    <!-- 관리자만 보이는 버튼들 -->
+    <div class="btn-row" id="admin-btn-row" style="display:none">
+      <button class="btn-pill btn-lav" id="toggle-s-btn">페트 추가<br>(초기치/성장률)</button>
+      <button class="btn-pill btn-pnk" id="toggle-f-btn">페트 추가<br>(소숫점 초기치)</button>
+    </div>
+
+    <!-- 관리자 로그인 버튼 -->
+    <button class="admin-lock-btn" id="admin-lock-btn">🔒 관리자 모드</button>
+  </div>
+
+  <!-- 비밀번호 입력창 -->
+  <div class="admin-pw-wrap" id="admin-pw-wrap">
+    <div class="admin-pw-inner">
+      <input type="password" id="admin-pw-input" placeholder="비밀번호 입력..." />
+      <button id="admin-pw-confirm">확인</button>
+    </div>
+  </div>
+
+  <!-- S급 폼 -->
+  <div class="add-form" id="s-grade-form">
+    <div class="add-form-inner">
+      <div class="f-section">페트 이름</div>
+      <input class="f-input" id="s-name" placeholder="페트 이름" />
+      <div class="f-section">등급</div>
+      <select class="f-input" id="s-grade">
+        <option value="일반">일반</option>
+        <option value="2등급">2등급</option>
+        <option value="상급">상급</option>
+        <option value="최상급">최상급</option>
+      </select>
+      <div class="f-section">속성</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="지"> 지</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="수"> 수</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="화"> 화</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="풍"> 풍</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="무"> 무</label>
+      </div>
+      <div class="f-section">획득방법</div>
+      <input class="f-input" id="s-obtain" placeholder="예: 이벤트, 상점, 드랍 등" />
+      <div class="f-section">S급 초기치</div>
+      <input class="f-input" id="s-st1" type="number" placeholder="공격력 초기치" step="any" />
+      <input class="f-input" id="s-df1" type="number" placeholder="방어력 초기치" step="any" />
+      <input class="f-input" id="s-de1" type="number" placeholder="순발력 초기치" step="any" />
+      <input class="f-input" id="s-hp1" type="number" placeholder="체력 초기치" step="any" />
+      <div class="f-section">S급 성장률</div>
+      <input class="f-input" id="s-st2" type="number" placeholder="공격력 성장률" step="any" />
+      <input class="f-input" id="s-df2" type="number" placeholder="방어력 성장률" step="any" />
+      <input class="f-input" id="s-de2" type="number" placeholder="순발력 성장률" step="any" />
+      <input class="f-input" id="s-hp2" type="number" placeholder="체력 성장률" step="any" />
+      <button class="btn-submit" id="add-s-btn">✦ 추가하기</button>
+    </div>
+  </div>
+
+  <!-- 소숫점 폼 -->
+  <div class="add-form" id="final-form">
+    <div class="add-form-inner">
+      <div class="f-section">페트 이름</div>
+      <input class="f-input" id="f-name" placeholder="페트 이름" />
+      <div class="f-section">등급</div>
+      <select class="f-input" id="f-grade">
+        <option value="일반">일반</option>
+        <option value="2등급">2등급</option>
+        <option value="상급">상급</option>
+        <option value="최상급">최상급</option>
+      </select>
+      <div class="f-section">속성</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="지"> 지</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="수"> 수</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="화"> 화</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="풍"> 풍</label>
+        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="무"> 무</label>
+      </div>
+      <div class="f-section">획득방법</div>
+      <input class="f-input" id="f-obtain" placeholder="예: 이벤트, 상점, 드랍 등" />
+      <div class="f-section">소숫점 초기치</div>
+      <input class="f-input" id="f-atk" type="number" placeholder="공격력" step="any" />
+      <input class="f-input" id="f-def" type="number" placeholder="방어력" step="any" />
+      <input class="f-input" id="f-agi" type="number" placeholder="순발력" step="any" />
+      <input class="f-input" id="f-hp"  type="number" placeholder="체력"   step="any" />
+      <button class="btn-submit" id="add-f-btn">✦ 추가하기</button>
+    </div>
+  </div>
+
+  <div class="pet-section">
+    <div class="pet-sec-title" id="pet-list-title">등록된 페트</div>
+    <div id="pet-list"></div>
+  </div>
+</div>
+
+<!-- Toggle btn -->
+<button class="toggle-btn" id="toggle-btn">☰</button>
+
+<!-- ───── Main ───── -->
+<div class="main" id="main">
+  <div class="main-inner">
+
+    <!-- Header -->
+    <div class="page-head">
+      <div class="wind-badge"><div class="wind-badge-dot"></div>WIND SERVER</div>
+      <h1 class="page-title">환각 계산기</h1>
+      <p class="page-sub">🌸 pet hallucination calculator 🌸</p>
+      <div class="deco-dots">
+        <div class="deco-dot" style="background:var(--a1)"></div>
+        <div class="deco-dot" style="background:var(--a2)"></div>
+        <div class="deco-dot" style="background:var(--a3)"></div>
+        <div class="deco-dot" style="background:var(--a4)"></div>
+        <div class="deco-dot" style="background:var(--a5)"></div>
+      </div>
+    </div>
+
+    <!-- Notice -->
+    <div class="notice">
+      이 계산기는 정보의 불균형을 해소하고자<br>
+      <em>짜얄님</em>과 <em>유미님</em>이 함께 만드신 계산기를 토대로<br>
+      <em>윈드서버 루믹스</em>가 제작하였습니다.<br><br>
+      모든 계산 결과가 정확하다고 할 수 없습니다.<br>
+      단순 참고용으로 사용해주세요 🌷<br>
+      <small>※ 펫 데이터는 서버에 자동 저장됩니다</small>
+    </div>
+
+    <!-- Pet select -->
+    <div class="card">
+      <div class="card-title">페트 선택</div>
+      <div class="field sugg-wrap">
+        <label class="field-label">페트 이름</label>
+        <input class="field-input" id="pet-name" placeholder="이름을 검색하세요 ..." autocomplete="off" />
+        <div class="suggestions" id="suggestions" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="card">
+      <div class="card-title">현재 스탯 입력</div>
+      <div class="stat-grid">
+        <div class="stat-field">
+          <label class="field-label">공격력</label>
+          <input class="field-input" type="number" id="d-atk" placeholder="0" />
+          <span class="stat-badge badge-atk">ATK</span>
+        </div>
+        <div class="stat-field">
+          <label class="field-label">방어력</label>
+          <input class="field-input" type="number" id="d-def" placeholder="0" />
+          <span class="stat-badge badge-def">DEF</span>
+        </div>
+        <div class="stat-field">
+          <label class="field-label">순발력</label>
+          <input class="field-input" type="number" id="d-agi" placeholder="0" />
+          <span class="stat-badge badge-agi">AGI</span>
+        </div>
+        <div class="stat-field">
+          <label class="field-label">체력</label>
+          <input class="field-input" type="number" id="d-hp" placeholder="0" />
+          <span class="stat-badge badge-hp">HP</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-calc" id="calc-btn">✦ 계산하기 ✦</button>
+
+    <div id="loading" class="loading" style="display:none">
+      <div class="spinner"></div>
+      계산 중이에요...
+    </div>
+
+    <div id="result-card" class="result-card" style="display:none"></div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+Decimal.set({ precision: 50, rounding: Decimal.ROUND_HALF_UP });
+
+/* ──── helpers ──── */
+function getChosung(str) {
+  const B=0xAC00,L=0xD7A3,C=["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+  return [...str].map(c=>{const code=c.charCodeAt(0);return(code>=B&&code<=L)?C[Math.floor((code-B)/588)]:c;}).join("");
+}
+function formatPct(num) {
+  if(num===0) return "0.0%";
+  let s=num.toFixed(20),di=s.indexOf('.');
+  if(di===-1) return s+"%";
+  let fn=di+1;
+  while(fn<s.length&&s[fn]==='0') fn++;
+  if(fn===s.length) return "0.0%";
+  let d=s[fn],nx=parseInt(s[fn+1])||0;
+  if(nx>=5){
+    let inc=(parseInt(d)+1).toString();
+    if(inc==='10'){
+      let a=s.split(''),c=1;
+      for(let i=fn;i>di;i--){if(a[i]==='.') continue;let nd=parseInt(a[i])+c;if(nd===10){a[i]='0';c=1;}else{a[i]=nd.toString();c=0;break;}}
+      if(c===1)a.unshift('1');s=a.join('');
+    } else { s=s.slice(0,fn)+inc+s.slice(fn+1); }
+  }
+  return s.slice(0,fn+1)+"%";
+}
+
+let toastTimer=null;
+function showToast(msg, type="ok") {
+  const el=document.getElementById("toast");
+  el.textContent=msg; el.className="toast "+type; el.style.display="block";
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>{ el.style.display="none"; },2400);
+}
+
+/* ──── admin ──── */
+const ADMIN_PASSWORD = "wind1234"; // ← 여기서 비밀번호 변경
+let isAdmin = false;
+
+function setAdminMode(on) {
+  isAdmin = on;
+  const btn = document.getElementById("admin-lock-btn");
+  const row = document.getElementById("admin-btn-row");
+  if (on) {
+    btn.textContent = "🔓 관리자 모드 (로그아웃)";
+    btn.classList.add("active");
+    row.style.display = "grid";
+  } else {
+    btn.textContent = "🔒 관리자 모드";
+    btn.classList.remove("active");
+    row.style.display = "none";
+  }
+  renderPetList();
+}
+
+/* ──── default data ──── */
+const DEFAULT_PETS = {
+  "테로노돈": {initialCoefficient:21,healthCoefficient:28,attackCoefficient:27,defenseCoefficient:8,agilityCoefficient:36,grade:"일반",attrs:["수"],obtain:"전리품의 방 전역 포획",routeType:"포획",mount:false},
+  "고르고르": {initialCoefficient:21,healthCoefficient:20,attackCoefficient:31,defenseCoefficient:13,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],obtain:"가우린 섬(동225 남353) 포획",routeType:"포획",mount:true},
+  "킹북이": {initialCoefficient:20,healthCoefficient:24,attackCoefficient:20,defenseCoefficient:44,agilityCoefficient:5,grade:"일반",attrs:["지", "풍"],obtain:"아부의 지하동굴 6층 전지역",routeType:"포획",mount:true},
+  "타비스": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:38,defenseCoefficient:15,agilityCoefficient:25,grade:"일반",attrs:["화", "풍"],obtain:"홍보이벤트",routeType:"이벤트",mount:false},
+  "카이스": {initialCoefficient:26,healthCoefficient:26,attackCoefficient:37,defenseCoefficient:18,agilityCoefficient:22,grade:"일반",attrs:["지", "수"],obtain:"홍보이벤트",routeType:"이벤트",mount:false},
+  "카로스": {initialCoefficient:26,healthCoefficient:30,attackCoefficient:37,defenseCoefficient:15,agilityCoefficient:23,grade:"일반",attrs:["지", "수"],obtain:"홍보이벤트",routeType:"이벤트",mount:false},
+  "케이르": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:40,defenseCoefficient:15,agilityCoefficient:23,grade:"일반",attrs:["화", "풍"],obtain:"홍보이벤트",routeType:"이벤트",mount:false},
+  "우리": {initialCoefficient:10,healthCoefficient:24,attackCoefficient:24,defenseCoefficient:24,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"마리너스 앞마당 포획",routeType:"포획",mount:true},
+  "두리": {initialCoefficient:20,healthCoefficient:25,attackCoefficient:29,defenseCoefficient:13,agilityCoefficient:26,grade:"일반",attrs:["수", "화"],obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:false},
+  "얼룩우리": {initialCoefficient:15,healthCoefficient:22,attackCoefficient:24,defenseCoefficient:30,agilityCoefficient:17,grade:"일반",attrs:["지"],obtain:"마리너스 앞마당 포획",routeType:"포획",mount:true},
+  "환생얼룩우리": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:20,agilityCoefficient:30,grade:"최상급",attrs:["지", "풍"],obtain:"1환생 보상",routeType:"퀘스트",mount:true},
+  "불그리": {initialCoefficient:10,healthCoefficient:23,attackCoefficient:31,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],obtain:"출시예정",routeType:"기타",mount:false},
+  "실버우리": {initialCoefficient:20,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:19,agilityCoefficient:31,grade:"최상급",attrs:["지", "풍"],obtain:"카루타나 복권 1등",routeType:"복권",mount:true},
+  "부비": {initialCoefficient:15,healthCoefficient:51,attackCoefficient:33,defenseCoefficient:16,agilityCoefficient:12,grade:"일반",attrs:["지", "수"],obtain:"사이너스 섬(동608 남208) 포획",routeType:"포획",mount:true},
+  "부이비": {initialCoefficient:16,healthCoefficient:52,attackCoefficient:36,defenseCoefficient:14,agilityCoefficient:12,grade:"일반",attrs:["수", "화"],obtain:"쟈루 섬(동357 남183) 포획",routeType:"포획",mount:true},
+  "골드부비": {initialCoefficient:25,healthCoefficient:49,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:13,grade:"상급",attrs:["화", "풍"],obtain:"퀴즈 마스터(모가로스) 퀘스트",routeType:"퀘스트",mount:true},
+  "얼룩부이비": {initialCoefficient:23,healthCoefficient:49,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:12,grade:"상급",attrs:["지"],obtain:"퀴즈 마스터(오르곤) 퀘스트",routeType:"퀘스트",mount:true},
+  "꼬미": {initialCoefficient:22,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:16,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],obtain:"라토토 대복도(동196 남123) 포획",routeType:"포획",mount:false},
+  "꼬비": {initialCoefficient:20,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:19,agilityCoefficient:27,grade:"일반",attrs:["지", "풍"],obtain:"라토토 대복도(동147 남42) 포획",routeType:"포획",mount:false},
+  "꼬비오": {initialCoefficient:18,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["풍"],obtain:"라토토 동굴 3 - 3 전역 포획",routeType:"포획",mount:false},
+  "꼬꼬비": {initialCoefficient:16,healthCoefficient:22,attackCoefficient:26,defenseCoefficient:16,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],obtain:"라토토 동굴 3 - 4층(동8 남19) 포획",routeType:"포획",mount:false},
+  "토루루": {initialCoefficient:19,healthCoefficient:23,attackCoefficient:26,defenseCoefficient:22,agilityCoefficient:28,grade:"일반",attrs:["지", "풍"],obtain:"코스 포인트 상점",routeType:"코스",mount:false},
+  "타이혼": {initialCoefficient:30,healthCoefficient:22,attackCoefficient:32,defenseCoefficient:17,agilityCoefficient:32,grade:"최상급",attrs:["화", "풍"],obtain:"후르도 복권 1등",routeType:"복권",mount:false},
+  "라이혼": {initialCoefficient:30,healthCoefficient:25,attackCoefficient:28,defenseCoefficient:24,agilityCoefficient:29,grade:"상급",attrs:["지", "수"],obtain:"정령 레이드",routeType:"레이드",mount:false},
+  "라나프": {initialCoefficient:28,healthCoefficient:19,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:29,grade:"상급",attrs:["화", "풍"],obtain:"코스 포인트 상점",routeType:"코스",mount:false},
+  "모나시프": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:32,grade:"상급",attrs:["풍"],obtain:"채석장의 비밀 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "오투투": {initialCoefficient:20,healthCoefficient:19,attackCoefficient:22,defenseCoefficient:14,agilityCoefficient:33,grade:"일반",attrs:["지", "풍"],obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:true},
+  "투투": {initialCoefficient:17,healthCoefficient:23,attackCoefficient:22,defenseCoefficient:11,agilityCoefficient:33,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동295 남368) 포획",routeType:"포획",mount:true},
+  "다고스": {initialCoefficient:18,healthCoefficient:30,attackCoefficient:34,defenseCoefficient:18,agilityCoefficient:23,grade:"일반",attrs:["수", "화"],obtain:"사이너스(동186 남153) 포획",routeType:"포획",mount:true},
+  "타로곤": {initialCoefficient:17,healthCoefficient:24,attackCoefficient:33,defenseCoefficient:23,agilityCoefficient:24,grade:"일반",attrs:["화", "풍"],obtain:"사이너스(동186 남153) 포획",routeType:"포획",mount:false},
+  "보크곤": {initialCoefficient:19,healthCoefficient:24,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:24,grade:"일반",attrs:["지", "풍"],obtain:"몽환의 동굴(동45 남55) 포획",routeType:"포획",mount:false},
+  "아고아": {initialCoefficient:20,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:17,agilityCoefficient:22,grade:"일반",attrs:["수", "화"],obtain:"진홍동굴(나) 6층 전역 포획",routeType:"포획",mount:true},
+  "네고스": {initialCoefficient:20,healthCoefficient:28,attackCoefficient:33,defenseCoefficient:21,agilityCoefficient:23,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동275 남495) 포획",routeType:"포획",mount:true},
+  "로기안": {initialCoefficient:23,healthCoefficient:25,attackCoefficient:23,defenseCoefficient:39,agilityCoefficient:7,grade:"일반",attrs:["지", "풍"],obtain:"유리의 동굴 13층 전역 포획",routeType:"포획",mount:true},
+  "아이카스": {initialCoefficient:22,healthCoefficient:30,attackCoefficient:24,defenseCoefficient:38,agilityCoefficient:7,grade:"일반",attrs:["지", "수"],obtain:"칠흑의 동굴 9층(동40 남42) 포획",routeType:"포획",mount:true},
+  "카르기안": {initialCoefficient:20,healthCoefficient:25,attackCoefficient:24,defenseCoefficient:27,agilityCoefficient:12,grade:"일반",attrs:["지", "풍"],obtain:"칠흑의 동굴 5층(동13 남56) 포획",routeType:"포획",mount:true},
+  "쿠카스": {initialCoefficient:22,healthCoefficient:26,attackCoefficient:23,defenseCoefficient:39,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],obtain:"동쿠링 광산 2층(동5 남7) 포획",routeType:"포획",mount:true},
+  "쿠타스": {initialCoefficient:22,healthCoefficient:32,attackCoefficient:29,defenseCoefficient:37,agilityCoefficient:7,grade:"일반",attrs:["수", "화"],obtain:"칠흑의 동굴 11층(동56 남38) 포획",routeType:"포획",mount:true},
+  "코로카스": {initialCoefficient:17,healthCoefficient:29,attackCoefficient:30,defenseCoefficient:37,agilityCoefficient:7,grade:"일반",attrs:["수", "화"],obtain:"도둑의 동굴 지하 4층(동15 남4) 포획",routeType:"포획",mount:true},
+  "토리노프스": {initialCoefficient:12,healthCoefficient:26,attackCoefficient:30,defenseCoefficient:35,agilityCoefficient:12,grade:"일반",attrs:["수", "화"],obtain:"쟈루 섬(동485 남165) 포획",routeType:"포획",mount:true},
+  "토리케라": {initialCoefficient:18,healthCoefficient:25,attackCoefficient:24,defenseCoefficient:40,agilityCoefficient:10,grade:"일반",attrs:["지", "수"],obtain:"마리너스 마을 근처 포획",routeType:"포획",mount:true},
+  "펜타스": {initialCoefficient:16,healthCoefficient:31,attackCoefficient:25,defenseCoefficient:37,agilityCoefficient:11,grade:"일반",attrs:["지", "수"],obtain:"마리너스 마을 근처 포획",routeType:"포획",mount:true},
+  "토르프스": {initialCoefficient:14,healthCoefficient:23,attackCoefficient:24,defenseCoefficient:42,agilityCoefficient:10,grade:"일반",attrs:["지"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "메가로스": {initialCoefficient:24,healthCoefficient:34,attackCoefficient:32,defenseCoefficient:31,agilityCoefficient:11,grade:"일반",attrs:["지", "수"],obtain:"4환생 보상",routeType:"퀘스트",mount:true},
+  "노스토로스": {initialCoefficient:24,healthCoefficient:26,attackCoefficient:38,defenseCoefficient:21,agilityCoefficient:19,grade:"일반",attrs:["화", "풍"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "란베르스": {initialCoefficient:21,healthCoefficient:32,attackCoefficient:35,defenseCoefficient:21,agilityCoefficient:17,grade:"일반",attrs:["수", "화"],obtain:"도둑의 동굴 지하 2층(동42 남9) 포획",routeType:"포획",mount:true},
+  "바로로크스": {initialCoefficient:22,healthCoefficient:30,attackCoefficient:30,defenseCoefficient:27,agilityCoefficient:18,grade:"일반",attrs:["지", "수"],obtain:"사이너스 섬(동382 남479) 포획",routeType:"포획",mount:true},
+  "코리토르스": {initialCoefficient:19,healthCoefficient:29,attackCoefficient:30,defenseCoefficient:29,agilityCoefficient:17,grade:"일반",attrs:["지", "수"],obtain:"고야산 동굴 5층 전역 포획",routeType:"포획",mount:true},
+  "다이노로스": {initialCoefficient:24,healthCoefficient:47,attackCoefficient:33,defenseCoefficient:12,agilityCoefficient:19,grade:"일반",attrs:["수", "화"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "스토라지": {initialCoefficient:21,healthCoefficient:48,attackCoefficient:30,defenseCoefficient:14,agilityCoefficient:19,grade:"일반",attrs:["지", "수"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "아토라지": {initialCoefficient:20,healthCoefficient:49,attackCoefficient:30,defenseCoefficient:13,agilityCoefficient:19,grade:"일반",attrs:["수"],obtain:"벽청의 동굴B 4층(동21 남19) 포획",routeType:"포획",mount:true},
+  "아리노스": {initialCoefficient:26,healthCoefficient:46,attackCoefficient:30,defenseCoefficient:15,agilityCoefficient:19,grade:"일반",attrs:["지", "수"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "타르노로스": {initialCoefficient:23,healthCoefficient:48,attackCoefficient:32,defenseCoefficient:12,agilityCoefficient:19,grade:"일반",attrs:["수", "화"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "복우리": {initialCoefficient:20,healthCoefficient:23,attackCoefficient:29,defenseCoefficient:14,agilityCoefficient:22,grade:"상급",attrs:["지", "풍"],obtain:"샴기르 경비병 시험 퀘스트",routeType:"퀘스트",mount:false},
+  "푸우리": {initialCoefficient:20,healthCoefficient:27,attackCoefficient:32,defenseCoefficient:16,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],obtain:"300명 이벤트 페트",routeType:"이벤트",mount:true},
+  "푸푸": {initialCoefficient:13,healthCoefficient:17,attackCoefficient:20,defenseCoefficient:10,agilityCoefficient:32,grade:"일반",attrs:["지", "풍"],obtain:"쟈쟈마을 앞마당 포획",routeType:"포획",mount:true},
+  "우푸": {initialCoefficient:15,healthCoefficient:18,attackCoefficient:21,defenseCoefficient:7,agilityCoefficient:33,grade:"일반",attrs:["화", "풍"],obtain:"쟈쟈마을 앞마당 포획",routeType:"포획",mount:true},
+  "베론": {initialCoefficient:24,healthCoefficient:30,attackCoefficient:12,defenseCoefficient:30,agilityCoefficient:15,grade:"일반",attrs:["수"],obtain:"쿠링마을가는 동굴1층(동12 남21) 포획",routeType:"포획",mount:true},
+  "베로로크": {initialCoefficient:19,healthCoefficient:29,attackCoefficient:14,defenseCoefficient:32,agilityCoefficient:13,grade:"일반",attrs:["지", "수"],obtain:"쿠링마을가는 동굴1층(동9 남12) 포획",routeType:"포획",mount:true},
+  "베로보크": {initialCoefficient:23,healthCoefficient:30,attackCoefficient:13,defenseCoefficient:31,agilityCoefficient:14,grade:"일반",attrs:["지", "수"],obtain:"아름산의 동굴 지하7층(동42 남21) 포획",routeType:"포획",mount:true},
+  "베로포리": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:14,defenseCoefficient:28,agilityCoefficient:13,grade:"일반",attrs:["수", "화"],obtain:"속임수의 동굴 3번(동22 남21) 포획",routeType:"포획",mount:true},
+  "노북이": {initialCoefficient:14,healthCoefficient:19,attackCoefficient:17,defenseCoefficient:33,agilityCoefficient:8,grade:"일반",attrs:["지", "풍"],obtain:"사이너스(동545 남389)포획",routeType:"포획",mount:true},
+  "북이": {initialCoefficient:14,healthCoefficient:18,attackCoefficient:18,defenseCoefficient:34,agilityCoefficient:7,grade:"일반",attrs:["지", "풍"],obtain:"사이너스(동570 남416) 포획",routeType:"포획",mount:true},
+  "깡북이": {initialCoefficient:12,healthCoefficient:19,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["화", "풍"],obtain:"쿠오산소동굴 3층(동15 남20) 포획",routeType:"포획",mount:true},
+  "돌북이": {initialCoefficient:12,healthCoefficient:19,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["지", "풍"],obtain:"쿠오산소동굴 4층(동23 남38) 포획",routeType:"포획",mount:true},
+  "라고고": {initialCoefficient:23,healthCoefficient:22,attackCoefficient:26,defenseCoefficient:20,agilityCoefficient:26,grade:"일반",attrs:["화"],obtain:"가우린 섬(동461 남523) 포획",routeType:"포획",mount:true},
+  "후바바": {initialCoefficient:24,healthCoefficient:22,attackCoefficient:24,defenseCoefficient:19,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],obtain:"사이너스(동526 남144) 포획",routeType:"포획",mount:true},
+  "루니": {initialCoefficient:22,healthCoefficient:23,attackCoefficient:23,defenseCoefficient:25,agilityCoefficient:22,grade:"일반",attrs:["지"],obtain:"사이너스(동526 남144) 포획",routeType:"포획",mount:true},
+  "카타르카스": {initialCoefficient:22,healthCoefficient:25,attackCoefficient:23,defenseCoefficient:40,agilityCoefficient:6,grade:"일반",attrs:["지"],obtain:"동쿠링 광산 1층(동30 남45) 포획",routeType:"포획",mount:true},
+  "램가스": {initialCoefficient:20,healthCoefficient:19,attackCoefficient:27,defenseCoefficient:43,agilityCoefficient:10,grade:"일반",attrs:["지", "풍"],obtain:"500명 이벤트 페트",routeType:"이벤트",mount:true},
+  "리비노": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:37,defenseCoefficient:19,agilityCoefficient:17,grade:"일반",attrs:["지"],obtain:"유리의 동굴 13층(동29 남19) 포획",routeType:"포획",mount:true},
+  "얀기로": {initialCoefficient:29,healthCoefficient:27,attackCoefficient:36,defenseCoefficient:16,agilityCoefficient:20,grade:"일반",attrs:["수", "화"],obtain:"가우린 섬(동526 남101) 포획",routeType:"포획",mount:true},
+  "반보로": {initialCoefficient:27,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:15,agilityCoefficient:21,grade:"일반",attrs:["화", "풍"],obtain:"가우린 섬(동 398 남277) 포획",routeType:"포획",mount:true},
+  "반기노": {initialCoefficient:26,healthCoefficient:24,attackCoefficient:38,defenseCoefficient:16,agilityCoefficient:20,grade:"일반",attrs:["화"],obtain:"가우린 섬(동441 남104) 포획",routeType:"포획",mount:true},
+  "부르돈": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:24,grade:"일반",attrs:["화", "풍"],obtain:"가우린 섬(동410 남355) 포획",routeType:"포획",mount:true},
+  "쿠링": {initialCoefficient:19,healthCoefficient:19,attackCoefficient:18,defenseCoefficient:20,agilityCoefficient:22,grade:"일반",attrs:["지", "수"],obtain:"카루타나 마을 근처 포획",routeType:"포획",mount:false},
+  "쿠쿠르": {initialCoefficient:20,healthCoefficient:20,attackCoefficient:18,defenseCoefficient:17,agilityCoefficient:24,grade:"일반",attrs:["수", "화"],obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:false},
+  "포링": {initialCoefficient:18,healthCoefficient:18,attackCoefficient:20,defenseCoefficient:18,agilityCoefficient:24,grade:"일반",attrs:["수", "화"],obtain:"쟈루 섬(동480 남313) 포획",routeType:"포획",mount:false},
+  "리스키": {initialCoefficient:17,healthCoefficient:19,attackCoefficient:16,defenseCoefficient:19,agilityCoefficient:23,grade:"일반",attrs:["지", "수"],obtain:"카루타나 마을 근처 포획",routeType:"포획",mount:false},
+  "카비트": {initialCoefficient:18,healthCoefficient:14,attackCoefficient:19,defenseCoefficient:19,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],obtain:"사이너스 섬(동304 남328) 포획",routeType:"포획",mount:false},
+  "케이비": {initialCoefficient:18,healthCoefficient:14,attackCoefficient:19,defenseCoefficient:19,agilityCoefficient:27,grade:"일반",attrs:["지", "풍"],obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:false},
+  "큐이": {initialCoefficient:15,healthCoefficient:13,attackCoefficient:20,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["화", "풍"],obtain:"샴기르 마을 앞마당 포획",routeType:"포획",mount:false},
+  "골드카비트": {initialCoefficient:19,healthCoefficient:16,attackCoefficient:20,defenseCoefficient:16,agilityCoefficient:28,grade:"일반",attrs:["풍"],obtain:"샴기르 마을 앞마당 포획",routeType:"포획",mount:false},
+  "고르돈": {initialCoefficient:28,healthCoefficient:28,attackCoefficient:30,defenseCoefficient:28,agilityCoefficient:18,grade:"일반",attrs:["지"],obtain:"가우린 섬(동166 남356) 포획",routeType:"포획",mount:true},
+  "기라돈": {initialCoefficient:23,healthCoefficient:29,attackCoefficient:31,defenseCoefficient:25,agilityCoefficient:19,grade:"일반",attrs:["지", "수"],obtain:"폐허가 된 탄광 4층(동47 남27) 포획",routeType:"포획",mount:true},
+  "투르돈": {initialCoefficient:27,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:19,agilityCoefficient:20,grade:"일반",attrs:["수", "화"],obtain:"가우린 섬(동237 남80) 포획",routeType:"포획",mount:true},
+  "고르고": {initialCoefficient:27,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:20,agilityCoefficient:21,grade:"일반",attrs:["화", "풍"],obtain:"폐허가 된 탄광 4층(동45 남27) 포획",routeType:"포획",mount:true},
+  "휴보": {initialCoefficient:18,healthCoefficient:26,attackCoefficient:28,defenseCoefficient:25,agilityCoefficient:16,grade:"상급",attrs:["지", "수"],obtain:"황금색 페트(카난) 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "포보": {initialCoefficient:19,healthCoefficient:28,attackCoefficient:23,defenseCoefficient:26,agilityCoefficient:14,grade:"일반",attrs:["지", "수"],obtain:"고야산 동굴 4층 전역 포획",routeType:"포획",mount:false},
+  "쿠보": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:26,defenseCoefficient:26,agilityCoefficient:17,grade:"상급",attrs:["수", "화"],obtain:"베르가 포획 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "토로쟈": {initialCoefficient:21,healthCoefficient:25,attackCoefficient:26,defenseCoefficient:25,agilityCoefficient:16,grade:"일반",attrs:["수", "화"],obtain:"속임수의 동굴 최하층 입구 포획",routeType:"포획",mount:false},
+  "부르보": {initialCoefficient:20,healthCoefficient:23,attackCoefficient:25,defenseCoefficient:24,agilityCoefficient:20,grade:"일반",attrs:["화", "풍"],obtain:"마쥬의 미로 3층 전역 포획",routeType:"포획",mount:false},
+  "카쿠": {initialCoefficient:20,healthCoefficient:20,attackCoefficient:26,defenseCoefficient:16,agilityCoefficient:24,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동81 남1140) 포획",routeType:"포획",mount:true},
+  "바카": {initialCoefficient:20,healthCoefficient:15,attackCoefficient:30,defenseCoefficient:16,agilityCoefficient:26,grade:"일반",attrs:["화", "풍"],obtain:"쟈루 섬(동90 남1090) 포획",routeType:"포획",mount:true},
+  "바우": {initialCoefficient:20,healthCoefficient:15,attackCoefficient:27,defenseCoefficient:16,agilityCoefficient:28,grade:"일반",attrs:["지", "풍"],obtain:"숲의 동굴 2층(동27 남34) 포획",routeType:"포획",mount:true},
+  "카우": {initialCoefficient:20,healthCoefficient:15,attackCoefficient:27,defenseCoefficient:19,agilityCoefficient:26,grade:"일반",attrs:["지", "풍"],obtain:"숲의 동굴 4층(동14 남8) 포획",routeType:"포획",mount:true},
+  "베르가": {initialCoefficient:24,healthCoefficient:23,attackCoefficient:29,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동442 남634) 포획",routeType:"포획",mount:true},
+  "베루루": {initialCoefficient:23,healthCoefficient:21,attackCoefficient:30,defenseCoefficient:13,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],obtain:"쟈루 섬(동357 남680) 포획",routeType:"포획",mount:true},
+  "노르노르": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:31,defenseCoefficient:18,agilityCoefficient:31,grade:"상급",attrs:["지", "풍"],obtain:"마리너스 복권 1등",routeType:"복권",mount:true},
+  "고반케스": {initialCoefficient:18,healthCoefficient:29,attackCoefficient:35,defenseCoefficient:19,agilityCoefficient:16,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동231 남557) 포획",routeType:"포획",mount:false},
+  "쟈그라": {initialCoefficient:22,healthCoefficient:28,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:17,grade:"일반",attrs:["수", "화"],obtain:"쿠오해저터널 1층[쿠오](동20 남35) 포획",routeType:"포획",mount:false},
+  "쟈그": {initialCoefficient:23,healthCoefficient:31,attackCoefficient:34,defenseCoefficient:17,agilityCoefficient:16,grade:"일반",attrs:["수"],obtain:"쿠오해저터널 1층[쟈루](동11 남31) 포획",routeType:"포획",mount:false},
+  "판지": {initialCoefficient:16,healthCoefficient:30,attackCoefficient:35,defenseCoefficient:18,agilityCoefficient:16,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동157 남704) 포획",routeType:"포획",mount:false},
+  "기가로스": {initialCoefficient:28,healthCoefficient:30,attackCoefficient:32,defenseCoefficient:30,agilityCoefficient:13,grade:"일반",attrs:["지", "풍"],obtain:"몽환의 동굴(동 34 남39) 포획",routeType:"포획",mount:true},
+  "비트로스": {initialCoefficient:25,healthCoefficient:30,attackCoefficient:35,defenseCoefficient:28,agilityCoefficient:12,grade:"일반",attrs:["화", "풍"],obtain:"아르마르 광산 6층(동6 남6) 포획",routeType:"포획",mount:true},
+  "가가로스": {initialCoefficient:26,healthCoefficient:31,attackCoefficient:36,defenseCoefficient:27,agilityCoefficient:11,grade:"일반",attrs:["수", "화"],obtain:"몽환의 동굴(동 34 남39) 포획",routeType:"포획",mount:true},
+  "루이": {initialCoefficient:22,healthCoefficient:51,attackCoefficient:27,defenseCoefficient:24,agilityCoefficient:9,grade:"일반",attrs:["수", "화"],obtain:"벽청의 동굴B 8층(동19 남13) 포획",routeType:"포획",mount:true},
+  "무이": {initialCoefficient:20,healthCoefficient:54,attackCoefficient:26,defenseCoefficient:24,agilityCoefficient:9,grade:"일반",attrs:["수"],obtain:"쿠르의 해저통로(동47 남32) 포획",routeType:"포획",mount:true},
+  "씨보스": {initialCoefficient:21,healthCoefficient:51,attackCoefficient:26,defenseCoefficient:26,agilityCoefficient:9,grade:"일반",attrs:["지", "수"],obtain:"쿠르의 해저통로(동47 남32) 포획",routeType:"포획",mount:true},
+  "투이": {initialCoefficient:24,healthCoefficient:50,attackCoefficient:31,defenseCoefficient:23,agilityCoefficient:9,grade:"상급",attrs:["수", "화"],obtain:"3환생 보상",routeType:"퀘스트",mount:true},
+  "다이노": {initialCoefficient:25,healthCoefficient:38,attackCoefficient:27,defenseCoefficient:36,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],obtain:"유리의 동굴 14층 전역 포획",routeType:"포획",mount:true},
+  "다이노스": {initialCoefficient:26,healthCoefficient:42,attackCoefficient:26,defenseCoefficient:32,agilityCoefficient:7,grade:"일반",attrs:["지", "수"],obtain:"칠흑의 동굴 18층 전역 포획",routeType:"포획",mount:true},
+  "프라키토스": {initialCoefficient:24,healthCoefficient:37,attackCoefficient:36,defenseCoefficient:28,agilityCoefficient:6,grade:"일반",attrs:["수", "화"],obtain:"세르노스 섬 전역 포획",routeType:"포획",mount:true},
+  "스텐토스": {initialCoefficient:28,healthCoefficient:40,attackCoefficient:26,defenseCoefficient:35,agilityCoefficient:5,grade:"일반",attrs:["지", "수"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "프리토스": {initialCoefficient:28,healthCoefficient:37,attackCoefficient:32,defenseCoefficient:27,agilityCoefficient:10,grade:"상급",attrs:["화", "풍"],obtain:"샴기르 복권 1등",routeType:"복권",mount:true},
+  "만모": {initialCoefficient:27,healthCoefficient:50,attackCoefficient:27,defenseCoefficient:25,agilityCoefficient:8,grade:"일반",attrs:["지", "수"],obtain:"가우린 채석장 3층(동21 남15) 포획",routeType:"포획",mount:true},
+  "만모르": {initialCoefficient:24,healthCoefficient:51,attackCoefficient:31,defenseCoefficient:20,agilityCoefficient:10,grade:"일반",attrs:["수", "화"],obtain:"가우린 채석장 5층(동25 남26) 포획",routeType:"포획",mount:true},
+  "마모나스": {initialCoefficient:26,healthCoefficient:52,attackCoefficient:27,defenseCoefficient:24,agilityCoefficient:10,grade:"일반",attrs:["지", "수"],obtain:"가우린 섬(동133 남47) 포획",routeType:"포획",mount:true},
+  "만모로스": {initialCoefficient:25,healthCoefficient:53,attackCoefficient:29,defenseCoefficient:20,agilityCoefficient:11,grade:"일반",attrs:["수", "화"],obtain:"가우린 섬(동105 남145) 포획",routeType:"포획",mount:true},
+  "테라곤": {initialCoefficient:27,healthCoefficient:23,attackCoefficient:32,defenseCoefficient:18,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "카르곤": {initialCoefficient:26,healthCoefficient:21,attackCoefficient:33,defenseCoefficient:16,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],obtain:"2환생 보상",routeType:"퀘스트",mount:true},
+  "포이비스": {initialCoefficient:24,healthCoefficient:24,attackCoefficient:30,defenseCoefficient:20,agilityCoefficient:30,grade:"일반",attrs:["지", "풍"],obtain:"비룡의 동굴 지하 2층(동35 남15) 포획",routeType:"포획",mount:true},
+  "도라비스": {initialCoefficient:23,healthCoefficient:24,attackCoefficient:31,defenseCoefficient:20,agilityCoefficient:30,grade:"일반",attrs:["풍"],obtain:"황금색 페트(카난) 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "푸테라": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:33,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],obtain:"도티의 눈을 뜨게하자 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "타키": {initialCoefficient:17,healthCoefficient:19,attackCoefficient:23,defenseCoefficient:12,agilityCoefficient:35,grade:"일반",attrs:["화", "풍"],obtain:"사이너스 섬(동549 남146) 포획",routeType:"포획",mount:true},
+  "쿠쿠": {initialCoefficient:20,healthCoefficient:18,attackCoefficient:23,defenseCoefficient:11,agilityCoefficient:36,grade:"일반",attrs:["풍"],obtain:"쟈루 섬(동669 남652) 포획",routeType:"포획",mount:true},
+  "호르쿠": {initialCoefficient:18,healthCoefficient:20,attackCoefficient:22,defenseCoefficient:13,agilityCoefficient:34,grade:"일반",attrs:["지", "풍"],obtain:"쟈루 섬(동668 남651) 포획",routeType:"포획",mount:true},
+  "카키": {initialCoefficient:20,healthCoefficient:17,attackCoefficient:23,defenseCoefficient:11,agilityCoefficient:33,grade:"일반",attrs:["화", "풍"],obtain:"사이너스 섬(동608 남206) 포획",routeType:"포획",mount:true},
+  "오가로스": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:33,defenseCoefficient:25,agilityCoefficient:20,grade:"일반",attrs:["지", "수"],obtain:"아스마르 광산 6층(동37 남38) 포획",routeType:"포획",mount:true},
+  "오르곤": {initialCoefficient:26,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:21,agilityCoefficient:21,grade:"일반",attrs:["수", "화"],obtain:"퀴즈 마스터(카루타나) 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "모가로스": {initialCoefficient:27,healthCoefficient:23,attackCoefficient:37,defenseCoefficient:20,agilityCoefficient:25,grade:"일반",attrs:["수", "화"],obtain:"퀴즈 마스터(마리너스) 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "골로스": {initialCoefficient:28,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:25,agilityCoefficient:21,grade:"최상급",attrs:["화", "풍"],obtain:"5환생 보상",routeType:"퀘스트",mount:true},
+  "프이토": {initialCoefficient:26,healthCoefficient:19,attackCoefficient:22,defenseCoefficient:25,agilityCoefficient:29,grade:"상급",attrs:["지", "풍"],obtain:"쟈쟈 복권 1등",routeType:"복권",mount:false},
+  "카우거": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:16,agilityCoefficient:30,grade:"일반",attrs:["지", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "샤크론": {initialCoefficient:24,healthCoefficient:30,attackCoefficient:35,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["수"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "크랩": {initialCoefficient:20,healthCoefficient:39,attackCoefficient:29,defenseCoefficient:32,agilityCoefficient:5,grade:"일반",attrs:["수"],obtain:"포우렌의 섬(동491 남717) 포획",routeType:"포획",mount:false},
+  "킹크랩": {initialCoefficient:20,healthCoefficient:34,attackCoefficient:34,defenseCoefficient:32,agilityCoefficient:5,grade:"일반",attrs:["화", "풍"],obtain:"포우렌의 섬(동500 남833) 포획",routeType:"포획",mount:false},
+  "페르페": {initialCoefficient:22,healthCoefficient:28,attackCoefficient:31,defenseCoefficient:15,agilityCoefficient:30,grade:"일반",attrs:["수"],obtain:"코스 포인트 상점",routeType:"코스",mount:true},
+  "쿠팡": {initialCoefficient:22,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:15,agilityCoefficient:32,grade:"일반",attrs:["화", "풍"],obtain:"포우렌 (동488 남850) 포획",routeType:"포획",mount:false},
+  "쿠아": {initialCoefficient:22,healthCoefficient:29,attackCoefficient:30,defenseCoefficient:15,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],obtain:"포우렌 (동488 남850) 포획",routeType:"포획",mount:false},
+  "밍코": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:31,defenseCoefficient:15,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],obtain:"포우렌 (동455 남710) 포획",routeType:"포획",mount:false},
+  "슈우": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:31,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["지", "수"],obtain:"포우렌 (동202 남562) 포획",routeType:"포획",mount:false},
+  "킹고르": {initialCoefficient:26,healthCoefficient:32,attackCoefficient:34,defenseCoefficient:22,agilityCoefficient:17,grade:"일반",attrs:["수", "화"],obtain:"스라인 지하동굴 1층 (에레보스 방향) 전역 포획",routeType:"포획",mount:false},
+  "칼로스": {initialCoefficient:27,healthCoefficient:28,attackCoefficient:37,defenseCoefficient:19,agilityCoefficient:22,grade:"일반",attrs:["수", "화"],obtain:"다섯 석상을 찾아 비밀을 풀어라 퀘스트 랜덤 보상",routeType:"퀘스트",mount:false},
+  "흑귀": {initialCoefficient:27,healthCoefficient:23,attackCoefficient:34,defenseCoefficient:18,agilityCoefficient:24,grade:"일반",attrs:["지", "풍"],obtain:"다섯 석상을 찾아 비밀을 풀어라 퀘스트 랜덤 보상",routeType:"퀘스트",mount:false},
+  "토라": {initialCoefficient:24,healthCoefficient:25,attackCoefficient:31,defenseCoefficient:15,agilityCoefficient:32,grade:"일반",attrs:["풍"],obtain:"마함마의 증표 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "산타베르가": {initialCoefficient:23,healthCoefficient:25,attackCoefficient:32,defenseCoefficient:15,agilityCoefficient:26,grade:"일반",attrs:["지", "수"],obtain:"쟈루 섬(동442 남634) 희귀 포획",routeType:"포획",mount:false},
+  "스노밍코": {initialCoefficient:23,healthCoefficient:27,attackCoefficient:29,defenseCoefficient:17,agilityCoefficient:30,grade:"일반",attrs:["지", "수"],obtain:"포우렌의 섬(동433 남711) 포획",routeType:"포획",mount:false},
+  "키파": {initialCoefficient:21,healthCoefficient:24,attackCoefficient:28,defenseCoefficient:12,agilityCoefficient:39,grade:"일반",attrs:["지", "풍"],obtain:"포우렌섬의 황금나무 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "바우트": {initialCoefficient:24,healthCoefficient:36,attackCoefficient:38,defenseCoefficient:29,agilityCoefficient:3,grade:"일반",attrs:["수", "화"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "갈푸스": {initialCoefficient:25,healthCoefficient:23,attackCoefficient:34,defenseCoefficient:13,agilityCoefficient:29,grade:"일반",attrs:["화", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "아이스만모": {initialCoefficient:27,healthCoefficient:53,attackCoefficient:31,defenseCoefficient:23,agilityCoefficient:8,grade:"일반",attrs:["지", "수"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "구루마루": {initialCoefficient:23,healthCoefficient:22,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:24,grade:"일반",attrs:["지", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "차크론": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:34,defenseCoefficient:13,agilityCoefficient:32,grade:"일반",attrs:["화", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "노르곤": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:16,agilityCoefficient:26,grade:"일반",attrs:["화", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "봉봉": {initialCoefficient:29,healthCoefficient:26,attackCoefficient:39,defenseCoefficient:16,agilityCoefficient:23,grade:"일반",attrs:["화", "풍"],obtain:"VP 코인 상점",routeType:"VIP",mount:false},
+  "보르비스": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:27,grade:"일반",attrs:["지", "수"],obtain:"하이하모 진입 퀘스트 보상",routeType:"퀘스트",mount:false},
+  "포레스트크랩": {initialCoefficient:20,healthCoefficient:36,attackCoefficient:29,defenseCoefficient:35,agilityCoefficient:5,grade:"일반",attrs:["지", "수"],obtain:"하이하모 섬(동260 남635) 포획",routeType:"포획",mount:false},
+  "포루나": {initialCoefficient:22,healthCoefficient:26,attackCoefficient:27,defenseCoefficient:13,agilityCoefficient:27,grade:"일반",attrs:["지", "수"],obtain:"하이하모 섬(동140 남830) 포획",routeType:"포획",mount:false},
+  "피피아": {initialCoefficient:22,healthCoefficient:23,attackCoefficient:25,defenseCoefficient:15,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"하이하모 섬(동325 남545) 포획",routeType:"포획",mount:false},
+  "그린고르": {initialCoefficient:26,healthCoefficient:30,attackCoefficient:32,defenseCoefficient:25,agilityCoefficient:17,grade:"일반",attrs:["지", "수"],obtain:"하이하모 신전 진입 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "아코로비": {initialCoefficient:23,healthCoefficient:27,attackCoefficient:35,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"하이하모 섬 (동298 남462) 포획",routeType:"포획",mount:false},
+  "황호": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:32,defenseCoefficient:15,agilityCoefficient:31,grade:"일반",attrs:["지", "풍"],obtain:"마리너스 목장의 의뢰 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "이블티거": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:38,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["화", "풍"],obtain:"마리너스 목장의 의뢰 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "청호": {initialCoefficient:25,healthCoefficient:30,attackCoefficient:33,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"마리너스 목장의 의뢰 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "흑호": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],obtain:"마리너스 목장의 의뢰 퀘스트 보상",routeType:"퀘스트",mount:true},
+  "노스키": {initialCoefficient:17,healthCoefficient:26,attackCoefficient:25,defenseCoefficient:18,agilityCoefficient:35,grade:"일반",attrs:["화", "풍"],obtain:"천지 2층 전지역",routeType:"포획",mount:false},
+  "라스키": {initialCoefficient:17,healthCoefficient:26,attackCoefficient:30,defenseCoefficient:18,agilityCoefficient:29,grade:"일반",attrs:["화", "풍"],obtain:"진홍 2층 전지역",routeType:"포획",mount:false},
+  "토끼": {initialCoefficient:17,healthCoefficient:30,attackCoefficient:25,defenseCoefficient:23,agilityCoefficient:29,grade:"일반",attrs:["수"],obtain:"벽청 2층 전지역",routeType:"포획",mount:false},
+  "범링": {initialCoefficient:17,healthCoefficient:24,attackCoefficient:26,defenseCoefficient:25,agilityCoefficient:28,grade:"일반",attrs:["지", "풍"],obtain:"유리 2층 전지역",routeType:"포획",mount:false},
+  "흑카키": {initialCoefficient:20,healthCoefficient:15,attackCoefficient:26,defenseCoefficient:8,agilityCoefficient:34,grade:"일반",attrs:["지", "풍"],obtain:"펫 코인 상점",routeType:"기타",mount:true},
+  "핑코": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:38,defenseCoefficient:14,agilityCoefficient:28,grade:"일반",attrs:["수", "화"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "가우": {initialCoefficient:25,healthCoefficient:32,attackCoefficient:37,defenseCoefficient:16,agilityCoefficient:22,grade:"일반",attrs:["수", "화"],obtain:"듀얼 포인트 상점",routeType:"듀얼보상",mount:false},
+  "익시노돈": {initialCoefficient:23,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:9,agilityCoefficient:36,grade:"일반",attrs:["풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "라그노스": {initialCoefficient:24,healthCoefficient:34,attackCoefficient:36,defenseCoefficient:31,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "모사크": {initialCoefficient:22,healthCoefficient:31,attackCoefficient:38,defenseCoefficient:15,agilityCoefficient:22,grade:"일반",attrs:["수"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "크루거": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:29,grade:"상급",attrs:["지", "수"],obtain:"스라인 복권 1등",routeType:"복권",mount:true},
+  "황금복덩이": {initialCoefficient:20,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:20,agilityCoefficient:27,grade:"상급",attrs:["화", "풍"],obtain:"복덩이(어려움) 레이드",routeType:"레이드",mount:false},
+  "크로아치": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:19,agilityCoefficient:21,grade:"일반",attrs:["지", "수"],obtain:"얼음성 크로아치의 방 전역 포획",routeType:"포획",mount:false},
+  "타키온": {initialCoefficient:22,healthCoefficient:25,attackCoefficient:31,defenseCoefficient:13,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],obtain:"오만의 방 복도 전역 포획",routeType:"포획",mount:false},
+  "그램고르": {initialCoefficient:26,healthCoefficient:33,attackCoefficient:32,defenseCoefficient:24,agilityCoefficient:16,grade:"일반",attrs:["지", "수"],obtain:"그램고르의 방 전역 포획",routeType:"포획",mount:false},
+  "바라쿠스": {initialCoefficient:24,healthCoefficient:34,attackCoefficient:31,defenseCoefficient:34,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],obtain:"질투의 방 복도 전역 포획",routeType:"포획",mount:false},
+  "아르마루": {initialCoefficient:23,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:18,agilityCoefficient:23,grade:"일반",attrs:["지", "수"],obtain:"얼음성 페트병",routeType:"레이드",mount:true},
+  "라이쿠스": {initialCoefficient:25,healthCoefficient:38,attackCoefficient:31,defenseCoefficient:31,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],obtain:"얼음성 페트병",routeType:"레이드",mount:false},
+  "흑룡": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:31,grade:"일반",attrs:["지", "풍"],obtain:"얼음성 페트병",routeType:"레이드",mount:false},
+  "흑기린": {initialCoefficient:26,healthCoefficient:29,attackCoefficient:40,defenseCoefficient:17,agilityCoefficient:19,grade:"일반",attrs:["수", "화"],obtain:"얼음성 페트병",routeType:"레이드",mount:true},
+  "우라노스": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:33,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["지", "풍"],obtain:"얼음성 페트병",routeType:"레이드",mount:false},
+  "타이판": {initialCoefficient:24,healthCoefficient:26,attackCoefficient:33,defenseCoefficient:12,agilityCoefficient:23,grade:"일반",attrs:["수", "화"],obtain:"호피도 (동244 남220)",routeType:"포획",mount:false},
+  "지라크": {initialCoefficient:24,healthCoefficient:21,attackCoefficient:32,defenseCoefficient:16,agilityCoefficient:23,grade:"일반",attrs:["지"],obtain:"하이하모 (동175 남498)",routeType:"포획",mount:false},
+  "웅이": {initialCoefficient:24,healthCoefficient:30,attackCoefficient:37,defenseCoefficient:15,agilityCoefficient:22,grade:"일반",attrs:["수", "화"],obtain:"빛의동굴 3층 전역",routeType:"포획",mount:false},
+  "파베로스": {initialCoefficient:24,healthCoefficient:23,attackCoefficient:36,defenseCoefficient:14,agilityCoefficient:30,grade:"일반",attrs:["풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "디메트로돈": {initialCoefficient:24,healthCoefficient:35,attackCoefficient:30,defenseCoefficient:30,agilityCoefficient:11,grade:"일반",attrs:["지", "수"],obtain:"호피도 (동122 남108)",routeType:"포획",mount:false},
+  "파이톤": {initialCoefficient:15,healthCoefficient:38,attackCoefficient:57,defenseCoefficient:22,agilityCoefficient:41,grade:"일반",attrs:["화", "풍"],obtain:"타니토스 신전 비밀의 방 포획",routeType:"필드페트",mount:false},
+  "본드래곤": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:36,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"펫 코인 상점",routeType:"기타",mount:true},
+  "샤르페": {initialCoefficient:23,healthCoefficient:24,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],obtain:"부족 지원 페트",routeType:"기타",mount:false},
+  "베노노크": {initialCoefficient:19,healthCoefficient:30,attackCoefficient:17,defenseCoefficient:33,agilityCoefficient:19,grade:"일반",attrs:["화", "풍"],obtain:"쿠링 대광산 8층 전지역 포획",routeType:"포획",mount:true},
+  "쥬키": {initialCoefficient:19,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:13,agilityCoefficient:40,grade:"일반",attrs:["화", "풍"],obtain:"고야산 동굴 5층 전지역",routeType:"포획",mount:false},
+  "고루루": {initialCoefficient:22,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:13,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],obtain:"칠흑의 지하동굴 1층 전지역",routeType:"포획",mount:true},
+  "베르푸스": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:33,defenseCoefficient:14,agilityCoefficient:31,grade:"일반",attrs:["풍"],obtain:"정령 레이드",routeType:"레이드",mount:true},
+  "울푸스": {initialCoefficient:25,healthCoefficient:30,attackCoefficient:32,defenseCoefficient:15,agilityCoefficient:29,grade:"일반",attrs:["수"],obtain:"정령 레이드",routeType:"레이드",mount:true},
+  "델푸스": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:32,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["지", "수"],obtain:"정령 레이드",routeType:"레이드",mount:false},
+  "카르페": {initialCoefficient:26,healthCoefficient:21,attackCoefficient:28,defenseCoefficient:10,agilityCoefficient:23,grade:"일반",attrs:["화", "풍"],obtain:"정령 레이드",routeType:"레이드",mount:false},
+  "피닉스": {initialCoefficient:19,healthCoefficient:22,attackCoefficient:31,defenseCoefficient:10,agilityCoefficient:39,grade:"일반",attrs:["화", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "리프톤": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "블랙드래곤": {initialCoefficient:27,healthCoefficient:24,attackCoefficient:38,defenseCoefficient:16,agilityCoefficient:26,grade:"일반",attrs:["수", "화"],obtain:"펫 코인 상점",routeType:"기타",mount:false},
+  "언딘": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:42,defenseCoefficient:16,agilityCoefficient:21,grade:"일반",attrs:["화"],obtain:"얼음성 언딘 전투시 3%확률로 출현",routeType:"포획",mount:true},
+  "프로돈": {initialCoefficient:26,healthCoefficient:31,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:21,grade:"일반",attrs:["수"],obtain:"출석보상 28일차 보상",routeType:"이벤트",mount:true},
+  "흑주작": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:13,agilityCoefficient:32,grade:"일반",attrs:["수", "화"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "레오딘": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:36,defenseCoefficient:16,agilityCoefficient:27,grade:"일반",attrs:["지", "수"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "테이노스": {initialCoefficient:28,healthCoefficient:26,attackCoefficient:40,defenseCoefficient:16,agilityCoefficient:23,grade:"일반",attrs:["화", "풍"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "나비드래곤": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "흑풍": {initialCoefficient:24,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:17,agilityCoefficient:30,grade:"일반",attrs:["지", "풍"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "디어룬": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:14,agilityCoefficient:34,grade:"일반",attrs:["지", "풍"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:true},
+  "데카이어던": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:31,defenseCoefficient:11,agilityCoefficient:40,grade:"일반",attrs:["지", "풍"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "백룡": {initialCoefficient:26,healthCoefficient:27,attackCoefficient:34,defenseCoefficient:16,agilityCoefficient:29,grade:"일반",attrs:["지", "수"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "모이토": {initialCoefficient:25,healthCoefficient:20,attackCoefficient:29,defenseCoefficient:17,agilityCoefficient:28,grade:"일반",attrs:["지", "풍"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "현무": {initialCoefficient:27,healthCoefficient:35,attackCoefficient:34,defenseCoefficient:33,agilityCoefficient:6,grade:"일반",attrs:["지"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "푸룡": {initialCoefficient:24,healthCoefficient:29,attackCoefficient:36,defenseCoefficient:21,agilityCoefficient:21,grade:"일반",attrs:["수"],obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
+  "석화케스": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:33,defenseCoefficient:17,agilityCoefficient:15,grade:"일반",attrs:["지", "수"],obtain:"가우린 해저터널 (훼이 근처)",routeType:"포획",mount:false},
+  "화이트만모": {initialCoefficient:25,healthCoefficient:50,attackCoefficient:31,defenseCoefficient:22,agilityCoefficient:12,grade:"일반",attrs:["풍"],obtain:"펫 코인 상점",routeType:"기타",mount:true},
+  "페카이어던": {initialCoefficient:25,healthCoefficient:23,attackCoefficient:32,defenseCoefficient:11,agilityCoefficient:38,grade:"일반",attrs:["수", "화"],obtain:"펫 코인 상점",routeType:"기타",mount:false},
+  "묵룡": {initialCoefficient:24,healthCoefficient:30,attackCoefficient:39,defenseCoefficient:26,agilityCoefficient:8,grade:"일반",attrs:["화", "풍"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "흑모": {initialCoefficient:25,healthCoefficient:49,attackCoefficient:35,defenseCoefficient:22,agilityCoefficient:8,grade:"일반",attrs:["화"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "지가로스": {initialCoefficient:26,healthCoefficient:26,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "몽몽": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:33,defenseCoefficient:16,agilityCoefficient:30,grade:"일반",attrs:["지", "수"],obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "페가수스": {initialCoefficient:25,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:31,grade:"일반",attrs:["화", "풍"],obtain:"말의해 기념 주간패키지",routeType:"VIP",mount:false},
+  "시오": {initialCoefficient:22,healthCoefficient:26,attackCoefficient:29,defenseCoefficient:41,agilityCoefficient:8,grade:"일반",attrs:["화", "풍"],obtain:"온천랜드(용암의 길목)",routeType:"필드페트",mount:false},
+  "발로스": {initialCoefficient:23,healthCoefficient:20,attackCoefficient:27,defenseCoefficient:13,agilityCoefficient:28,grade:"일반",attrs:["지", "풍"],obtain:"화산섬 에레보스 (동155 남30)",routeType:"필드페트",mount:false},
+  "스톤크랩": {initialCoefficient:22,healthCoefficient:33,attackCoefficient:29,defenseCoefficient:38,agilityCoefficient:5,grade:"일반",attrs:["지"],obtain:"화산섬 에레보스 (동205 남129)",routeType:"필드페트",mount:false},
+  "가이록스": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],obtain:"화산섬 에레보스 (동377 남274)",routeType:"필드페트",mount:true},
+  "미니스": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:32,defenseCoefficient:15,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],obtain:"화산섬 에레보스 (동233 남175)",routeType:"필드페트",mount:false},
+  "비트로돈": {initialCoefficient:24,healthCoefficient:32,attackCoefficient:37,defenseCoefficient:25,agilityCoefficient:11,grade:"일반",attrs:["화", "풍"],obtain:"용암의 동굴 1층 전역",routeType:"필드페트",mount:false},
+  "볼케": {initialCoefficient:24,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:27,grade:"일반",attrs:["화"],obtain:"불꽃단에게 사기당한 청년을 돕자 보상",routeType:"퀘스트페트",mount:true},
+  "이구로스": {initialCoefficient:23,healthCoefficient:24,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:31,grade:"일반",attrs:["지", "풍"],obtain:"어둠의 동굴 2층 전역",routeType:"필드페트",mount:true},
+  "성호": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:30,grade:"일반",attrs:["수"],obtain:"범굴 비밀의 방(골드볼라)",routeType:"골드볼라",mount:true},
+  "데라": {initialCoefficient:23,healthCoefficient:24,attackCoefficient:31,defenseCoefficient:18,agilityCoefficient:31,grade:"일반",attrs:["지"],obtain:"땅정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "타르쿠": {initialCoefficient:19,healthCoefficient:22,attackCoefficient:26,defenseCoefficient:16,agilityCoefficient:39,grade:"일반",attrs:["지", "풍"],obtain:"땅정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "녹우리": {initialCoefficient:18,healthCoefficient:25,attackCoefficient:29,defenseCoefficient:19,agilityCoefficient:30,grade:"일반",attrs:["지", "수"],obtain:"땅정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "다리노스": {initialCoefficient:24,healthCoefficient:45,attackCoefficient:36,defenseCoefficient:12,agilityCoefficient:19,grade:"일반",attrs:["화", "풍"],obtain:"바람정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:true},
+  "라루루": {initialCoefficient:23,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:17,agilityCoefficient:31,grade:"일반",attrs:["화", "풍"],obtain:"불정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "키라비": {initialCoefficient:15,healthCoefficient:21,attackCoefficient:28,defenseCoefficient:19,agilityCoefficient:34,grade:"일반",attrs:["화", "풍"],obtain:"불정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "노보스": {initialCoefficient:24,healthCoefficient:48,attackCoefficient:29,defenseCoefficient:23,agilityCoefficient:13,grade:"일반",attrs:["화", "풍"],obtain:"바람정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:true},
+  "쟈하드": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:38,defenseCoefficient:18,agilityCoefficient:21,grade:"일반",attrs:["화", "풍"],obtain:"바람정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "노투투": {initialCoefficient:15,healthCoefficient:20,attackCoefficient:22,defenseCoefficient:7,agilityCoefficient:35,grade:"일반",attrs:["화", "풍"],obtain:"바람정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:true},
+  "푸비": {initialCoefficient:17,healthCoefficient:53,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:12,grade:"일반",attrs:["지", "수"],obtain:"물정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "코발스": {initialCoefficient:17,healthCoefficient:33,attackCoefficient:24,defenseCoefficient:36,agilityCoefficient:10,grade:"일반",attrs:["수"],obtain:"물정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:true},
+  "블루카비트": {initialCoefficient:16,healthCoefficient:28,attackCoefficient:25,defenseCoefficient:19,agilityCoefficient:32,grade:"일반",attrs:["지", "수"],obtain:"물정령 페트병 (4대정령 레이드)",routeType:"레이드페트",mount:false},
+  "레오린": {initialCoefficient:25,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:16,agilityCoefficient:30,grade:"일반",attrs:["지", "풍"],obtain:"지원페트(VP 5500)",routeType:"지원페트",mount:false},
+  "스피노": {initialCoefficient:25,healthCoefficient:23,attackCoefficient:40,defenseCoefficient:15,agilityCoefficient:25,grade:"일반",attrs:["화"],obtain:"지원페트(VP 5500)",routeType:"지원페트",mount:false},
+  "핑크프스": {initialCoefficient:19,healthCoefficient:29,attackCoefficient:29,defenseCoefficient:36,agilityCoefficient:10,grade:"일반",attrs:["수", "화"],obtain:"2026 설이벤트 (한복메이와 숨바꼭질)",routeType:"이벤트페트",mount:true},
+  "한복밍코": {initialCoefficient:23,healthCoefficient:23,attackCoefficient:31,defenseCoefficient:14,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],obtain:"2026 설이벤트 (똥급 한복밍코를 찾아라)",routeType:"이벤트페트",mount:false},
+  "진주토로스": {initialCoefficient:24,healthCoefficient:29,attackCoefficient:32,defenseCoefficient:27,agilityCoefficient:18,grade:"일반",attrs:["지", "수"],obtain:"2026 설이벤트 (한복메이와 숨바꼭질)",routeType:"이벤트페트",mount:false},
+  "한복메이": {initialCoefficient:22,healthCoefficient:22,attackCoefficient:30,defenseCoefficient:15,agilityCoefficient:31,grade:"일반",attrs:["지", "풍"],obtain:"2026 설이벤트 (한복메이와 숨바꼭질)",routeType:"이벤트페트",mount:false},
+  "금호": {initialCoefficient:23,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:32,grade:"일반",attrs:["화", "풍"],obtain:"2026 설이벤트 (한복메이와 숨바꼭질)",routeType:"이벤트페트",mount:true},
+  "어스드래곤": {initialCoefficient:29,healthCoefficient:47,attackCoefficient:36,defenseCoefficient:21,agilityCoefficient:9,grade:"일반",attrs:["지", "풍"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:false},
+  "미르": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:29,defenseCoefficient:9,agilityCoefficient:40,grade:"일반",attrs:["수"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:true},
+  "풍백": {initialCoefficient:24,healthCoefficient:24,attackCoefficient:33,defenseCoefficient:13,agilityCoefficient:34,grade:"일반",attrs:["풍"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:false},
+  "테라탄": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:13,agilityCoefficient:32,grade:"일반",attrs:["화", "풍"],obtain:"가스트의 알",routeType:"지원페트",mount:false},
+  "게이블": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:33,defenseCoefficient:14,agilityCoefficient:31,grade:"일반",attrs:["지", "수"],obtain:"가스트의 알",routeType:"지원페트",mount:false},
+  "가스트": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:34,grade:"일반",attrs:["지", "풍"],obtain:"가스트의 알",routeType:"지원페트",mount:false},
+  "노라돈": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:38,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["화", "풍"],obtain:"천지의 동굴 최상층 (골드볼라)",routeType:"골드볼라",mount:true},
+  "푸비토스": {initialCoefficient:26,healthCoefficient:43,attackCoefficient:33,defenseCoefficient:31,agilityCoefficient:5,grade:"일반",attrs:["수", "화"],obtain:"벽청의 동굴 최상층 (골드볼라)",routeType:"골드볼라",mount:true},
+  "포포": {initialCoefficient:16,healthCoefficient:22,attackCoefficient:30,defenseCoefficient:12,agilityCoefficient:40,grade:"일반",attrs:["화", "풍"],obtain:"진홍의 동굴 최상층 (골드볼라)",routeType:"골드볼라",mount:false},
+  "만모드": {initialCoefficient:27,healthCoefficient:50,attackCoefficient:31,defenseCoefficient:26,agilityCoefficient:8,grade:"일반",attrs:["지"],obtain:"유리의 동굴 최상층 (골드볼라)",routeType:"골드볼라",mount:true},
+  "판그라": {initialCoefficient:22,healthCoefficient:28,attackCoefficient:40,defenseCoefficient:18,agilityCoefficient:18,grade:"일반",attrs:["수", "화"],obtain:"해저통로 (타무타무방향) 전지역 포획",routeType:"필드페트",mount:false},
+  "타로아": {initialCoefficient:19,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:18,agilityCoefficient:23,grade:"일반",attrs:["수", "화"],obtain:"사이너스 (동301 남29) 포획",routeType:"필드페트",mount:false},
+  "자라북": {initialCoefficient:16,healthCoefficient:24,attackCoefficient:22,defenseCoefficient:36,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],obtain:"쿠오산소동굴 4층(동23 남38) 포획",routeType:"필드페트",mount:false},
+  "베라라": {initialCoefficient:23,healthCoefficient:23,attackCoefficient:32,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],obtain:"헤메라 신전 비밀의 방 포획",routeType:"필드페트",mount:true},
+  "골드로비": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:15,agilityCoefficient:29,grade:"2등급",attrs:["화", "풍"],obtain:"하이하모 복권페트",routeType:"복권페트",mount:false},
+  "헬노스": {initialCoefficient:24,healthCoefficient:22,attackCoefficient:33,defenseCoefficient:12,agilityCoefficient:27,grade:"2등급",attrs:["화"],obtain:"에레보스 복권페트",routeType:"복권페트",mount:false},
+  "지마": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:37,defenseCoefficient:20,agilityCoefficient:21,grade:"일반",attrs:["지"],obtain:"펫 코인 상점",routeType:"펫코인페트",mount:false},
+  "백호": {initialCoefficient:27,healthCoefficient:28,attackCoefficient:36,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"영웅 클리어 보상",routeType:"퀘스트페트",mount:false},
+  "로데오": {initialCoefficient:27,healthCoefficient:23,attackCoefficient:38,defenseCoefficient:16,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],obtain:"네메시스 클리어 보상",routeType:"퀘스트페트",mount:true},
+  "분마": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:39,defenseCoefficient:17,agilityCoefficient:21,grade:"일반",attrs:["수", "화"],obtain:"분마의방 포획(3월 한정)",routeType:"필드페트",mount:true},
+  "주작": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:35,defenseCoefficient:13,agilityCoefficient:33,grade:"일반",attrs:["화"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "흑갈푸스": {initialCoefficient:23,healthCoefficient:27,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:29,grade:"일반",attrs:["수", "화"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "핑베로스": {initialCoefficient:24,healthCoefficient:26,attackCoefficient:38,defenseCoefficient:15,agilityCoefficient:25,grade:"일반",attrs:["수", "화"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "와일로": {initialCoefficient:25,healthCoefficient:30,attackCoefficient:34,defenseCoefficient:19,agilityCoefficient:22,grade:"일반",attrs:["지", "수"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "샤베르": {initialCoefficient:24,healthCoefficient:27,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],obtain:"페트 자판기",routeType:"페트 자판기",mount:true},
+  "바로스": {initialCoefficient:23,healthCoefficient:25,attackCoefficient:36,defenseCoefficient:17,agilityCoefficient:26,grade:"일반",attrs:["지", "풍"],obtain:"페트 자판기",routeType:"페트 자판기",mount:true},
+  "청풍": {initialCoefficient:24,healthCoefficient:29,attackCoefficient:34,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["수"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "지고르": {initialCoefficient:24,healthCoefficient:29,attackCoefficient:32,defenseCoefficient:26,agilityCoefficient:18,grade:"일반",attrs:["지", "풍"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "테라죠": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "풍"],obtain:"테라죠 레이드보상",routeType:"퀘스트페트",mount:true},
+  "메가죠": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:40,defenseCoefficient:16,agilityCoefficient:23,grade:"일반",attrs:["화", "풍"],obtain:"테라죠 레이드보상",routeType:"퀘스트페트",mount:true},
+  "메가로돈": {initialCoefficient:25,healthCoefficient:30,attackCoefficient:38,defenseCoefficient:16,agilityCoefficient:22,grade:"일반",attrs:["수", "화"],obtain:"낚시포인트 상점",routeType:"낚시페트",mount:true},
+  "테라로돈": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:20,agilityCoefficient:22,grade:"일반",attrs:["지", "풍"],obtain:"낚시 (녹슨상자)",routeType:"낚시페트",mount:true},
+  "메라로돈": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:38,defenseCoefficient:16,agilityCoefficient:25,grade:"일반",attrs:["화", "풍"],obtain:"낚시 (녹슨상자)",routeType:"낚시페트",mount:true},
+  "베모티스": {initialCoefficient:25,healthCoefficient:47,attackCoefficient:19,defenseCoefficient:35,agilityCoefficient:12,grade:"일반",attrs:["화", "풍"],obtain:"테라죠의 방 전지역 (골드볼라)",routeType:"골드볼라",mount:false},
+  "야무리": {initialCoefficient:26,healthCoefficient:29,attackCoefficient:36,defenseCoefficient:26,agilityCoefficient:14,grade:"일반",attrs:["화", "풍"],obtain:"화산섬 에레보스 (동205 남129)",routeType:"필드페트",mount:false},
+  "헤머드": {initialCoefficient:25,healthCoefficient:30,attackCoefficient:34,defenseCoefficient:19,agilityCoefficient:22,grade:"일반",attrs:["지", "수"],obtain:"테라죠의 방 (동18 남2)",routeType:"필드페트",mount:false},
+  "쿠로로": {initialCoefficient:23,healthCoefficient:30,attackCoefficient:27,defenseCoefficient:17,agilityCoefficient:29,grade:"일반",attrs:["지", "수"],obtain:"초기 페트",routeType:"기타",mount:true},
+  "피오": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:31,defenseCoefficient:41,agilityCoefficient:5,grade:"일반",attrs:["수", "화"],obtain:"미선의 편지B",routeType:"퀘스트페트",mount:false},
+  "티오": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:27,defenseCoefficient:45,agilityCoefficient:5,grade:"일반",attrs:["지", "수"],obtain:"미선의 편지A",routeType:"퀘스트페트",mount:false},
+  "데블로스": {initialCoefficient:23,healthCoefficient:20,attackCoefficient:31,defenseCoefficient:11,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],obtain:"미선의 편지A",routeType:"퀘스트페트",mount:true},
+  "푸타푸타": {initialCoefficient:23,healthCoefficient:23,attackCoefficient:27,defenseCoefficient:14,agilityCoefficient:39,grade:"일반",attrs:["지", "풍"],obtain:"페트 자판기",routeType:"페트 자판기",mount:false},
+  "사이록스": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],obtain:"미선의 편지B",routeType:"퀘스트페트",mount:false},
+  "화이트링": {initialCoefficient:24,healthCoefficient:27,attackCoefficient:23,defenseCoefficient:30,agilityCoefficient:24,grade:"일반",attrs:["지", "수"],obtain:"화이트데이 특별포획(쟈루 동420 남94)",routeType:"필드페트",mount:false},
+  "노리노스": {initialCoefficient:24,healthCoefficient:44,attackCoefficient:34,defenseCoefficient:12,agilityCoefficient:21,grade:"일반",attrs:["화", "풍"],obtain:"테라죠의 방 (동35 남35)",routeType:"필드페트",mount:false},
+  "뇌호": {initialCoefficient:23,healthCoefficient:23,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:32,grade:"일반",attrs:["지", "풍"],obtain:"1분기 감사페트",routeType:"이벤트페트",mount:false},
+  "푸모나스": {initialCoefficient:27,healthCoefficient:54,attackCoefficient:32,defenseCoefficient:22,agilityCoefficient:8,grade:"일반",attrs:["지", "수"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:true},
+  "기비노": {initialCoefficient:26,healthCoefficient:26,attackCoefficient:40,defenseCoefficient:16,agilityCoefficient:22,grade:"일반",attrs:["화", "풍"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:true},
+  "비룡": {initialCoefficient:25,healthCoefficient:27,attackCoefficient:35,defenseCoefficient:16,agilityCoefficient:28,grade:"일반",attrs:["지", "수"],obtain:"펫 코인 상점",routeType:"펫코인페트",mount:false},
+  "독호": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:35,defenseCoefficient:15,agilityCoefficient:29,grade:"일반",attrs:["지"],obtain:"펫 코인 상점",routeType:"펫코인페트",mount:false},
+  "마우": {initialCoefficient:26,healthCoefficient:30,attackCoefficient:37,defenseCoefficient:15,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:false},
+  "암풍": {initialCoefficient:24,healthCoefficient:28,attackCoefficient:35,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["수", "화"],obtain:"지원 페트(VP 5500)",routeType:"지원페트",mount:false},
+};
+let petData = { ...DEFAULT_PETS };
+
+/* ──── Firebase 공유 저장소 ──── */
+function loadSharedPets() {
+  // Firebase 모듈이 로드될 때까지 잠깐 대기
+  function tryConnect(retry) {
+    if (window._fbOnValue) {
+      window._fbOnValue("pets", (snapshot) => {
+        const shared = snapshot.val();
+        if (shared) {
+          petData = { ...DEFAULT_PETS, ...shared };
+        } else {
+          petData = { ...DEFAULT_PETS };
+        }
+        renderPetList();
+      });
+    } else if (retry > 0) {
+      setTimeout(() => tryConnect(retry - 1), 200);
+    } else {
+      // Firebase 연결 실패 시 기본 데이터로 표시
+      petData = { ...DEFAULT_PETS };
+      renderPetList();
+    }
+  }
+  tryConnect(20);
+}
+
+async function savePets() {
+  if (!window._fbSet) { showToast("Firebase 연결 오류!", "err"); return; }
+  try {
+    await window._fbSet("pets", petData);
+  } catch(e) {
+    showToast("저장 오류: " + e.message, "err");
+  }
+}
+
+/* ──── stat calc ──── */
+function calcIdeal(pet) {
+  const ic=pet.initialCoefficient;
+  const iA=(pet.attackCoefficient+4.5)*ic/100;
+  const iD=(pet.defenseCoefficient+4.5)*ic/100;
+  const iG=(pet.agilityCoefficient+4.5)*ic/100;
+  const iH=(pet.healthCoefficient+4.5)*ic/100;
+  return {
+    atk: Math.floor(iH*0.1+iA+iD*0.1+iG*0.05),
+    def: Math.floor(iH*0.1+iA*0.1+iD+iG*0.05),
+    agi: Math.floor(iG),
+    hp:  Math.floor(iH*4+iA+iD+iG),
+  };
+}
+
+/* ──── main calculation ──── */
+function runCalc(pet, dAtk, dDef, dAgi, dHp) {
+  let totalCases=0, hallCases=0, exactCount=0, totalPossible=0;
+  for(let ar=-2;ar<=2;ar++) for(let dr=-2;dr<=2;dr++) for(let gr=-2;gr<=2;gr++) for(let hr=-2;hr<=2;hr++)
+    for(let ab=0;ab<=10;ab++) for(let db=0;db<=10;db++) for(let gb=0;gb<=10;gb++){
+      const hb=10-ab-db-gb;
+      if(hb<0||hb>10) continue;
+      const bA=pet.attackCoefficient+ar+ab,bD=pet.defenseCoefficient+dr+db,bG=pet.agilityCoefficient+gr+gb,bH=pet.healthCoefficient+hr+hb;
+      const ic=pet.initialCoefficient;
+      const iA=bA*ic/100,iD=bD*ic/100,iG=bG*ic/100,iH=bH*ic/100;
+      const cA=Math.floor(iH*0.1+iA+iD*0.1+iG*0.05),cD=Math.floor(iH*0.1+iA*0.1+iD+iG*0.05),cG=Math.floor(iG),cH=Math.floor(iH*4+iA+iD+iG);
+      totalPossible++;
+      if(cA===dAtk&&cD===dDef&&cG===dAgi&&cH===dHp){
+        exactCount++; totalCases++;
+        if(ar===2&&dr===2&&gr===2&&hr===2) hallCases++;
+      }
+    }
+  return {totalCases,hallCases,exactCount,totalPossible};
+}
+
+/* ──── solve equations (for S grade) ──── */
+function solveEq(hp2,st2,df2,de2,e) {
+  const fac=e/10000, d=de2*10000/e-2.5;
+  const dP=d+2.5, dT=dP*fac;
+  const B=[hp2-dT, st2-dT*0.05, df2-dT*0.05];
+  const A=[[fac*4,fac,fac],[fac*0.1,fac,fac*0.1],[fac*0.1,fac*0.1,fac]];
+  const aug=A.map((row,i)=>[...row,B[i]]);
+  for(let i=0;i<3;i++){
+    let mi=i,mv=Math.abs(aug[i][i]);
+    for(let j=i+1;j<3;j++) if(Math.abs(aug[j][i])>mv){mi=j;mv=Math.abs(aug[j][i]);}
+    if(mi!==i)[aug[i],aug[mi]]=[aug[mi],aug[i]];
+    const piv=aug[i][i];
+    for(let j=i;j<4;j++) aug[i][j]/=piv;
+    for(let k=0;k<3;k++) if(k!==i){const f=aug[k][i];for(let j=i;j<4;j++) aug[k][j]-=f*aug[i][j];}
+  }
+  const a=Math.round(aug[0][3]-2.5),b=Math.round(aug[1][3]-2.5),c=Math.round(aug[2][3]-2.5);
+  const aP=a+2.5,bP=b+2.5,cP=c+2.5;
+  const diff=Math.abs(+(aP*fac*4+bP*fac+cP*fac+dP*fac).toFixed(2)-hp2)
+            +Math.abs(+(aP*fac*0.1+bP*fac+cP*fac*0.1+dP*fac*0.05).toFixed(2)-st2)
+            +Math.abs(+(aP*fac*0.1+bP*fac*0.1+cP*fac+dP*fac*0.05).toFixed(2)-df2)
+            +Math.abs(+(dP*fac).toFixed(2)-de2);
+  return {a,b,c,d,diff,e};
+}
+
+function tryCoeff(fH,fA,fD,fG,tol) {
+  for(let ic=10;ic<=100;ic++){
+    const agi=(fG*100/ic)-4.5;
+    if(agi<=0||Math.abs(agi-Math.round(agi))>tol) continue;
+    const e1=fH-fG,e2=fA-0.05*fG,e3=fD-0.05*fG,e4=e2-e1,e5=e3-0.1*e1;
+    const mul=3/3.9;
+    const C=(e5*10-e4*mul)/(9+0.9*mul);
+    const A=(e5-0.9*C)/-0.3,B=e1-4*A-C;
+    if(A<0||B<0||C<0) continue;
+    const hc=(A*100/ic)-4.5,ac=(B*100/ic)-4.5,dc=(C*100/ic)-4.5;
+    if(Math.abs(hc-Math.round(hc))>tol||Math.abs(ac-Math.round(ac))>tol||Math.abs(dc-Math.round(dc))>tol) continue;
+    return {initialCoefficient:ic,healthCoefficient:Math.round(hc),attackCoefficient:Math.round(ac),defenseCoefficient:Math.round(dc),agilityCoefficient:Math.round(agi)};
+  }
+  return null;
+}
+
+/* ──── render pet list ──── */
+let selectedPet = "";
+function renderPetList() {
+  const cont = document.getElementById("pet-list");
+  const names = Object.keys(petData).sort((a,b)=>a.localeCompare(b,'ko-KR'));
+  document.getElementById("pet-list-title").textContent = `등록된 페트 (${names.length})`;
+  cont.innerHTML = "";
+
+  const gradeOrder = {"최상급":0,"상급":1,"2등급":2,"일반":3,"":4};
+  names.sort((a,b)=>{
+    const ga=gradeOrder[petData[a]?.grade||""]??5, gb=gradeOrder[petData[b]?.grade||""]??5;
+    if(ga!==gb) return ga-gb;
+    return a.localeCompare(b,'ko-KR');
+  });
+
+  names.forEach(name => {
+    const pet = petData[name];
+    const wrapper = document.createElement("div");
+
+    const item = document.createElement("div");
+    item.className = "pet-item" + (name===selectedPet?" active":"");
+
+    // 상단: 이름 + 등급 + 수정/삭제(관리자만)
+    const topRow = document.createElement("div");
+    topRow.className = "pet-item-top";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "pet-item-name"; nameSpan.textContent = name;
+    topRow.appendChild(nameSpan);
+
+    // 등급 배지
+    if (pet.grade) {
+      const gradeBadge = document.createElement("span");
+      gradeBadge.className = `pet-grade grade-${pet.grade}`;
+      gradeBadge.textContent = pet.grade;
+      topRow.appendChild(gradeBadge);
+    }
+
+    // 관리자 버튼
+    if (isAdmin) {
+      const btns = document.createElement("div");
+      btns.className = "pet-item-btns";
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn-sm btn-edit-sm"; editBtn.textContent = "수정";
+      editBtn.onclick = e => { e.stopPropagation(); toggleEditForm(wrapper, name); };
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn-sm btn-del-sm"; delBtn.textContent = "삭제";
+      delBtn.onclick = e => {
+        e.stopPropagation();
+        if(!confirm(`${name}을(를) 삭제할까요?`)) return;
+        delete petData[name]; await savePets(); renderPetList();
+        if(selectedPet===name){
+          selectedPet="";
+          document.getElementById("pet-name").value="";
+          ["d-atk","d-def","d-agi","d-hp"].forEach(id=>document.getElementById(id).value="");
+        }
+        showToast(`${name} 삭제됨!`,"err");
+      };
+
+      btns.appendChild(editBtn); btns.appendChild(delBtn);
+      topRow.appendChild(btns);
+    }
+
+    item.appendChild(topRow);
+
+    // 하단: 속성 + 획득방법
+    const infoRow = document.createElement("div");
+    infoRow.className = "pet-item-info";
+
+    if (pet.attrs && pet.attrs.length > 0) {
+      const attrRow = document.createElement("div");
+      attrRow.className = "pet-attr-row";
+      pet.attrs.forEach(a => {
+        const span = document.createElement("span");
+        span.className = `pet-attr attr-${a}`;
+        span.textContent = a;
+        attrRow.appendChild(span);
+      });
+      infoRow.appendChild(attrRow);
+    }
+
+    if (pet.obtain) {
+      const obtainEl = document.createElement("div");
+      obtainEl.className = "pet-obtain";
+      obtainEl.textContent = "📍 " + pet.obtain;
+      infoRow.appendChild(obtainEl);
+    }
+
+    if (infoRow.children.length > 0) item.appendChild(infoRow);
+
+    item.onclick = () => { selectPet(name); };
+    wrapper.appendChild(item);
+    cont.appendChild(wrapper);
+  });
+}
+
+function toggleEditForm(wrapper, name) {
+  let ef = wrapper.querySelector(".edit-form");
+  if(ef){ ef.style.display = ef.style.display==="block"?"none":"block"; return; }
+  ef = document.createElement("div"); ef.className="edit-form";
+  const pet = petData[name];
+
+  // 계수 입력
+  const fields=[
+    {ph:"초기 계수 (IC)", val:pet.initialCoefficient},
+    {ph:"공격력 계수",    val:pet.attackCoefficient},
+    {ph:"방어력 계수",    val:pet.defenseCoefficient},
+    {ph:"순발력 계수",    val:pet.agilityCoefficient},
+    {ph:"체력 계수",     val:pet.healthCoefficient},
+  ];
+  const inputs = fields.map(f=>{
+    const inp=document.createElement("input");
+    inp.type="number"; inp.placeholder=f.ph; inp.value=f.val; ef.appendChild(inp); return inp;
+  });
+
+  // 등급 선택
+  const gradeLabel = document.createElement("div");
+  gradeLabel.style.cssText="font-size:10px;color:var(--t3);margin:6px 0 3px;letter-spacing:1px;font-weight:700;";
+  gradeLabel.textContent="등급";
+  ef.appendChild(gradeLabel);
+  const gradeSelect = document.createElement("select");
+  gradeSelect.style.cssText="width:100%;padding:6px 9px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;color:var(--t1);font-size:12px;font-family:'Noto Sans KR',sans-serif;margin-bottom:4px;";
+  ["일반","2등급","상급","최상급"].forEach(g=>{
+    const opt=document.createElement("option"); opt.value=g; opt.textContent=g||"(없음)";
+    if((pet.grade||"일반")===g) opt.selected=true;
+    gradeSelect.appendChild(opt);
+  });
+  ef.appendChild(gradeSelect);
+
+  // 속성 체크박스
+  const attrLabel = document.createElement("div");
+  attrLabel.style.cssText="font-size:10px;color:var(--t3);margin:6px 0 3px;letter-spacing:1px;font-weight:700;";
+  attrLabel.textContent="속성";
+  ef.appendChild(attrLabel);
+  const attrWrap = document.createElement("div");
+  attrWrap.style.cssText="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;";
+  const attrChecks = {};
+  ["지","수","화","풍","무"].forEach(a=>{
+    const lbl=document.createElement("label");
+    lbl.style.cssText="display:flex;align-items:center;gap:3px;font-size:11px;cursor:pointer;";
+    const cb=document.createElement("input"); cb.type="checkbox"; cb.value=a;
+    cb.checked=(pet.attrs||[]).includes(a);
+    attrChecks[a]=cb;
+    lbl.appendChild(cb); lbl.appendChild(document.createTextNode(a));
+    attrWrap.appendChild(lbl);
+  });
+  ef.appendChild(attrWrap);
+
+  // 획득방법
+  const obtainLabel = document.createElement("div");
+  obtainLabel.style.cssText="font-size:10px;color:var(--t3);margin:4px 0 3px;letter-spacing:1px;font-weight:700;";
+  obtainLabel.textContent="획득방법";
+  ef.appendChild(obtainLabel);
+  const obtainInp = document.createElement("input");
+  obtainInp.type="text"; obtainInp.placeholder="획득방법 입력..."; obtainInp.value=pet.obtain||"";
+  obtainInp.style.cssText="width:100%;padding:6px 9px;background:var(--white);border:1.5px solid var(--border);border-radius:8px;color:var(--t1);font-size:12px;font-family:'Noto Sans KR',sans-serif;margin-bottom:4px;";
+  ef.appendChild(obtainInp);
+
+  const saveBtn=document.createElement("button"); saveBtn.className="btn-save"; saveBtn.textContent="저장";
+  saveBtn.onclick= async e=>{
+    e.stopPropagation();
+    const v=inputs.map(i=>parseInt(i.value));
+    if(v.some(isNaN)){alert("숫자만 입력해주세요!");return;}
+    const selectedAttrs=["지","수","화","풍","무"].filter(a=>attrChecks[a].checked);
+    petData[name]={
+      initialCoefficient:v[0],attackCoefficient:v[1],defenseCoefficient:v[2],agilityCoefficient:v[3],healthCoefficient:v[4],
+      grade: gradeSelect.value,
+      attrs: selectedAttrs,
+      obtain: obtainInp.value.trim(),
+    };
+    await savePets(); renderPetList();
+    if(selectedPet===name){ const s=calcIdeal(petData[name]); setStats(s); }
+    showToast(`${name} 수정됨!`);
+  };
+  ef.appendChild(saveBtn);
+  wrapper.appendChild(ef); ef.style.display="block";
+}
+
+function setStats(s){
+  document.getElementById("d-atk").value=s.atk;
+  document.getElementById("d-def").value=s.def;
+  document.getElementById("d-agi").value=s.agi;
+  document.getElementById("d-hp").value=s.hp;
+}
+
+function selectPet(name){
+  selectedPet=name;
+  document.getElementById("pet-name").value=name;
+  document.getElementById("suggestions").style.display="none";
+  setStats(calcIdeal(petData[name]));
+  document.getElementById("result-card").style.display="none";
+  renderPetList();
+}
+
+/* ──── autocomplete ──── */
+const petNameInput = document.getElementById("pet-name");
+const suggEl = document.getElementById("suggestions");
+petNameInput.addEventListener("input",()=>{
+  const q=petNameInput.value.trim(); suggEl.innerHTML="";
+  if(!q){ suggEl.style.display="none"; return; }
+  const qcs=getChosung(q);
+  const matches=Object.keys(petData).filter(n=>n.includes(q)||getChosung(n).includes(qcs)).sort((a,b)=>a.localeCompare(b,'ko-KR'));
+  if(!matches.length){ suggEl.style.display="none"; return; }
+  matches.forEach(m=>{
+    const li=document.createElement("div"); li.className="sugg-item"; li.textContent=m;
+    li.onmousedown=()=>selectPet(m);
+    suggEl.appendChild(li);
+  });
+  suggEl.style.display="block";
+});
+document.addEventListener("click",e=>{ if(!e.target.closest(".sugg-wrap")) suggEl.style.display="none"; });
+
+/* ──── admin login/logout ──── */
+document.getElementById("admin-lock-btn").addEventListener("click", () => {
+  if (isAdmin) {
+    setAdminMode(false);
+    // 열려있던 추가 폼 닫기
+    document.getElementById("s-grade-form").classList.remove("open");
+    document.getElementById("final-form").classList.remove("open");
+    showToast("관리자 모드 해제됨", "err");
+  } else {
+    const wrap = document.getElementById("admin-pw-wrap");
+    wrap.classList.toggle("open");
+    if (wrap.classList.contains("open")) {
+      setTimeout(() => document.getElementById("admin-pw-input").focus(), 100);
+    }
+  }
+});
+
+document.getElementById("admin-pw-confirm").addEventListener("click", () => {
+  const pw = document.getElementById("admin-pw-input").value;
+  if (pw === ADMIN_PASSWORD) {
+    setAdminMode(true);
+    document.getElementById("admin-pw-wrap").classList.remove("open");
+    document.getElementById("admin-pw-input").value = "";
+    showToast("🔓 관리자 모드 활성화!");
+  } else {
+    showToast("비밀번호가 틀렸어요!", "err");
+    document.getElementById("admin-pw-input").value = "";
+    document.getElementById("admin-pw-input").focus();
+  }
+});
+
+document.getElementById("admin-pw-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("admin-pw-confirm").click();
+});
+
+/* ──── sidebar ──── */
+document.getElementById("toggle-btn").addEventListener("click",()=>{
+  const sb=document.getElementById("sidebar");
+  const mn=document.getElementById("main");
+  const tb=document.getElementById("toggle-btn");
+  sb.classList.toggle("open");
+  mn.classList.toggle("shifted");
+  tb.classList.toggle("sb-open");
+  tb.textContent = sb.classList.contains("open") ? "✕" : "☰";
+});
+
+/* ──── form toggles ──── */
+document.getElementById("toggle-s-btn").addEventListener("click",()=>{
+  if(!isAdmin){ showToast("관리자만 사용할 수 있어요!", "err"); return; }
+  const s=document.getElementById("s-grade-form");
+  const f=document.getElementById("final-form");
+  s.classList.toggle("open");
+  if(s.classList.contains("open")) f.classList.remove("open");
+});
+document.getElementById("toggle-f-btn").addEventListener("click",()=>{
+  if(!isAdmin){ showToast("관리자만 사용할 수 있어요!", "err"); return; }
+  const s=document.getElementById("s-grade-form");
+  const f=document.getElementById("final-form");
+  f.classList.toggle("open");
+  if(f.classList.contains("open")) s.classList.remove("open");
+});
+
+/* ──── add S grade ──── */
+document.getElementById("add-s-btn").addEventListener("click", async ()=>{
+  const name=document.getElementById("s-name").value.trim();
+  const hp1=document.getElementById("s-hp1").value, hp2=document.getElementById("s-hp2").value;
+  const st1=document.getElementById("s-st1").value, st2=document.getElementById("s-st2").value;
+  const df1=document.getElementById("s-df1").value, df2=document.getElementById("s-df2").value;
+  const de1=document.getElementById("s-de1").value, de2=document.getElementById("s-de2").value;
+  if(!name||!hp1||!hp2||!st1||!st2||!df1||!df2||!de1||!de2){ alert("모든 필드를 채워주세요!"); return; }
+  if(petData[name]){ alert("이미 존재하는 이름입니다!"); return; }
+
+  const eVals=[575,555,535,515,495,475];
+  let best=null,minD=Infinity;
+  for(const e of eVals){ try{const s=solveEq(+hp2,+st2,+df2,+de2,e);if(s.diff<minD){minD=s.diff;best=s;}}catch{} }
+  if(!best){ alert("계수를 찾을 수 없습니다!"); return; }
+
+  const fac=best.e/10000;
+  const aP=best.a+2.5,bP=best.b+2.5,cP=best.c+2.5,dP=best.d+2.5;
+  let fH,fA,fD,fG,found=false;
+  for(let i=1;i<100;i++){
+    const k=i/100;
+    if(Math.floor((aP*k)*4+(bP*k)+(cP*k)+(dP*k))===Math.floor(+hp1)){
+      fH=(aP*k)*4+bP*k+cP*k+dP*k;
+      fA=(aP*k)*0.1+bP*k+(cP*k)*0.1+(dP*k)*0.05;
+      fD=(aP*k)*0.1+(bP*k)*0.1+cP*k+(dP*k)*0.05;
+      fG=dP*k; found=true; break;
+    }
+  }
+  if(!found){ alert("초기치 소숫점 계산 실패!"); return; }
+  const result=tryCoeff(fH,fA,fD,fG,0.1)||tryCoeff(fH,fA,fD,fG,0.2);
+  if(!result){ alert(`유효한 계수를 찾을 수 없습니다!\n체력:${fH.toFixed(3)} 공격:${fA.toFixed(3)} 방어:${fD.toFixed(3)} 순발:${fG.toFixed(3)}`); return; }
+
+  const grade = document.getElementById("s-grade").value;
+  const attrs = [...document.querySelectorAll(".s-attr-cb:checked")].map(c=>c.value);
+  const obtain = document.getElementById("s-obtain").value.trim();
+  petData[name]={...result, grade, attrs, obtain};
+  await savePets(); renderPetList();
+  ["s-name","s-hp1","s-hp2","s-st1","s-st2","s-df1","s-df2","s-de1","s-de2","s-obtain"].forEach(id=>document.getElementById(id).value="");
+  document.querySelectorAll(".s-attr-cb").forEach(c=>c.checked=false);
+  document.getElementById("s-grade").value="";
+  document.getElementById("s-grade-form").classList.remove("open");
+  showToast(`🌸 ${name} 추가 완료!`);
+});
+
+/* ──── add final stats ──── */
+document.getElementById("add-f-btn").addEventListener("click", async ()=>{
+  const name=document.getElementById("f-name").value.trim();
+  const fH=+document.getElementById("f-hp").value, fA=+document.getElementById("f-atk").value;
+  const fD=+document.getElementById("f-def").value, fG=+document.getElementById("f-agi").value;
+  if(!name||[fH,fA,fD,fG].some(v=>v===""||isNaN(v))){ alert("모든 필드를 채워주세요!"); return; }
+  if(petData[name]){ alert("이미 존재하는 이름입니다!"); return; }
+  const result=tryCoeff(fH,fA,fD,fG,0.1)||tryCoeff(fH,fA,fD,fG,0.2);
+  if(!result){ alert("유효한 계수를 찾을 수 없습니다!"); return; }
+
+  const grade = document.getElementById("f-grade").value;
+  const attrs = [...document.querySelectorAll(".f-attr-cb:checked")].map(c=>c.value);
+  const obtain = document.getElementById("f-obtain").value.trim();
+  petData[name]={...result, grade, attrs, obtain};
+  await savePets(); renderPetList();
+  ["f-name","f-hp","f-atk","f-def","f-agi","f-obtain"].forEach(id=>document.getElementById(id).value="");
+  document.querySelectorAll(".f-attr-cb").forEach(c=>c.checked=false);
+  document.getElementById("f-grade").value="";
+  document.getElementById("final-form").classList.remove("open");
+  showToast(`🌸 ${name} 추가 완료!`);
+});
+
+/* export/import 제거됨 */
+
+/* ──── calculate ──── */
+document.getElementById("calc-btn").addEventListener("click",()=>{
+  const loading=document.getElementById("loading");
+  const rc=document.getElementById("result-card");
+  rc.style.display="none"; loading.style.display="flex";
+
+  const pet=petData[selectedPet];
+  const dAtk=parseInt(document.getElementById("d-atk").value);
+  const dDef=parseInt(document.getElementById("d-def").value);
+  const dAgi=parseInt(document.getElementById("d-agi").value);
+  const dHp =parseInt(document.getElementById("d-hp").value);
+
+  if(!selectedPet||!pet||[dAtk,dDef,dAgi,dHp].some(isNaN)){
+    loading.style.display="none";
+    rc.innerHTML=`<div class="result-err">✦ 페트와 스탯을 모두 입력해주세요!</div>`;
+    rc.style.display="block"; return;
+  }
+
+  setTimeout(()=>{
+    const r=runCalc(pet,dAtk,dDef,dAgi,dHp);
+    loading.style.display="none";
+    if(r.totalCases===0){
+      rc.innerHTML=`<div class="result-err">일치하는 경우가 없습니다.<br>다른 스탯 값으로 시도해 주세요 🌸</div>`;
+      rc.style.display="block"; return;
+    }
+    const prob=Math.min((r.hallCases/r.totalCases)*100,99.99).toFixed(4);
+    const appear=formatPct((r.exactCount/r.totalPossible)*100);
+    const canMax=r.hallCases>0;
+    const expect=canMax?(1/(prob/100)).toFixed(2):null;
+
+    rc.innerHTML=`
+      <div class="result-strip"></div>
+      <div class="result-row">
+        <span class="result-label">✦ 성공 확률</span>
+        <span class="result-val result-prob">${prob}%</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">🌸 출현 확률</span>
+        <span class="result-val result-appear">${appear}</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">🍀 성공 기대값</span>
+        <span class="result-val result-expect">${canMax?expect+"번":"최대 성장 불가능"}</span>
+      </div>
+      ${!canMax?'<div class="result-msg">⚠ 현재 스탯으로는 최대 성장에 도달할 수 없어요</div>':''}
+    `;
+    rc.style.display="block";
+  }, 40);
+});
+
+["d-atk","d-def","d-agi","d-hp"].forEach(id=>{
+  document.getElementById(id).addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("calc-btn").click(); });
+});
+
+loadSharedPets();
+</script>
+</body>
+</html>
