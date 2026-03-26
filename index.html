@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WIND 환각 계산기</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
-  <!-- Firebase compat (전역 스코프, 모든 브라우저 호환) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <!-- Firebase REST API (CSP 호환, eval 없음) -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVTpV_Yq4GFZ6a7UkWQk4FnwuK5tzmoyM",
-      authDomain: "wind-972a1.firebaseapp.com",
-      databaseURL: "https://wind-972a1-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "wind-972a1",
-      storageBucket: "wind-972a1.firebasestorage.app",
-      messagingSenderId: "166348268878",
-      appId: "1:166348268878:web:505436908a753e46802a1f"
+    const FB_URL = "https://wind-972a1-default-rtdb.asia-southeast1.firebasedatabase.app";
+    const FB_KEY = "AIzaSyAVTpV_Yq4GFZ6a7UkWQk4FnwuK5tzmoyM";
+
+    window._fbSet = async (path, data) => {
+      const res = await fetch(`${FB_URL}/${path}.json?auth=${FB_KEY}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) throw new Error(await res.text());
     };
-    firebase.initializeApp(firebaseConfig);
-    const _db = firebase.database();
-    window._fbSet = (path, data) => _db.ref(path).set(data);
-    window._fbOnValue = (path, cb) => _db.ref(path).on("value", cb);
+
+    window._fbGet = async (path) => {
+      const res = await fetch(`${FB_URL}/${path}.json`);
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -1023,35 +1025,26 @@ const DEFAULT_PETS = {
 };
 let petData = { ...DEFAULT_PETS };
 
-/* ──── Firebase 공유 저장소 ──── */
-function loadSharedPets() {
-  // Firebase 모듈이 로드될 때까지 잠깐 대기
-  function tryConnect(retry) {
-    if (window._fbOnValue) {
-      window._fbOnValue("pets", (snapshot) => {
-        const shared = snapshot.val();
-        if (shared) {
-          petData = { ...DEFAULT_PETS, ...shared };
-        } else {
-          petData = { ...DEFAULT_PETS };
-        }
-        renderPetList();
-      });
-    } else if (retry > 0) {
-      setTimeout(() => tryConnect(retry - 1), 200);
+/* ──── Firebase REST 공유 저장소 ──── */
+async function loadSharedPets() {
+  try {
+    const shared = await window._fbGet("pets");
+    if (shared && typeof shared === "object") {
+      petData = { ...DEFAULT_PETS, ...shared };
     } else {
-      // Firebase 연결 실패 시 기본 데이터로 표시
       petData = { ...DEFAULT_PETS };
-      renderPetList();
     }
+  } catch(e) {
+    // 연결 실패 시 기본 데이터로
+    petData = { ...DEFAULT_PETS };
   }
-  tryConnect(20);
+  renderPetList();
 }
 
 async function savePets() {
-  if (!window._fbSet) { showToast("Firebase 연결 오류!", "err"); return; }
   try {
     await window._fbSet("pets", petData);
+    showToast("저장 완료! 🌸");
   } catch(e) {
     showToast("저장 오류: " + e.message, "err");
   }
@@ -1181,10 +1174,12 @@ function renderPetList() {
 
       const delBtn = document.createElement("button");
       delBtn.className = "btn-sm btn-del-sm"; delBtn.textContent = "삭제";
-      delBtn.onclick = e => {
+      delBtn.onclick = async e => {
         e.stopPropagation();
         if(!confirm(`${name}을(를) 삭제할까요?`)) return;
-        delete petData[name]; await savePets(); renderPetList();
+        delete petData[name];
+        await savePets();
+        renderPetList();
         if(selectedPet===name){
           selectedPet="";
           document.getElementById("pet-name").value="";
