@@ -105,7 +105,7 @@
       border-bottom:2px solid var(--border);
     }
     th {
-      padding:10px 12px; font-size:10px; letter-spacing:1.5px;
+      padding:10px 12px; font-size:11px; letter-spacing:1px;
       color:var(--t2); font-family:'Nunito',sans-serif; font-weight:800;
       text-align:center; white-space:nowrap; cursor:pointer; user-select:none;
       transition:color .15s;
@@ -124,9 +124,9 @@
     tbody tr:hover { background:var(--s1); }
 
     td {
-      padding:9px 12px; font-size:12px; color:var(--t1); vertical-align:middle;
+      padding:9px 12px; font-size:14px; color:var(--t1); vertical-align:middle;
     }
-    .td-name { font-weight:700; font-size:13px; }
+    .td-name { font-weight:700; font-size:15px; }
     .td-num {
       font-family:'Nunito',sans-serif; font-weight:700;
       text-align:center; color:var(--t1);
@@ -146,7 +146,7 @@
     /* 속성 바 */
     .attr-bar { display:flex; gap:2px; align-items:center; }
     .attr-pip {
-      font-size:10px; font-weight:700; padding:1px 5px; border-radius:4px;
+      font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px;
       font-family:'Nunito',sans-serif; white-space:nowrap;
     }
     .attr-지 { background:#e8f5e9; color:#388e3c; border:1px solid #c8e6c9; }
@@ -171,6 +171,120 @@
 
     ::-webkit-scrollbar { width:5px; height:5px; }
     ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+
+    /* ── 상세 모달 ── */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:500;
+      background:rgba(61,53,96,0.45); backdrop-filter:blur(4px);
+      display:flex; align-items:center; justify-content:center;
+      padding:20px; animation:fadeIn .2s ease;
+    }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .modal-card {
+      background:var(--white); border-radius:24px;
+      box-shadow:0 20px 60px rgba(155,135,245,0.25);
+      width:100%; max-width:480px; max-height:90vh;
+      overflow-y:auto; animation:slideUp .25s ease;
+      position:relative;
+    }
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-card::-webkit-scrollbar { width:4px; }
+    .modal-card::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+
+    .modal-close {
+      position:absolute; top:14px; right:14px;
+      width:32px; height:32px; border-radius:50%;
+      background:var(--s2); border:none; cursor:pointer;
+      font-size:14px; color:var(--t2); transition:all .15s;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .modal-close:hover { background:var(--err); color:#fff; }
+
+    .modal-hero {
+      background:linear-gradient(135deg,var(--s1),var(--s2));
+      border-radius:24px 24px 0 0;
+      padding:28px 24px 20px;
+      display:flex; align-items:center; gap:20px;
+      border-bottom:1.5px solid var(--border);
+    }
+    .modal-img-box {
+      width:90px; height:90px; flex-shrink:0;
+      background:var(--white); border:2px solid var(--border2);
+      border-radius:18px;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 16px rgba(155,135,245,0.15);
+      overflow:hidden;
+    }
+    .modal-img-box img {
+      width:80px; height:80px;
+      object-fit:contain; image-rendering:pixelated;
+    }
+    .modal-hero-info { flex:1; min-width:0; }
+    .modal-name {
+      font-size:22px; font-weight:900;
+      font-family:'Nunito',sans-serif;
+      color:var(--t1); margin-bottom:6px;
+    }
+    .modal-badges { display:flex; gap:5px; flex-wrap:wrap; }
+
+    .modal-body { padding:20px 24px 24px; }
+    .modal-section {
+      margin-bottom:16px;
+    }
+    .modal-section-title {
+      font-size:9px; letter-spacing:2px; color:var(--t3);
+      text-transform:uppercase; font-family:'Nunito',sans-serif;
+      font-weight:800; margin-bottom:8px;
+      display:flex; align-items:center; gap:6px;
+    }
+    .modal-section-title::before {
+      content:''; display:block; width:3px; height:12px;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      border-radius:2px;
+    }
+    .modal-obtain {
+      font-size:13px; color:var(--t2); line-height:1.6;
+      background:var(--s1); border:1.5px solid var(--border);
+      border-radius:10px; padding:10px 14px;
+    }
+
+    .modal-attr-row { display:flex; gap:6px; flex-wrap:wrap; }
+    .modal-attr-chip {
+      display:flex; align-items:center; gap:4px;
+      padding:5px 10px; border-radius:8px;
+      font-size:12px; font-weight:700;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .modal-attr-chip .chip-num {
+      font-family:'Nunito',sans-serif; font-weight:900;
+      font-size:14px;
+    }
+
+    .modal-stat-grid {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    .modal-stat-box {
+      background:var(--s1); border:1.5px solid var(--border);
+      border-radius:12px; padding:10px 14px;
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .modal-stat-label {
+      font-size:9px; letter-spacing:1px; color:var(--t3);
+      font-family:'Nunito',sans-serif; font-weight:700;
+      text-transform:uppercase;
+    }
+    .modal-stat-val {
+      font-size:18px; font-weight:900;
+      font-family:'Nunito',sans-serif; color:var(--t1);
+    }
+    .modal-stat-sg {
+      font-size:11px; color:var(--t3); font-family:'Nunito',sans-serif;
+    }
+    .stat-atk .modal-stat-val { color:var(--a2); }
+    .stat-def .modal-stat-val { color:var(--a1); }
+    .stat-agi .modal-stat-val { color:#5acba8; }
+    .stat-hp  .modal-stat-val { color:#d4943a; }
 
     @media(max-width:600px) {
       th, td { padding:7px 8px; font-size:11px; }
@@ -214,6 +328,7 @@
   <table id="pet-table">
     <thead>
       <tr>
+        <th style="width:48px;text-align:center;">이미지</th>
         <th data-col="name">이름 <span class="sort-icon">↕</span></th>
         <th data-col="grade">등급 <span class="sort-icon">↕</span></th>
         <th data-col="attr">속성</th>
@@ -542,6 +657,158 @@ const PET_DATA = {
   "메카카키": {grade:"일반",attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.856,"atk":2.036,"def":1.053,"agi":2.066},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
 };
 
+const PET_IMAGES = {
+  "골드부비": "https://pooyas.com/files/extravar_upload/109631/277/167/67b0567fe1337c024792130f463c3dfb.gif",
+  "꼬꼬비": "https://pooyas.com/files/extravar_upload/109631/312/167/daab9bb325477e4015b1f7bde4c2ff88.gif",
+  "꼬미": "https://pooyas.com/files/extravar_upload/109631/297/167/7d8bd236882d501c2c03ddcf268b8eb9.gif",
+  "꼬비": "https://pooyas.com/files/extravar_upload/109631/302/167/15b8c67fb8d46110571dff2d59e6a7b0.gif",
+  "꼬비오": "https://pooyas.com/files/extravar_upload/109631/307/167/f40c97a5c23b3ad2e77110f1461b70f1.gif",
+  "두리": "https://pooyas.com/files/extravar_upload/109631/047/167/8c42820f1636f39fba73a3c3fbf402a7.gif",
+  "베론": "https://pooyas.com/files/extravar_upload/109631/339/167/0522faf384f7264f6934a5d42c5dcd89.gif",
+  "부비": "https://pooyas.com/files/extravar_upload/109631/257/167/97d7191256bde3ab2a8990b3576e8066.gif",
+  "부이비": "https://pooyas.com/files/extravar_upload/109631/289/167/1ec2f9c0a250eb7de6e894797a274fe1.gif",
+  "불그리": "https://pooyas.com/files/extravar_upload/109631/243/167/eb4fd765746395e9cdc64b802cfd21e6.gif",
+  "실버우리": "https://pooyas.com/files/extravar_upload/109631/250/167/e7e8eaf580b5ec0df3d872cf29e29c18.gif",
+  "얼룩부이비": "https://pooyas.com/files/extravar_upload/109631/294/167/1edf6a0ff1d223deb88093a98a656c83.gif",
+  "얼룩우리": "https://pooyas.com/files/extravar_upload/109631/056/167/a6614d07d463173b647503339ab1c945.gif",
+  "오투투": "https://pooyas.com/files/extravar_upload/109631/336/167/201f03db8a6dcbd8e8f9ac5cd8dc85e1.gif",
+  "우리": "https://pooyas.com/files/extravar_upload/109631/030/167/7936588ffbcf12c347967132d6c5e823.gif",
+  "우푸": "https://pooyas.com/files/extravar_upload/109631/326/167/16da0efd8bd28c732a9f2390cdbb0f97.gif",
+  "투투": "https://pooyas.com/files/extravar_upload/109631/331/167/4879ded08e71348f2b1fe196cf80b67b.gif",
+  "푸푸": "https://pooyas.com/files/extravar_upload/109631/317/167/d04050bb013e33105e116b1c8b7e7fee.gif",
+  "환생얼룩우리": "https://pooyas.com/files/extravar_upload/109631/063/167/a09f8887441b57c8024f3f9632b894d7.gif",
+  "깡북이": "https://pooyas.com/files/extravar_upload/109631/589/167/0946bfb966ed5002e3c2870b49174e6a.gif",
+  "네고스": "https://pooyas.com/files/extravar_upload/109631/629/167/b8b4867c0d494202c2f7008eab021eaa.gif",
+  "노북이": "https://pooyas.com/files/extravar_upload/109631/508/167/d5720145a8f6b8ff71425aacf34fc4c2.gif",
+  "다고스": "https://pooyas.com/files/extravar_upload/109631/657/167/3480835fd23d713474998fcfb217c6a6.gif",
+  "돌북이": "https://pooyas.com/files/extravar_upload/109631/594/167/9eadedc741d98f83f47517689189fe31.gif",
+  "라고고": "https://pooyas.com/files/extravar_upload/109631/671/167/928ababfb4fd4a8b1e9bef6f7a28a62b.gif",
+  "램가스": "https://pooyas.com/files/extravar_upload/109631/817/167/d4c1279f8618e188277770f1752f9f6b.gif",
+  "로기안": "https://pooyas.com/files/extravar_upload/109631/812/167/0a4b58e558bf83242ab2e08bbf04fc00.gif",
+  "루니": "https://pooyas.com/files/extravar_upload/109631/775/167/39a04026b037684e61970c16df7c7edf.gif",
+  "리비노": "https://pooyas.com/files/extravar_upload/109631/839/167/dbade4954922882a580f136e25770f03.gif",
+  "반기노": "https://pooyas.com/files/extravar_upload/109631/859/167/4d7cf2dc09ac6ccc64cb4922c867d092.gif",
+  "반보로": "https://pooyas.com/files/extravar_upload/109631/854/167/89904efd2f6b15b243b3538295ac87a8.gif",
+  "베로로크": "https://pooyas.com/files/extravar_upload/109631/347/167/3c14b63e5ae6f42558df5d017bcac0a3.gif",
+  "베로보크": "https://pooyas.com/files/extravar_upload/109631/495/167/a81df5abb8846abcf455ccc8eba9260c.gif",
+  "베로포리": "https://pooyas.com/files/extravar_upload/109631/503/167/4459e96066b15d261510aa1a110fe236.gif",
+  "보크곤": "https://pooyas.com/files/extravar_upload/109631/662/167/d036ea33f34b836efb49618221461afc.gif",
+  "부르돈": "https://pooyas.com/files/extravar_upload/109631/865/167/03119ecd59bb7f176d4cdeb691a07945.gif",
+  "북이": "https://pooyas.com/files/extravar_upload/109631/556/167/64defbd8853a444b2f8cb299d1607a8b.gif",
+  "아고아": "https://pooyas.com/files/extravar_upload/109631/600/167/caa176d0c635821b97d2167cc8fb722c.gif",
+  "아이카스": "https://pooyas.com/files/extravar_upload/109631/824/167/5be65f62e3adb6990b193561699d7f08.gif",
+  "얀기로": "https://pooyas.com/files/extravar_upload/109631/848/167/ca6ef6aab632a59011ae3727a2ea4981.gif",
+  "카르기안": "https://pooyas.com/files/extravar_upload/109631/834/167/96857e491f6e9cc21ac5d963035a8b0d.gif",
+  "카타르카스": "https://pooyas.com/files/extravar_upload/109631/789/167/1f638153392ed09317c415cff809945f.gif",
+  "코로카스": "https://pooyas.com/files/extravar_upload/109631/807/167/87ffdfa074022473da1ad8584382e304.gif",
+  "쿠링": "https://pooyas.com/files/extravar_upload/109631/876/167/2db4bbe5958f6bb8b02b015e3b3d8863.gif",
+  "쿠카스": "https://pooyas.com/files/extravar_upload/109631/800/167/530b806a6a89162745f609b18872681a.gif",
+  "쿠타스": "https://pooyas.com/files/extravar_upload/109631/829/167/cc46cc49ae9f5630b9a71fdd7b8443c7.gif",
+  "타로곤": "https://pooyas.com/files/extravar_upload/109631/652/167/db46c202cbda215c3b722cf68b55c20b.gif",
+  "토루루": "https://pooyas.com/files/extravar_upload/109631/770/167/9363190b2c37154db46c31500a97f138.gif",
+  "후바바": "https://pooyas.com/files/extravar_upload/109631/748/167/fcaab72ce3992c96437f8c66e1771dc3.gif",
+  "고르고": "https://pooyas.com/files/extravar_upload/109631/982/167/4bd0d2e210b0a0e7bf2df2728ca18257.gif",
+  "고르고르": "https://pooyas.com/files/extravar_upload/109631/175/168/8a939b602c054fcaecd5fe94e3de27f2.gif",
+  "고르돈": "https://pooyas.com/files/extravar_upload/109631/952/167/5ce6e530794548bef3c0badb22dc3c7d.gif",
+  "고반케스": "https://pooyas.com/files/extravar_upload/109631/749/168/1a7925616f653967abcce0500b4ddd62.gif",
+  "골드카비트": "https://pooyas.com/files/extravar_upload/109631/942/167/13e2c19d783887b36855369057964c13.gif",
+  "기라돈": "https://pooyas.com/files/extravar_upload/109631/965/167/da1f6b6060144cd92001c62557f235de.gif",
+  "노르노르": "https://pooyas.com/files/extravar_upload/109631/195/168/41e5e45488c0214c1136e6365ae3b9b6.gif",
+  "리스키": "https://pooyas.com/files/extravar_upload/109631/912/167/7dcb862430472cee085f3a98dc4424d6.gif",
+  "바우": "https://pooyas.com/files/extravar_upload/109631/064/168/c8a6a7cd29ffadd664fe5c903ef53412.gif",
+  "바카": "https://pooyas.com/files/extravar_upload/109631/053/168/6ec938e3e1ab856bfb605a53485fa58c.gif",
+  "베루루": "https://pooyas.com/files/extravar_upload/109631/163/168/335c1c4a726738ab3be582d516f35428.gif",
+  "베르가": "https://pooyas.com/files/extravar_upload/109631/082/168/66d8f8428df72d047d5ce0920c9c4d11.gif",
+  "부르보": "https://pooyas.com/files/extravar_upload/109631/040/168/48ca7d576202397809bcddbfc7542567.gif",
+  "쟈그라": "https://pooyas.com/files/extravar_upload/109631/755/168/b23987318c03603115805e361d213ac8.gif",
+  "카비트": "https://pooyas.com/files/extravar_upload/109631/919/167/464bbeb4524a4b131e5b31368e03dad8.gif",
+  "카우": "https://pooyas.com/files/extravar_upload/109631/075/168/54f3b581701b1d7ce55859fd2db9fd6a.gif",
+  "카쿠": "https://pooyas.com/files/extravar_upload/109631/047/168/f2cbf5223950e14ff180600a98b73698.gif",
+  "케이비": "https://pooyas.com/files/extravar_upload/109631/928/167/0cf82cddc5ba8e0eea54cd81b95ab02f.gif",
+  "쿠보": "https://pooyas.com/files/extravar_upload/109631/997/167/ea5373052d67d57a0dd75f242c88c024.gif",
+  "쿠쿠르": "https://pooyas.com/files/extravar_upload/109631/892/167/89bed08655ec219f56dac315e421ddf5.gif",
+  "큐이": "https://pooyas.com/files/extravar_upload/109631/933/167/331cdf89a6cb790f070c44c90dd80f63.gif",
+  "토로쟈": "https://pooyas.com/files/extravar_upload/109631/035/168/3ab4210a9466e484edf0771b330755f6.gif",
+  "토르프스": "https://pooyas.com/files/extravar_upload/109631/736/168/2e3d0200d5baddbb075011930a4f608e.gif",
+  "토리노프스": "https://pooyas.com/files/extravar_upload/109631/417/168/d0345d73cd29db29fd88008cd1d7b4c0.gif",
+  "토리케라": "https://pooyas.com/files/extravar_upload/109631/725/168/533cf2238af881304ab0819c63098c2f.gif",
+  "투르돈": "https://pooyas.com/files/extravar_upload/109631/976/167/952da5b64f4dbb0d9d2046f9c6683f4a.gif",
+  "펜타스": "https://pooyas.com/files/extravar_upload/109631/719/168/374822acbe36a44d49368941a65dd479.gif",
+  "포링": "https://pooyas.com/files/extravar_upload/109631/905/167/2b0b54630a711854555b7e3e241c1adb.gif",
+  "포보": "https://pooyas.com/files/extravar_upload/109631/992/167/5d4bcaf9e6f108b478f30e143bd32b77.gif",
+  "휴보": "https://pooyas.com/files/extravar_upload/109631/989/167/cad9c5e8c4b6c5478310c2e010c14fc2.gif",
+  "가가로스": "https://pooyas.com/files/extravar_upload/109631/853/168/4ccb323d67935e266db31b18d8725265.gif",
+  "기가로스": "https://pooyas.com/files/extravar_upload/109631/820/168/652af1d3505dedccda8c554ce4b358d8.gif",
+  "다이노": "https://pooyas.com/files/extravar_upload/109631/692/169/b0a13952eb3e57cc327605c5b30ca5e4.gif",
+  "다이노스": "https://pooyas.com/files/extravar_upload/109631/698/169/61ef9e43067d5f0bebc053e4f59ebad6.gif",
+  "루이": "https://pooyas.com/files/extravar_upload/109631/864/168/87184a46e44db24687f4dce9bdc9ef12.gif",
+  "마모나스": "https://pooyas.com/files/extravar_upload/109631/775/169/93a605e69cf28aaa4d2d24e32ff5a921.gif",
+  "만모": "https://pooyas.com/files/extravar_upload/109631/742/169/2b437e1976757c51d4c4f2dd937659b9.gif",
+  "만모로스": "https://pooyas.com/files/extravar_upload/109631/833/169/b7869d9ba294e722cb67b31b42903edd.gif",
+  "만모르": "https://pooyas.com/files/extravar_upload/109631/768/169/d6b421ead20d2c99edd505f5a3aa56cc.gif",
+  "메가로스": "https://pooyas.com/files/extravar_upload/109631/830/168/5feb88b756e62a8308994447502262bd.gif",
+  "무이": "https://pooyas.com/files/extravar_upload/109631/030/169/1e5439e7f225bf4237a4afba62f5c445.gif",
+  "비트로스": "https://pooyas.com/files/extravar_upload/109631/842/168/4c651846e254ee5a85c4fff741f9c112.gif",
+  "스텐토스": "https://pooyas.com/files/extravar_upload/109631/724/169/ca97bb3af1abae6c38936d61bfac53da.gif",
+  "씨보스": "https://pooyas.com/files/extravar_upload/109631/408/169/22b5bc0de979d0371a70a2306ab2c618.gif",
+  "쟈그": "https://pooyas.com/files/extravar_upload/109631/762/168/ff2bef3008256692923cf6347f8d5ae2.gif",
+  "테라곤": "https://pooyas.com/files/extravar_upload/109631/721/170/d7a3ef22d817139fed45a8a5c1af8def.gif",
+  "투이": "https://pooyas.com/files/extravar_upload/109631/423/169/ff5c25902e5053d6e9df0b32f88ea8d6.gif",
+  "판지": "https://pooyas.com/files/extravar_upload/109631/768/168/c28e7b781f8bf8e10ecfb6eb289d1a10.gif",
+  "프라키토스": "https://pooyas.com/files/extravar_upload/109631/715/169/68956fbbfc4a1160fdd9edd5d52400aa.gif",
+  "프리토스": "https://pooyas.com/files/extravar_upload/109631/734/169/df8fea400c1abd1025669c5c0c7eddf8.gif",
+  "카르곤": "https://pooyas.com/files/extravar_upload/109631/736/170/906220c7985f758fafe1cd6bdd0df997.gif",
+  "포이비스": "https://pooyas.com/files/extravar_upload/109631/741/170/d263021e32f3e4820b5d0dcdb800df11.gif",
+  "도라비스": "https://pooyas.com/files/extravar_upload/109631/787/170/b006ca2283369184029eee427067cf2a.gif",
+  "타키": "https://pooyas.com/files/extravar_upload/109631/843/170/1849974ed27c8742457b8aa8a18f9e84.gif",
+  "쿠쿠": "https://pooyas.com/files/extravar_upload/109631/849/170/122a0fe5db83640b560b09d0f7c205fb.gif",
+  "호르쿠": "https://pooyas.com/files/extravar_upload/109631/864/170/e1a07d4c0e1657b193a7a9cf87c9e2c6.gif",
+  "카키": "https://pooyas.com/files/extravar_upload/109631/973/170/8bbaea5754d52513e98c574ed45eb6fe.gif",
+  "오가로스": "https://pooyas.com/files/extravar_upload/109631/979/170/0bcd11f48a4e7fb6f0cb388130ff1501.gif",
+  "오르곤": "https://pooyas.com/files/extravar_upload/109631/986/170/a704cd5667b842e542af9d77d9d692aa.gif",
+  "모가로스": "https://pooyas.com/files/extravar_upload/109631/993/170/6610fa7f6d5394f91d5ca94d39740c60.gif",
+  "골로스": "https://pooyas.com/files/extravar_upload/109631/452/171/7622a3009619c1c53bcb1ce93525a6d1.gif",
+  "프이토": "https://pooyas.com/files/extravar_upload/109631/866/171/f13429cf7556227595ebb49d48473ed0.gif",
+  "모나시프": "https://pooyas.com/files/extravar_upload/109631/890/171/ef54b8fb2f0358d9664e62ae4fe3dc9b.gif",
+  "라나프": "https://pooyas.com/files/extravar_upload/109631/992/171/a8114ecc231898c53bbcf1ee9ff64f17.gif",
+  "라이혼": "https://pooyas.com/files/extravar_upload/109631/011/172/4e80c401181d828f136709e46b9c7a6f.gif",
+  "타이혼": "https://pooyas.com/files/extravar_upload/109631/078/172/04b4f07ac0fab595ec9df2b8a26ea72c.gif",
+  "스토라지": "https://pooyas.com/files/extravar_upload/109631/708/174/366d7c4dd309da9e90b3f595e57d7361.gif",
+  "아토라지": "https://pooyas.com/files/extravar_upload/109631/754/174/08284c2c94d00201dca0633208c74c38.gif",
+  "아리노스": "https://pooyas.com/files/extravar_upload/109631/771/174/46027ccbcd8145c27e808112c07efc8b.gif",
+  "다이노로스": "https://pooyas.com/files/extravar_upload/109631/779/174/6bad65b8de8ced7ab52dd1a410aa1b16.gif",
+  "타르노로스": "https://pooyas.com/files/extravar_upload/109631/913/174/b2686f4fe9b30be80c9991583efe1a2e.gif",
+  "바로로크스": "https://pooyas.com/files/extravar_upload/109631/920/174/0aa9b329626ea8b2913980c980f0c0d6.gif",
+  "란베르스": "https://pooyas.com/files/extravar_upload/109631/937/174/fd5a348534027f14ecab7258024730c1.gif",
+  "코리토르스": "https://pooyas.com/files/extravar_upload/109631/944/174/affafb2a08c3dfa20bc257934f4863f4.gif",
+  "노스토로스": "https://pooyas.com/files/extravar_upload/109631/951/174/d064504ec2e234f4298104685d24ffb0.gif",
+  "킹고르": "https://pooyas.com/files/extravar_upload/109631/313/175/875072412396c2ae53990607e099fe9e.gif",
+  "샤베르": "https://pooyas.com/files/extravar_upload/109631/383/175/bf381cb8a7de5a501560edd0dc95a98b.gif",
+  "바로스": "https://pooyas.com/files/extravar_upload/109631/398/175/d8d5d5e09ab908b17b201a6cd3882851.gif",
+  "크랩": "https://pooyas.com/files/extravar_upload/109631/896/175/966cb06d2080672a8f5e60caa9c3e03f.gif",
+  "킹크랩": "https://pooyas.com/files/extravar_upload/109631/952/175/70b29a2cf28bd9af73dd88bddeece2b2.gif",
+  "데블로스": "https://pooyas.com/files/extravar_upload/109631/965/175/b0ca0f4d0fd265d75e48e3e88b0613b1.gif",
+  "발로스": "https://pooyas.com/files/extravar_upload/109631/988/175/4756cb882ee6e5c84eb997ab541df420.gif",
+  "스노밍코": "https://pooyas.com/files/extravar_upload/109631/014/176/b731e19f7c0c59c67920cdeb04ded9be.gif",
+  "밍코": "https://pooyas.com/files/extravar_upload/109631/022/176/e88fbaf003b5554aa7414da421445fee.gif",
+  "베르푸스": "https://pooyas.com/files/extravar_upload/109631/033/176/f770c86aac04b2e03d9396d4dcb5aa14.gif",
+  "울푸스": "https://pooyas.com/files/extravar_upload/109631/039/176/e2df501e523ab27f02c43323a257ed14.gif",
+  "토라": "https://pooyas.com/files/extravar_upload/109631/058/176/fc41ec0e6765b9dd37a2a589e16ba337.gif",
+  "가이록스": "https://pooyas.com/files/extravar_upload/109631/093/176/f7255595e84a205d61b7f19741a2aff4.gif",
+  "사이록스": "https://pooyas.com/files/extravar_upload/109631/103/176/bc48ca14d9de5ca13a242cd13fe248b7.gif",
+  "슈우": "https://pooyas.com/files/extravar_upload/109631/111/176/169f350ae75bdaead23a39b19c0b39ad.gif",
+  "미니스": "https://pooyas.com/files/extravar_upload/109631/120/176/094b677b5d0d59bff6d1bf7574aafc97.gif",
+  "델타르돈": "https://pooyas.com/files/extravar_upload/109631/129/176/b3aedd4d26221d100923274b1c5c21b3.gif",
+  "카르카로돈": "https://pooyas.com/files/extravar_upload/109631/138/176/adaa3b7f6c7aa8bc93eb301513526364.gif",
+  "크루거": "https://pooyas.com/files/extravar_upload/109631/147/176/12df9f75195f93c6461ec3163448ae5f.gif",
+  "카우거": "https://pooyas.com/files/extravar_upload/109631/155/176/b2f83d8a63511e865c7a3675c48e86b4.gif",
+  "백호": "https://pooyas.com/files/extravar_upload/109631/187/176/dc620a4050b2b0723e708ecd3626e595.gif",
+  "황호": "https://pooyas.com/files/extravar_upload/109631/421/176/f898a882e96a74419267f7c0b5cb7129.gif",
+  "이블티거": "https://pooyas.com/files/extravar_upload/109631/429/176/faceae40d7c74804af262adbf6233240.gif",
+  "포레스트크랩": "https://pooyas.com/files/extravar_upload/109631/492/176/6a3069c31434c9f8a08f9f4871c29c60.gif",
+  "보르비스": "https://pooyas.com/files/extravar_upload/109631/505/176/5104cbbf9d2b7e8c8dc99d1e8d5a72cc.gif",
+};
+
 let sortCol = "sg_atk";
 let sortAsc = false;
 let filterGrade = "";
@@ -595,6 +862,20 @@ function renderTable() {
   entries.forEach(([name, pet]) => {
     const tr = document.createElement("tr");
 
+    // 이미지
+    const tdImg = document.createElement("td");
+    tdImg.style.cssText = "text-align:center;padding:4px 8px;width:96px;";
+    const imgUrl = PET_IMAGES[name];
+    if (imgUrl) {
+      const img = document.createElement("img");
+      img.src = imgUrl;
+      img.alt = name;
+      img.style.cssText = "width:80px;height:80px;object-fit:contain;image-rendering:pixelated;";
+      img.onerror = () => { tdImg.textContent = ""; };
+      tdImg.appendChild(img);
+    }
+    tr.appendChild(tdImg);
+
     // 이름
     const tdName = document.createElement("td");
     tdName.className = "td-name";
@@ -636,6 +917,8 @@ function renderTable() {
     tdObtain.innerHTML = `<span class="obtain-badge" title="${pet.obtain}">${pet.obtain||"-"}</span>`;
     tr.appendChild(tdObtain);
 
+    tr.style.cursor = "pointer";
+    tr.addEventListener("click", () => openModal(name));
     tbody.appendChild(tr);
   });
 
@@ -698,6 +981,143 @@ document.getElementById("search-input").addEventListener("input", e => {
 });
 
 renderTable();
+
+/* ── 모달 ── */
+function openModal(name) {
+  const pet = PET_DATA[name];
+  if (!pet) return;
+
+  // 이미지
+  const imgBox = document.getElementById("modal-img-box");
+  const imgUrl = PET_IMAGES[name];
+  imgBox.innerHTML = imgUrl
+    ? `<img src="${imgUrl}" alt="${name}" onerror="this.parentElement.innerHTML='<span style=font-size:32px>🐾</span>'">`
+    : '<span style="font-size:32px;">🐾</span>';
+
+  // 이름
+  document.getElementById("modal-name").textContent = name;
+
+  // 배지 (등급 + 탑승여부)
+  const badges = document.getElementById("modal-badges");
+  badges.innerHTML = '';
+  if (pet.grade) {
+    const gb = document.createElement("span");
+    gb.className = `grade-badge grade-${pet.grade}`;
+    gb.textContent = pet.grade;
+    badges.appendChild(gb);
+  }
+  if (pet.mount) {
+    const mb = document.createElement("span");
+    mb.style.cssText = "font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;background:#f0fff4;color:#38a169;border:1px solid #c6f6d5;font-family:'Nunito',sans-serif;";
+    mb.textContent = "🐴 탑승";
+    badges.appendChild(mb);
+  }
+
+  // 속성
+  const attrsEl = document.getElementById("modal-attrs");
+  attrsEl.innerHTML = '';
+  const attrColors = {
+    지: {bg:"#e8f5e9",color:"#388e3c",border:"#c8e6c9",emoji:"🌿"},
+    수: {bg:"#e3f2fd",color:"#1976d2",border:"#bbdefb",emoji:"💧"},
+    화: {bg:"#fff3e0",color:"#e65100",border:"#ffe0b2",emoji:"🔥"},
+    풍: {bg:"#f3e5f5",color:"#7b1fa2",border:"#e1bee7",emoji:"🌀"},
+  };
+  const attrObj = pet.attr || {};
+  let hasAttr = false;
+  ["지","수","화","풍"].forEach(a => {
+    const v = attrObj[a] ?? 0;
+    if (v > 0) {
+      hasAttr = true;
+      const c = attrColors[a];
+      const chip = document.createElement("div");
+      chip.className = "modal-attr-chip";
+      chip.style.cssText = `background:${c.bg};color:${c.color};border:1.5px solid ${c.border};`;
+      chip.innerHTML = `${c.emoji} ${a} <span class="chip-num">${v}</span>`;
+      attrsEl.appendChild(chip);
+    }
+  });
+  if (!hasAttr) attrsEl.innerHTML = '<span style="color:var(--t3);font-size:12px;">정보 없음</span>';
+
+  // 획득방법
+  document.getElementById("modal-obtain").textContent = pet.obtain || "정보 없음";
+
+  // 성장률
+  const sg = pet.sg || {};
+  const sgPairs = [
+    ["atk","공격 성장률"],["def","방어 성장률"],["agi","순발 성장률"],["hp","체력 성장률"]
+  ];
+  sgPairs.forEach(([key, label]) => {
+    const val = sg[key];
+    document.getElementById(`modal-sg-${key}`).textContent = val != null ? val.toFixed(3) : "—";
+    document.getElementById(`modal-sg-${key}-label`).textContent = label;
+  });
+
+  document.getElementById("pet-modal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
+}
+
+function hideModal() {
+  document.getElementById("pet-modal").style.display = "none";
+  document.body.style.overflow = "";
+  document.documentElement.style.overflow = "";
+}
+function closeModal(e) {
+  if (e.target === document.getElementById("pet-modal")) hideModal();
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") hideModal();
+});
 </script>
+<!-- 상세 모달 -->
+<div class="modal-overlay" id="pet-modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-card" id="modal-card">
+    <button class="modal-close" onclick="hideModal()">✕</button>
+    <div class="modal-hero">
+      <div class="modal-img-box" id="modal-img-box">
+        <span style="font-size:32px;">🐾</span>
+      </div>
+      <div class="modal-hero-info">
+        <div class="modal-name" id="modal-name"></div>
+        <div class="modal-badges" id="modal-badges"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">속성</div>
+        <div class="modal-attr-row" id="modal-attrs"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">획득 방법</div>
+        <div class="modal-obtain" id="modal-obtain"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">성장률</div>
+        <div class="modal-stat-grid">
+          <div class="modal-stat-box stat-atk">
+            <span class="modal-stat-label">ATK 공격</span>
+            <span class="modal-stat-val" id="modal-sg-atk">—</span>
+            <span class="modal-stat-sg" id="modal-sg-atk-label"></span>
+          </div>
+          <div class="modal-stat-box stat-def">
+            <span class="modal-stat-label">DEF 방어</span>
+            <span class="modal-stat-val" id="modal-sg-def">—</span>
+            <span class="modal-stat-sg" id="modal-sg-def-label"></span>
+          </div>
+          <div class="modal-stat-box stat-agi">
+            <span class="modal-stat-label">AGI 순발</span>
+            <span class="modal-stat-val" id="modal-sg-agi">—</span>
+            <span class="modal-stat-sg" id="modal-sg-agi-label"></span>
+          </div>
+          <div class="modal-stat-box stat-hp">
+            <span class="modal-stat-label">HP 체력</span>
+            <span class="modal-stat-val" id="modal-sg-hp">—</span>
+            <span class="modal-stat-sg" id="modal-sg-hp-label"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
