@@ -71,7 +71,7 @@
       display: flex; flex-direction: column;
       position: fixed; left: -300px; top: 0; z-index: 200;
       transition: left .32s cubic-bezier(.4,0,.2,1);
-      overflow-y: auto;
+      overflow-y: hidden;
       box-shadow: 4px 0 24px rgba(155,135,245,0.08);
     }
     .sidebar.open { left: 0; }
@@ -151,7 +151,7 @@
     .btn-submit:active { transform: scale(.98); }
 
     /* pet list */
-    .pet-section { padding: 10px 12px; flex: 1; }
+    .pet-section { padding: 10px 12px; flex: 1; overflow-y: auto; min-height: 0; }
     .pet-sec-title {
       font-size: 10px; letter-spacing: 2px; color: var(--t3);
       text-transform: uppercase; margin-bottom: 8px;
@@ -458,14 +458,14 @@
       display: flex; gap: 3px; flex-wrap: wrap; margin-top: 4px;
     }
     .pet-attr {
-      font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 4px;
-      font-family: 'Nunito', sans-serif;
+      font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+      font-family: 'Nunito', sans-serif; display: flex; align-items: center; gap: 2px;
     }
     .attr-지 { background: #e8f5e9; color: #388e3c; border: 1px solid #c8e6c9; }
     .attr-수 { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; }
     .attr-화 { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
     .attr-풍 { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
-    .attr-무 { background: #f5f5f5; color: #616161; border: 1px solid #e0e0e0; }
+    .attr-num { font-size: 9px; font-weight: 900; font-family: 'Nunito', sans-serif; opacity: 0.85; }
 
     .pet-obtain {
       font-size: 10px; color: var(--t3); margin-top: 3px;
@@ -474,7 +474,48 @@
 
     .pet-item { flex-direction: column; align-items: stretch; cursor: pointer; }
     .pet-item-top { display: flex; align-items: center; justify-content: space-between; }
-    .pet-item-info { padding: 0 2px 2px; }
+    .pet-item-info { padding: 0 2px 4px; }
+
+    /* ─── 펫 정보 카드 (메인) ─── */
+    .pet-info-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 16px 20px; margin-bottom: 14px;
+      box-shadow: var(--shadow); animation: fadeUp .25s ease;
+    }
+    .pet-info-card-title {
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--t3); margin-bottom: 12px;
+      font-family: 'Nunito', sans-serif; font-weight: 800;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .pet-info-card-title::before {
+      content: ''; display: block; width: 10px; height: 10px;
+      border-radius: 50%; background: linear-gradient(135deg, var(--a3), var(--a1));
+    }
+    .pet-info-name {
+      font-size: 18px; font-weight: 800; color: var(--t1);
+      margin-bottom: 10px; font-family: 'Nunito', sans-serif;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .pet-info-row {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 12px; color: var(--t2); margin-bottom: 7px;
+      line-height: 1.5;
+    }
+    .pet-info-label {
+      font-size: 10px; font-weight: 700; color: var(--t3);
+      letter-spacing: 1px; min-width: 36px; padding-top: 1px;
+      font-family: 'Nunito', sans-serif;
+    }
+    .pet-attr-bar {
+      display: flex; gap: 4px; flex-wrap: wrap; align-items: center;
+    }
+    .pet-attr-lg {
+      font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+      font-family: 'Noto Sans KR', sans-serif;
+      display: flex; align-items: center; gap: 3px;
+    }
+    .pet-attr-lg .attr-num { font-size: 12px; font-weight: 900; font-family: 'Nunito', sans-serif; }
   </style>
 </head>
 <body>
@@ -615,6 +656,24 @@
         <label class="field-label">페트 이름</label>
         <input class="field-input" id="pet-name" placeholder="이름을 검색하세요 ..." autocomplete="off" />
         <div class="suggestions" id="suggestions" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Pet Info Card -->
+    <div class="pet-info-card" id="pet-info-card" style="display:none">
+      <div class="pet-info-card-title">페트 정보</div>
+      <div class="pet-info-name" id="pi-name"></div>
+      <div class="pet-info-row">
+        <span class="pet-info-label">등급</span>
+        <span id="pi-grade"></span>
+      </div>
+      <div class="pet-info-row">
+        <span class="pet-info-label">속성</span>
+        <div class="pet-attr-bar" id="pi-attrs"></div>
+      </div>
+      <div class="pet-info-row">
+        <span class="pet-info-label">획득</span>
+        <span id="pi-obtain" style="color:var(--t2);font-size:12px;"></span>
       </div>
     </div>
 
@@ -1198,13 +1257,21 @@ function renderPetList() {
     const infoRow = document.createElement("div");
     infoRow.className = "pet-item-info";
 
-    if (pet.attrs && pet.attrs.length > 0) {
+    const attrObj2 = pet.attr || {};
+    const attrArr2 = pet.attrs || [];
+    const hasAttrObj = Object.keys(attrObj2).length > 0;
+    const displayAttrs = hasAttrObj
+      ? ["지","수","화","풍"].filter(a => attrObj2[a] > 0)
+      : attrArr2;
+
+    if (displayAttrs.length > 0) {
       const attrRow = document.createElement("div");
       attrRow.className = "pet-attr-row";
-      pet.attrs.forEach(a => {
+      displayAttrs.forEach(a => {
         const span = document.createElement("span");
         span.className = `pet-attr attr-${a}`;
-        span.textContent = a;
+        const val = attrObj2[a];
+        span.innerHTML = `${a}<span class="attr-num">${val > 0 ? val : ""}</span>`;
         attrRow.appendChild(span);
       });
       infoRow.appendChild(attrRow);
@@ -1320,7 +1387,62 @@ function selectPet(name){
   document.getElementById("suggestions").style.display="none";
   setStats(calcIdeal(petData[name]));
   document.getElementById("result-card").style.display="none";
+  updatePetInfoCard(name);
   renderPetList();
+}
+
+function updatePetInfoCard(name) {
+  const pet = petData[name];
+  const card = document.getElementById("pet-info-card");
+  if (!pet) { card.style.display="none"; return; }
+
+  // 이름 + 등급
+  const nameEl = document.getElementById("pi-name");
+  nameEl.innerHTML = "";
+  nameEl.appendChild(document.createTextNode(name));
+  if (pet.grade) {
+    const gb = document.createElement("span");
+    gb.className = `pet-grade grade-${pet.grade}`;
+    gb.textContent = pet.grade;
+    nameEl.appendChild(gb);
+  }
+
+  // 등급 행 숨기기 (이름에 이미 표시)
+  document.getElementById("pi-grade").textContent = pet.grade || "";
+
+  // 속성 — txt 파일의 attr 객체에서 수치 포함 표시
+  const attrsEl = document.getElementById("pi-attrs");
+  attrsEl.innerHTML = "";
+  const attrColors = { 지:"attr-지", 수:"attr-수", 화:"attr-화", 풍:"attr-풍" };
+  const attrEmoji  = { 지:"🌿", 수:"💧", 화:"🔥", 풍:"🌀" };
+
+  // attrs 배열 + 원본 attr 객체 둘 다 지원
+  const attrObj = pet.attr || {};       // 원본 수치 객체
+  const attrArr = pet.attrs || [];      // 속성명 배열
+
+  // 표시할 속성 목록: attrObj가 있으면 우선, 없으면 attrs 배열
+  const hasObj = Object.keys(attrObj).length > 0;
+  const allAttrs = ["지","수","화","풍"];
+
+  allAttrs.forEach(a => {
+    const val = attrObj[a];
+    const inArr = attrArr.includes(a);
+    if ((hasObj && val > 0) || (!hasObj && inArr)) {
+      const span = document.createElement("span");
+      span.className = `pet-attr-lg ${attrColors[a]}`;
+      span.innerHTML = `${attrEmoji[a]} ${a}<span class="attr-num">${hasObj ? val : ""}</span>`;
+      attrsEl.appendChild(span);
+    }
+  });
+
+  if (attrsEl.children.length === 0) {
+    attrsEl.textContent = "—";
+  }
+
+  // 획득방법
+  document.getElementById("pi-obtain").textContent = pet.obtain || "정보 없음";
+
+  card.style.display = "block";
 }
 
 /* ──── autocomplete ──── */
