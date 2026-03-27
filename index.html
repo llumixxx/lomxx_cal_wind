@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>윈드 환각 계산기 ver1.1</title>
+  <title>윈드 환각 계산기 ver1.3</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
   <!-- Firebase REST API (CSP 호환, eval 없음) -->
   <script>
@@ -207,7 +207,7 @@
     .toggle-btn.sb-open { left: 314px; }
 
     /* main */
-    .main { flex: 1; margin-left: 0; transition: margin-left .32s cubic-bezier(.4,0,.2,1); min-height: 100vh; }
+    .main { flex: 1; min-height: 100vh; }
     .main.shifted { margin-left: 300px; }
     .main-inner { max-width: 520px; margin: 0 auto; padding: 24px 18px 80px; }
 
@@ -312,7 +312,7 @@
     .sugg-item:hover { background: var(--s1); color: var(--a1); }
 
     /* stat grid */
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow: hidden; }
     .stat-field { position: relative; }
     .stat-badge {
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
@@ -548,112 +548,80 @@
       display: flex; align-items: center; gap: 3px;
     }
     .pet-attr-lg .attr-num { font-size: 12px; font-weight: 900; font-family: 'Nunito', sans-serif; }
-  </style>
+  
+    /* ── page-nav 탭 ── */
+    .page-nav {
+      display: flex; justify-content: center; gap: 8px;
+      margin-top: 16px; flex-wrap: wrap;
+    }
+    .pnav-tab {
+      text-decoration: none;
+      background: var(--white); border: 1.5px solid var(--border2);
+      border-radius: 99px; padding: 7px 16px;
+      font-size: 12px; font-weight: 700;
+      color: var(--t2); transition: all .15s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .pnav-tab:hover { background: var(--s2); color: var(--a1); border-color: var(--a1); }
+    .pnav-active { background: linear-gradient(135deg,var(--s2),#ffeef6); color: var(--a1); border-color: var(--a1); font-weight: 800; }
+
+
+    /* ── 스탯 +-버튼 ── */
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-field-new { display: flex; flex-direction: column; gap: 6px; }
+    .sfn-header { display: flex; align-items: baseline; justify-content: space-between; }
+    .sfn-label { font-size: 12px; font-weight: 700; color: var(--t2); }
+    .sfn-diff {
+      font-size: 11px; font-weight: 800; font-family: 'Nunito', sans-serif;
+      min-width: 28px; text-align: right;
+    }
+    .sfn-diff.pos { color: #38a169; }
+    .sfn-diff.neg { color: var(--err); }
+    .sfn-row { display: flex; align-items: center; gap: 0; overflow: hidden; border-radius: 10px; }
+    .sfn-btn {
+      width: 36px; height: 44px; border: 1.5px solid var(--border2);
+      background: var(--s2); cursor: pointer; font-size: 18px; font-weight: 700;
+      color: var(--a1); transition: all .12s; flex-shrink: 0;
+      font-family: 'Nunito', sans-serif; line-height: 1;
+    }
+    .sfn-m { border-radius: 0; border-right: none; }
+    .sfn-p { border-radius: 0; border-left: none; }
+    .sfn-btn:hover { background: var(--a1); color: #fff; border-color: var(--a1); }
+    .sfn-btn:active { transform: scale(0.94); }
+    .sfn-input {
+      flex: 1; min-width: 0; width: 0; height: 44px; border: 1.5px solid var(--border2);
+      text-align: center; font-size: 18px; font-weight: 900;
+      font-family: 'Nunito', sans-serif; color: var(--t1);
+      background: var(--white); outline: none;
+      -moz-appearance: textfield;
+    }
+    .sfn-input::-webkit-outer-spin-button,
+    .sfn-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .sfn-input:focus { border-color: var(--a1); background: var(--s1); }
+
+
+    /* ── 펫 정보 성장률 ── */
+    .pi-sg-item {
+      background: var(--s1); border: 1.5px solid var(--border);
+      border-radius: 9px; padding: 5px 9px;
+      display: flex; align-items: center; justify-content: space-between;
+      min-width: 0;
+    }
+    .pi-sg-lbl { font-size: 10px; font-weight: 700; color: var(--t3); flex-shrink: 0; }
+    .pi-sg-right { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+    .pi-sg-ic { font-size: 12px; font-weight: 800; font-family: 'Nunito', sans-serif; color: var(--t2); }
+    .pi-sg-sep { font-size: 10px; color: var(--t4); }
+    .pi-sg-val { font-size: 12px; font-weight: 900; font-family: 'Nunito', sans-serif; }
+    .pi-sg-atk .pi-sg-val { color: var(--a2); }
+    .pi-sg-def .pi-sg-val { color: var(--a1); }
+    .pi-sg-agi .pi-sg-val { color: #5acba8; }
+    .pi-sg-hp  .pi-sg-val { color: #d4943a; }
+</style>
 </head>
 <body>
 
 <!-- ───── Sidebar ───── -->
-<div class="sidebar" id="sidebar">
-  <div class="sb-head">
-    <div class="sb-logo">
-      <div class="sb-logo-dot"></div>
-      Pet Manager
-    </div>
-    <!-- 관리자만 보이는 버튼들 -->
-    <div class="btn-row" id="admin-btn-row" style="display:none">
-      <button class="btn-pill btn-lav" id="toggle-s-btn">페트 추가<br>(초기치/성장률)</button>
-      <button class="btn-pill btn-pnk" id="toggle-f-btn">페트 추가<br>(소숫점 초기치)</button>
-    </div>
 
-    <!-- 도감 버튼 -->
-    <a href="pokedex.html" class="pokedex-btn">🐾 펫 도감 보기</a>
-    <!-- 관리자 로그인 버튼 -->
-    <button class="admin-lock-btn" id="admin-lock-btn">🔒 관리자 모드</button>
-  </div>
-
-  <!-- 비밀번호 입력창 -->
-  <div class="admin-pw-wrap" id="admin-pw-wrap">
-    <div class="admin-pw-inner">
-      <input type="password" id="admin-pw-input" placeholder="비밀번호 입력..." />
-      <button id="admin-pw-confirm">확인</button>
-    </div>
-  </div>
-
-  <!-- S급 폼 -->
-  <div class="add-form" id="s-grade-form">
-    <div class="add-form-inner">
-      <div class="f-section">페트 이름</div>
-      <input class="f-input" id="s-name" placeholder="페트 이름" />
-      <div class="f-section">등급</div>
-      <select class="f-input" id="s-grade">
-        <option value="일반">일반</option>
-        <option value="2등급">2등급</option>
-        <option value="2등급">2등급</option>
-        <option value="1등급">1등급</option>
-      </select>
-      <div class="f-section">속성</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="지"> 지</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="수"> 수</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="화"> 화</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="풍"> 풍</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="s-attr-cb" value="무"> 무</label>
-      </div>
-      <div class="f-section">획득방법</div>
-      <input class="f-input" id="s-obtain" placeholder="예: 이벤트, 상점, 드랍 등" />
-      <div class="f-section">S급 초기치</div>
-      <input class="f-input" id="s-st1" type="number" placeholder="공격력 초기치" step="any" />
-      <input class="f-input" id="s-df1" type="number" placeholder="방어력 초기치" step="any" />
-      <input class="f-input" id="s-de1" type="number" placeholder="순발력 초기치" step="any" />
-      <input class="f-input" id="s-hp1" type="number" placeholder="체력 초기치" step="any" />
-      <div class="f-section">S급 성장률</div>
-      <input class="f-input" id="s-st2" type="number" placeholder="공격력 성장률" step="any" />
-      <input class="f-input" id="s-df2" type="number" placeholder="방어력 성장률" step="any" />
-      <input class="f-input" id="s-de2" type="number" placeholder="순발력 성장률" step="any" />
-      <input class="f-input" id="s-hp2" type="number" placeholder="체력 성장률" step="any" />
-      <button class="btn-submit" id="add-s-btn">✦ 추가하기</button>
-    </div>
-  </div>
-
-  <!-- 소숫점 폼 -->
-  <div class="add-form" id="final-form">
-    <div class="add-form-inner">
-      <div class="f-section">페트 이름</div>
-      <input class="f-input" id="f-name" placeholder="페트 이름" />
-      <div class="f-section">등급</div>
-      <select class="f-input" id="f-grade">
-        <option value="일반">일반</option>
-        <option value="2등급">2등급</option>
-        <option value="2등급">2등급</option>
-        <option value="1등급">1등급</option>
-      </select>
-      <div class="f-section">속성</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="지"> 지</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="수"> 수</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="화"> 화</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="풍"> 풍</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;"><input type="checkbox" class="f-attr-cb" value="무"> 무</label>
-      </div>
-      <div class="f-section">획득방법</div>
-      <input class="f-input" id="f-obtain" placeholder="예: 이벤트, 상점, 드랍 등" />
-      <div class="f-section">소숫점 초기치</div>
-      <input class="f-input" id="f-atk" type="number" placeholder="공격력" step="any" />
-      <input class="f-input" id="f-def" type="number" placeholder="방어력" step="any" />
-      <input class="f-input" id="f-agi" type="number" placeholder="순발력" step="any" />
-      <input class="f-input" id="f-hp"  type="number" placeholder="체력"   step="any" />
-      <button class="btn-submit" id="add-f-btn">✦ 추가하기</button>
-    </div>
-  </div>
-
-  <div class="pet-section" style="display:none">
-    <div class="pet-sec-title" id="pet-list-title">등록된 페트</div>
-    <div id="pet-list"></div>
-  </div>
-</div>
-
-<!-- Toggle btn -->
-<button class="toggle-btn" id="toggle-btn">☰</button>
 
 <!-- ───── Main ───── -->
 <div class="main" id="main">
@@ -664,7 +632,7 @@
       <div class="wind-badge"><div class="wind-badge-dot"></div>WIND SERVER</div>
       <h1 class="page-title">윈드 환각 계산기</h1>
       <div style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f0eeff,#ffeef6);border:1.5px solid var(--border2);border-radius:99px;padding:3px 12px;font-size:10px;font-weight:800;color:var(--a1);letter-spacing:1.5px;font-family:'Nunito',sans-serif;margin-bottom:4px;">
-        ✦ ver 1.1 ✦
+        ✦ ver 1.3 ✦
       </div>
       <p class="page-sub">🌸 Pet Growth Calculator 🌸</p>
       <div class="deco-dots">
@@ -673,6 +641,12 @@
         <div class="deco-dot" style="background:var(--a3)"></div>
         <div class="deco-dot" style="background:var(--a4)"></div>
         <div class="deco-dot" style="background:var(--a5)"></div>
+      </div>
+      <!-- 페이지 네비 탭 -->
+      <div class="page-nav">
+        <a href="index.html"   class="pnav-tab pnav-active">🏠 환각 계산기</a>
+        <a href="pokedex.html" class="pnav-tab">🐾 펫 도감</a>
+        <a href="card.html"    class="pnav-tab">🎲 큐브 시뮬레이터</a>
       </div>
     </div>
 
@@ -741,6 +715,48 @@
             <span class="pet-info-label">획득</span>
             <span id="pi-obtain" style="color:var(--t2);font-size:12px;"></span>
           </div>
+          <!-- 성장률 그리드 -->
+          <div id="pi-sg-wrap" style="margin-top:10px;display:none;">
+            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t3);font-family:'Nunito',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:7px;">성장률</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+              <div class="pi-sg-item pi-sg-atk">
+                <span class="pi-sg-lbl">⚔ 공격</span>
+                <span class="pi-sg-right">
+                  <span class="pi-sg-ic" id="pi-ic-atk">—</span>
+                  <span class="pi-sg-sep">/</span>
+                  <span class="pi-sg-val" id="pi-sg-atk">—</span>
+                </span>
+              </div>
+              <div class="pi-sg-item pi-sg-def">
+                <span class="pi-sg-lbl">🛡 방어</span>
+                <span class="pi-sg-right">
+                  <span class="pi-sg-ic" id="pi-ic-def">—</span>
+                  <span class="pi-sg-sep">/</span>
+                  <span class="pi-sg-val" id="pi-sg-def">—</span>
+                </span>
+              </div>
+              <div class="pi-sg-item pi-sg-agi">
+                <span class="pi-sg-lbl">💨 순발</span>
+                <span class="pi-sg-right">
+                  <span class="pi-sg-ic" id="pi-ic-agi">—</span>
+                  <span class="pi-sg-sep">/</span>
+                  <span class="pi-sg-val" id="pi-sg-agi">—</span>
+                </span>
+              </div>
+              <div class="pi-sg-item pi-sg-hp">
+                <span class="pi-sg-lbl">❤ 내구</span>
+                <span class="pi-sg-right">
+                  <span class="pi-sg-ic" id="pi-ic-hp">—</span>
+                  <span class="pi-sg-sep">/</span>
+                  <span class="pi-sg-val" id="pi-sg-hp">—</span>
+                </span>
+              </div>
+            </div>
+            <div style="margin-top:6px;padding:6px 10px;background:linear-gradient(135deg,var(--s2),#ffeef6);border-radius:9px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:10px;font-weight:800;color:var(--t2);">S급 성장률</span>
+              <span style="font-size:15px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);" id="pi-sg-total">—</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -749,25 +765,53 @@
     <div class="card">
       <div class="card-title">현재 스탯 입력</div>
       <div class="stat-grid">
-        <div class="stat-field">
-          <label class="field-label">공격력</label>
-          <input class="field-input" type="number" id="d-atk" placeholder="0" />
-          <span class="stat-badge badge-atk">ATK</span>
+        <!-- 내구력 -->
+        <div class="stat-field-new">
+          <div class="sfn-header">
+            <label class="sfn-label">내구력</label>
+            <span class="sfn-diff" id="diff-hp"></span>
+          </div>
+          <div class="sfn-row">
+            <button class="sfn-btn sfn-m" onclick="adjStat('d-hp',-1,'diff-hp')">−</button>
+            <input class="sfn-input" type="number" id="d-hp" placeholder="0" oninput="updateDiff('d-hp','diff-hp')" />
+            <button class="sfn-btn sfn-p" onclick="adjStat('d-hp',1,'diff-hp')">+</button>
+          </div>
         </div>
-        <div class="stat-field">
-          <label class="field-label">방어력</label>
-          <input class="field-input" type="number" id="d-def" placeholder="0" />
-          <span class="stat-badge badge-def">DEF</span>
+        <!-- 공격력 -->
+        <div class="stat-field-new">
+          <div class="sfn-header">
+            <label class="sfn-label">공격력</label>
+            <span class="sfn-diff" id="diff-atk"></span>
+          </div>
+          <div class="sfn-row">
+            <button class="sfn-btn sfn-m" onclick="adjStat('d-atk',-1,'diff-atk')">−</button>
+            <input class="sfn-input" type="number" id="d-atk" placeholder="0" oninput="updateDiff('d-atk','diff-atk')" />
+            <button class="sfn-btn sfn-p" onclick="adjStat('d-atk',1,'diff-atk')">+</button>
+          </div>
         </div>
-        <div class="stat-field">
-          <label class="field-label">순발력</label>
-          <input class="field-input" type="number" id="d-agi" placeholder="0" />
-          <span class="stat-badge badge-agi">AGI</span>
+        <!-- 방어력 -->
+        <div class="stat-field-new">
+          <div class="sfn-header">
+            <label class="sfn-label">방어력</label>
+            <span class="sfn-diff" id="diff-def"></span>
+          </div>
+          <div class="sfn-row">
+            <button class="sfn-btn sfn-m" onclick="adjStat('d-def',-1,'diff-def')">−</button>
+            <input class="sfn-input" type="number" id="d-def" placeholder="0" oninput="updateDiff('d-def','diff-def')" />
+            <button class="sfn-btn sfn-p" onclick="adjStat('d-def',1,'diff-def')">+</button>
+          </div>
         </div>
-        <div class="stat-field">
-          <label class="field-label">체력</label>
-          <input class="field-input" type="number" id="d-hp" placeholder="0" />
-          <span class="stat-badge badge-hp">HP</span>
+        <!-- 순발력 -->
+        <div class="stat-field-new">
+          <div class="sfn-header">
+            <label class="sfn-label">순발력</label>
+            <span class="sfn-diff" id="diff-agi"></span>
+          </div>
+          <div class="sfn-row">
+            <button class="sfn-btn sfn-m" onclick="adjStat('d-agi',-1,'diff-agi')">−</button>
+            <input class="sfn-input" type="number" id="d-agi" placeholder="0" oninput="updateDiff('d-agi','diff-agi')" />
+            <button class="sfn-btn sfn-p" onclick="adjStat('d-agi',1,'diff-agi')">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -789,6 +833,36 @@
 
 <script>
 Decimal.set({ precision: 50, rounding: Decimal.ROUND_HALF_UP });
+
+/* ── 스탯 +- 버튼 & diff 표시 ── */
+var STAT_BASE = { hp: null, atk: null, def: null, agi: null };
+
+function adjStat(id, delta, diffId) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var val = parseInt(el.value) || 0;
+  el.value = Math.max(0, val + delta);
+  updateDiff(id, diffId);
+}
+function updateDiff(id, diffId) {
+  var el = document.getElementById(id);
+  var diffEl = document.getElementById(diffId);
+  if (!el || !diffEl) return;
+  var key = id.replace('d-', '');
+  var base = STAT_BASE[key];
+  if (base === null || base === undefined) { diffEl.textContent = ''; return; }
+  var cur = parseInt(el.value) || 0;
+  var d = cur - base;
+  if (d === 0) { diffEl.textContent = ''; diffEl.className = 'sfn-diff'; }
+  else if (d > 0) { diffEl.textContent = '+' + d; diffEl.className = 'sfn-diff pos'; }
+  else { diffEl.textContent = String(d); diffEl.className = 'sfn-diff neg'; }
+}
+function setStatBase(hp, atk, def, agi) {
+  STAT_BASE.hp = hp; STAT_BASE.atk = atk;
+  STAT_BASE.def = def; STAT_BASE.agi = agi;
+}
+
+
 
 /* ──── helpers ──── */
 function getChosung(str) {
@@ -1140,26 +1214,6 @@ const PET_IMAGES = {
   "묵룡": "https://wind01.net/info/img/301044.gif"
 
 };
-
-/* ──── admin ──── */
-const ADMIN_PASSWORD = "wind1234"; // ← 여기서 비밀번호 변경
-let isAdmin = false;
-
-function setAdminMode(on) {
-  isAdmin = on;
-  const btn = document.getElementById("admin-lock-btn");
-  const row = document.getElementById("admin-btn-row");
-  if (on) {
-    btn.textContent = "🔓 관리자 모드 (로그아웃)";
-    btn.classList.add("active");
-    row.style.display = "grid";
-  } else {
-    btn.textContent = "🔒 관리자 모드";
-    btn.classList.remove("active");
-    row.style.display = "none";
-  }
-  renderPetList();
-}
 
 /* ──── default data ──── */
 const DEFAULT_PETS = {
@@ -1580,7 +1634,9 @@ let selectedPet = "";
 function renderPetList() {
   const cont = document.getElementById("pet-list");
   const names = Object.keys(petData).sort((a,b)=>a.localeCompare(b,'ko-KR'));
-  document.getElementById("pet-list-title").textContent = `등록된 페트 (${names.length})`;
+  const titleEl = document.getElementById("pet-list-title");
+  if (titleEl) titleEl.textContent = `등록된 페트 (${names.length})`;
+  if (!cont) return; // 사이드바 없으면 스킵
   cont.innerHTML = "";
 
   const gradeOrder = {"1등급":0,"2등급":1,"일반":2,"":3};
@@ -1765,6 +1821,13 @@ function setStats(s){
   document.getElementById("d-def").value=s.def;
   document.getElementById("d-agi").value=s.agi;
   document.getElementById("d-hp").value=s.hp;
+  // 기준값 설정 → +- diff 표시 활성화
+  if(typeof setStatBase === 'function') setStatBase(s.hp, s.atk, s.def, s.agi);
+  // diff 초기화 (방금 설정한 값이 기준이므로 모두 0)
+  ['hp','atk','def','agi'].forEach(k => {
+    const de = document.getElementById('diff-' + k);
+    if(de){ de.textContent = ''; de.className = 'sfn-diff'; }
+  });
 }
 
 function selectPet(name){
@@ -1805,7 +1868,7 @@ function updatePetInfoCard(name) {
   }
 
   // 등급 행 숨기기 (이름에 이미 표시)
-  document.getElementById("pi-grade").textContent = pet.grade || "";
+  const piGrade = document.getElementById("pi-grade"); if(piGrade) piGrade.textContent = pet.grade || "";
 
   // 속성 수치 표시
   const attrsEl = document.getElementById("pi-attrs");
@@ -1829,7 +1892,40 @@ function updatePetInfoCard(name) {
   }
 
   // 획득방법
-  document.getElementById("pi-obtain").textContent = pet.obtain || "정보 없음";
+  const piObtain = document.getElementById("pi-obtain"); if(piObtain) piObtain.textContent = pet.obtain || "정보 없음";
+
+  // 성장률 + 초기치 표시
+  const sg = pet.sg || {};
+  const sgWrap = document.getElementById('pi-sg-wrap');
+  if (sgWrap) {
+    const hasSg = sg.atk || sg.def || sg.agi || sg.hp;
+    sgWrap.style.display = hasSg ? 'block' : 'none';
+    // 초기치 계산 (calcIdeal과 동일 공식)
+    const ideal = calcIdeal(pet);
+    const setV = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = (val != null) ? val.toFixed(3) : '—';
+    };
+    const setIc = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = (val != null) ? val : '—';
+    };
+    setV('pi-sg-atk', sg.atk);  setIc('pi-ic-atk', ideal.atk);
+    setV('pi-sg-def', sg.def);  setIc('pi-ic-def', ideal.def);
+    setV('pi-sg-agi', sg.agi);  setIc('pi-ic-agi', ideal.agi);
+    setV('pi-sg-hp',  sg.hp);   setIc('pi-ic-hp',  ideal.hp);
+    // 전체 성장률 계산
+    const totalEl = document.getElementById('pi-sg-total');
+    if (totalEl) {
+      if (sg.atk != null && sg.def != null && sg.agi != null) {
+        // S급 성장률 = 공격 + 방어 + 순발 (내구 제외)
+        const total = sg.atk + sg.def + sg.agi;
+        totalEl.textContent = total.toFixed(3);
+      } else {
+        totalEl.textContent = '—';
+      }
+    }
+  }
 
   card.style.display = "block";
 }
@@ -1837,7 +1933,7 @@ function updatePetInfoCard(name) {
 /* ──── autocomplete ──── */
 const petNameInput = document.getElementById("pet-name");
 const suggEl = document.getElementById("suggestions");
-petNameInput.addEventListener("input",()=>{
+if (petNameInput && suggEl) petNameInput.addEventListener("input",()=>{
   const q=petNameInput.value.trim(); suggEl.innerHTML="";
   if(!q){ suggEl.style.display="none"; return; }
   const qcs=getChosung(q);
@@ -1859,7 +1955,7 @@ petNameInput.addEventListener("input",()=>{
   suggEl.style.display="block";
 });
 // 엔터 입력 시 첫 번째 후보로 즉시 선택
-petNameInput.addEventListener("keydown", e => {
+if (petNameInput) petNameInput.addEventListener("keydown", e => {
   if (e.key === "Enter") {
     const q = petNameInput.value.trim();
     if (!q) return;
@@ -1877,7 +1973,7 @@ petNameInput.addEventListener("keydown", e => {
   }
 });
 // 목록 항목에서 방향키 탐색
-suggEl.addEventListener("keydown", e => {
+if(suggEl) suggEl.addEventListener("keydown", e => {
   const items = [...suggEl.querySelectorAll(".sugg-item")];
   const idx = items.indexOf(document.activeElement);
   if (e.key === "ArrowDown" && idx < items.length-1) { e.preventDefault(); items[idx+1].focus(); }
@@ -1885,136 +1981,7 @@ suggEl.addEventListener("keydown", e => {
   if (e.key === "Enter" && idx >= 0) { selectPet(items[idx].textContent); suggEl.style.display="none"; }
 });
 // 목록 항목 tabindex 추가는 renderSugg에서 처리
-document.addEventListener("click",e=>{ if(!e.target.closest(".sugg-wrap")) suggEl.style.display="none"; });
-
-/* ──── admin login/logout ──── */
-document.getElementById("admin-lock-btn").addEventListener("click", () => {
-  if (isAdmin) {
-    setAdminMode(false);
-    // 열려있던 추가 폼 닫기
-    document.getElementById("s-grade-form").classList.remove("open");
-    document.getElementById("final-form").classList.remove("open");
-    showToast("관리자 모드 해제됨", "err");
-  } else {
-    const wrap = document.getElementById("admin-pw-wrap");
-    wrap.classList.toggle("open");
-    if (wrap.classList.contains("open")) {
-      setTimeout(() => document.getElementById("admin-pw-input").focus(), 100);
-    }
-  }
-});
-
-document.getElementById("admin-pw-confirm").addEventListener("click", () => {
-  const pw = document.getElementById("admin-pw-input").value;
-  if (pw === ADMIN_PASSWORD) {
-    setAdminMode(true);
-    document.getElementById("admin-pw-wrap").classList.remove("open");
-    document.getElementById("admin-pw-input").value = "";
-    showToast("🔓 관리자 모드 활성화!");
-  } else {
-    showToast("비밀번호가 틀렸어요!", "err");
-    document.getElementById("admin-pw-input").value = "";
-    document.getElementById("admin-pw-input").focus();
-  }
-});
-
-document.getElementById("admin-pw-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") document.getElementById("admin-pw-confirm").click();
-});
-
-/* ──── sidebar ──── */
-document.getElementById("toggle-btn").addEventListener("click",()=>{
-  const sb=document.getElementById("sidebar");
-  const mn=document.getElementById("main");
-  const tb=document.getElementById("toggle-btn");
-  sb.classList.toggle("open");
-  mn.classList.toggle("shifted");
-  tb.classList.toggle("sb-open");
-  tb.textContent = sb.classList.contains("open") ? "✕" : "☰";
-});
-
-/* ──── form toggles ──── */
-document.getElementById("toggle-s-btn").addEventListener("click",()=>{
-  if(!isAdmin){ showToast("관리자만 사용할 수 있어요!", "err"); return; }
-  const s=document.getElementById("s-grade-form");
-  const f=document.getElementById("final-form");
-  s.classList.toggle("open");
-  if(s.classList.contains("open")) f.classList.remove("open");
-});
-document.getElementById("toggle-f-btn").addEventListener("click",()=>{
-  if(!isAdmin){ showToast("관리자만 사용할 수 있어요!", "err"); return; }
-  const s=document.getElementById("s-grade-form");
-  const f=document.getElementById("final-form");
-  f.classList.toggle("open");
-  if(f.classList.contains("open")) s.classList.remove("open");
-});
-
-/* ──── add S grade ──── */
-document.getElementById("add-s-btn").addEventListener("click", async ()=>{
-  const name=document.getElementById("s-name").value.trim();
-  const hp1=document.getElementById("s-hp1").value, hp2=document.getElementById("s-hp2").value;
-  const st1=document.getElementById("s-st1").value, st2=document.getElementById("s-st2").value;
-  const df1=document.getElementById("s-df1").value, df2=document.getElementById("s-df2").value;
-  const de1=document.getElementById("s-de1").value, de2=document.getElementById("s-de2").value;
-  if(!name||!hp1||!hp2||!st1||!st2||!df1||!df2||!de1||!de2){ alert("모든 필드를 채워주세요!"); return; }
-  if(petData[name]){ alert("이미 존재하는 이름입니다!"); return; }
-
-  const eVals=[575,555,535,515,495,475];
-  let best=null,minD=Infinity;
-  for(const e of eVals){ try{const s=solveEq(+hp2,+st2,+df2,+de2,e);if(s.diff<minD){minD=s.diff;best=s;}}catch{} }
-  if(!best){ alert("계수를 찾을 수 없습니다!"); return; }
-
-  const fac=best.e/10000;
-  const aP=best.a+2.5,bP=best.b+2.5,cP=best.c+2.5,dP=best.d+2.5;
-  let fH,fA,fD,fG,found=false;
-  for(let i=1;i<100;i++){
-    const k=i/100;
-    if(Math.floor((aP*k)*4+(bP*k)+(cP*k)+(dP*k))===Math.floor(+hp1)){
-      fH=(aP*k)*4+bP*k+cP*k+dP*k;
-      fA=(aP*k)*0.1+bP*k+(cP*k)*0.1+(dP*k)*0.05;
-      fD=(aP*k)*0.1+(bP*k)*0.1+cP*k+(dP*k)*0.05;
-      fG=dP*k; found=true; break;
-    }
-  }
-  if(!found){ alert("초기치 소숫점 계산 실패!"); return; }
-  const result=tryCoeff(fH,fA,fD,fG,0.1)||tryCoeff(fH,fA,fD,fG,0.2);
-  if(!result){ alert(`유효한 계수를 찾을 수 없습니다!\n체력:${fH.toFixed(3)} 공격:${fA.toFixed(3)} 방어:${fD.toFixed(3)} 순발:${fG.toFixed(3)}`); return; }
-
-  const grade = document.getElementById("s-grade").value;
-  const attrs = [...document.querySelectorAll(".s-attr-cb:checked")].map(c=>c.value);
-  const obtain = document.getElementById("s-obtain").value.trim();
-  petData[name]={...result, grade, attrs, obtain};
-  await savePets(); renderPetList();
-  ["s-name","s-hp1","s-hp2","s-st1","s-st2","s-df1","s-df2","s-de1","s-de2","s-obtain"].forEach(id=>document.getElementById(id).value="");
-  document.querySelectorAll(".s-attr-cb").forEach(c=>c.checked=false);
-  document.getElementById("s-grade").value="";
-  document.getElementById("s-grade-form").classList.remove("open");
-  showToast(`🌸 ${name} 추가 완료!`);
-});
-
-/* ──── add final stats ──── */
-document.getElementById("add-f-btn").addEventListener("click", async ()=>{
-  const name=document.getElementById("f-name").value.trim();
-  const fH=+document.getElementById("f-hp").value, fA=+document.getElementById("f-atk").value;
-  const fD=+document.getElementById("f-def").value, fG=+document.getElementById("f-agi").value;
-  if(!name||[fH,fA,fD,fG].some(v=>v===""||isNaN(v))){ alert("모든 필드를 채워주세요!"); return; }
-  if(petData[name]){ alert("이미 존재하는 이름입니다!"); return; }
-  const result=tryCoeff(fH,fA,fD,fG,0.1)||tryCoeff(fH,fA,fD,fG,0.2);
-  if(!result){ alert("유효한 계수를 찾을 수 없습니다!"); return; }
-
-  const grade = document.getElementById("f-grade").value;
-  const attrs = [...document.querySelectorAll(".f-attr-cb:checked")].map(c=>c.value);
-  const obtain = document.getElementById("f-obtain").value.trim();
-  petData[name]={...result, grade, attrs, obtain};
-  await savePets(); renderPetList();
-  ["f-name","f-hp","f-atk","f-def","f-agi","f-obtain"].forEach(id=>document.getElementById(id).value="");
-  document.querySelectorAll(".f-attr-cb").forEach(c=>c.checked=false);
-  document.getElementById("f-grade").value="";
-  document.getElementById("final-form").classList.remove("open");
-  showToast(`🌸 ${name} 추가 완료!`);
-});
-
-/* export/import 제거됨 */
+document.addEventListener("click",e=>{ if(suggEl && !e.target.closest(".sugg-wrap")) suggEl.style.display="none"; });
 
 /* ──── calculate ──── */
 document.getElementById("calc-btn").addEventListener("click",()=>{
@@ -2066,9 +2033,7 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
   }, 40);
 });
 
-["d-atk","d-def","d-agi","d-hp"].forEach(id=>{
-  document.getElementById(id).addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("calc-btn").click(); });
-});
+
 
 loadSharedPets();
 </script>
@@ -2099,7 +2064,7 @@ loadSharedPets();
   </div>
   <!-- 카피라이트 -->
   <div style="margin-top:14px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">
-    © 윈드 환각 계산기 ver 1.0
+    © 윈드 환각 계산기 ver 1.3
   </div>
 </div>
 </body>
