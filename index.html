@@ -209,7 +209,7 @@
     /* main */
     .main { flex: 1; min-height: 100vh; }
     .main.shifted { margin-left: 300px; }
-    .main-inner { max-width: 520px; margin: 0 auto; padding: 24px 18px 80px; }
+    
 
     /* header */
     .page-head { text-align: center; padding: 18px 0 26px; }
@@ -264,6 +264,7 @@
       border-radius: 20px; padding: 20px; margin-bottom: 14px;
       box-shadow: var(--shadow); transition: box-shadow .2s;
     }
+    .pet-info-card { flex: 1; }
     .card:hover { box-shadow: var(--shadow2); }
     .card-title {
       font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
@@ -312,7 +313,7 @@
     .sugg-item:hover { background: var(--s1); color: var(--a1); }
 
     /* stat grid */
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow: hidden; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .stat-field { position: relative; }
     .stat-badge {
       position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
@@ -353,7 +354,7 @@
     /* result */
     .result-card {
       background: var(--white); border: 1.5px solid var(--border);
-      border-radius: 20px; padding: 24px; margin-top: 14px;
+      border-radius: 20px; padding: 24px; margin-top: 0;
       box-shadow: var(--shadow); animation: fadeUp .3s ease;
     }
     @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
@@ -549,73 +550,122 @@
     }
     .pet-attr-lg .attr-num { font-size: 12px; font-weight: 900; font-family: 'Nunito', sans-serif; }
   
-    /* ── page-nav 탭 ── */
-    .page-nav {
-      display: flex; justify-content: center; gap: 8px;
-      margin-top: 16px; flex-wrap: wrap;
-    }
-    .pnav-tab {
-      text-decoration: none;
-      background: var(--white); border: 1.5px solid var(--border2);
-      border-radius: 99px; padding: 7px 16px;
-      font-size: 12px; font-weight: 700;
-      color: var(--t2); transition: all .15s;
-      font-family: 'Noto Sans KR', sans-serif;
-    }
-    .pnav-tab:hover { background: var(--s2); color: var(--a1); border-color: var(--a1); }
-    .pnav-active { background: linear-gradient(135deg,var(--s2),#ffeef6); color: var(--a1); border-color: var(--a1); font-weight: 800; }
+    .page-nav { display:flex; justify-content:center; gap:8px; margin-top:16px; flex-wrap:wrap; }
+    .pnav-tab { text-decoration:none; background:var(--white); border:1.5px solid var(--border2); border-radius:99px; padding:7px 16px; font-size:12px; font-weight:700; color:var(--t2); transition:all .15s; font-family:'Noto Sans KR',sans-serif; }
+    .pnav-tab:hover { background:var(--s2); color:var(--a1); border-color:var(--a1); }
+    .pnav-active { background:linear-gradient(135deg,var(--s2),#ffeef6); color:var(--a1); border-color:var(--a1); font-weight:800; }
 
+    /* ── 2컬럼 레이아웃 ── */
+    .main-inner { max-width:1100px; margin:0 auto; padding:20px 20px 80px; }
+    .calc-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media(max-width:760px){ .calc-layout{ grid-template-columns:1fr; } }
+    .calc-left  { display:flex; flex-direction:column; gap:14px; }
+    .calc-right { display:flex; flex-direction:column; gap:14px; }
+    /* calc-layout 행 높이 맞추기 */
+    .calc-layout { align-items: stretch; }
+    .calc-left { min-height: 400px; }
+    .calc-right { min-height: 400px; }
+    .calc-right .card { flex:1; display:flex; flex-direction:column; }
+    .calc-right .card .stat-grid { align-content:start; }
+    .pet-info-card { flex:1; min-height:200px; }
+    /* 결과 카드 - 전체 너비로 확장 */
+    .calc-result-wrap {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+    }
 
     /* ── 스탯 +-버튼 ── */
-    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .stat-field-new { display: flex; flex-direction: column; gap: 6px; }
-    .sfn-header { display: flex; align-items: baseline; justify-content: space-between; }
-    .sfn-label { font-size: 12px; font-weight: 700; color: var(--t2); }
-    .sfn-diff {
-      font-size: 11px; font-weight: 800; font-family: 'Nunito', sans-serif;
-      min-width: 28px; text-align: right;
-    }
-    .sfn-diff.pos { color: #38a169; }
-    .sfn-diff.neg { color: var(--err); }
-    .sfn-row { display: flex; align-items: center; gap: 0; overflow: hidden; border-radius: 10px; }
-    .sfn-btn {
-      width: 36px; height: 44px; border: 1.5px solid var(--border2);
-      background: var(--s2); cursor: pointer; font-size: 18px; font-weight: 700;
-      color: var(--a1); transition: all .12s; flex-shrink: 0;
-      font-family: 'Nunito', sans-serif; line-height: 1;
-    }
-    .sfn-m { border-radius: 0; border-right: none; }
-    .sfn-p { border-radius: 0; border-left: none; }
-    .sfn-btn:hover { background: var(--a1); color: #fff; border-color: var(--a1); }
-    .sfn-btn:active { transform: scale(0.94); }
-    .sfn-input {
-      flex: 1; min-width: 0; width: 0; height: 44px; border: 1.5px solid var(--border2);
-      text-align: center; font-size: 18px; font-weight: 900;
-      font-family: 'Nunito', sans-serif; color: var(--t1);
-      background: var(--white); outline: none;
-      -moz-appearance: textfield;
-    }
-    .sfn-input::-webkit-outer-spin-button,
-    .sfn-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .sfn-input:focus { border-color: var(--a1); background: var(--s1); }
-
+    .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; overflow:hidden; }
+    .stat-field-new { display:flex; flex-direction:column; gap:6px; }
+    .sfn-header { display:flex; align-items:baseline; justify-content:space-between; }
+    .sfn-label { font-size:12px; font-weight:700; color:var(--t2); }
+    .sfn-diff { font-size:11px; font-weight:800; font-family:'Nunito',sans-serif; min-width:28px; text-align:right; }
+    .sfn-diff.pos { color:#38a169; }
+    .sfn-diff.neg { color:var(--err); }
+    .sfn-row { display:flex; align-items:center; gap:0; overflow:hidden; border-radius:10px; }
+    .sfn-btn { width:36px; height:44px; border:1.5px solid var(--border2); background:var(--s2); cursor:pointer; font-size:18px; font-weight:700; color:var(--a1); transition:all .12s; flex-shrink:0; font-family:'Nunito',sans-serif; line-height:1; border-radius:0; }
+    .sfn-m { border-right:none; }
+    .sfn-p { border-left:none; }
+    .sfn-btn:hover { background:var(--a1); color:#fff; border-color:var(--a1); }
+    .sfn-btn:active { transform:scale(0.94); }
+    .sfn-input { flex:1; min-width:0; width:0; height:44px; border:1.5px solid var(--border2); text-align:center; font-size:18px; font-weight:900; font-family:'Nunito',sans-serif; color:var(--t1); background:var(--white); outline:none; -moz-appearance:textfield; }
+    .sfn-input::-webkit-outer-spin-button, .sfn-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+    .sfn-input:focus { border-color:var(--a1); background:var(--s1); }
 
     /* ── 펫 정보 성장률 ── */
-    .pi-sg-item {
-      background: var(--s1); border: 1.5px solid var(--border);
-      border-radius: 9px; padding: 5px 9px;
-      display: flex; align-items: center; justify-content: space-between;
-      min-width: 0;
+    .pi-sg-item { background:var(--s1); border:1.5px solid var(--border); border-radius:9px; padding:5px 9px; display:flex; align-items:center; justify-content:space-between; min-width:0; }
+    .pi-sg-lbl { font-size:10px; font-weight:700; color:var(--t3); flex-shrink:0; }
+    .pi-sg-right { display:flex; align-items:center; gap:2px; flex-shrink:0; }
+    .pi-sg-ic { font-size:12px; font-weight:800; font-family:'Nunito',sans-serif; color:var(--t2); }
+    .pi-sg-sep { font-size:10px; color:var(--t4); }
+    .pi-sg-val { font-size:12px; font-weight:900; font-family:'Nunito',sans-serif; }
+    .pi-sg-atk .pi-sg-val { color:var(--a2); }
+    .pi-sg-def .pi-sg-val { color:var(--a1); }
+    .pi-sg-agi .pi-sg-val { color:#5acba8; }
+    .pi-sg-hp  .pi-sg-val { color:#d4943a; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
-    .pi-sg-lbl { font-size: 10px; font-weight: 700; color: var(--t3); flex-shrink: 0; }
-    .pi-sg-right { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
-    .pi-sg-ic { font-size: 12px; font-weight: 800; font-family: 'Nunito', sans-serif; color: var(--t2); }
-    .pi-sg-sep { font-size: 10px; color: var(--t4); }
-    .pi-sg-val { font-size: 12px; font-weight: 900; font-family: 'Nunito', sans-serif; }
-    .pi-sg-atk .pi-sg-val { color: var(--a2); }
-    .pi-sg-def .pi-sg-val { color: var(--a1); }
-    .pi-sg-agi .pi-sg-val { color: #5acba8; }
-    .pi-sg-hp  .pi-sg-val { color: #d4943a; }
+
+    /* ── 펫 정보 카드 ── */
+    .pet-info-card { flex:1; }
+    .pic-inner {
+      display:flex; align-items:stretch; gap:0;
+      overflow:hidden; border-radius:20px;
+      min-height:280px;
+    }
+    .pic-img-side {
+      width:140px; min-width:140px; flex-shrink:0;
+      background:linear-gradient(145deg,#f0eeff 0%,#ffeef6 60%,#f0f9ff 100%);
+      border-right:1.5px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      padding:14px; position:relative; overflow:hidden;
+    }
+    .pic-img-box {
+      width:96px; height:96px;
+      background:var(--white); border-radius:20px;
+      border:2px solid var(--border2);
+      box-shadow:0 6px 20px rgba(155,135,245,0.18);
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden; position:relative; z-index:1;
+    }
+    .pic-right {
+      flex:1; padding:16px 18px; min-width:0;
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    /* 공란 상태 */
+    .pic-empty {
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; gap:10px; text-align:center; height:100%;
+    }
+    .pic-empty-dots { display:flex; gap:6px; justify-content:center; }
+    .pic-empty-dots div {
+      width:7px; height:7px; border-radius:50%; opacity:0.4;
+    }
+    @keyframes piBounce {
+      0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)}
+    }
+    .pic-empty-msg {
+      font-size:12px; font-weight:800; color:var(--t3);
+      font-family:'Nunito',sans-serif; line-height:1.7;
+    }
+    .pic-skeleton-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:5px; width:100%; opacity:0.2;
+    }
+    .pic-skeleton-sgrade {
+      width:100%; padding:5px 10px;
+      background:var(--s1); border-radius:9px; border:1.5px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; opacity:0.2;
+    }
+    /* 실제 정보 상태 */
+    .pic-real { width:100%; }
 </style>
 </head>
 <body>
@@ -642,7 +692,6 @@
         <div class="deco-dot" style="background:var(--a4)"></div>
         <div class="deco-dot" style="background:var(--a5)"></div>
       </div>
-      <!-- 페이지 네비 탭 -->
       <div class="page-nav">
         <a href="index.html"   class="pnav-tab pnav-active">🏠 환각 계산기</a>
         <a href="pokedex.html" class="pnav-tab">🐾 펫 도감</a>
@@ -659,7 +708,10 @@
       <span style="font-size:12px;color:var(--t2);">환각 계산기는 어디까지나<br>단순 참고용으로 사용해주세요 🌷</span>
     </div>
 
-    <!-- Pet select -->
+    <div class="calc-layout">
+
+      <!-- 왼쪽: 펫 선택 + 펫 정보 -->
+      <div class="calc-left">
     <div class="card">
       <div class="card-title">페트 선택</div>
       <div class="field sugg-wrap">
@@ -669,161 +721,137 @@
       </div>
     </div>
 
-    <!-- Pet Info Card -->
-    <div class="pet-info-card" id="pet-info-card" style="display:none">
-      <div style="display:flex;align-items:stretch;gap:0;overflow:hidden;border-radius:20px;">
-        <!-- 왼쪽: 이미지 -->
-        <div id="pi-img-side" style="
-          width:140px;min-width:140px;flex-shrink:0;
-          background:linear-gradient(145deg,#f0eeff 0%,#ffeef6 60%,#f0f9ff 100%);
-          border-right:1.5px solid var(--border);
-          display:flex;align-items:center;justify-content:center;
-          padding:14px;position:relative;overflow:hidden;">
-          <!-- 큰 원형 장식 배경 -->
-          <div style="position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(155,135,245,0.08);"></div>
-          <div style="position:absolute;bottom:-15px;left:-15px;width:50px;height:50px;border-radius:50%;background:rgba(245,135,184,0.08);"></div>
-          <!-- 작은 도트들 -->
-          <div style="position:absolute;top:10px;left:10px;width:5px;height:5px;border-radius:50%;background:var(--a1);opacity:0.5;"></div>
-          <div style="position:absolute;top:18px;left:18px;width:3px;height:3px;border-radius:50%;background:var(--a2);opacity:0.4;"></div>
-          <div style="position:absolute;bottom:10px;right:10px;width:5px;height:5px;border-radius:50%;background:var(--a2);opacity:0.5;"></div>
-          <div style="position:absolute;bottom:18px;right:18px;width:3px;height:3px;border-radius:50%;background:var(--a3);opacity:0.4;"></div>
-          <!-- 이미지 박스 -->
-          <div id="pi-img-inner" style="
-            width:96px;height:96px;
-            background:var(--white);
-            border-radius:20px;
-            border:2px solid var(--border2);
-            box-shadow:0 6px 20px rgba(155,135,245,0.18),0 2px 8px rgba(245,135,184,0.1);
-            display:flex;align-items:center;justify-content:center;
-            overflow:hidden;position:relative;z-index:1;">
-            <div style="font-size:38px;">🐾</div>
-          </div>
-        </div>
-        <!-- 오른쪽: 정보 -->
-        <div style="flex:1;padding:16px 18px;min-width:0;display:flex;flex-direction:column;justify-content:center;">
-          <div class="pet-info-card-title">🐾 페트 정보</div>
-          <div class="pet-info-name" id="pi-name"></div>
-          <div class="pet-info-row">
-            <span class="pet-info-label">등급</span>
-            <span id="pi-grade"></span>
-          </div>
-          <div class="pet-info-row">
-            <span class="pet-info-label">속성</span>
-            <div class="pet-attr-bar" id="pi-attrs"></div>
-          </div>
-          <div class="pet-info-row">
-            <span class="pet-info-label">획득</span>
-            <span id="pi-obtain" style="color:var(--t2);font-size:12px;"></span>
-          </div>
-          <!-- 성장률 그리드 -->
-          <div id="pi-sg-wrap" style="margin-top:10px;display:none;">
-            <div style="font-size:9px;letter-spacing:1.5px;color:var(--t3);font-family:'Nunito',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:7px;">성장률</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-              <div class="pi-sg-item pi-sg-atk">
-                <span class="pi-sg-lbl">⚔ 공격</span>
-                <span class="pi-sg-right">
-                  <span class="pi-sg-ic" id="pi-ic-atk">—</span>
-                  <span class="pi-sg-sep">/</span>
-                  <span class="pi-sg-val" id="pi-sg-atk">—</span>
-                </span>
-              </div>
-              <div class="pi-sg-item pi-sg-def">
-                <span class="pi-sg-lbl">🛡 방어</span>
-                <span class="pi-sg-right">
-                  <span class="pi-sg-ic" id="pi-ic-def">—</span>
-                  <span class="pi-sg-sep">/</span>
-                  <span class="pi-sg-val" id="pi-sg-def">—</span>
-                </span>
-              </div>
-              <div class="pi-sg-item pi-sg-agi">
-                <span class="pi-sg-lbl">💨 순발</span>
-                <span class="pi-sg-right">
-                  <span class="pi-sg-ic" id="pi-ic-agi">—</span>
-                  <span class="pi-sg-sep">/</span>
-                  <span class="pi-sg-val" id="pi-sg-agi">—</span>
-                </span>
-              </div>
-              <div class="pi-sg-item pi-sg-hp">
-                <span class="pi-sg-lbl">❤ 내구</span>
-                <span class="pi-sg-right">
-                  <span class="pi-sg-ic" id="pi-ic-hp">—</span>
-                  <span class="pi-sg-sep">/</span>
-                  <span class="pi-sg-val" id="pi-sg-hp">—</span>
-                </span>
+        <!-- Pet Info Card -->
+        <div class="pet-info-card" id="pet-info-card">
+          <div class="pic-inner">
+            <!-- 왼쪽: 이미지 -->
+            <div id="pi-img-side" class="pic-img-side">
+              <div style="position:absolute;top:-20px;right:-20px;width:70px;height:70px;border-radius:50%;background:rgba(155,135,245,0.08);"></div>
+              <div style="position:absolute;bottom:-15px;left:-15px;width:50px;height:50px;border-radius:50%;background:rgba(245,135,184,0.08);"></div>
+              <div style="position:absolute;top:10px;left:10px;width:5px;height:5px;border-radius:50%;background:var(--a1);opacity:0.5;"></div>
+              <div style="position:absolute;bottom:10px;right:10px;width:5px;height:5px;border-radius:50%;background:var(--a2);opacity:0.5;"></div>
+              <div id="pi-img-inner" class="pic-img-box">
+                <div style="font-size:34px;">🐾</div>
               </div>
             </div>
-            <div style="margin-top:6px;padding:6px 10px;background:linear-gradient(135deg,var(--s2),#ffeef6);border-radius:9px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
-              <span style="font-size:10px;font-weight:800;color:var(--t2);">S급 성장률</span>
-              <span style="font-size:15px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);" id="pi-sg-total">—</span>
+            <!-- 오른쪽: 정보 -->
+            <div class="pic-right">
+              <!-- 공란 상태 -->
+              <div id="pi-empty-state" class="pic-empty">
+                <div class="pic-empty-dots">
+                  <div style="background:var(--a1);animation:piBounce 1.2s ease-in-out 0s infinite;"></div>
+                  <div style="background:var(--a2);animation:piBounce 1.2s ease-in-out 0.2s infinite;"></div>
+                  <div style="background:var(--a3);animation:piBounce 1.2s ease-in-out 0.4s infinite;"></div>
+                </div>
+                <div class="pic-empty-msg">페트 이름을 검색하면<br>정보가 표시됩니다</div>
+                <!-- skeleton 성장률 -->
+                <div class="pic-skeleton-grid">
+                  <div class="pi-sg-item"><span class="pi-sg-lbl">⚔ 공격</span><span class="pi-sg-right"><span class="pi-sg-ic">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val">—</span></span></div>
+                  <div class="pi-sg-item"><span class="pi-sg-lbl">🛡 방어</span><span class="pi-sg-right"><span class="pi-sg-ic">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val">—</span></span></div>
+                  <div class="pi-sg-item"><span class="pi-sg-lbl">💨 순발</span><span class="pi-sg-right"><span class="pi-sg-ic">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val">—</span></span></div>
+                  <div class="pi-sg-item"><span class="pi-sg-lbl">❤ 내구</span><span class="pi-sg-right"><span class="pi-sg-ic">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val">—</span></span></div>
+                </div>
+                <div class="pic-skeleton-sgrade">
+                  <span style="font-size:10px;font-weight:800;color:var(--t4);">S급 성장률</span>
+                  <span style="font-size:15px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t4);">—</span>
+                </div>
+              </div>
+              <!-- 실제 정보 -->
+              <div id="pi-real-state" class="pic-real" style="display:none;">
+                <div class="pet-info-card-title">🐾 페트 정보</div>
+                <div class="pet-info-name" id="pi-name"></div>
+                <div class="pet-info-row"><span class="pet-info-label">등급</span><span id="pi-grade"></span></div>
+                <div class="pet-info-row"><span class="pet-info-label">속성</span><div class="pet-attr-bar" id="pi-attrs"></div></div>
+                <div class="pet-info-row"><span class="pet-info-label">획득</span><span id="pi-obtain" style="color:var(--t2);font-size:12px;"></span></div>
+                <div id="pi-sg-wrap" style="margin-top:10px;display:none;">
+                  <div style="font-size:9px;letter-spacing:1.5px;color:var(--t3);font-family:'Nunito',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:7px;">성장률</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                    <div class="pi-sg-item pi-sg-atk"><span class="pi-sg-lbl">⚔ 공격</span><span class="pi-sg-right"><span class="pi-sg-ic" id="pi-ic-atk">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val" id="pi-sg-atk">—</span></span></div>
+                    <div class="pi-sg-item pi-sg-def"><span class="pi-sg-lbl">🛡 방어</span><span class="pi-sg-right"><span class="pi-sg-ic" id="pi-ic-def">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val" id="pi-sg-def">—</span></span></div>
+                    <div class="pi-sg-item pi-sg-agi"><span class="pi-sg-lbl">💨 순발</span><span class="pi-sg-right"><span class="pi-sg-ic" id="pi-ic-agi">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val" id="pi-sg-agi">—</span></span></div>
+                    <div class="pi-sg-item pi-sg-hp"><span class="pi-sg-lbl">❤ 내구</span><span class="pi-sg-right"><span class="pi-sg-ic" id="pi-ic-hp">—</span><span class="pi-sg-sep">/</span><span class="pi-sg-val" id="pi-sg-hp">—</span></span></div>
+                  </div>
+                  <div style="margin-top:6px;padding:6px 10px;background:linear-gradient(135deg,var(--s2),#ffeef6);border-radius:9px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
+                    <span style="font-size:10px;font-weight:800;color:var(--t2);">S급 성장률</span>
+                    <span style="font-size:15px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);" id="pi-sg-total">—</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Stats -->
-    <div class="card">
-      <div class="card-title">현재 스탯 입력</div>
-      <div class="stat-grid">
-        <!-- 내구력 -->
-        <div class="stat-field-new">
-          <div class="sfn-header">
-            <label class="sfn-label">내구력</label>
-            <span class="sfn-diff" id="diff-hp"></span>
-          </div>
-          <div class="sfn-row">
-            <button class="sfn-btn sfn-m" onclick="adjStat('d-hp',-1,'diff-hp')">−</button>
-            <input class="sfn-input" type="number" id="d-hp" placeholder="0" oninput="updateDiff('d-hp','diff-hp')" />
-            <button class="sfn-btn sfn-p" onclick="adjStat('d-hp',1,'diff-hp')">+</button>
+      <!-- 오른쪽: 스탯 입력 + 계산 -->
+      <div class="calc-right">
+        <!-- Stats -->
+        <div class="card">
+          <div class="card-title">현재 스탯 입력</div>
+          <div class="stat-grid">
+            <div class="stat-field-new">
+              <div class="sfn-header"><label class="sfn-label">내구력</label><span class="sfn-diff" id="diff-hp"></span></div>
+              <div class="sfn-row">
+                <button class="sfn-btn sfn-m" onclick="adjStat('d-hp',-1,'diff-hp')">−</button>
+                <input class="sfn-input" type="number" id="d-hp" placeholder="0" oninput="updateDiff('d-hp','diff-hp')" />
+                <button class="sfn-btn sfn-p" onclick="adjStat('d-hp',1,'diff-hp')">+</button>
+              </div>
+            </div>
+            <div class="stat-field-new">
+              <div class="sfn-header"><label class="sfn-label">공격력</label><span class="sfn-diff" id="diff-atk"></span></div>
+              <div class="sfn-row">
+                <button class="sfn-btn sfn-m" onclick="adjStat('d-atk',-1,'diff-atk')">−</button>
+                <input class="sfn-input" type="number" id="d-atk" placeholder="0" oninput="updateDiff('d-atk','diff-atk')" />
+                <button class="sfn-btn sfn-p" onclick="adjStat('d-atk',1,'diff-atk')">+</button>
+              </div>
+            </div>
+            <div class="stat-field-new">
+              <div class="sfn-header"><label class="sfn-label">방어력</label><span class="sfn-diff" id="diff-def"></span></div>
+              <div class="sfn-row">
+                <button class="sfn-btn sfn-m" onclick="adjStat('d-def',-1,'diff-def')">−</button>
+                <input class="sfn-input" type="number" id="d-def" placeholder="0" oninput="updateDiff('d-def','diff-def')" />
+                <button class="sfn-btn sfn-p" onclick="adjStat('d-def',1,'diff-def')">+</button>
+              </div>
+            </div>
+            <div class="stat-field-new">
+              <div class="sfn-header"><label class="sfn-label">순발력</label><span class="sfn-diff" id="diff-agi"></span></div>
+              <div class="sfn-row">
+                <button class="sfn-btn sfn-m" onclick="adjStat('d-agi',-1,'diff-agi')">−</button>
+                <input class="sfn-input" type="number" id="d-agi" placeholder="0" oninput="updateDiff('d-agi','diff-agi')" />
+                <button class="sfn-btn sfn-p" onclick="adjStat('d-agi',1,'diff-agi')">+</button>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- 공격력 -->
-        <div class="stat-field-new">
-          <div class="sfn-header">
-            <label class="sfn-label">공격력</label>
-            <span class="sfn-diff" id="diff-atk"></span>
-          </div>
-          <div class="sfn-row">
-            <button class="sfn-btn sfn-m" onclick="adjStat('d-atk',-1,'diff-atk')">−</button>
-            <input class="sfn-input" type="number" id="d-atk" placeholder="0" oninput="updateDiff('d-atk','diff-atk')" />
-            <button class="sfn-btn sfn-p" onclick="adjStat('d-atk',1,'diff-atk')">+</button>
-          </div>
+
+        <button class="btn-calc" id="calc-btn">✦ 계산하기 ✦</button>
+
+        <div id="loading" class="loading" style="display:none">
+          <div class="spinner"></div>
+          계산 중이에요...
         </div>
-        <!-- 방어력 -->
-        <div class="stat-field-new">
-          <div class="sfn-header">
-            <label class="sfn-label">방어력</label>
-            <span class="sfn-diff" id="diff-def"></span>
-          </div>
-          <div class="sfn-row">
-            <button class="sfn-btn sfn-m" onclick="adjStat('d-def',-1,'diff-def')">−</button>
-            <input class="sfn-input" type="number" id="d-def" placeholder="0" oninput="updateDiff('d-def','diff-def')" />
-            <button class="sfn-btn sfn-p" onclick="adjStat('d-def',1,'diff-def')">+</button>
-          </div>
-        </div>
-        <!-- 순발력 -->
-        <div class="stat-field-new">
-          <div class="sfn-header">
-            <label class="sfn-label">순발력</label>
-            <span class="sfn-diff" id="diff-agi"></span>
-          </div>
-          <div class="sfn-row">
-            <button class="sfn-btn sfn-m" onclick="adjStat('d-agi',-1,'diff-agi')">−</button>
-            <input class="sfn-input" type="number" id="d-agi" placeholder="0" oninput="updateDiff('d-agi','diff-agi')" />
-            <button class="sfn-btn sfn-p" onclick="adjStat('d-agi',1,'diff-agi')">+</button>
-          </div>
+
+        <!-- 빈 공간 채우는 안내 -->
+        <div id="calc-hint" style="
+          flex:1; display:flex; flex-direction:column;
+          align-items:center; justify-content:center;
+          padding:20px; border-radius:16px;
+          background:linear-gradient(135deg,var(--s1),#ffeef655);
+          border:1.5px dashed var(--border2);
+          color:var(--t4); font-size:12px; font-weight:700;
+          font-family:'Nunito',sans-serif; text-align:center; gap:8px;
+          min-height:80px;
+        ">
+          <span style="font-size:28px;opacity:0.4;">✦</span>
+          <span>스탯 입력 후<br>계산하기를 눌러주세요</span>
         </div>
       </div>
+
     </div>
 
-    <button class="btn-calc" id="calc-btn">✦ 계산하기 ✦</button>
-
-    <div id="loading" class="loading" style="display:none">
-      <div class="spinner"></div>
-      계산 중이에요...
+    <!-- 결과 카드 - 전체 너비 -->
+    <div class="calc-result-wrap">
+      <div id="result-card" class="result-card" style="display:none"></div>
     </div>
-
-    <div id="result-card" class="result-card" style="display:none"></div>
 
   </div>
 </div>
@@ -834,34 +862,25 @@
 <script>
 Decimal.set({ precision: 50, rounding: Decimal.ROUND_HALF_UP });
 
-/* ── 스탯 +- 버튼 & diff 표시 ── */
-var STAT_BASE = { hp: null, atk: null, def: null, agi: null };
-
-function adjStat(id, delta, diffId) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  var val = parseInt(el.value) || 0;
-  el.value = Math.max(0, val + delta);
-  updateDiff(id, diffId);
+var STAT_BASE = { hp:null, atk:null, def:null, agi:null };
+function adjStat(id,delta,diffId){
+  var el=document.getElementById(id); if(!el)return;
+  el.value=Math.max(0,(parseInt(el.value)||0)+delta);
+  updateDiff(id,diffId);
 }
-function updateDiff(id, diffId) {
-  var el = document.getElementById(id);
-  var diffEl = document.getElementById(diffId);
-  if (!el || !diffEl) return;
-  var key = id.replace('d-', '');
-  var base = STAT_BASE[key];
-  if (base === null || base === undefined) { diffEl.textContent = ''; return; }
-  var cur = parseInt(el.value) || 0;
-  var d = cur - base;
-  if (d === 0) { diffEl.textContent = ''; diffEl.className = 'sfn-diff'; }
-  else if (d > 0) { diffEl.textContent = '+' + d; diffEl.className = 'sfn-diff pos'; }
-  else { diffEl.textContent = String(d); diffEl.className = 'sfn-diff neg'; }
+function updateDiff(id,diffId){
+  var el=document.getElementById(id),diffEl=document.getElementById(diffId);
+  if(!el||!diffEl)return;
+  var base=STAT_BASE[id.replace('d-','')];
+  if(base==null){diffEl.textContent='';return;}
+  var d=(parseInt(el.value)||0)-base;
+  if(d===0){diffEl.textContent='';diffEl.className='sfn-diff';}
+  else if(d>0){diffEl.textContent='+'+d;diffEl.className='sfn-diff pos';}
+  else{diffEl.textContent=String(d);diffEl.className='sfn-diff neg';}
 }
-function setStatBase(hp, atk, def, agi) {
-  STAT_BASE.hp = hp; STAT_BASE.atk = atk;
-  STAT_BASE.def = def; STAT_BASE.agi = agi;
+function setStatBase(hp,atk,def,agi){
+  STAT_BASE.hp=hp;STAT_BASE.atk=atk;STAT_BASE.def=def;STAT_BASE.agi=agi;
 }
-
 
 
 /* ──── helpers ──── */
@@ -905,6 +924,7 @@ const PET_IMAGES = {
   "두리": "https://pooyas.com/files/extravar_upload/109631/047/167/8c42820f1636f39fba73a3c3fbf402a7.gif",
   "베론": "https://pooyas.com/files/extravar_upload/109631/339/167/0522faf384f7264f6934a5d42c5dcd89.gif",
   "부비": "https://pooyas.com/files/extravar_upload/109631/257/167/97d7191256bde3ab2a8990b3576e8066.gif",
+  "부이": "https://wind01.net/info/img/100256.gif",
   "부이비": "https://pooyas.com/files/extravar_upload/109631/289/167/1ec2f9c0a250eb7de6e894797a274fe1.gif",
   "불그리": "https://pooyas.com/files/extravar_upload/109631/243/167/eb4fd765746395e9cdc64b802cfd21e6.gif",
   "실버우리": "https://pooyas.com/files/extravar_upload/109631/250/167/e7e8eaf580b5ec0df3d872cf29e29c18.gif",
@@ -1076,9 +1096,9 @@ const PET_IMAGES = {
   "황금복덩이": "https://pooyas.com/files/extravar_upload/109631/476/178/6803420e6cbc3e6a38786fd6286a06df.gif",
   "핑코": "https://pooyas.com/files/extravar_upload/109631/488/178/9f17479df8611f30a2460e8afd1513da.gif",
   "익시노돈": "https://pooyas.com/files/extravar_upload/109631/588/178/172a03f69b27093e9960f5424e263d91.gif",
-  "봉봉": "https://pooyas.com/files/extravar_upload/109631/714/178/19999926ed95a2f42695aa681d6f474f.gif",
+  "봉봉": "https://wind01.net/info/img/103246.gif",
   "키파": "https://pooyas.com/files/extravar_upload/109631/043/179/41cd28c5d6310e68cb246dbdaab29098.gif",
-  "카르페": "https://pooyas.com/files/extravar_upload/109631/694/178/6dcca1a8c48e7fab06e32237245701a7.gif",
+  "카르페": "https://wind01.net/info/img/105078.gif",
   "그램고르": "https://pooyas.com/files/extravar_upload/109631/070/179/6e4de334f46c4f3807a77985b3641614.gif",
   "타키온": "https://pooyas.com/files/extravar_upload/109631/079/179/b0bcaddb54cecd2e2c7085ba24bb224e.gif",
   "푸타푸타": "https://pooyas.com/files/extravar_upload/109631/086/179/dcc53e1b88010f2c8d1d3c1e2d3246df.gif",
@@ -1098,6 +1118,7 @@ const PET_IMAGES = {
   "몽몽": "https://pooyas.com/files/extravar_upload/109631/649/179/90da7afeceb84f06a4c53ced553d7ffa.gif",
   "한복밍코": "https://pooyas.com/files/extravar_upload/109631/693/179/a06f91abfc94d996aed9b38f8a870645.gif",
   "한복메이": "https://pooyas.com/files/extravar_upload/109631/701/179/65dc65d464354e52d4ee5888e6ec3039.gif",
+  "레피아": "https://wind01.net/info/img/103021.gif",
   "레오딘": "https://pooyas.com/files/extravar_upload/109631/719/179/1059a8e0c8f2263ac72f18261b9630e3.gif",
   "흑풍": "https://pooyas.com/files/extravar_upload/109631/736/179/1939ecec9bef591b9f5dd1d926ea4b42.gif",
   "웅이": "https://pooyas.com/files/extravar_upload/109631/744/179/57d5174edb00e3f7950c05b17e64bbac.gif",
@@ -1231,7 +1252,8 @@ const DEFAULT_PETS = {
   "불그리": {initialCoefficient:10,healthCoefficient:23,attackCoefficient:31,defenseCoefficient:13,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.78,"atk":2.07,"def":1.26,"agi":1.71},obtain:"출시예정",routeType:"기타",mount:false},
   "실버우리": {initialCoefficient:20,healthCoefficient:24,attackCoefficient:29,defenseCoefficient:19,agilityCoefficient:31,grade:"1등급",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.92,"def":1.5,"agi":1.69},obtain:"카루타나 복권 1등",routeType:"복권",mount:true},
   "부비": {initialCoefficient:15,healthCoefficient:51,attackCoefficient:33,defenseCoefficient:16,agilityCoefficient:12,grade:"일반",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":14.08,"atk":2.18,"def":1.45,"agi":0.78},obtain:"사이너스 섬(동608 남208) 포획",routeType:"포획",mount:true},
-  "부이비": {initialCoefficient:16,healthCoefficient:52,attackCoefficient:36,defenseCoefficient:14,agilityCoefficient:12,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":4,"화":6,"풍":0},sg:{"hp":14.32,"atk":2.32,"def":1.38,"agi":0.78},obtain:"쟈루 섬(동357 남183) 포획",routeType:"포획",mount:true},
+    "부이": {initialCoefficient:22,healthCoefficient:52,attackCoefficient:33,defenseCoefficient:15,agilityCoefficient:12,grade:"일반",attrs:["지","수"],attr:{"지":6,"수":4,"화":0,"풍":0},sg:{"hp":14.226,"atk":2.181,"def":1.411,"agi":0.783},obtain:"사이너스 섬(동608 남208) 포획",routeType:"포획",mount:false},
+"부이비": {initialCoefficient:16,healthCoefficient:52,attackCoefficient:36,defenseCoefficient:14,agilityCoefficient:12,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":4,"화":6,"풍":0},sg:{"hp":14.32,"atk":2.32,"def":1.38,"agi":0.78},obtain:"쟈루 섬(동357 남183) 포획",routeType:"포획",mount:true},
   "골드부비": {initialCoefficient:25,healthCoefficient:49,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:13,grade:"2등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":3,"풍":7},sg:{"hp":13.75,"atk":2.26,"def":1.36,"agi":0.83},obtain:"퀴즈 마스터(모가로스) 퀘스트",routeType:"퀘스트",mount:true},
   "얼룩부이비": {initialCoefficient:23,healthCoefficient:49,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:12,grade:"2등급",attrs:["지"],attr:{"지":10,"수":0,"화":0,"풍":0},sg:{"hp":13.8,"atk":2.18,"def":1.54,"agi":0.78},obtain:"퀴즈 마스터(오르곤) 퀘스트",routeType:"퀘스트",mount:true},
   "꼬미": {initialCoefficient:22,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:16,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":6,"풍":4},sg:{"hp":9.76,"atk":1.95,"def":1.44,"agi":1.62},obtain:"라토토 대복도(동196 남123) 포획",routeType:"포획",mount:false},
@@ -1279,8 +1301,8 @@ const DEFAULT_PETS = {
   "베로보크": {initialCoefficient:23,healthCoefficient:30,attackCoefficient:13,defenseCoefficient:31,agilityCoefficient:14,grade:"일반",attrs:["지", "수"],attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":11.208,"atk":1.36,"def":2.226,"agi":0.989},obtain:"아름산의 동굴 지하7층(동42 남21) 포획",routeType:"포획",mount:true},
   "베로포리": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:14,defenseCoefficient:28,agilityCoefficient:13,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":3,"화":7,"풍":0},sg:{"hp":10.74,"atk":1.46,"def":2.11,"agi":1},obtain:"속임수의 동굴 3번(동22 남21) 포획",routeType:"포획",mount:true},
   "노북이": {initialCoefficient:14,healthCoefficient:20,attackCoefficient:18,defenseCoefficient:34,agilityCoefficient:9,grade:"일반",attrs:["지","풍"],attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.573,"atk":1.635,"def":2.435,"agi":0.749},obtain:"사이너스(동545 남389)포획",routeType:"포획",mount:true},
-  "북이": {initialCoefficient:14,healthCoefficient:18,attackCoefficient:18,defenseCoefficient:34,agilityCoefficient:7,grade:"일반",attrs:["지", "풍"],attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.41,"atk":1.69,"def":2.49,"agi":0.69},obtain:"사이너스(동570 남416) 포획",routeType:"포획",mount:true},
-  "깡북이": {initialCoefficient:12,healthCoefficient:19,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.74,"atk":1.8,"def":2.4,"agi":0.8},obtain:"쿠오산소동굴 3층(동15 남20) 포획",routeType:"포획",mount:true},
+  "북이": {initialCoefficient:14,healthCoefficient:19,attackCoefficient:19,defenseCoefficient:35,agilityCoefficient:8,grade:"일반",attrs:["지", "풍"],attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.41,"atk":1.69,"def":2.49,"agi":0.69},obtain:"사이너스(동570 남416) 포획",routeType:"포획",mount:true},
+  "깡북이": {initialCoefficient:12,healthCoefficient:21,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.74,"atk":1.8,"def":2.4,"agi":0.8},obtain:"쿠오산소동굴 3층(동15 남20) 포획",routeType:"포획",mount:true},
   "돌북이": {initialCoefficient:12,healthCoefficient:19,attackCoefficient:20,defenseCoefficient:32,agilityCoefficient:9,grade:"일반",attrs:["지", "풍"],attr:{"지":9,"수":0,"화":0,"풍":1},sg:{"hp":9.6,"atk":1.66,"def":2.72,"agi":0.45},obtain:"쿠오산소동굴 4층(동23 남38) 포획",routeType:"포획",mount:true},
   "라고고": {initialCoefficient:23,healthCoefficient:22,attackCoefficient:26,defenseCoefficient:20,agilityCoefficient:26,grade:"일반",attrs:["화"],attr:{"지":0,"수":0,"화":10,"풍":0},sg:{"hp":9.862,"atk":1.911,"def":1.633,"agi":1.57},obtain:"가우린 섬(동461 남523) 포획",routeType:"포획",mount:true},
   "후바바": {initialCoefficient:24,healthCoefficient:22,attackCoefficient:24,defenseCoefficient:19,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":6,"풍":4},sg:{"hp":9.759,"atk":1.806,"def":1.574,"agi":1.622},obtain:"사이너스(동526 남144) 포획",routeType:"포획",mount:true},
@@ -1392,6 +1414,8 @@ const DEFAULT_PETS = {
   "가우": {initialCoefficient:25,healthCoefficient:32,attackCoefficient:37,defenseCoefficient:16,agilityCoefficient:22,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":7,"화":3,"풍":0},sg:{"hp":11.14,"atk":2.3,"def":1.41,"agi":1.26},obtain:"듀얼 포인트 상점",routeType:"듀얼보상",mount:false},
   "익시노돈": {initialCoefficient:23,healthCoefficient:22,attackCoefficient:27,defenseCoefficient:9,agilityCoefficient:36,grade:"일반",attrs:["풍"],attr:{"지":0,"수":0,"화":0,"풍":10},sg:{"hp":9.86,"atk":1.93,"def":1.1,"agi":2.09},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
   "라그노스": {initialCoefficient:24,healthCoefficient:34,attackCoefficient:36,defenseCoefficient:31,agilityCoefficient:6,grade:"일반",attrs:["지", "수"],attr:{"지":9,"수":1,"화":0,"풍":0},sg:{"hp":11.42,"atk":2.3,"def":2.09,"agi":0.5},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:true},
+  "레이론": {initialCoefficient:8,healthCoefficient:87,attackCoefficient:108,defenseCoefficient:54,agilityCoefficient:69,grade:"일반",attrs:["지","수"],attr:{"지":4,"수":6,"화":0,"풍":0},sg:{"hp":10.480,"atk":2.251,"def":1.417,"agi":1.261},obtain:"호피도(동181 남215) 포획",routeType:"포획",mount:false},
+  "레피아": {initialCoefficient:23,healthCoefficient:23,attackCoefficient:30,defenseCoefficient:14,agilityCoefficient:31,grade:"일반",attrs:["지","풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.825,"atk":2.023,"def":1.310,"agi":1.757},obtain:"페트 자판기",routeType:"자판기",mount:false},
   "모사크": {initialCoefficient:22,healthCoefficient:31,attackCoefficient:38,defenseCoefficient:15,agilityCoefficient:22,grade:"일반",attrs:["수"],attr:{"지":0,"수":10,"화":0,"풍":0},sg:{"hp":10.95,"atk":2.34,"def":1.36,"agi":1.26},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
   "크루거": {initialCoefficient:26,healthCoefficient:25,attackCoefficient:33,defenseCoefficient:18,agilityCoefficient:29,grade:"2등급",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.05,"atk":2.11,"def":1.47,"agi":1.59},obtain:"스라인 복권 1등",routeType:"복권",mount:true},
   "황금복덩이": {initialCoefficient:20,healthCoefficient:22,attackCoefficient:25,defenseCoefficient:20,agilityCoefficient:27,grade:"2등급",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":2,"풍":8},sg:{"hp":9.86,"atk":1.86,"def":1.63,"agi":1.62},obtain:"복덩이(어려움) 레이드",routeType:"레이드",mount:false},
@@ -1429,7 +1453,7 @@ const DEFAULT_PETS = {
   "테이노스": {initialCoefficient:28,healthCoefficient:26,attackCoefficient:40,defenseCoefficient:16,agilityCoefficient:23,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":10.188,"atk":2.421,"def":1.395,"agi":1.306},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "나비드래곤": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:35,defenseCoefficient:14,agilityCoefficient:28,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.726,"atk":2.258,"def":1.322,"agi":1.608},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "흑풍": {initialCoefficient:24,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:17,agilityCoefficient:30,grade:"일반",attrs:["지", "풍"],attr:{"지":9,"수":0,"화":0,"풍":1},sg:{"hp":9.903,"atk":2.148,"def":1.421,"agi":1.638},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
-  "디어룬": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:14,agilityCoefficient:34,grade:"일반",attrs:["지", "풍"],attr:{"지":8,"수":0,"화":0,"풍":8},sg:{"hp":9.856,"atk":2.048,"def":1.278,"agi":1.828},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:true},
+  "디어룬": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:14,agilityCoefficient:34,grade:"일반",attrs:["지", "풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.856,"atk":2.048,"def":1.278,"agi":1.828},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:true},
   "데카이어던": {initialCoefficient:25,healthCoefficient:22,attackCoefficient:31,defenseCoefficient:11,agilityCoefficient:40,grade:"일반",attrs:["지", "풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.571,"atk":1.991,"def":1.136,"agi":2.113},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "백룡": {initialCoefficient:26,healthCoefficient:27,attackCoefficient:34,defenseCoefficient:16,agilityCoefficient:29,grade:"일반",attrs:["지", "수"],attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.378,"atk":2.155,"def":1.385,"agi":1.591},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "모이토": {initialCoefficient:25,healthCoefficient:20,attackCoefficient:29,defenseCoefficient:17,agilityCoefficient:28,grade:"1등급",attrs:["지", "풍"],attr:{"지":7,"수":0,"화":0,"풍":3},sg:{"hp":9.553,"atk":2.045,"def":1.489,"agi":1.673},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
@@ -1561,11 +1585,15 @@ function calcIdeal(pet) {
   const iD=(pet.defenseCoefficient+4.5)*ic/100;
   const iG=(pet.agilityCoefficient+4.5)*ic/100;
   const iH=(pet.healthCoefficient+4.5)*ic/100;
+  const rAtk=iH*0.1+iA+iD*0.1+iG*0.05;
+  const rDef=iH*0.1+iA*0.1+iD+iG*0.05;
+  const rAgi=iG;
+  const rHp=iH*4+iA+iD+iG;
   return {
-    atk: Math.floor(iH*0.1+iA+iD*0.1+iG*0.05),
-    def: Math.floor(iH*0.1+iA*0.1+iD+iG*0.05),
-    agi: Math.floor(iG),
-    hp:  Math.floor(iH*4+iA+iD+iG),
+    atk:Math.floor(rAtk), def:Math.floor(rDef),
+    agi:Math.floor(rAgi), hp:Math.floor(rHp),
+    atkF:+rAtk.toFixed(3), defF:+rDef.toFixed(3),
+    agiF:+rAgi.toFixed(3), hpF:+rHp.toFixed(3),
   };
 }
 
@@ -1636,7 +1664,7 @@ function renderPetList() {
   const names = Object.keys(petData).sort((a,b)=>a.localeCompare(b,'ko-KR'));
   const titleEl = document.getElementById("pet-list-title");
   if (titleEl) titleEl.textContent = `등록된 페트 (${names.length})`;
-  if (!cont) return; // 사이드바 없으면 스킵
+  if (!cont) return;
   cont.innerHTML = "";
 
   const gradeOrder = {"1등급":0,"2등급":1,"일반":2,"":3};
@@ -1821,12 +1849,10 @@ function setStats(s){
   document.getElementById("d-def").value=s.def;
   document.getElementById("d-agi").value=s.agi;
   document.getElementById("d-hp").value=s.hp;
-  // 기준값 설정 → +- diff 표시 활성화
-  if(typeof setStatBase === 'function') setStatBase(s.hp, s.atk, s.def, s.agi);
-  // diff 초기화 (방금 설정한 값이 기준이므로 모두 0)
-  ['hp','atk','def','agi'].forEach(k => {
-    const de = document.getElementById('diff-' + k);
-    if(de){ de.textContent = ''; de.className = 'sfn-diff'; }
+  if(typeof setStatBase==='function') setStatBase(s.hp,s.atk,s.def,s.agi);
+  ['hp','atk','def','agi'].forEach(k=>{
+    const de=document.getElementById('diff-'+k);
+    if(de){de.textContent='';de.className='sfn-diff';}
   });
 }
 
@@ -1843,7 +1869,15 @@ function selectPet(name){
 function updatePetInfoCard(name) {
   const pet = petData[name];
   const card = document.getElementById("pet-info-card");
-  if (!pet) { card.style.display="none"; return; }
+  const emptyState = document.getElementById('pi-empty-state');
+  const realState  = document.getElementById('pi-real-state');
+  if (!pet) {
+    if(emptyState) emptyState.style.display='flex';
+    if(realState)  realState.style.display='none';
+    return;
+  }
+  if(emptyState) emptyState.style.display='none';
+  if(realState)  realState.style.display='block';
 
   // 이미지 (왼쪽 사이드 내 흰 박스)
   const imgInner = document.getElementById("pi-img-inner");
@@ -1868,7 +1902,7 @@ function updatePetInfoCard(name) {
   }
 
   // 등급 행 숨기기 (이름에 이미 표시)
-  const piGrade = document.getElementById("pi-grade"); if(piGrade) piGrade.textContent = pet.grade || "";
+  const piGrade=document.getElementById("pi-grade"); if(piGrade) piGrade.textContent=pet.grade||"";
 
   // 속성 수치 표시
   const attrsEl = document.getElementById("pi-attrs");
@@ -1892,42 +1926,32 @@ function updatePetInfoCard(name) {
   }
 
   // 획득방법
-  const piObtain = document.getElementById("pi-obtain"); if(piObtain) piObtain.textContent = pet.obtain || "정보 없음";
+  const piObtain = document.getElementById("pi-obtain");
+  if(piObtain) piObtain.textContent = pet.obtain || "정보 없음";
 
   // 성장률 + 초기치 표시
   const sg = pet.sg || {};
   const sgWrap = document.getElementById('pi-sg-wrap');
-  if (sgWrap) {
-    const hasSg = sg.atk || sg.def || sg.agi || sg.hp;
+  if(sgWrap){
+    const hasSg = sg.atk||sg.def||sg.agi||sg.hp;
     sgWrap.style.display = hasSg ? 'block' : 'none';
-    // 초기치 계산 (calcIdeal과 동일 공식)
     const ideal = calcIdeal(pet);
-    const setV = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = (val != null) ? val.toFixed(3) : '—';
-    };
-    const setIc = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = (val != null) ? val : '—';
-    };
-    setV('pi-sg-atk', sg.atk);  setIc('pi-ic-atk', ideal.atk);
-    setV('pi-sg-def', sg.def);  setIc('pi-ic-def', ideal.def);
-    setV('pi-sg-agi', sg.agi);  setIc('pi-ic-agi', ideal.agi);
-    setV('pi-sg-hp',  sg.hp);   setIc('pi-ic-hp',  ideal.hp);
-    // 전체 성장률 계산
-    const totalEl = document.getElementById('pi-sg-total');
-    if (totalEl) {
-      if (sg.atk != null && sg.def != null && sg.agi != null) {
-        // S급 성장률 = 공격 + 방어 + 순발 (내구 제외)
-        const total = sg.atk + sg.def + sg.agi;
-        totalEl.textContent = total.toFixed(3);
-      } else {
-        totalEl.textContent = '—';
-      }
-    }
+    const setV=(id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=(val!=null)?val.toFixed(3):'—'; };
+    const setIc=(id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=(val!=null)?val:'—'; };
+    setV('pi-sg-atk',sg.atk); setIc('pi-ic-atk',ideal.atkF);
+    setV('pi-sg-def',sg.def); setIc('pi-ic-def',ideal.defF);
+    setV('pi-sg-agi',sg.agi); setIc('pi-ic-agi',ideal.agiF);
+    setV('pi-sg-hp', sg.hp);  setIc('pi-ic-hp', ideal.hpF);
+    const totalEl=document.getElementById('pi-sg-total');
+    if(totalEl) totalEl.textContent=(sg.atk!=null&&sg.def!=null&&sg.agi!=null)?(sg.atk+sg.def+sg.agi).toFixed(3):'—';
   }
+  // diff 리셋
+  ['hp','atk','def','agi'].forEach(k=>{
+    const de=document.getElementById('diff-'+k);
+    if(de){de.textContent='';de.className='sfn-diff';}
+  });
 
-  card.style.display = "block";
+
 }
 
 /* ──── autocomplete ──── */
@@ -1998,7 +2022,8 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
   if(!selectedPet||!pet||[dAtk,dDef,dAgi,dHp].some(isNaN)){
     loading.style.display="none";
     rc.innerHTML=`<div class="result-err">✦ 페트와 스탯을 모두 입력해주세요!</div>`;
-    rc.style.display="block"; return;
+    rc.style.display="block";
+    const hint=document.getElementById("calc-hint"); if(hint) hint.style.display="none"; return;
   }
 
   setTimeout(()=>{
@@ -2033,7 +2058,9 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
   }, 40);
 });
 
-
+["d-atk","d-def","d-agi","d-hp"].forEach(id=>{
+  document.getElementById(id).addEventListener("keydown",e=>{ if(e.key==="Enter") document.getElementById("calc-btn").click(); });
+});
 
 loadSharedPets();
 </script>
@@ -2056,7 +2083,7 @@ loadSharedPets();
       해당 계산기는 <span style="color:var(--a1);font-weight:700;">짜얄 페트계산기</span> 기반으로 제작되었습니다 🌸
     </div>
     <div style="font-size:12px;color:var(--t2);">
-      만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">루믹스</span>
+      만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">새벽부족 루믹스</span>
       &nbsp;
       <span style="color:var(--t4);">·</span>
       &nbsp; 영감주신 분 &nbsp;<span style="background:linear-gradient(135deg,var(--a2),#ffb3d1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">chidgeot</span>
