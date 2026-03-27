@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>윈드 큐브 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#faf9ff; --white:#ffffff;
+  --s1:#f8f7ff; --s2:#f0eeff;
+  --border:#e8e3ff; --border2:#d4cbff;
+  --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5;
+  --t1:#3d3560; --t2:#7b72a8; --t3:#b0a8d4; --t4:#d4cff0;
+  --shadow:0 4px 24px rgba(155,135,245,0.12);
+  --shadow2:0 8px 32px rgba(155,135,245,0.18);
+  --rare:#6db8f5; --epic:#b87af5; --unique:#f5a623; --legendary:#f55a5a;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;min-height:100vh;}
+
+/* ── 헤더 ── */
+.top-bar{background:var(--white);border-bottom:1.5px solid var(--border);padding:12px 20px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.tb-title-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.page-nav-card{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;}
+.pnav-tab-c{text-decoration:none;background:var(--s1);border:1.5px solid var(--border2);border-radius:99px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--t2);transition:all .15s;font-family:'Noto Sans KR',sans-serif;}
+.pnav-tab-c:hover{background:var(--s2);color:var(--a1);border-color:var(--a1);}
+.pnav-active-c{background:linear-gradient(135deg,#fff8e0,#ffeef6);color:#c47a00;border-color:#f5d48a;font-weight:800;}
+.top-back{text-decoration:none;background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--a1);transition:all .15s;white-space:nowrap;}
+.top-back:hover{background:var(--a1);color:#fff;}
+.top-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:var(--t1);}
+.top-sub{font-size:11px;color:var(--t3);font-family:'Nunito',sans-serif;}
+
+.main{max-width:800px;margin:0 auto;padding:20px 16px 60px;}
+
+.sec-title{font-size:10px;letter-spacing:2px;color:var(--t3);font-family:'Nunito',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.sec-title::before{content:'';display:block;width:3px;height:14px;background:linear-gradient(135deg,var(--a1),var(--a2));border-radius:2px;}
+
+.panel{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:22px;margin-bottom:14px;box-shadow:var(--shadow);}
+
+/* ── 등급 선택 ── */
+.grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.grade-btn{padding:16px;border-radius:14px;border:2px solid;cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;transition:all .15s;background:var(--white);}
+.grade-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow2);}
+.grade-btn .gi{font-size:26px;margin-bottom:4px;}
+.grade-btn .gs{font-size:10px;font-weight:700;opacity:0.65;margin-top:2px;}
+.g-rare{border-color:var(--rare);color:var(--rare);}
+.g-epic{border-color:var(--epic);color:var(--epic);}
+.g-unique{border-color:var(--unique);color:#d48800;}
+.g-legendary{border-color:var(--legendary);color:var(--legendary);}
+
+/* ── 카드 아이콘 ── */
+.card-row{display:flex;align-items:center;gap:18px;margin-bottom:16px;flex-wrap:wrap;}
+.card-icon{width:96px;height:132px;flex-shrink:0;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid;position:relative;overflow:hidden;transition:all .3s;}
+.card-icon::before{content:'';position:absolute;top:0;left:0;right:0;height:38%;background:rgba(255,255,255,0.13);}
+.card-icon .cie{font-size:36px;position:relative;z-index:1;}
+.card-icon .cil{font-size:9px;font-weight:900;font-family:'Nunito',sans-serif;letter-spacing:1.5px;text-transform:uppercase;position:relative;z-index:1;}
+.card-icon.rare    {background:linear-gradient(145deg,#c8e6ff,#a8d4f8);border-color:var(--rare);}
+.card-icon.epic    {background:linear-gradient(145deg,#e8d4ff,#d4b0f8);border-color:var(--epic);}
+.card-icon.unique  {background:linear-gradient(145deg,#fff0c8,#f8d890);border-color:var(--unique);}
+.card-icon.legendary{background:linear-gradient(145deg,#ffd4d4,#f8a0a0);border-color:var(--legendary);}
+
+.card-meta{flex:1;min-width:0;}
+.gbadge{display:inline-flex;align-items:center;font-size:11px;font-weight:900;font-family:'Nunito',sans-serif;padding:3px 10px;border-radius:99px;margin-bottom:6px;}
+.br{background:#deeeff;color:var(--rare);border:1.5px solid #b8d8f8;}
+.be{background:#eedeff;color:var(--epic);border:1.5px solid #d4b8f8;}
+.bu{background:#fff4de;color:#d48800;border:1.5px solid #f8d890;}
+.bl{background:#ffeeee;color:var(--legendary);border:1.5px solid #f8b8b8;}
+.prob-chip{font-size:10px;font-weight:800;font-family:'Nunito',sans-serif;background:var(--s2);border:1px solid var(--border2);border-radius:6px;padding:2px 7px;color:var(--a1);}
+.next-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;}
+
+/* ── 인장 ── */
+.seal-row{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--s1);border:1.5px solid var(--border);border-radius:12px;margin-bottom:14px;cursor:pointer;transition:all .15s;-webkit-user-select:none;user-select:none;}
+.seal-row:hover{border-color:var(--border2);background:var(--s2);}
+.seal-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--a1);cursor:pointer;flex-shrink:0;}
+.seal-lbl{font-size:13px;font-weight:700;}
+.seal-desc{font-size:11px;color:var(--t3);margin-left:auto;}
+
+/* ── 옵션 ── */
+.opts-box{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:12px;}
+.opts-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.opts-title{font-size:11px;font-weight:800;color:var(--t2);font-family:'Nunito',sans-serif;}
+.info-btn{background:none;border:1.5px solid var(--border2);border-radius:8px;padding:2px 8px;font-size:10px;color:var(--t2);cursor:pointer;font-weight:700;font-family:'Nunito',sans-serif;transition:all .15s;}
+.info-btn:hover{background:var(--s2);}
+.opts-list{display:flex;flex-direction:column;gap:6px;}
+.opt-chip{display:flex;justify-content:space-between;align-items:center;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;transition:border-color .2s;}
+.opt-chip.rolling{animation:pop .3s ease;}
+@keyframes pop{0%{transform:scale(0.93);opacity:0.4}65%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.opt-name{font-size:13px;font-weight:700;}
+.opt-val{font-size:13px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);}
+.nbadge{font-size:9px;font-weight:800;background:var(--a2);color:#fff;border-radius:4px;padding:1px 4px;margin-left:4px;font-family:'Nunito',sans-serif;}
+
+/* ── 강화 성공 토스트 ── */
+.toast{display:none;padding:11px 16px;border-radius:12px;margin-bottom:12px;text-align:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;animation:tpop .35s ease;}
+@keyframes tpop{0%{transform:scale(0.88);opacity:0}65%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.toast.show{display:block;}
+.t-epic    {background:#eedeff;color:var(--epic);border:2px solid #d4b8f8;}
+.t-unique  {background:#fff4de;color:#d48800;border:2px solid #f8d890;}
+.t-legendary{background:#ffeeee;color:var(--legendary);border:2px solid #f8b8b8;}
+
+/* ── 큐브 ── */
+.cube-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.ctab{flex:1;padding:11px 8px;border-radius:12px;border:2px solid var(--border);background:var(--s1);cursor:pointer;text-align:center;transition:all .15s;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--t2);}
+.ctab:hover:not(.cdis){border-color:var(--border2);background:var(--s2);}
+.ctab.cact{background:linear-gradient(135deg,var(--s2),#ffeef6);border-color:var(--a1);color:var(--a1);}
+.ctab.cdis{opacity:0.32;cursor:not-allowed;pointer-events:none;}
+.ctab .ct-name{font-size:13px;}
+.ctab .ct-prob{font-size:10px;color:var(--t3);font-weight:700;margin-top:2px;}
+.ctab.cact .ct-prob{color:var(--t2);}
+
+/* ── 버튼 ── */
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.btn-main{flex:1;min-width:80px;padding:12px 8px;border-radius:13px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 16px rgba(155,135,245,0.28);transition:all .15s;}
+.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(155,135,245,0.38);}
+.btn-main:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-sub{flex:1;min-width:80px;padding:12px 8px;border-radius:13px;border:1.5px solid var(--a1);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:var(--white);color:var(--a1);transition:all .15s;}
+.btn-sub:hover{background:var(--s2);}
+.btn-auto{flex:1;min-width:80px;padding:12px 8px;border-radius:13px;border:1.5px solid #6dd5a0;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:var(--white);color:#38a169;transition:all .15s;}
+.btn-auto:hover{background:#f0fff4;}
+.btn-auto.running{background:linear-gradient(135deg,#38a169,#6dd5a0);color:#fff;border-color:#38a169;box-shadow:0 4px 14px rgba(109,213,160,0.35);}
+.btn-row2{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-rst{flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);transition:all .15s;}
+.btn-rst:hover{background:var(--s2);border-color:var(--a1);}
+.btn-resel{flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t3);transition:all .15s;}
+.btn-resel:hover{background:#fff5f5;border-color:#f57878;color:#f57878;}
+
+/* ── 통계 ── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+@media(max-width:400px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.sitem{background:var(--s1);border:1.5px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;}
+.sval{font-size:22px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);}
+.slbl{font-size:10px;color:var(--t3);font-weight:700;margin-top:2px;}
+.sitem.hl{background:linear-gradient(135deg,var(--s2),#ffeef6);border-color:var(--border2);}
+.sitem.hl .sval{background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* ── 로그 ── */
+.log-box{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:14px;box-shadow:var(--shadow);max-height:220px;overflow-y:auto;}
+.log-box::-webkit-scrollbar{width:4px;}
+.log-box::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+.lentry{font-size:11px;padding:5px 8px;border-radius:7px;margin-bottom:3px;display:flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;font-weight:700;}
+.ln{color:var(--t2);}
+.lu-epic{background:#eedeff;color:var(--epic);}
+.lu-unique{background:#fff4de;color:#d48800;}
+.lu-legendary{background:#ffeeee;color:var(--legendary);}
+.lnum{color:var(--t4);font-size:10px;min-width:30px;}
+
+/* ── 옵션 표 ── */
+#otable-wrap{margin-top:12px;overflow-x:auto;}
+#otable-wrap table{width:100%;border-collapse:collapse;font-size:11px;}
+#otable-wrap th,#otable-wrap td{padding:6px 8px;border-bottom:1px solid var(--border);}
+#otable-wrap th{background:var(--s2);font-weight:800;color:var(--t2);text-align:center;}
+#otable-wrap td:first-child{text-align:left;font-weight:700;}
+
+/* ── 푸터 ── */
+.footer{text-align:center;padding:28px 16px 36px;margin-top:10px;font-family:'Noto Sans KR',sans-serif;}
+.footer-deco{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:16px;}
+.footer-card{display:inline-block;background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:14px 24px;box-shadow:var(--shadow);line-height:2;}
+
+.sim-modal-overlay{position:fixed;inset:0;background:rgba(61,53,96,0.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;animation:mfade .2s ease;}
+@keyframes mfade{from{opacity:0}to{opacity:1}}
+.sim-modal{background:var(--white);border-radius:22px;padding:28px 24px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(155,135,245,0.25);animation:mslide .25s ease;text-align:center;}
+@keyframes mslide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.sim-modal .m-icon{font-size:44px;margin-bottom:12px;}
+.sim-modal .m-title{font-size:20px;font-weight:900;font-family:'Nunito',sans-serif;margin-bottom:6px;}
+.sim-modal .m-sub{font-size:12px;color:var(--t2);margin-bottom:4px;line-height:1.6;}
+.sim-modal .m-count{font-size:28px;font-weight:900;font-family:'Nunito',sans-serif;margin:10px 0;padding:10px;background:var(--s1);border-radius:12px;border:1.5px solid var(--border);}
+.sim-modal .m-count span{font-size:13px;font-weight:700;color:var(--t3);}
+.sim-modal-btns{display:flex;gap:8px;margin-top:18px;}
+.m-btn-main{flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(155,135,245,0.3);}
+.m-btn-sub{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="tb-title-wrap">
+    <div class="top-title">🎲 큐브 시뮬레이터</div>
+    <div class="top-sub">윈드서버 카드 강화 시뮬레이션</div>
+  </div>
+  <div class="page-nav-card">
+    <a href="index.html"   class="pnav-tab-c">🏠 환각 계산기</a>
+    <a href="pokedex.html" class="pnav-tab-c">🐾 펫 도감</a>
+    <a href="card.html"    class="pnav-tab-c pnav-active-c">🎲 큐브 시뮬레이터</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ① 등급 선택 -->
+  <div id="screen-select">
+    <div class="panel">
+      <div class="sec-title">시작 등급 선택</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:4px;">강화를 시작할 카드 등급을 선택하세요</p>
+      <div class="grade-grid">
+        <button class="grade-btn g-rare"      onclick="startSim('rare')"><div class="gi">🃏</div><div>레어</div><div class="gs">RARE</div></button>
+        <button class="grade-btn g-epic"      onclick="startSim('epic')"><div class="gi">🃏</div><div>에픽</div><div class="gs">EPIC</div></button>
+        <button class="grade-btn g-unique"    onclick="startSim('unique')"><div class="gi">🃏</div><div>유니크</div><div class="gs">UNIQUE</div></button>
+        <button class="grade-btn g-legendary" onclick="startSim('legendary')"><div class="gi">🃏</div><div>레전드리</div><div class="gs">LEGENDARY</div></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 시뮬레이터 -->
+  <div id="screen-sim" style="display:none;">
+
+    <div class="toast" id="toast" onclick="hideToast()" style="cursor:pointer;" title="클릭하여 닫기"></div>
+
+
+    <!-- 카드 상태 -->
+    <div class="panel">
+      <div class="sec-title">
+        현재 카드 상태
+        <button class="info-btn" onclick="toggleTable()">옵션 표 ▾</button>
+      </div>
+
+      <div class="card-row">
+        <div class="card-icon" id="card-icon">
+          <span class="cie">🃏</span>
+          <span class="cil" id="cil">RARE</span>
+        </div>
+        <div class="card-meta">
+          <div class="gbadge" id="gbadge">레어</div>
+          <div style="font-size:12px;color:var(--t2);margin-bottom:4px;" id="next-txt"></div>
+          <div class="next-row" id="next-row"></div>
+        </div>
+      </div>
+
+      <!-- 인장 -->
+      <label class="seal-row">
+        <input type="checkbox" id="seal" onchange="onSeal()">
+        <span class="seal-lbl">📜 인장 사용</span>
+        <span class="seal-desc">옵션 2줄로 확장</span>
+      </label>
+
+      <!-- 옵션 -->
+      <div class="opts-box">
+        <div class="opts-hdr">
+          <div class="opts-title">✨ 현재 옵션</div>
+        </div>
+        <div class="opts-list" id="opts-list"></div>
+      </div>
+
+      <!-- 옵션 표 -->
+      <div id="otable-wrap" style="display:none;">
+        <table>
+          <thead><tr>
+            <th style="text-align:left;">옵션</th>
+            <th style="color:var(--rare);">레어</th>
+            <th style="color:var(--epic);">에픽</th>
+            <th style="color:#d48800;">유니크</th>
+            <th style="color:var(--legendary);">레전드리</th>
+          </tr></thead>
+          <tbody id="otbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 큐브 + 버튼 -->
+    <div class="panel">
+      <div class="sec-title">큐브 선택</div>
+      <div class="cube-tabs">
+        <div class="ctab" id="tab-sus" onclick="selCube('sus')">
+          <div class="ct-name">🎲 수상한 큐브</div>
+          <div class="ct-prob" id="sus-txt"></div>
+        </div>
+        <div class="ctab" id="tab-red" onclick="selCube('red')">
+          <div class="ct-name">🔴 레드 큐브</div>
+          <div class="ct-prob" id="red-txt"></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-main" id="btn1"    onclick="roll(1)">1회</button>
+        <button class="btn-sub"  id="btn10"   onclick="roll(10)">10회</button>
+        <button class="btn-auto" id="btn-auto" onclick="toggleAuto()">⚡ 자동강화</button>
+      </div>
+      <div class="btn-row2">
+        <button class="btn-rst"   onclick="resetStats()">↩ 초기화</button>
+        <button class="btn-resel" onclick="goSelect()">🃏 카드 재선택</button>
+      </div>
+    </div>
+
+    <!-- 통계 -->
+    <div class="panel">
+      <div class="sec-title">사용 통계</div>
+      <div class="stats-grid">
+        <div class="sitem hl"><div class="sval" id="s0">0</div><div class="slbl">총 사용</div></div>
+        <div class="sitem"><div class="sval" id="s1">0</div><div class="slbl">수상한 큐브</div></div>
+        <div class="sitem"><div class="sval" id="s2">0</div><div class="slbl">레드 큐브</div></div>
+        <div class="sitem"><div class="sval" id="s3">0</div><div class="slbl">강화 성공</div></div>
+        <div class="sitem"><div class="sval" id="s4">0</div><div class="slbl">옵션 변경</div></div>
+        <div class="sitem"><div class="sval" id="s5" style="font-size:15px;padding-top:3px;">레어</div><div class="slbl">현재 등급</div></div>
+      </div>
+    </div>
+
+    <!-- 로그 -->
+    <div class="log-box" id="logbox">
+      <div style="font-size:11px;color:var(--t3);text-align:center;font-family:'Nunito',sans-serif;font-weight:700;">큐브를 사용하면 로그가 표시됩니다</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 푸터 -->
+<div class="footer">
+  <div class="footer-deco">
+    <div style="height:1px;width:40px;background:linear-gradient(90deg,transparent,var(--border2));"></div>
+    <div style="display:flex;gap:5px;">
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--a1);"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--a2);"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:var(--a3);"></div>
+    </div>
+    <div style="height:1px;width:40px;background:linear-gradient(90deg,var(--border2),transparent);"></div>
+  </div>
+  <div class="footer-card">
+    <div style="font-size:12px;color:var(--t2);">
+      만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">루믹스</span>
+    </div>
+  </div>
+  <div style="margin-top:12px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">© 윈드 큐브 시뮬레이터 ver 1.3</div>
+</div>
+
+<script>
+/* ── 옵션 데이터 ── */
+const OPTS=[
+  {n:"공격력",    d:"공격력 상승",            r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"방어력",    d:"방어력 상승",            r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"순발력",    d:"순발력 상승",            r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"체력",      d:"내구력 상승",            r:[1,6], e:[1,12], u:[1,18],    l:[9,24]},
+  {n:"이동속도",  d:"이동속도 증가",          r:[1,2], e:[1,4],  u:[1,6],     l:[3,8],  p:1},
+  {n:"올스탯",    d:"공격·방어·순발 상승",    r:[1,1], e:[1,2],  u:[1,3],     l:[1,4]},
+  {n:"관통",      d:"관통 상승",              r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"쉴드",      d:"쉴드 상승",              r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"절약정신",  d:"특수비용 할인",          r:[1,2], e:[1,4],  u:[1,6],     l:[3,8],  p:1},
+  {n:"포획률",    d:"포획 성공률 증가",       r:[1,2], e:[1,4],  u:[1,6],     l:[3,8],  p:1},
+  {n:"명중",      d:"명중 상승",              r:null,  e:null,   u:[1,2],     l:[1,4]},
+  {n:"회피",      d:"회피 상승",              r:null,  e:null,   u:[1,2],     l:[1,4]},
+  {n:"상태이상내성",d:"모든 상태이상 내성",  r:null,  e:null,   u:[1,4],     l:[3,8]},
+  {n:"캐릭터경험치",d:"캐릭터 경험치 증가",  r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"펫경험치",  d:"펫 경험치 증가",         r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"탑승경험치",d:"탑승펫 경험치 증가",    r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"아이템획득",d:"아이템 획득확률 증가",   r:null,  e:null,   u:[1,2],     l:[1,4],  p:1},
+  {n:"HP/MP회복", d:"체력·기력 회복량 증가",  r:null,  e:null,   u:[0.1,0.1], l:[0.1,0.1]},
+  {n:"PVE데미지", d:"듀얼 외 데미지 증가",    r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"PVP데미지", d:"듀얼 데미지 증가",       r:null,  e:null,   u:null,      l:[1,2],  p:1},
+  {n:"매력유지",  d:"죽어도 매력 안 떨어짐",  r:null,  e:null,   u:null,      l:"fixed"},
+];
+const GK={rare:'r',epic:'e',unique:'u',legendary:'l'};
+const GRADES=['rare','epic','unique','legendary'];
+const GKR={rare:'레어',epic:'에픽',unique:'유니크',legendary:'레전드리'};
+const GEN={rare:'RARE',epic:'EPIC',unique:'UNIQUE',legendary:'LEGENDARY'};
+const GCL={rare:'var(--rare)',epic:'var(--epic)',unique:'#d48800',legendary:'var(--legendary)'};
+const GBCL={rare:'br',epic:'be',unique:'bu',legendary:'bl'};
+// 레드큐브 확률
+const RED={rare:0.05,epic:0.01,unique:0.003};
+// 수상한큐브: 알 수 없음, 임시 5% 고정
+const SUS={rare:0.05};
+
+let ST={
+  grade:'rare', opts:[], cube:'sus',
+  stat:{t:0,s:0,r:0,up:0,oc:0},
+  lc:0, timer:null, autoTimer:null, isAuto:false
+};
+
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function avail(g){return OPTS.filter(o=>o[GK[g]]!==null&&o[GK[g]]!==undefined);}
+function mkVal(o,g){
+  const v=o[GK[g]];
+  if(!v)return'—';
+  if(v==='fixed')return'고정';
+  const n=v[0]===v[1]?v[0]:ri(v[0],v[1]);
+  return n+(o.p?'%':'');
+}
+function genOpts(g,cnt){
+  return avail(g).sort(()=>Math.random()-0.5).slice(0,cnt).map(o=>({n:o.n,v:mkVal(o,g)}));
+}
+function cnt(){return document.getElementById('seal').checked?2:1;}
+
+/* ── 시작 ── */
+function startSim(g){
+  stopAuto();
+  ST.grade=g; ST.startGrade=g; ST.opts=genOpts(g,1);
+  ST.cube=(g==='rare')?'sus':'red'; // 수상한큐브는 레어만
+  ST.stat={t:0,s:0,r:0,up:0,oc:0}; ST.lc=0;
+  document.getElementById('seal').checked=false;
+  document.getElementById('screen-select').style.display='none';
+  document.getElementById('screen-sim').style.display='block';
+  buildTable(); render(); clearLog();
+}
+
+/* ── 렌더 ── */
+function render(){
+  const g=ST.grade;
+  document.getElementById('card-icon').className='card-icon '+g;
+  document.getElementById('cil').textContent=GEN[g];
+  const b=document.getElementById('gbadge');
+  b.textContent=GKR[g]; b.className='gbadge '+GBCL[g];
+  const gi=GRADES.indexOf(g),ng=GRADES[gi+1];
+  if(g==='legendary'){
+    document.getElementById('next-txt').innerHTML='<span style="color:var(--legendary);font-weight:800;">✨ 최고 등급 달성!</span>';
+    document.getElementById('next-row').innerHTML='';
+  } else {
+    document.getElementById('next-txt').textContent='다음 단계: '+GKR[ng];
+    let h=`<span style="font-size:11px;color:var(--t2);font-weight:700;">🔴 레드큐브</span><span class="prob-chip">${(RED[g]*100).toFixed(1)}% → ${GKR[ng]}</span>`;
+    if(g==='rare') h=`<span style="font-size:11px;color:var(--t2);font-weight:700;">🎲 수상한큐브</span><span class="prob-chip">알 수 없음 (임시 5%)</span>&nbsp;`+h;
+    document.getElementById('next-row').innerHTML=h;
+  }
+  renderTabs(); renderOpts();
+  // 레전드리면 자동강화 버튼 → 옵션 뽑기로 변경
+  const autoBtn = document.getElementById('btn-auto');
+  if(autoBtn && !ST.isAuto) {
+    if(g==='legendary') {
+      autoBtn.textContent = '🎯 옵션 뽑기';
+    } else {
+      autoBtn.textContent = '⚡ 자동강화';
+    }
+  }
+  document.getElementById('s0').textContent=ST.stat.t;
+  document.getElementById('s1').textContent=ST.stat.s;
+  document.getElementById('s2').textContent=ST.stat.r;
+  document.getElementById('s3').textContent=ST.stat.up;
+  document.getElementById('s4').textContent=ST.stat.oc;
+  const sg=document.getElementById('s5');
+  sg.textContent=GKR[g]; sg.style.color=GCL[g];
+}
+
+function renderTabs(){
+  const g=ST.grade;
+  const susDis=(g!=='rare'); // 수상한큐브는 레어만 허용
+  document.getElementById('tab-sus').className='ctab'+(susDis?' cdis':ST.cube==='sus'?' cact':'');
+  document.getElementById('tab-red').className='ctab'+(ST.cube==='red'?' cact':'');
+  if(g==='legendary'){
+    document.getElementById('sus-txt').textContent='사용 불가';
+    document.getElementById('red-txt').textContent='최고 등급 달성';
+  } else {
+    const ng=GRADES[GRADES.indexOf(g)+1];
+    document.getElementById('sus-txt').textContent=g==='rare'?'→에픽  알 수 없음 (임시 5%)':'사용 불가';
+    document.getElementById('red-txt').textContent=`→${GKR[ng]} ${(RED[g]*100).toFixed(1)}%`;
+  }
+}
+
+function renderOpts(changed){
+  const el=document.getElementById('opts-list');
+  el.innerHTML='';
+  ST.opts.forEach((o,i)=>{
+    const isNew=changed&&changed.includes(i);
+    const d=document.createElement('div');
+    d.className='opt-chip'+(isNew?' rolling':'');
+    d.innerHTML=`<span class="opt-name">${o.n}${isNew?'<span class="nbadge">NEW</span>':''}</span><span class="opt-val">${o.v}</span>`;
+    el.appendChild(d);
+  });
+}
+
+function selCube(t){
+  if(t==='sus'&&ST.grade!=='rare')return; // 수상한큐브는 레어만
+  ST.cube=t; renderTabs();
+}
+
+function onSeal(){
+  const c=cnt();
+  if(c>ST.opts.length){
+    const extra=avail(ST.grade).filter(o=>o.n!==ST.opts[0].n).sort(()=>Math.random()-0.5)[0];
+    ST.opts=[ST.opts[0],extra?{n:extra.n,v:mkVal(extra,ST.grade)}:genOpts(ST.grade,1)[0]];
+  } else {
+    ST.opts=[ST.opts[0]];
+  }
+  renderOpts();
+}
+
+/* ── 큐브 굴리기 ── */
+function roll(times){
+  hideToast();
+  let lastUp=null, lastChanged=null;
+
+  for(let i=0;i<times;i++){
+    const cb=ST.cube;
+    ST.stat.t++; if(cb==='sus')ST.stat.s++; else ST.stat.r++;
+
+    // 이전 옵션 저장
+    const prevOpts = ST.opts.map(o=>({n:o.n, v:o.v}));
+
+    // 옵션 변경 (항상)
+    ST.opts=genOpts(ST.grade,cnt());
+    lastChanged=ST.opts.map((_,i)=>i);
+    ST.stat.oc++;
+
+    // 강화 시도
+    const gi=GRADES.indexOf(ST.grade);
+    if(ST.grade!=='legendary'){
+      const prob=cb==='sus'?SUS[ST.grade]:RED[ST.grade];
+      if(prob&&Math.random()<prob){
+        if(cb==='sus'&&gi>=1){/* 수상한큐브는 에픽까지만 */}
+        else if(GRADES[gi+1]){
+          ST.grade=GRADES[gi+1]; ST.stat.up++;
+          ST.opts=genOpts(ST.grade,cnt());
+          lastChanged=ST.opts.map((_,i)=>i);
+          lastUp=ST.grade;
+          if(ST.grade==='unique'||ST.grade==='legendary') ST.cube='red';
+          // 강화 성공 → 자동강화였으면 정지
+          if(ST.isAuto) stopAuto();
+          addLog(true,cb,ST.stat.t,ST.grade,null);
+          continue;
+        }
+      }
+    }
+    // 이미 강화가 이루어진 등급에서는 "옵션 변경"만 로그
+    addLog(false,cb,ST.stat.t,ST.grade,prevOpts);
+  }
+
+  render();
+  if(lastChanged) renderOpts(lastChanged);
+  if(lastUp) showToast(lastUp);
+}
+
+/* ── 자동 강화 ── */
+function toggleAuto(){
+  // 레전드리면 옵션 뽑기 모달 표시
+  if(ST.grade==='legendary' && !ST.isAuto) {
+    showOptModal(); return;
+  }
+  if(ST.isAuto){ stopAuto(); return; }
+  if(ST.grade==='legendary'){ return; }
+  ST.isAuto=true;
+  document.getElementById('btn-auto').classList.add('running');
+  document.getElementById('btn-auto').textContent='⏹ 정지';
+  document.getElementById('btn1').disabled=true;
+  document.getElementById('btn10').disabled=true;
+  autoStep();
+}
+function stopAuto(){
+  ST.isAuto=false;
+  if(ST.autoTimer){ clearTimeout(ST.autoTimer); ST.autoTimer=null; }
+  const ab=document.getElementById('btn-auto');
+  if(ab){ ab.classList.remove('running'); ab.textContent='⚡ 자동강화'; }
+  document.getElementById('btn1').disabled=false;
+  document.getElementById('btn10').disabled=false;
+}
+function autoStep(){
+  if(!ST.isAuto) return;
+  if(ST.grade==='legendary'){ stopAuto(); return; }
+  roll(1);
+  // 강화 성공 시 stopAuto가 roll 안에서 호출됨
+  if(ST.isAuto){
+    ST.autoTimer=setTimeout(autoStep, 60); // 60ms 간격
+  }
+}
+
+/* ── 토스트 ── */
+function showToast(g){
+  const t=document.getElementById('toast');
+  const m={epic:'💜 에픽 강화 성공!',unique:'🟡 유니크 강화 성공!',legendary:'🔥 레전드리 강화 성공! 최고 등급 달성 🎊'};
+  t.textContent=m[g]||'🎉 강화 성공!';
+  showUpgradeGoto(g);
+  t.className='toast show t-'+g;
+  if(ST.timer) clearTimeout(ST.timer);
+  // 자동으로 사라지지 않음 - 클릭해야 닫힘
+}
+function hideToast(){ document.getElementById('toast').className='toast'; hideUpgradeGoto(); }
+
+/* ── 로그 (강화성공 후에는 "옵션 변경"만 기록) ── */
+function addLog(isUp,cube,cnt,grade,prevOpts){
+  const box=document.getElementById('logbox');
+  if(ST.lc===0) box.innerHTML='';
+  ST.lc++;
+  const ci=cube==='sus'?'🎲':'🔴';
+  const d=document.createElement('div');
+  const ucl={epic:'lu-epic',unique:'lu-unique',legendary:'lu-legendary'};
+  if(isUp){
+    d.className='lentry '+(ucl[grade]||'lu-epic');
+    d.innerHTML=`<span class="lnum">#${cnt}</span>${ci} ${GKR[grade]} 강화 성공! 🎉`;
+  } else {
+    d.className='lentry ln';
+    // 이전 옵션 표시
+    let prevStr = '';
+    if(prevOpts && prevOpts.length > 0){
+      prevStr = prevOpts.map(o=>`<span style="color:var(--t3);font-size:10px;">${o.n} ${o.v}</span>`).join(' · ');
+    }
+    d.innerHTML=`<span class="lnum">#${cnt}</span>${ci} 옵션 변경 &nbsp;${prevStr?'<span style="color:var(--t4);font-size:10px;">이전: </span>'+prevStr:''}`;
+  }
+  box.insertBefore(d,box.firstChild);
+  while(box.children.length>150) box.removeChild(box.lastChild);
+}
+function clearLog(){
+  ST.lc=0;
+  document.getElementById('logbox').innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;font-family:\'Nunito\',sans-serif;font-weight:700;">큐브를 사용하면 로그가 표시됩니다</div>';
+}
+
+/* ── 초기화 (등급 포함 전체 초기화) ── */
+function resetStats(){
+  stopAuto();
+  hideToast();
+  closeUpgradeModal();
+  const el = document.getElementById('opt-success-overlay');
+  if(el) el.remove();
+  // 등급 포함 전체 초기화
+  ST.stat={t:0,s:0,r:0,up:0,oc:0}; ST.lc=0;
+  ST.grade = ST.startGrade; // 시작 등급으로 복귀
+  ST.cube = (ST.startGrade==='rare')?'sus':'red';
+  ST.opts=genOpts(ST.startGrade, 1);
+  document.getElementById('seal').checked = false;
+  render(); renderOpts(); clearLog();
+}
+
+/* ── 카드 재선택 ── */
+function goSelect(){
+  stopAuto(); hideToast();
+  document.getElementById('screen-sim').style.display='none';
+  document.getElementById('screen-select').style.display='block';
+  clearLog();
+}
+
+/* ── 옵션 표 ── */
+function buildTable(){
+  const tb=document.getElementById('otbody');
+  tb.innerHTML='';
+  OPTS.forEach(o=>{
+    const fv=(v,p)=>{
+      if(!v) return'<span style="color:var(--t4)">—</span>';
+      if(v==='fixed') return'<span style="color:var(--legendary)">고정</span>';
+      const s=v[0]===v[1]?v[0]:`${v[0]}~${v[1]}`;
+      return s+(p?'%':'');
+    };
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${o.n}<br><span style="font-size:10px;color:var(--t3);font-weight:400;">${o.d}</span></td>
+      <td style="text-align:center;color:var(--rare);">${fv(o.r,o.p)}</td>
+      <td style="text-align:center;color:var(--epic);">${fv(o.e,o.p)}</td>
+      <td style="text-align:center;color:#d48800;">${fv(o.u,o.p)}</td>
+      <td style="text-align:center;color:var(--legendary);">${fv(o.l,o.p)}</td>`;
+    tb.appendChild(tr);
+  });
+}
+function toggleTable(){
+  const w=document.getElementById('otable-wrap'),b=document.querySelector('.info-btn');
+  const s=w.style.display!=='none';
+  w.style.display=s?'none':'block';
+  b.textContent=s?'옵션 표 ▾':'옵션 표 ▴';
+}
+
+/* ── 강화성공 팝업 모달 ── */
+const GKR_MODAL={rare:'레어',epic:'에픽',unique:'유니크',legendary:'레전드리'};
+const GRADE_ICON={rare:'🃏',epic:'💜',unique:'🟡',legendary:'🔥'};
+const GRADES_MODAL=['rare','epic','unique','legendary'];
+
+function showUpgradeGoto(grade) {
+  const gi = GRADES_MODAL.indexOf(grade);
+  const ng = GRADES_MODAL[gi+1];
+  const count = ST.stat.t; // 총 큐브 사용 횟수
+  
+  // 모달 생성/표시
+  let overlay = document.getElementById('upgrade-modal-overlay');
+  if(overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'upgrade-modal-overlay';
+  overlay.className = 'sim-modal-overlay';
+  
+  const gradeColor = {rare:'var(--rare)',epic:'var(--epic)',unique:'#d48800',legendary:'var(--legendary)'};
+  const isMax = !ng;
+  
+  overlay.innerHTML = `
+    <div class="sim-modal">
+      <div class="m-icon">${GRADE_ICON[grade]}</div>
+      <div class="m-title" style="color:${gradeColor[grade]};">${GKR_MODAL[grade]} 강화 성공!</div>
+      <div class="m-sub">${isMax ? '축하합니다! 최고 등급 달성!' : `다음 단계: ${GKR_MODAL[ng]}`}</div>
+      <div class="m-count">${count}<span> 회 만에 성공</span></div>
+      <div class="sim-modal-btns">
+        ${ng ? `<button class="m-btn-main" onclick="gotoNext()">${GKR_MODAL[ng]} 도전 →</button>` : ''}
+        <button class="m-btn-sub" onclick="closeUpgradeModal()">계속 뽑기</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+function gotoNext() {
+  closeUpgradeModal();
+  const gi = GRADES_MODAL.indexOf(ST.grade);
+  const ng = GRADES_MODAL[gi+1];
+  if(!ng) return;
+  stopAuto();
+  startSim(ng);
+}
+function closeUpgradeModal() {
+  const el = document.getElementById('upgrade-modal-overlay');
+  if(el) el.remove();
+}
+function hideUpgradeGoto() {
+  closeUpgradeModal();
+}
+
+/* ── 옵션 뽑기 모달 ── */
+let targetOpt = null;
+
+function showOptModal() {
+  const avail_opts = OPTS.filter(o => o[GK[ST.grade]] !== null && o[GK[ST.grade]] !== undefined);
+  let html_opts = avail_opts.map(o =>
+    `<option value="${o.n}">${o.n} (${o.d})</option>`
+  ).join('');
+  
+  // 모달 없으면 생성
+  let modal = document.getElementById('opt-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'opt-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(61,53,96,0.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+      <div style="background:var(--white);border-radius:20px;padding:24px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(155,135,245,0.25);">
+        <div style="font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;margin-bottom:6px;">🎯 옵션 자동 뽑기</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px;">원하는 옵션을 선택하면 해당 옵션 <b>최고 수치</b>가 나올 때까지 자동으로 큐브를 사용합니다</div><div style="font-size:11px;font-weight:800;color:#d48800;background:#fff4de;border-radius:8px;padding:5px 10px;margin-bottom:12px;">⭐ 최고옵 기준 뽑기입니다</div>
+        <div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:6px;">원하는 옵션 선택</div>
+        <select id="opt-select" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:var(--t1);background:var(--s1);outline:none;margin-bottom:16px;">
+          <option value="">-- 옵션 선택 --</option>
+          ${html_opts}
+        </select>
+        <div style="display:flex;gap:8px;">
+          <button onclick="startOptAuto()" style="flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(155,135,245,0.3);">시작</button>
+          <button onclick="document.getElementById('opt-modal').style.display='none'" style="padding:12px 16px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);">취소</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  } else {
+    modal.style.display = 'flex';
+    // 옵션 목록 갱신
+    const sel = document.getElementById('opt-select');
+    sel.innerHTML = `<option value="">-- 옵션 선택 --</option>` + html_opts;
+  }
+}
+
+function startOptAuto() {
+  const sel = document.getElementById('opt-select');
+  targetOpt = sel.value;
+  if (!targetOpt) { alert('옵션을 선택해주세요'); return; }
+  document.getElementById('opt-modal').style.display = 'none';
+  ST.isAuto = true;
+  const ab = document.getElementById('btn-auto');
+  if(ab) { ab.classList.add('running'); ab.textContent = '⏹ 정지'; }
+  document.getElementById('btn1').disabled = true;
+  document.getElementById('btn10').disabled = true;
+  optAutoStep();
+}
+
+// 레전드리 등급에서 해당 옵션의 최고값 구하기
+function getMaxVal(optName) {
+  const opt = OPTS.find(o => o.n === optName);
+  if (!opt) return null;
+  const range = opt[GK[ST.grade]];
+  if (!range || range === 'fixed') return range;
+  return range[1]; // 최고값
+}
+
+function optAutoStep() {
+  if (!ST.isAuto) return;
+  // 현재 옵션에 targetOpt 최고값이 있으면 정지
+  const maxVal = getMaxVal(targetOpt);
+  const found = ST.opts.some(o => {
+    if (o.n !== targetOpt) return false;
+    if (maxVal === 'fixed') return o.v === '고정';
+    const numVal = parseFloat(o.v);
+    return numVal >= maxVal;
+  });
+  if (found) {
+    stopAuto();
+    showOptSuccessModal(targetOpt, ST.stat.t);
+    return;
+  }
+  roll(1);
+  if (ST.isAuto) {
+    ST.autoTimer = setTimeout(optAutoStep, 60);
+  }
+}
+
+function showOptSuccessModal(optName, count) {
+  let overlay = document.getElementById('opt-success-overlay');
+  if(overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'opt-success-overlay';
+  overlay.className = 'sim-modal-overlay';
+  const maxVal = getMaxVal(optName);
+  const valStr = maxVal === 'fixed' ? '고정' : maxVal;
+  const opt = OPTS.find(o => o.n === optName);
+  overlay.innerHTML = `
+    <div class="sim-modal">
+      <div class="m-icon">🎯</div>
+      <div class="m-title" style="color:var(--legendary);">최고옵 뽑기 성공!</div>
+      <div class="m-sub"><b>${optName}</b> 최고수치 <b style="color:var(--legendary);">${valStr}${opt&&opt.p?'%':''}</b> 획득<br>✦ 최고옵 기준 뽑기</div>
+      <div class="m-count">${count}<span> 회 만에 성공</span></div>
+      <div class="sim-modal-btns">
+        <button class="m-btn-main" onclick="document.getElementById('opt-success-overlay').remove();showOptModal();">다시 뽑기</button>
+        <button class="m-btn-sub" onclick="document.getElementById('opt-success-overlay').remove();">닫기</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+</script>
+</body>
+</html>
