@@ -33,7 +33,7 @@
       box-shadow:var(--shadow);
     }
     .header-inner {
-      max-width:960px; margin:0 auto;
+      max-width:1280px; margin:0 auto;
       display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
     }
     .back-btn {
@@ -57,10 +57,10 @@
 
     /* ── Filters ── */
     .filter-bar {
-      max-width:960px; margin:16px auto 0; padding:0 16px;
+      max-width:1280px; margin:16px auto 0; padding:0 16px; width:100%;
     }
     .filter-row {
-      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; align-items:center;
+      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; align-items:center; width:100%;
     }
     .filter-label {
       font-size:10px; font-weight:700; color:var(--t3);
@@ -92,7 +92,7 @@
 
     /* ── Table ── */
     .table-wrap {
-      max-width:960px; margin:12px auto 40px; padding:0 16px;
+      max-width:1280px; margin:12px auto 40px; padding:0 16px;
       overflow-x:auto;
     }
     table {
@@ -306,6 +306,220 @@
     }
     .pnav-tab-pd:hover { background: var(--s2); color: var(--a1); border-color: var(--a1); }
     .pnav-active-pd { background: linear-gradient(135deg,var(--s2),#ffeef6); color: var(--a1); border-color: var(--a1); font-weight: 800; }
+
+    .family-btn {
+      white-space: nowrap;
+    }
+    .family-btn.active {
+      background: linear-gradient(135deg, var(--s2), #ffeef6);
+      border-color: var(--a1); color: var(--a1); font-weight: 800;
+    }
+
+    /* ── 계열 보기 ── */
+    .family-view-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 18px; border-radius: 99px;
+      border: 1.5px solid var(--border2);
+      background: linear-gradient(135deg, var(--s2), #ffeef6);
+      color: var(--a1); font-size: 13px; font-weight: 800;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer; transition: all .15s;
+    }
+    .family-view-btn:hover, .family-view-btn.active {
+      background: var(--a1); color: #fff; border-color: var(--a1);
+    }
+    .family-view-btn.active::before { content: "✕ "; }
+
+    .family-panel-inner {
+      max-width: 1280px; margin: 0 auto; padding: 16px 16px 0;
+    }
+
+    /* 검색/헤더 */
+    .family-search-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .family-search-wrap {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--white); border: 1.5px solid var(--border2);
+      border-radius: 99px; padding: 7px 16px; flex: 1; min-width: 160px;
+    }
+    .family-search-wrap input {
+      border: none; outline: none; background: transparent;
+      font-size: 13px; font-family: 'Noto Sans KR', sans-serif;
+      color: var(--t1); width: 100%;
+    }
+    .family-expand-btn {
+      padding: 7px 14px; border-radius: 99px;
+      border: 1.5px solid var(--border2); background: var(--white);
+      font-size: 12px; font-weight: 700; color: var(--t2);
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .family-expand-btn:hover { border-color: var(--a1); color: var(--a1); }
+    .family-count-badge {
+      font-size: 12px; font-weight: 800; color: var(--t3);
+      font-family: 'Nunito', sans-serif; white-space: nowrap;
+    }
+
+    /* 계열 카드 그리드 */
+    .family-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      padding-bottom: 20px;
+    }
+    .family-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 22px 16px 16px;
+      text-align: center; cursor: pointer;
+      transition: all .18s; position: relative;
+    }
+    .family-card:hover {
+      border-color: var(--a1); box-shadow: var(--shadow2);
+      transform: translateY(-2px);
+    }
+    .family-card-img {
+      width: 110px; height: 110px; margin: 0 auto 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .family-card-img img {
+      width: 110px; height: 110px; object-fit: contain; image-rendering: pixelated;
+    }
+    .family-card-name {
+      font-size: 15px; font-weight: 800; color: var(--t1);
+      margin-bottom: 5px;
+    }
+    .family-card-count {
+      font-size: 12px; color: var(--t3); font-family: 'Nunito', sans-serif; font-weight: 700;
+    }
+    /* 펼쳐진 상태 */
+    .family-card.expanded {
+      grid-column: 1 / -1;
+      border-color: var(--a1);
+      background: linear-gradient(135deg, var(--s1), #ffeef9);
+    }
+    .family-card-members {
+      display: none; margin-top: 10px;
+      display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    }
+    .family-member-chip {
+      background: var(--white); border: 1.5px solid var(--border2);
+      border-radius: 8px; padding: 4px 10px;
+      font-size: 11px; font-weight: 700; color: var(--t1);
+      cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 5px;
+    }
+    .family-member-chip:hover { border-color: var(--a1); color: var(--a1); background: var(--s2); }
+    .family-member-chip img {
+      width: 24px; height: 24px; object-fit: contain; image-rendering: pixelated;
+    }
+
+    /* 계열 상세 */
+    .family-back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 99px;
+      border: 1.5px solid var(--border2); background: var(--white);
+      font-size: 12px; font-weight: 700; color: var(--t2);
+      cursor: pointer; transition: all .15s; margin-bottom: 14px;
+    }
+    .family-back-btn:hover { border-color: var(--a1); color: var(--a1); }
+    .family-detail-header {
+      display: flex; align-items: baseline; gap: 10px; margin-bottom: 14px;
+    }
+    .family-detail-name {
+      font-size: 20px; font-weight: 900;
+      font-family: 'Nunito', sans-serif; color: var(--t1);
+    }
+    .family-detail-count {
+      font-size: 12px; color: var(--t3); font-weight: 700;
+    }
+    .family-pet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px; padding-bottom: 20px;
+    }
+    .family-pet-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 16px 10px 10px;
+      text-align: center; cursor: pointer; transition: all .18s;
+    }
+    .family-pet-card:hover {
+      border-color: var(--a1); box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+    .family-pet-card img {
+      width: 84px; height: 84px; object-fit: contain; image-rendering: pixelated;
+      margin-bottom: 8px;
+    }
+    .family-pet-card .fpc-name {
+      font-size: 13px; font-weight: 800; color: var(--t1);
+    }
+    .family-pet-card .fpc-grade {
+      font-size: 10px; font-weight: 700; margin-top: 3px;
+    }
+    .grade-1등급 { color: var(--legendary); }
+    .grade-2등급 { color: var(--unique); }
+    .grade-일반  { color: var(--t3); }
+
+    /* ── 속성 수치 필터 ── */
+    .attr-val-row { flex-wrap: wrap; }
+    .attr-val-inputs {
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    }
+    .attr-val-item {
+      display: flex; align-items: center; gap: 5px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 4px 10px;
+    }
+    .attr-val-lbl { font-size: 12px; font-weight: 700; color: var(--t2); white-space: nowrap; }
+    .attr-val-input {
+      width: 40px; border: none; outline: none; background: transparent;
+      font-size: 13px; font-weight: 800; font-family: 'Nunito', sans-serif;
+      color: var(--a1); text-align: center;
+      -moz-appearance: textfield;
+    }
+    .attr-val-input::-webkit-outer-spin-button,
+    .attr-val-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .attr-val-item:focus-within { border-color: var(--a1); }
+    .attr-val-reset {
+      padding: 5px 12px; border-radius: 99px;
+      border: 1.5px solid var(--border2); background: var(--white);
+      font-size: 11px; font-weight: 700; color: var(--t3);
+      cursor: pointer; transition: all .15s;
+    }
+    .attr-val-reset:hover { border-color: var(--err); color: var(--err); }
+
+    /* ── 통합 속성 필터 ── */
+    .attr-combined {
+      display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
+    }
+    .attr-combined-item {
+      display: flex; align-items: center; gap: 4px;
+    }
+    .attr-combined-item .filter-btn {
+      border-radius: 99px;
+    }
+    .attr-combined-item:first-child .filter-btn {
+      border-radius: 99px;
+    }
+    .attr-combined-item .attr-val-input {
+      width: 38px; height: 30px;
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
+      background: var(--white); outline: none;
+      font-size: 12px; font-weight: 800; font-family: 'Nunito', sans-serif;
+      color: var(--a1); text-align: center; padding: 0 4px;
+      -moz-appearance: textfield;
+    }
+    .attr-combined-item .attr-val-input:focus { border-color: var(--a1); background: var(--s1); }
+    .attr-combined-item .attr-val-input::-webkit-outer-spin-button,
+    .attr-combined-item .attr-val-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .family-back-to-list {
+      padding: 7px 14px; border-radius: 99px;
+      border: 1.5px solid var(--border2); background: var(--white);
+      font-size: 12px; font-weight: 700; color: var(--t2);
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .family-back-to-list:hover { border-color: var(--a1); color: var(--a1); background: var(--s2); }
 </style>
 </head>
 <body>
@@ -314,7 +528,7 @@
   <div class="header-inner">
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
       <span class="header-title">🐾 펫 도감</span>
-      <span class="header-count" id="count-label">0 / 309마리</span>
+      <span class="header-count" id="count-label">0 / 312마리</span>
     </div>
   </div>
   <div class="page-nav-pd">
@@ -324,10 +538,43 @@
   </div>
 </div>
 
+<!-- 계열 뷰 패널 -->
+<div id="family-view-panel" style="display:none;">
+  <div class="family-panel-inner">
+    <!-- 계열 목록 -->
+    <div id="family-grid-view">
+      <div class="family-search-row">
+        <button class="family-back-to-list" onclick="toggleFamilyView()">← 도감으로</button>
+        <div class="family-search-wrap">
+          <span style="font-size:14px;">🔍</span>
+          <input id="family-search" placeholder="계열/펫 검색..." oninput="filterFamilyGrid()" />
+        </div>
+        <button class="family-expand-btn" id="family-expand-btn" onclick="toggleExpandAll()">전체 펼치기</button>
+        <span class="family-count-badge" id="family-count-badge">90개 계열</span>
+      </div>
+      <div class="family-cards-grid" id="family-cards-grid"></div>
+    </div>
+    <!-- 계열 상세 (계열 선택 후) -->
+    <div id="family-detail-view" style="display:none;">
+      <button class="family-back-btn" onclick="showFamilyGrid()">← 계열 목록으로</button>
+      <div class="family-detail-header">
+        <div class="family-detail-name" id="family-detail-name"></div>
+        <div class="family-detail-count" id="family-detail-count"></div>
+      </div>
+      <div class="family-pet-grid" id="family-pet-grid"></div>
+    </div>
+  </div>
+</div>
+
 <div class="filter-bar">
-  <div class="filter-row">
-    <span class="filter-label">검색</span>
-    <input class="search-input" id="search-input" placeholder="이름 또는 획득방법 검색..." />
+  <div class="filter-row" style="justify-content:space-between;flex-wrap:nowrap;gap:8px;">
+    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+      <span class="filter-label">검색</span>
+      <input class="search-input" id="search-input" placeholder="이름 또는 획득방법 검색..." />
+    </div>
+    <button class="family-view-btn" id="family-view-toggle" onclick="toggleFamilyView()" style="flex-shrink:0;">
+      🐾 계열별로 보기
+    </button>
   </div>
   <div class="filter-row">
     <span class="filter-label">등급</span>
@@ -336,13 +583,30 @@
     <button class="filter-btn" data-grade="2등급">2등급</button>
     <button class="filter-btn" data-grade="일반">일반</button>
   </div>
-  <div class="filter-row">
+  <div class="filter-row" style="flex-wrap:wrap;gap:8px;">
     <span class="filter-label">속성</span>
-    <button class="filter-btn active" data-attr="">전체</button>
-    <button class="filter-btn" data-attr="지">🌿 지</button>
-    <button class="filter-btn" data-attr="수">💧 수</button>
-    <button class="filter-btn" data-attr="화">🔥 화</button>
-    <button class="filter-btn" data-attr="풍">🌀 풍</button>
+    <div class="attr-combined">
+      <div class="attr-combined-item">
+        <button class="filter-btn attr-all-btn active" data-attr="">전체</button>
+      </div>
+      <div class="attr-combined-item">
+        <button class="filter-btn attr-toggle-btn" data-attr="지">🌿 지</button>
+        <input class="attr-val-input" id="av-지" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      </div>
+      <div class="attr-combined-item">
+        <button class="filter-btn attr-toggle-btn" data-attr="수">💧 수</button>
+        <input class="attr-val-input" id="av-수" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      </div>
+      <div class="attr-combined-item">
+        <button class="filter-btn attr-toggle-btn" data-attr="화">🔥 화</button>
+        <input class="attr-val-input" id="av-화" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      </div>
+      <div class="attr-combined-item">
+        <button class="filter-btn attr-toggle-btn" data-attr="풍">🌀 풍</button>
+        <input class="attr-val-input" id="av-풍" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      </div>
+      <button class="attr-val-reset" onclick="resetAttrVal()">초기화</button>
+    </div>
   </div>
 </div>
 
@@ -382,6 +646,7 @@ const PET_DATA = {
   "불그리": {grade:"일반",attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.78,"atk":2.07,"def":1.26,"agi":1.71},ic:{atk:4,def:2,agi:3,hp:19},obtain:"출시예정",routeType:"기타",mount:false},
   "실버우리": {grade:"1등급",attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.81,"atk":1.92,"def":1.5,"agi":1.69},ic:{atk:8,def:6,agi:7,hp:41},obtain:"카루타나 복권 1등",routeType:"복권",mount:true},
   "부비": {grade:"일반",attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":14.08,"atk":2.18,"def":1.45,"agi":0.78},ic:{atk:6,def:4,agi:2,hp:44},obtain:"사이너스 섬(동608 남208) 포획",routeType:"포획",mount:true},
+  "부이": {grade:"일반",attr:{"지":6,"수":4,"화":0,"풍":0},sg:{"hp":14.226,"atk":2.181,"def":1.411,"agi":0.783},ic:{atk:10,def:6,agi:3,hp:65},obtain:"사이너스 섬(동608 남208) 포획",routeType:"포획",mount:false},
   "부이비": {grade:"일반",attr:{"지":0,"수":4,"화":6,"풍":0},sg:{"hp":14.32,"atk":2.32,"def":1.38,"agi":0.78},ic:{atk:7,def:4,agi:2,hp:48},obtain:"쟈루 섬(동357 남183) 포획",routeType:"포획",mount:true},
   "골드부비": {grade:"2등급",attr:{"지":0,"수":0,"화":3,"풍":7},sg:{"hp":13.75,"atk":2.26,"def":1.36,"agi":0.83},ic:{atk:11,def:7,agi:4,hp:72},obtain:"퀴즈 마스터(모가로스) 퀘스트",routeType:"퀘스트",mount:true},
   "얼룩부이비": {grade:"2등급",attr:{"지":10,"수":0,"화":0,"풍":0},sg:{"hp":13.8,"atk":2.18,"def":1.54,"agi":0.78},ic:{atk:10,def:7,agi:3,hp:66},obtain:"퀴즈 마스터(오르곤) 퀘스트",routeType:"퀘스트",mount:true},
@@ -392,6 +657,8 @@ const PET_DATA = {
   "토루루": {grade:"일반",attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.88,"atk":1.86,"def":1.68,"agi":1.61},ic:{atk:7,def:6,agi:6,hp:37},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
   "타이혼": {grade:"1등급",attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.52,"atk":2.05,"def":1.41,"agi":1.73},ic:{atk:12,def:8,agi:10,hp:60},obtain:"후르도 복권 1등",routeType:"복권",mount:false},
   "라이혼": {grade:"2등급",attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.09,"atk":1.9,"def":1.73,"agi":1.59},ic:{atk:11,def:10,agi:10,hp:63},obtain:"정령 레이드",routeType:"레이드",mount:false},
+  "레이론": {grade:"일반",attr:{"지":4,"수":6,"화":0,"풍":0},sg:{"hp":10.480,"atk":2.251,"def":1.417,"agi":1.261},ic:{atk:10,def:6,agi:5,hp:48},obtain:"호피도(동181 남215) 포획",routeType:"포획",mount:false},
+  "레피아": {grade:"일반",attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.825,"atk":2.023,"def":1.310,"agi":1.757},ic:{atk:9,def:6,agi:8,hp:45},obtain:"페트 자판기",routeType:"자판기",mount:false},
   "라나프": {grade:"2등급",attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.13,"atk":2.02,"def":1.48,"agi":1.66},ic:{atk:11,def:8,agi:9,hp:51},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
   "모나시프": {grade:"2등급",attr:{"지":0,"수":0,"화":0,"풍":10},sg:{"hp":9.48,"atk":1.96,"def":1.45,"agi":1.73},ic:{atk:10,def:7,agi:9,hp:49},obtain:"채석장의 비밀 퀘스트 보상",routeType:"퀘스트",mount:false},
   "오투투": {grade:"일반",attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.44,"atk":1.74,"def":1.36,"agi":2.01},ic:{atk:6,def:5,agi:7,hp:35},obtain:"쿠오 해저통로 2층 전역 포획",routeType:"포획",mount:true},
@@ -430,8 +697,8 @@ const PET_DATA = {
   "베로보크": {grade:"일반",attr:{"지":3,"수":7,"화":0,"풍":0},sg:{"hp":11.208,"atk":1.36,"def":2.226,"agi":0.989},ic:{atk:5,def:9,agi:4,hp:48},obtain:"아름산의 동굴 지하7층(동42 남21) 포획",routeType:"포획",mount:true},
   "베로포리": {grade:"일반",attr:{"지":0,"수":3,"화":7,"풍":0},sg:{"hp":10.74,"atk":1.46,"def":2.11,"agi":1},ic:{atk:5,def:8,agi:3,hp:42},obtain:"속임수의 동굴 3번(동22 남21) 포획",routeType:"포획",mount:true},
   "노북이": {grade:"일반",attr:{"지":3,"수":0,"화":0,"풍":7},sg:{"hp":9.57,"atk":1.64,"def":2.44,"agi":0.75},ic:{atk:4,def:6,agi:1,hp:24},obtain:"사이너스(동545 남389)포획",routeType:"포획",mount:true},
-  "북이": {grade:"일반",attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.41,"atk":1.69,"def":2.49,"agi":0.69},ic:{atk:4,def:6,agi:1,hp:22},obtain:"사이너스(동570 남416) 포획",routeType:"포획",mount:true},
-  "깡북이": {grade:"일반",attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.74,"atk":1.8,"def":2.4,"agi":0.8},ic:{atk:3,def:5,agi:1,hp:20},obtain:"쿠오산소동굴 3층(동15 남20) 포획",routeType:"포획",mount:true},
+  "북이": {grade:"일반",attr:{"지":6,"수":0,"화":0,"풍":4},sg:{"hp":9.407,"atk":1.688,"def":2.487,"agi":0.693},ic:{atk:4,def:6,agi:1,hp:23},obtain:"사이너스(동570 남416) 포획",routeType:"포획",mount:true},
+  "깡북이": {grade:"일반",attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.74,"atk":1.8,"def":2.4,"agi":0.8},ic:{atk:3,def:5,agi:1,hp:21},obtain:"쿠오산소동굴 3층(동15 남20) 포획",routeType:"포획",mount:true},
   "돌북이": {grade:"일반",attr:{"지":9,"수":0,"화":0,"풍":1},sg:{"hp":9.6,"atk":1.66,"def":2.72,"agi":0.45},ic:{atk:3,def:5,agi:1,hp:20},obtain:"쿠오산소동굴 4층(동23 남38) 포획",routeType:"포획",mount:true},
   "라고고": {grade:"일반",attr:{"지":0,"수":0,"화":10,"풍":0},sg:{"hp":9.862,"atk":1.911,"def":1.633,"agi":1.57},ic:{atk:8,def:7,agi:7,hp:44},obtain:"가우린 섬(동461 남523) 포획",routeType:"포획",mount:true},
   "후바바": {grade:"일반",attr:{"지":0,"수":0,"화":6,"풍":4},sg:{"hp":9.759,"atk":1.806,"def":1.574,"agi":1.622},ic:{atk:8,def:7,agi:7,hp:45},obtain:"사이너스(동526 남144) 포획",routeType:"포획",mount:true},
@@ -580,7 +847,7 @@ const PET_DATA = {
   "테이노스": {grade:"일반",attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":10.188,"atk":2.421,"def":1.395,"agi":1.306},ic:{atk:14,def:8,agi:7,hp:60},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "나비드래곤": {grade:"일반",attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.726,"atk":2.258,"def":1.322,"agi":1.608},ic:{atk:11,def:6,agi:8,hp:49},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "흑풍": {grade:"일반",attr:{"지":9,"수":0,"화":0,"풍":1},sg:{"hp":9.903,"atk":2.148,"def":1.421,"agi":1.638},ic:{atk:10,def:7,agi:8,hp:50},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
-  "디어룬": {grade:"일반",attr:{"지":8,"수":0,"화":0,"풍":8},sg:{"hp":9.856,"atk":2.048,"def":1.278,"agi":1.828},ic:{atk:10,def:6,agi:9,hp:51},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:true},
+  "디어룬": {grade:"일반",attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.856,"atk":2.048,"def":1.278,"agi":1.828},ic:{atk:10,def:6,agi:9,hp:51},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:true},
   "데카이어던": {grade:"일반",attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.571,"atk":1.991,"def":1.136,"agi":2.113},ic:{atk:10,def:5,agi:11,hp:50},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "백룡": {grade:"일반",attr:{"지":5,"수":5,"화":0,"풍":0},sg:{"hp":10.378,"atk":2.155,"def":1.385,"agi":1.591},ic:{atk:11,def:7,agi:8,hp:56},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
   "모이토": {grade:"1등급",attr:{"지":7,"수":0,"화":0,"풍":3},sg:{"hp":9.553,"atk":2.045,"def":1.489,"agi":1.673},ic:{atk:9,def:7,agi:8,hp:46},obtain:"정규 듀얼 페트병",routeType:"듀얼보상",mount:false},
@@ -688,6 +955,7 @@ const PET_IMAGES = {
   "두리": "https://pooyas.com/files/extravar_upload/109631/047/167/8c42820f1636f39fba73a3c3fbf402a7.gif",
   "베론": "https://pooyas.com/files/extravar_upload/109631/339/167/0522faf384f7264f6934a5d42c5dcd89.gif",
   "부비": "https://pooyas.com/files/extravar_upload/109631/257/167/97d7191256bde3ab2a8990b3576e8066.gif",
+  "부이": "https://wind01.net/info/img/100256.gif",
   "부이비": "https://pooyas.com/files/extravar_upload/109631/289/167/1ec2f9c0a250eb7de6e894797a274fe1.gif",
   "불그리": "https://pooyas.com/files/extravar_upload/109631/243/167/eb4fd765746395e9cdc64b802cfd21e6.gif",
   "실버우리": "https://pooyas.com/files/extravar_upload/109631/250/167/e7e8eaf580b5ec0df3d872cf29e29c18.gif",
@@ -854,14 +1122,15 @@ const PET_IMAGES = {
   "테라탄": "https://pooyas.com/files/extravar_upload/109631/207/178/ccd68016d9dd2c4beef98778a23ca55e.gif",
   "게이블": "https://pooyas.com/files/extravar_upload/109631/215/178/a4da95945c5b650bfcf90af543362426.gif",
   "가스트": "https://pooyas.com/files/extravar_upload/109631/223/178/05522f33941ffbf95189daa08a9396a2.gif",
-  "레이론": "https://pooyas.com/files/extravar_upload/109631/451/178/cc1f13fbdc6f3b5b377f90316a5267aa.gif",
+  "레피아": "https://wind01.net/info/img/103021.gif",
+    "레이론": "https://pooyas.com/files/extravar_upload/109631/451/178/cc1f13fbdc6f3b5b377f90316a5267aa.gif",
   "아코로비": "https://pooyas.com/files/extravar_upload/109631/468/178/77ca4ed998389a54ce123f6d6e4f718c.gif",
   "황금복덩이": "https://pooyas.com/files/extravar_upload/109631/476/178/6803420e6cbc3e6a38786fd6286a06df.gif",
   "핑코": "https://pooyas.com/files/extravar_upload/109631/488/178/9f17479df8611f30a2460e8afd1513da.gif",
   "익시노돈": "https://pooyas.com/files/extravar_upload/109631/588/178/172a03f69b27093e9960f5424e263d91.gif",
-  "봉봉": "https://pooyas.com/files/extravar_upload/109631/714/178/19999926ed95a2f42695aa681d6f474f.gif",
+  "봉봉": "https://wind01.net/info/img/103246.gif",
   "키파": "https://pooyas.com/files/extravar_upload/109631/043/179/41cd28c5d6310e68cb246dbdaab29098.gif",
-  "카르페": "https://pooyas.com/files/extravar_upload/109631/694/178/6dcca1a8c48e7fab06e32237245701a7.gif",
+  "카르페": "https://wind01.net/info/img/105078.gif",
   "그램고르": "https://pooyas.com/files/extravar_upload/109631/070/179/6e4de334f46c4f3807a77985b3641614.gif",
   "타키온": "https://pooyas.com/files/extravar_upload/109631/079/179/b0bcaddb54cecd2e2c7085ba24bb224e.gif",
   "푸타푸타": "https://pooyas.com/files/extravar_upload/109631/086/179/dcc53e1b88010f2c8d1d3c1e2d3246df.gif",
@@ -1031,6 +1300,23 @@ function renderTable() {
   // 속성 필터
   if (filterAttr) entries = entries.filter(([n,p]) => (p.attr?.[filterAttr] ?? 0) > 0);
 
+  // 속성 수치 필터
+  const attrVals = {
+    '지': parseInt(document.getElementById('av-지')?.value) || 0,
+    '수': parseInt(document.getElementById('av-수')?.value) || 0,
+    '화': parseInt(document.getElementById('av-화')?.value) || 0,
+    '풍': parseInt(document.getElementById('av-풍')?.value) || 0,
+  };
+  const hasAttrFilter = Object.values(attrVals).some(v => v > 0);
+  if (hasAttrFilter) {
+    entries = entries.filter(([n,p]) => {
+      const attr = p.attr || {};
+      return Object.entries(attrVals).every(([key, minVal]) =>
+        minVal === 0 || (attr[key] ?? 0) >= minVal
+      );
+    });
+  }
+
   // 정렬
   entries.sort(([na,a],[nb,b]) => {
     let va, vb;
@@ -1110,7 +1396,7 @@ function renderTable() {
     tbody.appendChild(tr);
   });
 
-  document.getElementById("count-label").textContent = `${entries.length} / 309마리`;
+  document.getElementById("count-label").textContent = `${entries.length} / 312마리`;
   document.getElementById("no-result").style.display = entries.length === 0 ? "block" : "none";
   document.getElementById("pet-table").style.display = entries.length === 0 ? "none" : "";
 
@@ -1249,15 +1535,257 @@ function openModal(name) {
 
 function hideModal() {
   document.getElementById("pet-modal").style.display = "none";
-  document.body.style.overflow = "";
   document.documentElement.style.overflow = "";
+  // 계열 팝업에서 들어온 경우 계열 팝업으로 복귀
+  if (currentFamily) {
+    const modal = document.getElementById("family-detail-modal");
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
 }
 function closeModal(e) {
   if (e.target === document.getElementById("pet-modal")) hideModal();
+  if (e.target === document.getElementById("family-detail-modal")) closeFamilyDetailModal();
 }
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") hideModal();
+  if (e.key === "Escape") {
+    closeFamilyDetailModal();
+    hideModal();
+  }
 });
+
+/* ── 계열 데이터 ── */
+
+const PET_FAMILIES = {
+  "우리계열": ["우리", "얼룩우리", "불그리", "실버우리", "환생얼룩우리", "복우리", "푸우리", "두리", "녹우리"],
+  "후바바계열": ["후바바", "쿠로로", "라고고", "토루루", "루니", "라루루"],
+  "부비계열": ["부비", "골드부비", "부이", "부이비", "얼룩부이비", "푸비"],
+  "꼬비계열": ["꼬비", "꼬미", "꼬비오", "꼬꼬비"],
+  "우푸계열": ["우푸", "푸푸", "투투", "오투투", "노투투", "포포"],
+  "베론계열": ["베론", "베로로크", "베로보크", "베로포리", "베노노크"],
+  "북이계열": ["북이", "노북이", "깡북이", "돌북이", "킹북이", "자라북"],
+  "아고아계열": ["아고아", "네고스", "타로곤", "다고스", "보크곤", "타로아"],
+  "카타르카스계열": ["카타르카스", "쿠카스", "코로카스", "로기안", "램가스", "아이카스", "쿠타스", "카르기안"],
+  "얀기로계열": ["얀기로", "반기노", "리비노", "반보로", "부르돈", "프로돈", "테이노스", "기비노"],
+  "쿠링계열": ["쿠링", "쿠쿠르", "포링", "리스키", "노스키", "라스키", "토끼", "범링", "화이트링"],
+  "카비트계열": ["카비트", "케이비", "큐이", "골드카비트", "키라비", "블루카비트"],
+  "고르돈계열": ["고르돈", "기라돈", "투르돈", "고르고", "킹고르", "그린고르", "그램고르", "지고르", "노라돈"],
+  "쿠보계열": ["쿠보", "휴보", "토로쟈", "부르보", "포보"],
+  "카쿠계열": ["카쿠", "바카", "바우", "카우"],
+  "베르가계열": ["베르가", "베루루", "고르고르", "노르노르", "산타베르가", "타키온", "고루루", "성호", "금호", "레피아", "샤베르", "베라라"],
+  "토리노프스계열": ["토리노프스", "펜타스", "토리케라", "토르프스", "코발스", "핑크프스"],
+  "쟈그계열": ["쟈그", "쟈그라", "고반케스", "판지", "석화케스", "쟈하드", "판그라"],
+  "기가로스계열": ["기가로스", "메가로스", "비트로스", "가가로스"],
+  "무이계열": ["무이", "씨보스", "루이", "투이", "노보스"],
+  "다이노계열": ["다이노", "다이노스", "프라키토스", "스텐토스", "프리토스", "푸비토스"],
+  "만모계열": ["만모", "만모르", "마모나스", "만모로스", "아이스만모", "화이트만모", "흑모", "만모드", "푸모나스"],
+  "도라비스계열": ["도라비스", "테라곤", "카르곤", "포이비스", "푸테라", "보르비스", "메카비스"],
+  "카키계열": ["카키", "타키", "쿠쿠", "호르쿠", "흑카키", "쥬키", "타르쿠", "메카카키"],
+  "모가로스계열": ["모가로스", "오가로스", "오르곤", "골로스", "칼로스", "노르곤", "파베로스", "푸룡", "묵룡", "지가로스", "핑베로스", "바로스"],
+  "모나시프계열": ["모나시프", "프이토", "라나프", "라이혼", "타이혼", "모이토"],
+  "아토라지계열": ["아토라지", "스토라지", "아리노스", "다이노로스", "타르노로스", "다리노스", "노리노스"],
+  "바로로크스계열": ["바로로크스", "란베르스", "코리토르스", "노스토로스", "진주토로스"],
+  "카우거계열": ["카우거", "크루거"],
+  "샤크론계열": ["샤크론", "차크론"],
+  "크랩계열": ["크랩", "킹크랩", "포레스트크랩", "스톤크랩"],
+  "페르페계열": ["페르페", "토라", "카르페", "데라"],
+  "쿠팡계열": ["쿠팡", "쿠아"],
+  "밍코계열": ["밍코", "스노밍코", "한복밍코"],
+  "슈우계열": ["슈우", "샤르페", "미니스"],
+  "흑귀계열": ["흑귀"],
+  "키파계열": ["키파"],
+  "바우트계열": ["바우트"],
+  "갈푸스계열": ["갈푸스", "베르푸스", "울푸스", "델푸스", "흑갈푸스"],
+  "구루마루계열": ["구루마루", "아르마루"],
+  "봉봉계열": ["봉봉"],
+  "포루나계열": ["포루나", "피피아"],
+  "골드로비계열": ["골드로비", "아코로비"],
+  "황호계열": ["황호", "이블티거", "청호", "흑호", "가우", "로데오", "백호"],
+  "핑코계열": ["핑코"],
+  "익시노돈계열": ["익시노돈", "테로노돈"],
+  "라그노스계열": ["라그노스"],
+  "모사크계열": ["모사크"],
+  "황금복덩이계열": ["황금복덩이"],
+  "크로아치계열": ["크로아치"],
+  "바라쿠스계열": ["바라쿠스", "라이쿠스"],
+  "흑룡계열": ["흑룡", "백룡"],
+  "흑기린계열": ["흑기린"],
+  "우라노스계열": ["우라노스", "헬노스"],
+  "카이스계열": ["카이스", "카로스", "케이르", "타비스"],
+  "웅이계열": ["웅이"],
+  "지라크계열": ["지라크", "타이판", "파이톤"],
+  "레이론계열": ["레이론"],
+  "디메트로돈계열": ["디메트로돈", "비트로돈"],
+  "본드래곤계열": ["본드래곤", "나비드래곤", "블랙드래곤", "어스드래곤"],
+  "피닉스계열": ["피닉스"],
+  "리프톤계열": ["리프톤"],
+  "언딘계열": ["언딘"],
+  "주작계열": ["주작", "흑주작"],
+  "레오딘계열": ["레오딘", "레오린"],
+  "흑풍계열": ["흑풍", "풍백", "청풍", "암풍"],
+  "디어룬계열": ["디어룬"],
+  "데카이어던계열": ["데카이어던", "페카이어던"],
+  "현무계열": ["현무"],
+  "몽몽계열": ["몽몽"],
+  "페가수스계열": ["페가수스"],
+  "스피노계열": ["스피노"],
+  "한복메이계열": ["한복메이"],
+  "시오계열": ["시오", "티오", "피오"],
+  "야무리계열": ["야무리"],
+  "발로스계열": ["발로스", "데블로스"],
+  "가이록스계열": ["가이록스", "사이록스"],
+  "볼케계열": ["볼케", "이구로스"],
+  "미르계열": ["미르"],
+  "가스트계열": ["가스트", "게이블", "테라탄"],
+  "지마계열": ["지마", "분마"],
+  "배모티스계열": ["배모티스"],
+  "헤머드계열": ["헤머드"],
+  "테라죠계열": ["테라죠", "메가죠", "메가로돈", "테라로돈", "메라로돈"],
+  "와일로계열": ["와일로"],
+  "푸타푸타계열": ["푸타푸타"],
+  "뇌호계열": ["뇌호", "독호"],
+  "비룡계열": ["비룡"],
+  "마우계열": ["마우"],
+  "아마란스계열": ["아마란스"],
+  "그리프스계열": ["그리프스"]
+};
+
+/* ── 계열 뷰 ── */
+let familyViewOpen = false;
+let expandAllMode = false;
+let currentFamily = null;
+
+function toggleFamilyView() {
+  familyViewOpen = !familyViewOpen;
+  const panel = document.getElementById('family-view-panel');
+  const btn = document.getElementById('family-view-toggle');
+  const filterBar = document.querySelector('.filter-bar');
+  const tableWrap = document.querySelector('.table-wrap');
+
+  panel.style.display = familyViewOpen ? 'block' : 'none';
+  btn.classList.toggle('active', familyViewOpen);
+
+  // 계열뷰 열리면 필터바+테이블 숨기기
+  if (filterBar) filterBar.style.display = familyViewOpen ? 'none' : '';
+  if (tableWrap) tableWrap.style.display = familyViewOpen ? 'none' : '';
+
+  if (familyViewOpen && document.getElementById('family-cards-grid').children.length === 0) {
+    renderFamilyGrid();
+  }
+}
+
+function renderFamilyGrid(filter) {
+  const grid = document.getElementById('family-cards-grid');
+  grid.innerHTML = '';
+  const q = (filter || '').trim().toLowerCase();
+  let count = 0;
+
+  for (const [fname, members] of Object.entries(PET_FAMILIES)) {
+    // 검색 필터
+    if (q) {
+      const matchName = fname.toLowerCase().includes(q);
+      const matchMember = members.some(m => m.toLowerCase().includes(q));
+      if (!matchName && !matchMember) continue;
+    }
+    count++;
+
+    const repImg = PET_IMAGES[members[0]] || '';
+    const card = document.createElement('div');
+    card.className = 'family-card' + (expandAllMode ? ' expanded' : '');
+    card.dataset.family = fname;
+
+    const membersHtml = members.map(m => {
+      const img = PET_IMAGES[m] ? `<img src="${PET_IMAGES[m]}" onerror="this.style.display='none'">` : '<span style="font-size:18px;">🐾</span>';
+      return `<span class="family-member-chip" onclick="event.stopPropagation();openModalByName('${m}')">${img}${m}</span>`;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="family-card-img">
+        ${repImg ? `<img src="${repImg}" onerror="this.src='';this.parentElement.innerHTML='<span style=font-size:32px>🐾</span>'">` : '<span style="font-size:32px;">🐾</span>'}
+      </div>
+      <div class="family-card-name">${fname}</div>
+      <div class="family-card-count">${members.length}마리</div>
+      ${expandAllMode ? `<div class="family-card-members">${membersHtml}</div>` : ''}
+    `;
+    if (!expandAllMode) {
+      card.addEventListener('click', () => showFamilyDetail(fname));
+    }
+    grid.appendChild(card);
+  }
+  document.getElementById('family-count-badge').textContent = count + '개 계열';
+}
+
+function filterFamilyGrid() {
+  const q = document.getElementById('family-search').value;
+  renderFamilyGrid(q);
+}
+
+function toggleExpandAll() {
+  expandAllMode = !expandAllMode;
+  const btn = document.getElementById('family-expand-btn');
+  btn.textContent = expandAllMode ? '전체 접기' : '전체 펼치기';
+  const q = document.getElementById('family-search').value;
+  renderFamilyGrid(q);
+}
+
+function showFamilyDetail(fname) {
+  currentFamily = fname;
+  const members = PET_FAMILIES[fname];
+  document.getElementById('fdm-name').textContent = fname;
+  document.getElementById('fdm-count').textContent = members.length + '마리';
+
+  const grid = document.getElementById('fdm-pet-grid');
+  grid.innerHTML = '';
+  members.forEach(name => {
+    const pet = PET_DATA[name];
+    const img = PET_IMAGES[name] || '';
+    const card = document.createElement('div');
+    card.className = 'family-pet-card';
+    const grade = pet ? pet.grade || '' : '';
+    card.innerHTML = `
+      ${img ? `<img src="${img}" onerror="this.style.display='none'">` : '<div style="font-size:40px;margin-bottom:6px;">🐾</div>'}
+      <div class="fpc-name">${name}</div>
+      <div class="fpc-grade grade-${grade}">${grade}</div>
+    `;
+    card.addEventListener('click', () => {
+      // 계열 팝업 숨기기 (currentFamily 유지 - 복귀용)
+      document.getElementById('family-detail-modal').style.display = 'none';
+      openModalByName(name);
+    });
+    grid.appendChild(card);
+  });
+
+  const modal = document.getElementById('family-detail-modal');
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFamilyDetailModal() {
+  document.getElementById('family-detail-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+  currentFamily = null;
+}
+
+function showFamilyGrid() {
+  // 이제 별도 화면 없음 - 모달 방식
+}
+
+function resetAttrVal() {
+  ['지','수','화','풍'].forEach(a => {
+    const el = document.getElementById('av-' + a);
+    if (el) el.value = '';
+  });
+  renderTable();
+}
+
+function openModalByName(name) {
+  if (PET_DATA[name]) openModal(name);
+}
+
 </script>
 <!-- 상세 모달 -->
 <div class="modal-overlay" id="pet-modal" style="display:none" onclick="closeModal(event)">
@@ -1335,10 +1863,24 @@ document.addEventListener("keydown", e => {
   </div>
   <div style="display:inline-block;background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:14px 24px;box-shadow:var(--shadow);line-height:2;">
     <div style="font-size:12px;color:var(--t2);">
-      만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">루믹스</span>
+      만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">새벽부족 루믹스</span>
     </div>
   </div>
   <div style="margin-top:12px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">© 윈드 펫 도감 ver 1.3</div>
+</div>
+
+<!-- 계열 상세 모달 -->
+<div id="family-detail-modal" onclick="closeModal(event)" style="display:none;position:fixed;inset:0;background:rgba(61,53,96,0.45);backdrop-filter:blur(4px);z-index:300;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--white);border-radius:22px;padding:24px;max-width:680px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(155,135,245,0.25);animation:mslide .25s ease;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div>
+        <div style="font-size:20px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t1);" id="fdm-name"></div>
+        <div style="font-size:12px;color:var(--t3);font-weight:700;margin-top:2px;" id="fdm-count"></div>
+      </div>
+      <button onclick="closeFamilyDetailModal()" style="width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border2);background:var(--s1);cursor:pointer;font-size:16px;color:var(--t2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+    </div>
+    <div class="family-pet-grid" id="fdm-pet-grid"></div>
+  </div>
 </div>
 </body>
 </html>
