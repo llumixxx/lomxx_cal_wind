@@ -469,7 +469,7 @@ function onSeal(){
 /* ── 큐브 굴리기 ── */
 function roll(times){
   hideToast();
-  let lastUp=null, lastChanged=null;
+  let lastUp=null, lastChanged=null, lastUpCount=null;
 
   for(let i=0;i<times;i++){
     const cb=ST.cube;
@@ -494,11 +494,12 @@ function roll(times){
           ST.opts=genOpts(ST.grade,cnt());
           lastChanged=ST.opts.map((_,i)=>i);
           lastUp=ST.grade;
+          lastUpCount=ST.stat.t; // 성공 시점의 정확한 횟수
           if(ST.grade==='unique'||ST.grade==='legendary') ST.cube='red';
           // 강화 성공 → 자동강화였으면 정지
           if(ST.isAuto) stopAuto();
           addLog(true,cb,ST.stat.t,ST.grade,null);
-          continue;
+          break; // 성공 시 즉시 중단
         }
       }
     }
@@ -508,7 +509,7 @@ function roll(times){
 
   render();
   if(lastChanged) renderOpts(lastChanged);
-  if(lastUp) showToast(lastUp);
+  if(lastUp) showToast(lastUp, lastUpCount ?? ST.stat.t);
 }
 
 /* ── 자동 강화 ── */
@@ -545,11 +546,11 @@ function autoStep(){
 }
 
 /* ── 토스트 ── */
-function showToast(g){
+function showToast(g, count){
   const t=document.getElementById('toast');
   const m={epic:'💜 에픽 강화 성공!',unique:'🟡 유니크 강화 성공!',legendary:'🔥 레전드리 강화 성공! 최고 등급 달성 🎊'};
   t.textContent=m[g]||'🎉 강화 성공!';
-  showUpgradeGoto(g);
+  showUpgradeGoto(g, count);
   t.className='toast show t-'+g;
   if(ST.timer) clearTimeout(ST.timer);
   // 자동으로 사라지지 않음 - 클릭해야 닫힘
@@ -640,10 +641,26 @@ const GKR_MODAL={rare:'레어',epic:'에픽',unique:'유니크',legendary:'레�
 const GRADE_ICON={rare:'🃏',epic:'💜',unique:'🟡',legendary:'🔥'};
 const GRADES_MODAL=['rare','epic','unique','legendary'];
 
-function showUpgradeGoto(grade) {
+function getUpgradeMsg(count, grade) {
+  // 등급별 평균 횟수 기준으로 문구 조정
+  // 레어→에픽: 평균 20회 / 에픽→유니크: 평균 100회 / 유니크→레전드리: 평균 333회
+  const thresholds = {
+    epic:      [5,  15,  30,  60,  100],  // 평균 20회
+    unique:    [20, 50, 120, 200,  350],  // 평균 100회
+    legendary: [50,150, 300, 500, 800],   // 평균 333회
+  };
+  const t = thresholds[grade] || thresholds.epic;
+  if(count <= t[0]) return '🍀 오늘 로또 사세요!';
+  if(count <= t[1]) return '✨ 당신은 신의 손!';
+  if(count <= t[2]) return '🎯 완전 상위권 뽑기 운!';
+  if(count <= t[3]) return '😊 충분히 좋은 결과입니다';
+  if(count <= t[4]) return '🤔 평균 정도..?';
+  return '😅 음.. 큐브는 다음에 하는 걸로';
+}
+function showUpgradeGoto(grade, count) {
+  if(count == null) count = ST.stat.t;
   const gi = GRADES_MODAL.indexOf(grade);
   const ng = GRADES_MODAL[gi+1];
-  const count = ST.stat.t; // 총 큐브 사용 횟수
   
   // 모달 생성/표시
   let overlay = document.getElementById('upgrade-modal-overlay');
@@ -661,6 +678,7 @@ function showUpgradeGoto(grade) {
       <div class="m-title" style="color:${gradeColor[grade]};">${GKR_MODAL[grade]} 강화 성공!</div>
       <div class="m-sub">${isMax ? '축하합니다! 최고 등급 달성!' : `다음 단계: ${GKR_MODAL[ng]}`}</div>
       <div class="m-count">${count}<span> 회 만에 성공</span></div>
+      <div style="margin-top:8px;padding:7px 12px;background:var(--s1);border-radius:10px;font-size:12px;font-weight:800;color:var(--t2);">${getUpgradeMsg(count, grade)}</div>
       <div class="sim-modal-btns">
         ${ng ? `<button class="m-btn-main" onclick="gotoNext()">${GKR_MODAL[ng]} 도전 →</button>` : ''}
         <button class="m-btn-sub" onclick="closeUpgradeModal()">계속 뽑기</button>
@@ -765,6 +783,14 @@ function optAutoStep() {
   }
 }
 
+function getOptMsg(count) {
+  if(count <= 30)  return '🍀 오늘 로또 사세요!';
+  if(count <= 80)  return '✨ 당신은 신의 손!';
+  if(count <= 150) return '🎯 완전 상위권 뽑기 운!';
+  if(count <= 250) return '😊 충분히 좋은 결과입니다';
+  if(count <= 400) return '🤔 평균 정도..?';
+  return '😅 음.. 큐브는 다음에 하는 걸로';
+}
 function showOptSuccessModal(optName, count) {
   let overlay = document.getElementById('opt-success-overlay');
   if(overlay) overlay.remove();
@@ -780,6 +806,7 @@ function showOptSuccessModal(optName, count) {
       <div class="m-title" style="color:var(--legendary);">최고옵 뽑기 성공!</div>
       <div class="m-sub"><b>${optName}</b> 최고수치 <b style="color:var(--legendary);">${valStr}${opt&&opt.p?'%':''}</b> 획득<br>✦ 최고옵 기준 뽑기</div>
       <div class="m-count">${count}<span> 회 만에 성공</span></div>
+      <div style="margin-top:8px;padding:7px 12px;background:var(--s1);border-radius:10px;font-size:12px;font-weight:800;color:var(--t2);">${getOptMsg(count)}</div>
       <div class="sim-modal-btns">
         <button class="m-btn-main" onclick="document.getElementById('opt-success-overlay').remove();showOptModal();">다시 뽑기</button>
         <button class="m-btn-sub" onclick="document.getElementById('opt-success-overlay').remove();">닫기</button>
