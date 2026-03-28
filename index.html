@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>윈드 환각 계산기 ver1.3</title>
+  <title>윈드 환각 계산기 ver 2.0</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js">
+
 </script>
   <!-- Firebase REST API (CSP 호환, eval 없음) -->
   <script>
@@ -95,7 +96,7 @@
       width: 8px; height: 8px; background: var(--a1);
       border-radius: 50%; animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.3)} }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(2.0)} }
 
     .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
     .io-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -667,6 +668,166 @@
     }
     /* 실제 정보 상태 */
     .pic-real { width:100%; }
+
+    /* ── 결과 카드 2컬럼 ── */
+    .result-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px;
+    }
+    @media(max-width:600px){ .result-inner { grid-template-columns:1fr; } }
+    .result-left { display: flex; flex-direction: column; }
+    .result-right { display: flex; flex-direction: column; border-left: 1.5px solid var(--border); padding-left: 20px; }
+    @media(max-width:600px){ .result-right { border-left:none; border-top:1.5px solid var(--border); padding-left:0; padding-top:16px; margin-top:8px; } }
+
+    /* ── 등급 분포 ── */
+    .grade-dist { flex: 1; }
+    .grade-dist-title {
+      font-size: 13px; font-weight: 800; color: var(--t2);
+      letter-spacing: 1px; margin-bottom: 10px;
+    }
+    .grade-dist-total {
+      font-size: 11px; font-weight: 600; color: var(--t4);
+      font-family: 'Nunito', sans-serif; margin-bottom: 10px;
+    }
+    .grade-row {
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 7px;
+    }
+    .grade-lbl { font-size: 12px; font-weight: 700; color: var(--t3); min-width: 36px; text-align: right; font-family: 'Nunito', sans-serif; }
+    .grade-lbl-hall {
+      font-size: 12px; font-weight: 900; color: #e8962a; min-width: 36px; text-align: right;
+      font-family: 'Nunito', sans-serif;
+      min-width: 32px; text-align: right;
+    }
+    .grade-bar-wrap {
+      flex: 1; background: var(--s1); border-radius: 99px;
+      height: 12px; overflow: hidden; position: relative;
+    }
+    .grade-bar {
+      height: 100%; border-radius: 99px;
+      transition: width .4s ease;
+    }
+    /* 8등급=환각 골드, 7~1 채도 점점 옅어짐, 0~-8 더 옅어짐 */
+    .grade-bar-8  { background: linear-gradient(90deg,#f5a623,#fdd835); }
+    .grade-bar-7  { background: linear-gradient(90deg,#9b87f5,#b8a8f8); }
+    .grade-bar-6  { background: linear-gradient(90deg,#a898f5,#bfb2f8); }
+    .grade-bar-5  { background: linear-gradient(90deg,#b5aaf5,#ccc4f8); }
+    .grade-bar-4  { background: linear-gradient(90deg,#c2bcf5,#d4cff8); }
+    .grade-bar-3  { background: linear-gradient(90deg,#cfc9f5,#dddaf8); }
+    .grade-bar-2  { background: linear-gradient(90deg,#dcd8f5,#e8e5f8); }
+    .grade-bar-1  { background: linear-gradient(90deg,#e8e5f5,#f0eef8); }
+    .grade-bar-0  { background: linear-gradient(90deg,#e0dded,#eceaf3); }
+    .grade-bar-n1 { background: linear-gradient(90deg,#d8d5e8,#e4e2ee); }
+    .grade-bar-n2 { background: linear-gradient(90deg,#d0cee2,#dcdae8); }
+    .grade-bar-n3 { background: linear-gradient(90deg,#c8c6dc,#d4d2e2); }
+    .grade-bar-n4 { background: linear-gradient(90deg,#c0bed6,#cccad8); }
+    .grade-bar-n5 { background: linear-gradient(90deg,#b8b6d0,#c4c2cc); }
+    .grade-bar-n6 { background: linear-gradient(90deg,#b0aeca,#bcbac6); }
+    .grade-bar-n7 { background: linear-gradient(90deg,#a8a6c4,#b4b2be); }
+    .grade-bar-n8 { background: linear-gradient(90deg,#a0a0be,#acaab8); }
+    .grade-meta {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 1px;
+      min-width: 48px;
+    }
+    .grade-cnt {
+      font-size: 12px; font-weight: 700; color: var(--t2);
+      font-family: 'Nunito', sans-serif;
+    }
+    .grade-pct {
+      font-size: 11px; font-weight: 600; color: var(--t4);
+      font-family: 'Nunito', sans-serif;
+    }
+
+    /* ── 결과 카드 새 디자인 ── */
+    .res-badge {
+      display: inline-block; padding: 5px 13px;
+      background: linear-gradient(135deg,var(--a1),var(--a2));
+      color: #fff; border-radius: 99px;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.5px;
+    }
+    .res-prob-big {
+      font-size: 64px; font-weight: 900; line-height: 1.05;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin: 8px 0 12px;
+    }
+    .res-prob-unit { font-size: 34px; }
+    .res-sub-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 5px 0;
+    }
+    .res-sub-label { font-size: 13px; color: var(--t3); font-weight: 600; }
+    .res-sub-val   {
+      font-size: 14px; font-weight: 800; color: var(--t1);
+      font-family: 'Nunito', sans-serif;
+    }
+
+    /* ── 확률 멘트 애니메이션 ── */
+    @keyframes emoji-cry    { 0%,100%{transform:rotate(0deg)} 25%{transform:rotate(-5deg)} 75%{transform:rotate(5deg)} }
+    @keyframes emoji-sprout { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+    @keyframes emoji-swing  { 0%,100%{transform:rotate(-6deg)} 50%{transform:rotate(6deg)} }
+    @keyframes emoji-fire   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+    @keyframes emoji-float  { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+    @keyframes emoji-star   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+    @keyframes rainbow      { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+    .res-msg-wrap {
+      margin-top: 10px; padding: 9px 12px; border-radius: 12px;
+      background: var(--s1); border: 1.5px solid var(--border);
+      display: flex; align-items: center; gap: 10px; text-align: center; justify-content: center;
+    }
+    .res-msg-emoji { font-size: 22px; display: inline-block; flex-shrink: 0; }
+    .res-msg-text  { font-size: 12px; font-weight: 700; color: var(--t2); line-height: 1.5; }
+    /* 이모지 애니메이션 */
+    .anim-cry    .res-msg-emoji { animation: emoji-cry    1.8s ease-in-out infinite; }
+    .anim-sprout .res-msg-emoji { animation: emoji-sprout 2.0s ease-in-out infinite; }
+    .anim-swing  .res-msg-emoji { animation: emoji-swing  2.0s ease-in-out infinite; }
+    .anim-fire   .res-msg-emoji { animation: emoji-fire   1.6s ease-in-out infinite; }
+    .anim-float  .res-msg-emoji { animation: emoji-float  2.4s ease-in-out infinite; }
+    .anim-star   .res-msg-emoji { animation: emoji-star   2.0s ease-in-out infinite; }
+    /* 멘트 텍스트 애니메이션 - 크기 고정, 색상/빤짝 효과 */
+    @keyframes text-twinkle  { 0%,100%{opacity:1} 50%{opacity:.7} }
+    @keyframes text-color-soft {
+      0%,100%{ color: var(--t1); }
+      50%    { color: var(--a1); }
+    }
+    @keyframes text-gold-soft { 0%,100%{color:#d4860a} 50%{color:#f5a623} }
+    @keyframes text-glow-soft {
+      0%,100%{ color: var(--t1); }
+      50%    { color: var(--a1); }
+    }
+    .res-msg-text { font-size: 13px; font-weight: 700; color: var(--t1); line-height: 1.5; }
+    .anim-cry    .res-msg-text { animation: text-twinkle   2.0s ease-in-out infinite; }
+    .anim-sprout .res-msg-text { animation: text-color-soft 3.0s ease-in-out infinite; }
+    .anim-swing  .res-msg-text { animation: text-color-soft 3.0s ease-in-out infinite; }
+    .anim-fire   .res-msg-text { animation: text-gold-soft  2.0s ease-in-out infinite; }
+    .anim-float  .res-msg-text { animation: text-glow-soft  2.5s ease-in-out infinite; }
+    .anim-star   .res-msg-text { animation: text-gold-soft  2.0s ease-in-out infinite; }
+    .msg-lv7     .res-msg-text { color: #fff !important; }
+    /* 확률별 박스 색상 */
+    .msg-lv1 { border-color:#e8e3ff; }
+    .msg-lv2 { border-color:#d4cbff; }
+    .msg-lv3 { border-color:#b8aef5; }
+    .msg-lv4 { border-color:#9b87f5; }
+    .msg-lv5 { border-color:#f587b8; }
+    .msg-lv6 {
+      border-color:#f5a623;
+      background: linear-gradient(270deg,#fff9ee,#fff3d4,#fff5d4,#fff9ee);
+      background-size: 300% 300%;
+      animation: rainbow 3s ease-in-out infinite;
+    }
+    .msg-lv7 {
+      background: linear-gradient(270deg,#f5c887,#f587b8,#9b87f5,#87d4f5);
+      background-size: 300% 300%;
+      animation: rainbow 2s linear infinite;
+      border: none;
+    }
+    .msg-lv7 .res-msg-text { color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.2); }
+    /* 8등급 골드 확률 색상 */
+    .res-prob-gold {
+      background: linear-gradient(135deg,#f5a623,#fdd835) !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+    }
 </style>
 </head>
 <body>
@@ -683,7 +844,7 @@
       <div class="wind-badge"><div class="wind-badge-dot"></div>WIND SERVER</div>
       <h1 class="page-title">윈드 환각 계산기</h1>
       <div style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f0eeff,#ffeef6);border:1.5px solid var(--border2);border-radius:99px;padding:3px 12px;font-size:10px;font-weight:800;color:var(--a1);letter-spacing:1.5px;font-family:'Nunito',sans-serif;margin-bottom:4px;">
-        ✦ ver 1.3 ✦
+        ✦ ver 2.0 ✦
       </div>
       <p class="page-sub">🌸 Pet Growth Calculator 🌸</p>
       <div class="deco-dots">
@@ -1568,6 +1729,12 @@ async function loadSharedPets() {
     petData = { ...DEFAULT_PETS };
   } finally {
     renderPetList();
+    // URL 파라미터로 펫 자동 선택
+    const _params = new URLSearchParams(window.location.search);
+    const _petParam = decodeURIComponent(_params.get("pet") || "");
+    if (_petParam && petData[_petParam]) {
+      selectPet(_petParam);
+    }
   }
 }
 
@@ -1601,7 +1768,7 @@ function calcIdeal(pet) {
 
 /* ──── main calculation ──── */
 function runCalc(pet, dAtk, dDef, dAgi, dHp) {
-  let totalCases=0, hallCases=0, exactCount=0, totalPossible=0;
+  let totalCases=0, hallCases=0, exactCount=0, totalPossible=0, gradeDist={};
   for(let ar=-2;ar<=2;ar++) for(let dr=-2;dr<=2;dr++) for(let gr=-2;gr<=2;gr++) for(let hr=-2;hr<=2;hr++)
     for(let ab=0;ab<=10;ab++) for(let db=0;db<=10;db++) for(let gb=0;gb<=10;gb++){
       const hb=10-ab-db-gb;
@@ -1613,10 +1780,12 @@ function runCalc(pet, dAtk, dDef, dAgi, dHp) {
       totalPossible++;
       if(cA===dAtk&&cD===dDef&&cG===dAgi&&cH===dHp){
         exactCount++; totalCases++;
+        const signed=ar+dr+gr+hr;
+        gradeDist[signed]=(gradeDist[signed]||0)+1;
         if(ar===2&&dr===2&&gr===2&&hr===2) hallCases++;
       }
     }
-  return {totalCases,hallCases,exactCount,totalPossible};
+  return {totalCases,hallCases,exactCount,totalPossible,gradeDist};
 }
 
 /* ──── solve equations (for S grade) ──── */
@@ -2040,21 +2209,91 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
     const canMax=r.hallCases>0;
     const expect=canMax?(1/(prob/100)).toFixed(2):null;
 
+    // 등급 분포 바 차트 생성
+    // 확률별 멘트
+    function getProbMsg(p) {
+      const n = parseFloat(p);
+      if (n === 0)    return {lv:1, anim:'anim-cry',    emoji:'😭', text:'계산기 기준으로는 환각 확률이 없어요..ㅠ'};
+      if (n < 1)      return {lv:1, anim:'anim-sprout', emoji:'🌱', text:'도전하는 자가 환각을 가진다!'};
+      if (n < 5)      return {lv:2, anim:'anim-swing', emoji:'🎰', text:'슬롯머신 돌리는 기분이지만\n당신이라면 뽑을 수 있어요'};
+      if (n < 10)     return {lv:3, anim:'anim-fire',   emoji:'🍀', text:'충분히 가능성 있어요! 도~전!'};
+      if (n < 30)     return {lv:4, anim:'anim-fire',   emoji:'🔥', text:'매우 좋은 확률입니다! 미리 축하해요!'};
+      if (n < 50)     return {lv:5, anim:'anim-float',  emoji:'💎', text:'큰 거 왔다! 이 정도면 떴다고 봐야죠!'};
+      if (n < 80)     return {lv:6, anim:'anim-star',   emoji:'🌟', text:'황금 손 맞으시죠?'};
+      return           {lv:7, anim:'',           emoji:'👑', text:'당신은 선택받은 자입니다'};
+    }
+
+        const gradeColors = {8:'8',7:'7',6:'6',5:'5',4:'4',3:'3',2:'2',1:'1',0:'0','-1':'n1','-2':'n2','-3':'n3','-4':'n4','-5':'n5','-6':'n6','-7':'n7','-8':'n8'};
+    const gradeNames  = {8:'8등급',7:'7등급',6:'6등급',5:'5등급',4:'4등급',3:'3등급',2:'2등급',1:'1등급',0:'0등급','-1':'-1등급','-2':'-2등급','-3':'-3등급','-4':'-4등급','-5':'-5등급','-6':'-6등급','-7':'-7등급','-8':'-8등급'};
+    const maxGradeCnt = Math.max(...Object.values(r.gradeDist));
+    const gradeRows = Object.keys(r.gradeDist)
+      .map(Number)
+      .sort((a,b)=>b-a)
+      .filter(g=>r.gradeDist[g]>0)
+      .map(g=>{
+        const cnt=r.gradeDist[g];
+        const pct=(cnt/r.totalCases*100).toFixed(1);
+        const barW=(cnt/maxGradeCnt*100).toFixed(1);
+        const isHall = g===8;
+        return `<div class="grade-row">
+          <span class="grade-lbl${isHall?' grade-lbl-hall':''}">${gradeNames[g]}</span>
+          <div class="grade-bar-wrap">
+            <div class="grade-bar grade-bar-${gradeColors[g]}" style="width:${barW}%"></div>
+          </div>
+          <div class="grade-meta">
+            <span class="grade-cnt">${cnt}건</span>
+            <span class="grade-pct">${pct}%</span>
+          </div>
+        </div>`;
+      }).join('');
+
+    const topGrade = Object.keys(r.gradeDist).map(Number).sort((a,b)=>b-a)[0];
+    const badgeText = '✦ 8등급 환각 확률';
+    const msg = getProbMsg(canMax ? prob : '0');
+    const isGold = topGrade === 8 && canMax;
     rc.innerHTML=`
       <div class="result-strip"></div>
-      <div class="result-row">
-        <span class="result-label">✦ 성공 확률</span>
-        <span class="result-val result-prob">${prob}%</span>
+      <div class="result-inner">
+        <div class="result-left">
+          <div style="margin-bottom:6px;">
+            <span class="res-badge">${badgeText}</span>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:28px;margin:8px 0 12px;">
+            <div class="res-prob-big ${isGold?'res-prob-gold':''}" style="margin:0;">${prob}<span class="res-prob-unit">%</span></div>
+            <div style="padding-bottom:14px;line-height:1.4;">
+              <div style="font-size:11px;color:var(--t2);font-weight:700;font-family:'Nunito',sans-serif;letter-spacing:.3px;text-align:center;">최고 매칭</div>
+              <div style="display:block;margin-top:3px;padding:3px 9px;text-align:center;border-radius:8px;background:${isGold?'linear-gradient(135deg,#fff5cc,#ffe988)':'var(--s2)'};border:1.5px solid ${isGold?'#f5c842':'var(--border2)'};font-size:15px;font-weight:900;color:${isGold?'#c87800':'var(--a1)'};font-family:'Nunito',sans-serif;">${topGrade}등급</div>
+            </div>
+          </div>
+          <div class="res-sub-row">
+            <span class="res-sub-label">등장 확률</span>
+            <span class="res-sub-val">${appear}</span>
+          </div>
+          <div class="res-sub-row">
+            <span class="res-sub-label">기대 시도 횟수</span>
+            <span class="res-sub-val">${canMax?"약 "+expect+"회":"환각 불가"}</span>
+          </div>
+          <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:4px;"></div>
+          <div class="res-sub-row">
+            <span class="res-sub-label">매칭</span>
+            <span class="res-sub-val">${r.totalCases}</span>
+          </div>
+          <div class="res-sub-row">
+            <span class="res-sub-label">환각</span>
+            <span class="res-sub-val">${r.hallCases}</span>
+          </div>
+          <div class="res-msg-wrap msg-lv${msg.lv} ${msg.anim}">
+            <span class="res-msg-emoji">${msg.emoji}</span>
+            <span class="res-msg-text">${msg.text}</span>
+          </div>        </div>
+        <div class="result-right">
+          <div class="grade-dist">
+            <div class="grade-dist-title">등급 분포</div>
+            <div class="grade-dist-total">총 ${r.totalCases}건 / ${r.totalPossible.toLocaleString()}건</div>
+            ${gradeRows}
+          </div>
+        </div>
       </div>
-      <div class="result-row">
-        <span class="result-label">🌸 출현 확률</span>
-        <span class="result-val result-appear">${appear}</span>
-      </div>
-      <div class="result-row">
-        <span class="result-label">🍀 성공 기대값</span>
-        <span class="result-val result-expect">${canMax?expect+"번":"최대 성장 불가능"}</span>
-      </div>
-      ${!canMax?'<div class="result-msg">⚠ 현재 스탯으로는 최대 성장에 도달할 수 없어요</div>':''}
     `;
     rc.style.display="block";
   }, 40);
@@ -2065,6 +2304,9 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
 });
 
 loadSharedPets();
+
+
+
 </script>
 
 <!-- Footer -->
@@ -2093,7 +2335,7 @@ loadSharedPets();
   </div>
   <!-- 카피라이트 -->
   <div style="margin-top:14px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">
-    © 윈드 환각 계산기 ver 1.3
+    © 윈드 환각 계산기 ver 2.0
   </div>
 </div>
 </body>
