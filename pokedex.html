@@ -151,8 +151,8 @@
     }
     .attr-지 { background:#e8f5e9; color:#388e3c; border:1px solid #c8e6c9; }
     .attr-수 { background:#e3f2fd; color:#1976d2; border:1px solid #bbdefb; }
-    .attr-화 { background:#fff3e0; color:#e65100; border:1px solid #ffe0b2; }
-    .attr-풍 { background:#f3e5f5; color:#7b1fa2; border:1px solid #e1bee7; }
+    .attr-화 { background:#ffebee; color:#c62828; border:1px solid #ef9a9a; }
+    .attr-풍 { background:#fffde7; color:#f57f17; border:1px solid #fff176; }
 
     /* 획득방법 */
     .obtain-badge {
@@ -520,6 +520,137 @@
       cursor: pointer; transition: all .15s; white-space: nowrap;
     }
     .family-back-to-list:hover { border-color: var(--a1); color: var(--a1); background: var(--s2); }
+
+    /* ── 속성 슬라이더 ── */
+    .attr-slider-row { align-items: flex-start !important; flex-wrap: wrap; gap: 10px; }
+    .attr-sliders {
+      display: flex; gap: 10px 20px; flex-wrap: wrap; flex: 1; align-items: flex-end;
+    }
+    /* 각 속성 아이템: 배경 카드 */
+    .asl-item {
+      display: flex; flex-direction: column; gap: 6px;
+      flex: 1; min-width: 170px; max-width: 300px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 8px 10px;
+      transition: opacity .2s, border-color .15s, box-shadow .15s;
+      box-shadow: var(--shadow);
+    }
+    .asl-item:hover { border-color: var(--border2); box-shadow: var(--shadow2); }
+    .asl-item.asl-disabled {
+      opacity: 0.35; pointer-events: none;
+      filter: grayscale(0.4);
+    }
+    /* 각 속성별 카드 테두리 색 (수치>0일 때) */
+    .asl-item.active-지 { border-color: #81c784; background: #f1faf1; }
+    .asl-item.active-수 { border-color: #64b5f6; background: #f0f7ff; }
+    .asl-item.active-화 { border-color: #ef9a9a; background: #fff5f5; }
+    .asl-item.active-풍 { border-color: #fff176; background: #fffef0; }
+    .asl-header {
+      display: flex; align-items: center; gap: 5px;
+    }
+    .asl-emoji { font-size: 15px; }
+    .asl-name  { font-size: 12px; font-weight: 800; color: var(--t1); letter-spacing: 0.5px; }
+    .asl-val {
+      font-size: 15px; font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      margin-left: auto; min-width: 20px; text-align: right;
+    }
+    .asl-val-지 { color: #388e3c; }
+    .asl-val-수 { color: #1565c0; }
+    .asl-val-화 { color: #c62828; }
+    .asl-val-풍 { color: #f57f17; }
+    /* 트랙 */
+    .asl-track {
+      position: relative; height: 18px;
+      background: #efefef;
+      border-radius: 99px;
+      cursor: pointer; user-select: none;
+      overflow: hidden;
+    }
+    .asl-track:active { transform: scaleY(1.1); }
+    /* 채워진 부분 */
+    .asl-fill-bar {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      border-radius: 0; pointer-events: none;
+      transition: width .1s ease;
+    }
+    .asl-fill-지 { background: linear-gradient(90deg,#66bb6a,#a5d6a7); }
+    .asl-fill-수 { background: linear-gradient(90deg,#42a5f5,#90caf9); }
+    .asl-fill-화 { background: linear-gradient(90deg,#ef5350,#ff8a80); }
+    .asl-fill-풍 { background: linear-gradient(90deg,#ffca28,#fff176); }
+    /* 내부 구분선 */
+    .asl-dividers {
+      position: absolute; inset: 0;
+      display: flex; pointer-events: none;
+    }
+    .asl-div {
+      flex: 1;
+      border-right: 1.5px solid rgba(255,255,255,0.6);
+    }
+    .asl-div:last-child { border-right: none; }
+    /* 클릭 영역 */
+    .asl-seg {
+      position: absolute; top: 0; bottom: 0;
+      cursor: pointer;
+    }
+    /* 푸터 */
+    .asl-footer {
+      display: flex; align-items: center; gap: 6px;
+      flex-basis: 100%; padding: 2px 0;
+    }
+    .asl-total-label { font-size: 11px; font-weight: 700; color: var(--t3); }
+    .asl-total-val {
+      font-size: 14px; font-weight: 900;
+      font-family: 'Nunito', sans-serif; color: var(--a1);
+    }
+    .asl-total-val.full { color: var(--a2); }
+    .asl-total-max { font-size: 11px; color: var(--t4); font-family: 'Nunito', sans-serif; }
+
+    /* ── 속성 슬라이더 ── */
+    .attr-slider-row { align-items: flex-start; }
+    .attr-slider-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 20px;
+      flex: 1;
+    }
+    @media(max-width:600px){ .attr-slider-wrap{ grid-template-columns:1fr; } }
+    .attr-slider-item { display: flex; flex-direction: column; gap: 4px; }
+    .attr-slider-header {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .attr-slider-lbl { font-size: 12px; font-weight: 700; color: var(--t2); }
+    .attr-slider-val {
+      font-size: 13px; font-weight: 900;
+      font-family: 'Nunito', sans-serif; color: var(--a1);
+      min-width: 16px; text-align: right;
+    }
+    .attr-slider-track {
+      position: relative; height: 20px;
+      background: var(--s1); border-radius: 99px;
+      border: 1.5px solid var(--border2);
+      cursor: pointer; overflow: hidden;
+      user-select: none;
+    }
+    .attr-slider-track:hover { border-color: var(--a1); }
+    .attr-slider-fill {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      border-radius: 99px; transition: width .1s;
+      pointer-events: none;
+    }
+    .attr-fill-지 { background: linear-gradient(90deg, #6ab56a, #90d490); }
+    .attr-fill-수 { background: linear-gradient(90deg, #5aabdf, #87d0f5); }
+    .attr-fill-화 { background: linear-gradient(90deg, #e53935, #ef5350); }
+    .attr-fill-풍 { background: linear-gradient(90deg, #fdd835, #ffee58); }
+    .attr-slider-segments {
+      position: absolute; inset: 0;
+      display: flex; pointer-events: none;
+    }
+    .asg {
+      flex: 1; border-right: 1px solid rgba(255,255,255,0.25);
+    }
+    .asg:last-child { border-right: none; }
 </style>
 </head>
 <body>
@@ -538,6 +669,13 @@
   </div>
 </div>
 
+<!-- 속성 슬라이더 히든 input (필터용) -->
+<div style="display:none">
+  <input id="av-지" type="number" value="0">
+  <input id="av-수" type="number" value="0">
+  <input id="av-화" type="number" value="0">
+  <input id="av-풍" type="number" value="0">
+</div>
 <!-- 계열 뷰 패널 -->
 <div id="family-view-panel" style="display:none;">
   <div class="family-panel-inner">
@@ -583,29 +721,63 @@
     <button class="filter-btn" data-grade="2등급">2등급</button>
     <button class="filter-btn" data-grade="일반">일반</button>
   </div>
-  <div class="filter-row" style="flex-wrap:wrap;gap:8px;">
+  <div class="filter-row attr-slider-row">
     <span class="filter-label">속성</span>
-    <div class="attr-combined">
-      <div class="attr-combined-item">
-        <button class="filter-btn attr-all-btn active" data-attr="">전체</button>
+    <div class="attr-sliders">
+      <div class="asl-item" id="asl-item-지">
+        <div class="asl-header">
+          <span class="asl-emoji">🌿</span>
+          <span class="asl-name">지</span>
+          <span class="asl-val asl-val-지" id="asl-v-지">0</span>
+        </div>
+        <div class="asl-track" id="asl-t-지" data-attr="지">
+          <div class="asl-fill-bar asl-fill-지" id="asl-f-지" style="width:0%"></div>
+          <div class="asl-dividers"><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div></div>
+          <div class="asl-seg" data-attr="지" data-v="1" style="left:0.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="2" style="left:10.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="3" style="left:20.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="4" style="left:30.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="5" style="left:40.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="6" style="left:50.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="7" style="left:60.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="8" style="left:70.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="9" style="left:80.0%;width:10%;"></div><div class="asl-seg" data-attr="지" data-v="10" style="left:90.0%;width:10%;"></div>
+        </div>
       </div>
-      <div class="attr-combined-item">
-        <button class="filter-btn attr-toggle-btn" data-attr="지">🌿 지</button>
-        <input class="attr-val-input" id="av-지" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      <div class="asl-item" id="asl-item-수">
+        <div class="asl-header">
+          <span class="asl-emoji">💧</span>
+          <span class="asl-name">수</span>
+          <span class="asl-val asl-val-수" id="asl-v-수">0</span>
+        </div>
+        <div class="asl-track" id="asl-t-수" data-attr="수">
+          <div class="asl-fill-bar asl-fill-수" id="asl-f-수" style="width:0%"></div>
+          <div class="asl-dividers"><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div></div>
+          <div class="asl-seg" data-attr="수" data-v="1" style="left:0.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="2" style="left:10.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="3" style="left:20.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="4" style="left:30.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="5" style="left:40.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="6" style="left:50.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="7" style="left:60.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="8" style="left:70.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="9" style="left:80.0%;width:10%;"></div><div class="asl-seg" data-attr="수" data-v="10" style="left:90.0%;width:10%;"></div>
+        </div>
       </div>
-      <div class="attr-combined-item">
-        <button class="filter-btn attr-toggle-btn" data-attr="수">💧 수</button>
-        <input class="attr-val-input" id="av-수" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      <div class="asl-item" id="asl-item-화">
+        <div class="asl-header">
+          <span class="asl-emoji">🔥</span>
+          <span class="asl-name">화</span>
+          <span class="asl-val asl-val-화" id="asl-v-화">0</span>
+        </div>
+        <div class="asl-track" id="asl-t-화" data-attr="화">
+          <div class="asl-fill-bar asl-fill-화" id="asl-f-화" style="width:0%"></div>
+          <div class="asl-dividers"><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div></div>
+          <div class="asl-seg" data-attr="화" data-v="1" style="left:0.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="2" style="left:10.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="3" style="left:20.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="4" style="left:30.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="5" style="left:40.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="6" style="left:50.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="7" style="left:60.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="8" style="left:70.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="9" style="left:80.0%;width:10%;"></div><div class="asl-seg" data-attr="화" data-v="10" style="left:90.0%;width:10%;"></div>
+        </div>
       </div>
-      <div class="attr-combined-item">
-        <button class="filter-btn attr-toggle-btn" data-attr="화">🔥 화</button>
-        <input class="attr-val-input" id="av-화" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      <div class="asl-item" id="asl-item-풍">
+        <div class="asl-header">
+          <span class="asl-emoji">💨</span>
+          <span class="asl-name">풍</span>
+          <span class="asl-val asl-val-풍" id="asl-v-풍">0</span>
+        </div>
+        <div class="asl-track" id="asl-t-풍" data-attr="풍">
+          <div class="asl-fill-bar asl-fill-풍" id="asl-f-풍" style="width:0%"></div>
+          <div class="asl-dividers"><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div><div class="asl-div"></div></div>
+          <div class="asl-seg" data-attr="풍" data-v="1" style="left:0.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="2" style="left:10.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="3" style="left:20.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="4" style="left:30.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="5" style="left:40.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="6" style="left:50.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="7" style="left:60.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="8" style="left:70.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="9" style="left:80.0%;width:10%;"></div><div class="asl-seg" data-attr="풍" data-v="10" style="left:90.0%;width:10%;"></div>
+        </div>
       </div>
-      <div class="attr-combined-item">
-        <button class="filter-btn attr-toggle-btn" data-attr="풍">🌀 풍</button>
-        <input class="attr-val-input" id="av-풍" type="number" min="0" max="10" placeholder="0" oninput="renderTable()">
+      <div class="asl-footer">
+        <span class="asl-total-label">합계</span>
+        <span class="asl-total-val" id="asl-total">0</span>
+        <span class="asl-total-max">/ 10</span>
+        <button class="attr-val-reset" id="attr-reset-btn" onclick="resetAttrSliders()">초기화</button>
       </div>
-      <button class="attr-val-reset" onclick="resetAttrVal()">초기화</button>
     </div>
   </div>
 </div>
@@ -943,7 +1115,7 @@ const PET_DATA = {
   "아마란스": {grade:"2등급",attr:{"지":0,"수":8,"화":2,"풍":0},sg:{"hp":10.568,"atk":2.247,"def":1.350,"agi":1.543},ic:{atk:12,def:7,agi:8,hp:57},obtain:"경험치 상점",routeType:"상점",mount:false},
   "그리프스": {grade:"2등급",attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.903,"atk":2.141,"def":1.286,"agi":1.781},ic:{atk:11,def:7,agi:9,hp:54},obtain:"경험치 상점",routeType:"상점",mount:false},
   "메카비스": {grade:"일반",attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":10.046,"atk":2.148,"def":1.378,"agi":1.638},ic:{atk:11,def:7,agi:8,hp:52},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
-  "메카카키": {grade:"일반",attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.856,"atk":2.036,"def":1.053,"agi":2.066},ic:{atk:7,def:3,agi:7,hp:35},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
+  "메카카키": {grade:"일반",attr:{"지":0,"수":5,"화":5,"풍":0},sg:{"hp":9.856,"atk":2.036,"def":1.053,"agi":2.066},ic:{atk:7,def:3,agi:7,hp:35},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
 };
 
 const PET_IMAGES = {
@@ -1300,20 +1472,12 @@ function renderTable() {
   // 속성 필터
   if (filterAttr) entries = entries.filter(([n,p]) => (p.attr?.[filterAttr] ?? 0) > 0);
 
-  // 속성 수치 필터
-  const attrVals = {
-    '지': parseInt(document.getElementById('av-지')?.value) || 0,
-    '수': parseInt(document.getElementById('av-수')?.value) || 0,
-    '화': parseInt(document.getElementById('av-화')?.value) || 0,
-    '풍': parseInt(document.getElementById('av-풍')?.value) || 0,
-  };
-  const hasAttrFilter = Object.values(attrVals).some(v => v > 0);
+  // 속성 수치 필터 (슬라이더 기반)
+  const hasAttrFilter = ATTRS.some(a => attrVals[a] > 0);
   if (hasAttrFilter) {
     entries = entries.filter(([n,p]) => {
       const attr = p.attr || {};
-      return Object.entries(attrVals).every(([key, minVal]) =>
-        minVal === 0 || (attr[key] ?? 0) >= minVal
-      );
+      return ATTRS.every(a => attrVals[a] === 0 || (attr[a] ?? 0) >= attrVals[a]);
     });
   }
 
@@ -1437,16 +1601,100 @@ document.querySelectorAll("[data-grade]").forEach(btn => {
 });
 
 // 속성 필터
-document.querySelectorAll("[data-attr]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    filterAttr = btn.dataset.attr;
-    document.querySelectorAll("[data-attr]").forEach(b => {
-      b.classList.remove("active","active-지","active-수","active-화","active-풍");
-    });
-    btn.classList.add("active" + (filterAttr ? `-${filterAttr}` : ""));
-    renderTable();
+/* ── 속성 슬라이더 ── */
+const ATTRS = ["지","수","화","풍"];
+const attrVals = {"지":0,"수":0,"화":0,"풍":0};
+
+function getActiveAttrs() {
+  return ATTRS.filter(a => attrVals[a] > 0);
+}
+
+function updateSliderUI(attr) {
+  const v = attrVals[attr];
+  // 수치 표시
+  const valEl = document.getElementById("asl-v-" + attr);
+  if (valEl) valEl.textContent = v;
+  // fill-bar 너비
+  const fillBar = document.getElementById("asl-f-" + attr);
+  if (fillBar) fillBar.style.width = (v / 10 * 100) + "%";
+  // 합계
+  const total = ATTRS.reduce((s,a) => s + attrVals[a], 0);
+  const totEl = document.getElementById("asl-total");
+  if (totEl) {
+    totEl.textContent = total;
+    totEl.className = "asl-total-val" + (total >= 10 ? " full" : "");
+  }
+  // 2속성 제한 + active 스타일
+  const active = getActiveAttrs();
+  ATTRS.forEach(a => {
+    const item = document.getElementById("asl-item-" + a);
+    if (!item) return;
+    const disabled = active.length >= 2 && !active.includes(a);
+    item.classList.toggle("asl-disabled", disabled);
+    item.classList.toggle("active-" + a, attrVals[a] > 0);
   });
+}
+
+function setAttrVal(attr, newVal) {
+  newVal = Math.max(0, Math.min(10, Math.round(newVal)));
+  // 2속성 제한 체크
+  const active = getActiveAttrs();
+  if (attrVals[attr] === 0 && newVal > 0 && active.length >= 2) return;
+  const others = ATTRS.filter(a => a !== attr);
+  const otherSum = others.reduce((s,a) => s + attrVals[a], 0);
+  if (newVal + otherSum > 10) {
+    const over = newVal + otherSum - 10;
+    let toReduce = over;
+    for (let i = others.length - 1; i >= 0 && toReduce > 0; i--) {
+      const a = others[i];
+      const reduce = Math.min(attrVals[a], toReduce);
+      attrVals[a] -= reduce;
+      toReduce -= reduce;
+      updateSliderUI(a);
+    }
+  }
+  attrVals[attr] = newVal;
+  updateSliderUI(attr);
+  renderTable();
+}
+
+function getValFromEvent(track, clientX) {
+  const rect = track.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  return Math.round(ratio * 10);
+}
+
+// 슬라이더 이벤트 등록
+ATTRS.forEach(attr => {
+  const track = document.getElementById("asl-t-" + attr);
+  if (!track) return;
+  let dragging = false;
+  track.addEventListener("mousedown", e => {
+    dragging = true;
+    setAttrVal(attr, getValFromEvent(track, e.clientX));
+    e.preventDefault();
+  });
+  track.addEventListener("touchstart", e => {
+    dragging = true;
+    setAttrVal(attr, getValFromEvent(track, e.touches[0].clientX));
+    e.preventDefault();
+  }, {passive: false});
+  document.addEventListener("mousemove", e => {
+    if (!dragging) return;
+    setAttrVal(attr, getValFromEvent(track, e.clientX));
+  });
+  document.addEventListener("touchmove", e => {
+    if (!dragging) return;
+    setAttrVal(attr, getValFromEvent(track, e.touches[0].clientX));
+  }, {passive: false});
+  document.addEventListener("mouseup",  () => { dragging = false; });
+  document.addEventListener("touchend", () => { dragging = false; });
 });
+
+function resetAttrSliders() {
+  ATTRS.forEach(a => { attrVals[a] = 0; updateSliderUI(a); });
+  renderTable();
+}
 
 // 검색
 document.getElementById("search-input").addEventListener("input", e => {
@@ -1774,13 +2022,9 @@ function showFamilyGrid() {
   // 이제 별도 화면 없음 - 모달 방식
 }
 
-function resetAttrVal() {
-  ['지','수','화','풍'].forEach(a => {
-    const el = document.getElementById('av-' + a);
-    if (el) el.value = '';
-  });
-  renderTable();
-}
+
+
+
 
 function openModalByName(name) {
   if (PET_DATA[name]) openModal(name);
