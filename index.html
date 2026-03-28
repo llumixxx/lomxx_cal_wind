@@ -475,8 +475,8 @@
     }
     .attr-지 { background: #e8f5e9; color: #388e3c; border: 1px solid #c8e6c9; }
     .attr-수 { background: #e3f2fd; color: #1976d2; border: 1px solid #bbdefb; }
-    .attr-화 { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
-    .attr-풍 { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; }
+    .attr-화 { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+    .attr-풍 { background: #fffde7; color: #f57f17; border: 1px solid #fff176; }
     .attr-num { font-size: 9px; font-weight: 900; font-family: 'Nunito', sans-serif; opacity: 0.85; }
 
     .pet-obtain {
@@ -1908,7 +1908,7 @@ function updatePetInfoCard(name) {
   const attrsEl = document.getElementById("pi-attrs");
   attrsEl.innerHTML = "";
   const attrColors = { 지:"attr-지", 수:"attr-수", 화:"attr-화", 풍:"attr-풍" };
-  const attrEmoji  = { 지:"🌿", 수:"💧", 화:"🔥", 풍:"🌀" };
+  const attrEmoji  = { 지:"🌿", 수:"💧", 화:"🔥", 풍:"💨" };
   const attrObj = pet.attr || {};
 
   ["지","수","화","풍"].forEach(a => {
