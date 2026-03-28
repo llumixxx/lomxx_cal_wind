@@ -2032,9 +2032,18 @@ function showFamilyGrid() {
 
 
 
+function goToCalc() {
+  const name = document.getElementById("modal-name")?.textContent?.trim();
+  if (name) {
+    window.location.href = "index.html?pet=" + encodeURIComponent(name);
+  }
+}
+
 function openModalByName(name) {
   if (PET_DATA[name]) openModal(name);
 }
+
+
 
 </script>
 <!-- 상세 모달 -->
@@ -2096,6 +2105,19 @@ function openModalByName(name) {
           </div>
         </div>
       </div>
+    <!-- 환각 계산하기 버튼 -->
+    <div style="padding:12px 20px 16px;">
+      <button id="modal-calc-btn" onclick="goToCalc()" style="
+        width:100%; padding:12px 0;
+        background:linear-gradient(135deg,var(--a1),var(--a2));
+        color:#fff; font-size:14px; font-weight:800;
+        font-family:'Noto Sans KR',sans-serif;
+        border:none; border-radius:14px; cursor:pointer;
+        letter-spacing:0.5px; transition:opacity .15s;
+      " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        ✦ 환각 계산하기 ✦
+      </button>
+    </div>
     </div>
   </div>
 </div>
@@ -2116,7 +2138,7 @@ function openModalByName(name) {
       만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">새벽부족 루믹스</span>
     </div>
   </div>
-  <div style="margin-top:12px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">© 윈드 펫 도감 ver 1.3</div>
+  <div style="margin-top:12px;font-size:10px;color:var(--t4);letter-spacing:1px;font-family:'Nunito',sans-serif;font-weight:600;">© 윈드 펫 도감 ver 2.0</div>
 </div>
 
 <!-- 계열 상세 모달 -->
