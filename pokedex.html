@@ -306,6 +306,10 @@
     }
     .pnav-tab-pd:hover { background: var(--s2); color: var(--a1); border-color: var(--a1); }
     .pnav-active-pd { background: linear-gradient(135deg,var(--s2),#ffeef6); color: var(--a1); border-color: var(--a1); font-weight: 800; }
+    .nav-sep-pd { width:1.5px; height:20px; background:var(--border2); border-radius:2px; display:inline-block; vertical-align:middle; }
+    .dawn-label-pd { font-size:10px; font-weight:800; color:#5b4fcf; letter-spacing:.5px; background:rgba(91,79,207,0.08); border:1px solid rgba(91,79,207,0.2); border-radius:99px; padding:3px 10px; }
+    .pnav-tab-pd.dawn { border-color:rgba(91,79,207,0.35); color:#5b4fcf; background:rgba(91,79,207,0.06); }
+    .pnav-tab-pd.dawn:hover { background:rgba(91,79,207,0.14); }
 
     .family-btn {
       white-space: nowrap;
@@ -667,6 +671,9 @@
     <a href="pokedex.html" class="pnav-tab-pd pnav-active-pd">🐾 펫 도감</a>
     <a href="card.html"    class="pnav-tab-pd">🎲 큐브 시뮬레이터</a>
     <button onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" style="background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💬 채팅</button>
+    <div class="nav-sep-pd"></div>
+    
+    <a href="stat.html" class="pnav-tab-pd dawn">🌅 새벽부족 전용공간</a>
   </div>
 </div>
 
