@@ -25,6 +25,10 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
 .page-nav-card{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;}
 .pnav-tab-c{text-decoration:none;background:var(--s1);border:1.5px solid var(--border2);border-radius:99px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--t2);transition:all .15s;font-family:'Noto Sans KR',sans-serif;}
 .pnav-tab-c:hover{background:var(--s2);color:var(--a1);border-color:var(--a1);}
+.nav-sep-c{width:1.5px;height:18px;background:var(--border2);border-radius:2px;display:inline-block;vertical-align:middle;}
+.dawn-label-c{font-size:10px;font-weight:800;color:#5b4fcf;letter-spacing:.5px;background:rgba(91,79,207,0.08);border:1px solid rgba(91,79,207,0.2);border-radius:99px;padding:3px 10px;}
+.pnav-tab-c.dawn{border-color:rgba(91,79,207,0.35);color:#5b4fcf;background:rgba(91,79,207,0.06);}
+.pnav-tab-c.dawn:hover{background:rgba(91,79,207,0.14);}
 .pnav-active-c{background:linear-gradient(135deg,#fff8e0,#ffeef6);color:#c47a00;border-color:#f5d48a;font-weight:800;}
 .top-back{text-decoration:none;background:var(--s2);border:1.5px solid var(--border2);border-radius:10px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--a1);transition:all .15s;white-space:nowrap;}
 .top-back:hover{background:var(--a1);color:#fff;}
@@ -182,6 +186,9 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
     <a href="pokedex.html" class="pnav-tab-c">🐾 펫 도감</a>
     <a href="card.html"    class="pnav-tab-c pnav-active-c">🎲 큐브 시뮬레이터</a>
     <button onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" style="background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💬 채팅</button>
+    <div class="nav-sep-c"></div>
+    
+    <a href="stat.html" class="pnav-tab-c dawn">🌅 새벽부족 전용공간</a>
   </div>
 </div>
 
