@@ -521,10 +521,13 @@
 
 <script>
   /* ═══ 비밀번호 ═══ */
-  const PW = 'dawn11!@';
-  function checkPw() {
+  const PW_HASH = 'f437ce99f67d15a54587188c85fa645b7ad257cde7bde775a3e766d389226a0b';
+
+  async function checkPw() {
     const v = document.getElementById('pw-input').value;
-    if (v === PW) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+    const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    if (hash === PW_HASH) {
       document.getElementById('pw-overlay').style.display = 'none';
       sessionStorage.setItem('dawn-auth','1');
     } else {
