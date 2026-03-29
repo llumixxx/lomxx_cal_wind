@@ -293,6 +293,7 @@
 </div>
 
 <!-- ══ Header ══ -->
+<div id="main-content" style="display:none;">
 <div class="header">
   <div class="header-inner">
     <div class="title-row">
@@ -529,6 +530,7 @@
     const hash = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
     if (hash === PW_HASH) {
       document.getElementById('pw-overlay').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
       sessionStorage.setItem('dawn-auth','1');
     } else {
       const box = document.querySelector('.pw-box');
@@ -542,6 +544,7 @@
   // 세션 내 이미 인증됐으면 오버레이 바로 숨김
   if (sessionStorage.getItem('dawn-auth') === '1') {
     document.getElementById('pw-overlay').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
   }
 
   /* ═══ 스탯 계산기 ═══ */
@@ -861,5 +864,6 @@
   onLvNum();
   calc();
 </script>
+</div><!-- /main-content -->
 </body>
 </html>
