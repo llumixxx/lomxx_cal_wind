@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>윈드 스탯 계산기 · 새벽부족</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#faf9ff; --bg2:#f3f0ff; --white:#ffffff;
+      --s1:#f8f7ff; --s2:#f0eeff;
+      --border:#e8e3ff; --border2:#d4cbff;
+      --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5; --a4:#f5c887; --a5:#87f5c0;
+      --t1:#3d3560; --t2:#7b72a8; --t3:#b0a8d4; --t4:#d4cff0;
+      --ok:#6dd5a0; --err:#f57878;
+      --c-hp:#9b87f5; --c-atk:#f587b8; --c-def:#59bfe0; --c-agi:#e8a020;
+      --dawn:#5b4fcf;
+      --shadow:0 4px 24px rgba(155,135,245,0.12);
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--t1); min-height:100vh;
+      background-image:
+        radial-gradient(circle at 15% 20%,rgba(155,135,245,0.08) 0%,transparent 50%),
+        radial-gradient(circle at 85% 80%,rgba(245,135,184,0.07) 0%,transparent 50%);
+    }
+
+    /* ══════════════════════════════
+       비밀번호 오버레이
+    ══════════════════════════════ */
+    #pw-overlay {
+      position:fixed; inset:0; z-index:9999;
+      background:linear-gradient(135deg,#1a1535 0%,#2d2060 60%,#1a1535 100%);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .pw-box {
+      background:rgba(255,255,255,0.07);
+      border:1.5px solid rgba(155,135,245,0.3);
+      border-radius:28px;
+      padding:48px 44px;
+      text-align:center;
+      backdrop-filter:blur(16px);
+      box-shadow:0 16px 60px rgba(0,0,0,0.4);
+      width:320px;
+    }
+    .pw-dawn-badge {
+      display:inline-flex; align-items:center; gap:7px;
+      background:rgba(155,135,245,0.18); border:1px solid rgba(155,135,245,0.35);
+      border-radius:99px; padding:5px 16px; font-size:11px; font-weight:800;
+      color:#c4b5fd; letter-spacing:1px; margin-bottom:22px;
+    }
+    .pw-title {
+      font-family:'Nunito',sans-serif; font-size:26px; font-weight:900;
+      color:#fff; margin-bottom:6px;
+    }
+    .pw-sub { font-size:12px; color:#a89fd4; margin-bottom:28px; font-weight:500; }
+    .pw-input {
+      width:100%; padding:13px 16px; border-radius:14px;
+      border:1.5px solid rgba(155,135,245,0.3);
+      background:rgba(255,255,255,0.08); color:#fff;
+      font-size:16px; font-family:'Nunito',sans-serif; font-weight:700;
+      text-align:center; outline:none; letter-spacing:3px;
+      transition:border-color .2s;
+    }
+    .pw-input::placeholder { color:rgba(255,255,255,0.25); letter-spacing:0; }
+    .pw-input:focus { border-color:var(--a1); }
+    .pw-btn {
+      margin-top:14px; width:100%; padding:13px;
+      border-radius:14px; border:none; cursor:pointer;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      color:#fff; font-size:14px; font-weight:800;
+      font-family:'Noto Sans KR',sans-serif;
+      transition:opacity .15s;
+    }
+    .pw-btn:hover { opacity:.88; }
+    .pw-err {
+      margin-top:10px; font-size:12px; color:var(--err);
+      font-weight:700; min-height:18px;
+    }
+    .pw-shake { animation: shake .35s; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 60%{transform:translateX(7px)} 80%{transform:translateX(-4px)}
+    }
+
+    /* ══════════════════════════════
+       Header
+    ══════════════════════════════ */
+    .header { background:var(--white); border-bottom:1.5px solid var(--border); padding:14px 24px 10px; position:sticky; top:0; z-index:100; box-shadow:var(--shadow); }
+    .header-inner { max-width:1100px; margin:0 auto; display:flex; flex-direction:column; gap:8px; }
+    .title-row { display:flex; align-items:center; gap:10px; }
+    .deco-dots { display:flex; gap:5px; }
+    .deco-dot { width:10px; height:10px; border-radius:50%; }
+    .page-title { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; background:linear-gradient(135deg,var(--a1),var(--a2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+    .page-nav { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+    .pnav-tab { padding:5px 14px; border-radius:99px; font-size:12px; font-weight:700; text-decoration:none; color:var(--t2); border:1.5px solid var(--border2); background:var(--white); transition:all .18s; font-family:'Noto Sans KR',sans-serif; }
+    .pnav-tab:hover { background:var(--bg2); color:var(--a1); }
+    .pnav-tab.pnav-active { background:linear-gradient(135deg,var(--a1),var(--a2)); color:#fff; border-color:transparent; }
+
+    /* 구분선 */
+    .nav-sep { width:1.5px; height:20px; background:var(--border2); border-radius:2px; }
+
+    /* 새벽부족 전용 뱃지 */
+    .dawn-label {
+      font-size:10px; font-weight:800; color:var(--dawn);
+      letter-spacing:.5px; white-space:nowrap;
+      background:rgba(91,79,207,0.08); border:1px solid rgba(91,79,207,0.2);
+      border-radius:99px; padding:3px 10px;
+    }
+    .pnav-tab.dawn {
+      border-color:rgba(91,79,207,0.35);
+      color:var(--dawn);
+      background:rgba(91,79,207,0.06);
+    }
+    .pnav-tab.dawn:hover { background:rgba(91,79,207,0.14); }
+    .pnav-tab.dawn.pnav-active {
+      background:linear-gradient(135deg,#7c6ef0,#a855c8);
+      color:#fff; border-color:transparent;
+    }
+
+    /* ══════════════════════════════
+       Layout
+    ══════════════════════════════ */
+    .main { max-width:1100px; margin:22px auto 60px; padding:0 16px; display:grid; grid-template-columns:300px 1fr; grid-template-rows:auto 1fr; gap:16px; }
+
+    .card { background:var(--white); border:1.5px solid var(--border); border-radius:20px; padding:20px 22px; box-shadow:var(--shadow); }
+    .card-title { font-size:12px; font-weight:800; color:var(--t2); letter-spacing:.5px; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+    .card-title::after { content:''; flex:1; height:1.5px; background:var(--border); border-radius:2px; }
+
+    .left-col { display:flex; flex-direction:column; gap:14px; grid-row:1/3; }
+
+    /* 설정 */
+    .setting-row { display:flex; flex-direction:column; gap:12px; }
+    .setting-item label { display:block; font-size:11px; font-weight:700; color:var(--t2); margin-bottom:5px; }
+    .setting-item input[type=number] {
+      width:100%; padding:9px 12px; border:1.5px solid var(--border2); border-radius:12px;
+      font-size:15px; font-weight:700; color:var(--t1); background:var(--s1);
+      font-family:'Nunito',sans-serif; outline:none; transition:border-color .15s;
+    }
+    .setting-item input[type=number]:focus { border-color:var(--a1); }
+
+    input[type=range].lv-range {
+      -webkit-appearance:none; appearance:none; width:100%; height:6px;
+      border-radius:99px; outline:none; cursor:pointer; margin-top:8px;
+    }
+    input[type=range].lv-range::-webkit-slider-thumb {
+      -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      box-shadow:0 2px 6px rgba(155,135,245,0.4); cursor:pointer;
+    }
+
+    .point-badge { margin-top:12px; padding:14px 16px; background:linear-gradient(135deg,rgba(155,135,245,0.1),rgba(245,135,184,0.07)); border:1.5px solid var(--border2); border-radius:14px; display:flex; align-items:center; justify-content:space-between; }
+    .point-badge-label { font-size:11px; font-weight:700; color:var(--t2); }
+    .point-badge-sub { font-size:10px; color:var(--t3); margin-top:2px; }
+    .point-badge-val { font-family:'Nunito',sans-serif; font-size:26px; font-weight:900; background:linear-gradient(135deg,var(--a1),var(--a2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+
+    .remain-wrap { margin-top:12px; }
+    .remain-row { display:flex; justify-content:space-between; font-size:11px; font-weight:700; color:var(--t2); margin-bottom:6px; }
+    .rnum { font-family:'Nunito',sans-serif; font-size:13px; font-weight:900; }
+    .rnum.ok { color:var(--ok); } .rnum.over { color:var(--err); } .rnum.zero { color:var(--a1); }
+    .bar-track { height:7px; background:var(--bg2); border-radius:99px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--a1),var(--a2)); transition:width .2s; }
+    .bar-fill.over { background:var(--err); }
+
+    .item-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .iw label { display:block; font-size:10px; font-weight:700; color:var(--t2); margin-bottom:4px; }
+    .iw input { width:100%; padding:8px 10px; border:1.5px solid var(--border2); border-radius:10px; font-size:14px; font-weight:700; color:var(--t1); background:var(--s1); font-family:'Nunito',sans-serif; text-align:center; outline:none; transition:border-color .15s; }
+    .iw input:focus { border-color:var(--a1); }
+
+    .btn-reset { width:100%; padding:11px; border:1.5px solid var(--border2); border-radius:12px; background:var(--s1); color:var(--t2); font-size:12px; font-weight:700; cursor:pointer; font-family:'Noto Sans KR',sans-serif; transition:all .15s; }
+    .btn-reset:hover { background:var(--border2); color:var(--t1); }
+
+    /* 결과 */
+    .result-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .ri { background:var(--white); border:1.5px solid var(--border); border-radius:18px; padding:18px 12px 14px; box-shadow:var(--shadow); position:relative; overflow:hidden; text-align:center; }
+    .ri::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; border-radius:18px 18px 0 0; }
+    .ri.hp::before  { background:var(--c-hp); }
+    .ri.atk::before { background:var(--c-atk); }
+    .ri.def::before { background:var(--c-def); }
+    .ri.agi::before { background:var(--c-agi); }
+    .ri-icon { font-size:22px; margin-bottom:4px; }
+    .ri-name { font-size:11px; font-weight:800; color:var(--t2); margin-bottom:8px; }
+    .ri-val { font-family:'Nunito',sans-serif; font-size:34px; font-weight:900; line-height:1; }
+    .ri.hp  .ri-val { color:var(--c-hp); }
+    .ri.atk .ri-val { color:var(--c-atk); }
+    .ri.def .ri-val { color:var(--c-def); }
+    .ri.agi .ri-val { color:var(--c-agi); }
+    .ri-bk { font-size:9px; color:var(--t3); margin-top:7px; line-height:1.65; word-break:keep-all; min-height:28px; }
+
+    /* 스탯 배분 */
+    .stat-panel { background:var(--white); border:1.5px solid var(--border); border-radius:20px; padding:20px 22px; box-shadow:var(--shadow); }
+    .stat-row { display:grid; grid-template-columns:88px 1fr 116px; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--border); }
+    .stat-row:last-of-type { border-bottom:none; padding-bottom:0; }
+    .sname { font-size:13px; font-weight:800; color:var(--t1); display:flex; align-items:center; gap:6px; }
+    .sdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .seff { font-size:9px; color:var(--t3); margin-top:3px; line-height:1.5; }
+    input[type=range].sslider { -webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:99px; outline:none; cursor:pointer; }
+    input[type=range].sslider::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; border-radius:50%; box-shadow:0 2px 8px rgba(0,0,0,0.18); cursor:pointer; }
+    #sl-hp::-webkit-slider-thumb  { background:var(--c-hp); }
+    #sl-atk::-webkit-slider-thumb { background:var(--c-atk); }
+    #sl-def::-webkit-slider-thumb { background:var(--c-def); }
+    #sl-agi::-webkit-slider-thumb { background:var(--c-agi); }
+    .sinput-col { display:flex; align-items:center; gap:5px; }
+    .sbtn { width:28px; height:28px; border-radius:50%; border:none; font-size:15px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .12s; }
+    .sbtn.minus { background:var(--bg2); color:var(--t2); } .sbtn.minus:hover { background:var(--err); color:#fff; }
+    .sbtn.plus  { background:linear-gradient(135deg,var(--a1),var(--a2)); color:#fff; } .sbtn.plus:hover { opacity:.85; }
+    .snum { width:58px; text-align:center; padding:5px 2px; border:1.5px solid var(--border2); border-radius:10px; font-size:15px; font-weight:900; color:var(--t1); background:var(--s1); font-family:'Nunito',sans-serif; outline:none; }
+    .snum:focus { border-color:var(--a1); }
+
+    .warn { padding:8px 14px; background:rgba(245,120,120,0.1); border:1.5px solid var(--err); border-radius:10px; font-size:11px; font-weight:700; color:var(--err); display:none; margin-top:10px; }
+    .warn.on { display:block; }
+
+    /* ══════════════════════════════
+       보석 계산기
+    ══════════════════════════════ */
+    .gem-section { grid-column:1/-1; }
+
+    .gem-stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .gem-stat-card { background:var(--s1); border:1.5px solid var(--border); border-radius:16px; padding:14px 14px 12px; }
+    .gem-stat-top { display:flex; align-items:center; gap:7px; margin-bottom:10px; }
+    .gem-stat-name { font-size:12px; font-weight:800; color:var(--t1); }
+    .gem-stat-cur { font-size:10px; color:var(--t3); margin-left:auto; font-family:'Nunito',sans-serif; }
+
+    .gem-reset-label { font-size:10px; font-weight:700; color:var(--t2); margin-bottom:5px; }
+    .gem-reset-input {
+      width:100%; padding:8px 10px; border:1.5px solid var(--border2); border-radius:10px;
+      font-size:15px; font-weight:900; color:var(--t1); background:var(--white);
+      font-family:'Nunito',sans-serif; text-align:center; outline:none; transition:border-color .15s;
+    }
+    .gem-reset-input:focus { border-color:var(--a1); }
+    .gem-stat-sub { font-size:9px; color:var(--t3); margin-top:4px; text-align:center; }
+
+    /* 가격 설정 */
+    .gem-price-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:16px; }
+    .gem-price-item label { display:block; font-size:10px; font-weight:700; color:var(--t2); margin-bottom:4px; }
+    .gem-price-item input {
+      width:100%; padding:7px 8px; border:1.5px solid var(--border2); border-radius:9px;
+      font-size:13px; font-weight:700; color:var(--t1); background:var(--s1);
+      font-family:'Nunito',sans-serif; text-align:center; outline:none;
+    }
+    .gem-price-item input:focus { border-color:var(--a1); }
+
+    /* 결과 테이블 */
+    .gem-result-wrap { background:var(--s2); border:1.5px solid var(--border2); border-radius:16px; overflow:hidden; }
+    .gem-result-header { display:grid; grid-template-columns:80px repeat(4,1fr) 1fr 1fr; padding:10px 14px; background:var(--border2); font-size:10px; font-weight:800; color:var(--t2); gap:6px; }
+    .gem-result-row { display:grid; grid-template-columns:80px repeat(4,1fr) 1fr 1fr; padding:10px 14px; border-top:1px solid var(--border); font-size:12px; font-weight:700; color:var(--t1); gap:6px; align-items:center; }
+    .gem-result-row:first-child { border-top:none; }
+    .gem-badge { display:inline-flex; align-items:center; gap:3px; font-size:9px; font-weight:800; padding:1px 7px; border-radius:99px; }
+    .gem-cnt { font-family:'Nunito',sans-serif; font-size:14px; font-weight:900; }
+    .gem-warn { font-size:10px; color:var(--err); font-weight:700; }
+    .gem-ok   { font-size:10px; color:var(--ok); font-weight:700; }
+    .gem-cost-total { padding:12px 16px; background:linear-gradient(135deg,rgba(155,135,245,0.1),rgba(245,135,184,0.07)); border-top:1.5px solid var(--border2); display:flex; justify-content:space-between; align-items:center; }
+    .gem-cost-label { font-size:12px; font-weight:700; color:var(--t2); }
+    .gem-cost-val { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; color:var(--a1); }
+
+    /* 보충 안내 */
+    .supplement-box { margin-top:12px; padding:12px 16px; background:rgba(245,200,135,0.12); border:1.5px solid rgba(245,200,135,0.4); border-radius:14px; font-size:11px; color:var(--t1); line-height:1.8; }
+    .supplement-box b { color:#c08010; }
+
+    /* 토스트 */
+    .toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--t1); color:#fff; padding:10px 20px; border-radius:99px; font-size:12px; font-weight:700; box-shadow:0 4px 20px rgba(0,0,0,0.18); opacity:0; transition:opacity .25s, transform .25s; pointer-events:none; z-index:999; white-space:nowrap; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* 반응형 */
+    @media(max-width:900px){
+      .main { grid-template-columns:1fr; }
+      .left-col { grid-row:auto; }
+      .result-row { grid-template-columns:1fr 1fr; }
+      .gem-stat-grid { grid-template-columns:1fr 1fr; }
+      .gem-price-grid { grid-template-columns:1fr 1fr; }
+      .gem-result-header,.gem-result-row { grid-template-columns:70px repeat(4,1fr) 1fr 1fr; font-size:10px; }
+    }
+    @media(max-width:560px){
+      .stat-row { grid-template-columns:72px 1fr 100px; gap:8px; }
+      .result-row { grid-template-columns:1fr 1fr; }
+      .gem-result-header,.gem-result-row { grid-template-columns:60px repeat(2,1fr) 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ 비밀번호 오버레이 ══ -->
+<div id="pw-overlay">
+  <div class="pw-box">
+    <div class="pw-dawn-badge">🌅 새벽부족 전용</div>
+    <div class="pw-title">스탯 계산기</div>
+    <div class="pw-sub">새벽부족 부원만 입장 가능해요</div>
+    <input class="pw-input" type="password" id="pw-input" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')checkPw()">
+    <button class="pw-btn" onclick="checkPw()">입장하기</button>
+    <div class="pw-err" id="pw-err"></div>
+  </div>
+</div>
+
+<!-- ══ Header ══ -->
+<div class="header">
+  <div class="header-inner">
+    <div class="title-row">
+      <div class="deco-dots">
+        <div class="deco-dot" style="background:var(--a1)"></div>
+        <div class="deco-dot" style="background:var(--a2)"></div>
+        <div class="deco-dot" style="background:var(--a5)"></div>
+      </div>
+      <h1 class="page-title">윈드 스탯 계산기</h1>
+    </div>
+    <div class="page-nav">
+      <!-- 공용 메뉴 -->
+      <a href="index.html"   class="pnav-tab">🏠 환각 계산기</a>
+      <a href="pokedex.html" class="pnav-tab">🐾 펫 도감</a>
+      <a href="card.html"    class="pnav-tab">🎲 큐브 시뮬레이터</a>
+      <button onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" style="background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💬 채팅</button>
+      <!-- 구분선 -->
+      <div class="nav-sep"></div>
+      <span class="dawn-label">🌅 새벽부족</span>
+      <a href="stat.html" class="pnav-tab dawn pnav-active">💪 스탯 계산기</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Main ══ -->
+<div class="main">
+
+  <!-- ═ 왼쪽 ═ -->
+  <div class="left-col">
+
+    <div class="card">
+      <div class="card-title">⚙️ 캐릭터 설정</div>
+      <div class="setting-row">
+        <div class="setting-item">
+          <label>레벨 <span id="lv-disp" style="color:var(--a1);font-family:'Nunito',sans-serif;font-size:14px;">140</span></label>
+          <input type="range" class="lv-range" id="lv-sl" min="1" max="140" value="140" oninput="onLvSl()">
+          <input type="number" id="level" value="140" min="1" max="140" oninput="onLvNum()" style="margin-top:8px;">
+        </div>
+        <div class="setting-item">
+          <label>환포 보너스 <span style="color:var(--t3);font-weight:600;font-size:10px;">(1레벨 기준 포인트)</span></label>
+          <input type="number" id="bonus1lv" value="193" min="0" max="500" oninput="calc()" placeholder="193">
+        </div>
+      </div>
+      <div class="point-badge">
+        <div>
+          <div class="point-badge-label">총 사용 가능 포인트</div>
+          <div class="point-badge-sub" id="point-sub">환포 193 + 레벨업 417</div>
+        </div>
+        <div class="point-badge-val" id="disp-total">610</div>
+      </div>
+      <div class="remain-wrap">
+        <div class="remain-row"><span>잔여 포인트</span><span class="rnum ok" id="rnum">610</span></div>
+        <div class="bar-track"><div class="bar-fill" id="bar-fill" style="width:0%"></div></div>
+      </div>
+      <div class="warn" id="warn">⚠️ 포인트를 초과했어요!</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🛡️ 아이템 능력치</div>
+      <div class="item-grid">
+        <div class="iw"><label>💜 내구력</label><input type="number" id="item-hp"  value="0" oninput="calc()" placeholder="0"></div>
+        <div class="iw"><label>🩷 공격력</label><input type="number" id="item-atk" value="0" oninput="calc()" placeholder="0"></div>
+        <div class="iw"><label>🩵 방어력</label><input type="number" id="item-def" value="0" oninput="calc()" placeholder="0"></div>
+        <div class="iw"><label>🧡 순발력</label><input type="number" id="item-agi" value="0" oninput="calc()" placeholder="0"></div>
+      </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetAll()">🔄 전체 초기화</button>
+  </div>
+
+  <!-- ═ 오른쪽 상단: 결과 ═ -->
+  <div class="result-row">
+    <div class="ri hp">
+      <div class="ri-icon">💜</div><div class="ri-name">내구력</div>
+      <div class="ri-val" id="res-hp">0</div><div class="ri-bk" id="bk-hp">–</div>
+    </div>
+    <div class="ri atk">
+      <div class="ri-icon">🩷</div><div class="ri-name">공격력</div>
+      <div class="ri-val" id="res-atk">0</div><div class="ri-bk" id="bk-atk">–</div>
+    </div>
+    <div class="ri def">
+      <div class="ri-icon">🩵</div><div class="ri-name">방어력</div>
+      <div class="ri-val" id="res-def">0</div><div class="ri-bk" id="bk-def">–</div>
+    </div>
+    <div class="ri agi">
+      <div class="ri-icon">🧡</div><div class="ri-name">순발력</div>
+      <div class="ri-val" id="res-agi">0</div><div class="ri-bk" id="bk-agi">–</div>
+    </div>
+  </div>
+
+  <!-- ═ 오른쪽 하단: 스탯 배분 ═ -->
+  <div class="stat-panel">
+    <div class="card-title">🎯 스탯 배분</div>
+    <div class="stat-row">
+      <div><div class="sname"><span class="sdot" style="background:var(--c-hp)"></span>체력</div><div class="seff">내구×4 · 공방+0.1</div></div>
+      <input type="range" class="sslider" id="sl-hp"  min="0" max="610" value="0" oninput="onSl('hp')">
+      <div class="sinput-col">
+        <button class="sbtn minus" onclick="adj('hp',-1)">−</button>
+        <input class="snum" type="number" id="hp"  value="0" min="0" oninput="onNum('hp')">
+        <button class="sbtn plus"  onclick="adj('hp',1)">+</button>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div><div class="sname"><span class="sdot" style="background:var(--c-atk)"></span>완력</div><div class="seff">공격+1 · 방어+0.1</div></div>
+      <input type="range" class="sslider" id="sl-atk" min="0" max="610" value="0" oninput="onSl('atk')">
+      <div class="sinput-col">
+        <button class="sbtn minus" onclick="adj('atk',-1)">−</button>
+        <input class="snum" type="number" id="atk" value="0" min="0" oninput="onNum('atk')">
+        <button class="sbtn plus"  onclick="adj('atk',1)">+</button>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div><div class="sname"><span class="sdot" style="background:var(--c-def)"></span>건강</div><div class="seff">방어+1 · 공격+0.1</div></div>
+      <input type="range" class="sslider" id="sl-def" min="0" max="610" value="0" oninput="onSl('def')">
+      <div class="sinput-col">
+        <button class="sbtn minus" onclick="adj('def',-1)">−</button>
+        <input class="snum" type="number" id="def" value="0" min="0" oninput="onNum('def')">
+        <button class="sbtn plus"  onclick="adj('def',1)">+</button>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div><div class="sname"><span class="sdot" style="background:var(--c-agi)"></span>스피드</div><div class="seff">순발+1 · 공방+0.05</div></div>
+      <input type="range" class="sslider" id="sl-agi" min="0" max="610" value="0" oninput="onSl('agi')">
+      <div class="sinput-col">
+        <button class="sbtn minus" onclick="adj('agi',-1)">−</button>
+        <input class="snum" type="number" id="agi" value="0" min="0" oninput="onNum('agi')">
+        <button class="sbtn plus"  onclick="adj('agi',1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 보석 계산기 임시 비활성화 -->
+  <div class="card gem-section" style="display:none;">
+    <div class="card-title">💎 보석 초기화 계산기 <span style="font-size:10px;font-weight:600;color:var(--t3);margin-left:4px;">· 하급3p / 중급6p / 상급9p / 최상급12p</span></div>
+
+    <!-- 스탯별 초기화 포인트 입력 -->
+    <div class="gem-stat-grid">
+      <div class="gem-stat-card">
+        <div class="gem-stat-top">
+          <span class="sdot" style="background:var(--c-hp)"></span>
+          <span class="gem-stat-name">체력</span>
+          <span class="gem-stat-cur" id="gem-cur-hp">현재 0p</span>
+        </div>
+        <div class="gem-reset-label">초기화할 포인트</div>
+        <input class="gem-reset-input" type="number" id="gr-hp" value="0" min="0" oninput="calcGem()" placeholder="0">
+        <div class="gem-stat-sub" id="gem-sub-hp"></div>
+      </div>
+      <div class="gem-stat-card">
+        <div class="gem-stat-top">
+          <span class="sdot" style="background:var(--c-atk)"></span>
+          <span class="gem-stat-name">완력</span>
+          <span class="gem-stat-cur" id="gem-cur-atk">현재 0p</span>
+        </div>
+        <div class="gem-reset-label">초기화할 포인트</div>
+        <input class="gem-reset-input" type="number" id="gr-atk" value="0" min="0" oninput="calcGem()" placeholder="0">
+        <div class="gem-stat-sub" id="gem-sub-atk"></div>
+      </div>
+      <div class="gem-stat-card">
+        <div class="gem-stat-top">
+          <span class="sdot" style="background:var(--c-def)"></span>
+          <span class="gem-stat-name">건강</span>
+          <span class="gem-stat-cur" id="gem-cur-def">현재 0p</span>
+        </div>
+        <div class="gem-reset-label">초기화할 포인트</div>
+        <input class="gem-reset-input" type="number" id="gr-def" value="0" min="0" oninput="calcGem()" placeholder="0">
+        <div class="gem-stat-sub" id="gem-sub-def"></div>
+      </div>
+      <div class="gem-stat-card">
+        <div class="gem-stat-top">
+          <span class="sdot" style="background:var(--c-agi)"></span>
+          <span class="gem-stat-name">스피드</span>
+          <span class="gem-stat-cur" id="gem-cur-agi">현재 0p</span>
+        </div>
+        <div class="gem-reset-label">초기화할 포인트</div>
+        <input class="gem-reset-input" type="number" id="gr-agi" value="0" min="0" oninput="calcGem()" placeholder="0">
+        <div class="gem-stat-sub" id="gem-sub-agi"></div>
+      </div>
+    </div>
+
+    <!-- 보석 가격 설정 -->
+    <div class="card-title" style="margin-bottom:10px;">💰 보석 개당 가격 설정</div>
+    <div class="gem-price-grid" style="margin-bottom:16px;">
+      <div class="gem-price-item">
+        <label>🟢 하급 (3p)</label>
+        <input type="number" id="gp-low"  value="0" min="0" oninput="calcGem()" placeholder="0">
+      </div>
+      <div class="gem-price-item">
+        <label>🔵 중급 (6p)</label>
+        <input type="number" id="gp-mid"  value="0" min="0" oninput="calcGem()" placeholder="0">
+      </div>
+      <div class="gem-price-item">
+        <label>🟣 상급 (9p)</label>
+        <input type="number" id="gp-high" value="0" min="0" oninput="calcGem()" placeholder="0">
+      </div>
+      <div class="gem-price-item">
+        <label>🔴 최상급 (12p)</label>
+        <input type="number" id="gp-top"  value="0" min="0" oninput="calcGem()" placeholder="0">
+      </div>
+    </div>
+
+    <!-- 결과 테이블 -->
+    <div class="gem-result-wrap">
+      <div class="gem-result-header">
+        <div>스탯</div>
+        <div>🟢 하급</div>
+        <div>🔵 중급</div>
+        <div>🟣 상급</div>
+        <div>🔴 최상급</div>
+        <div>비용</div>
+        <div>상태</div>
+      </div>
+      <div id="gem-rows"></div>
+      <div class="gem-cost-total">
+        <span class="gem-cost-label">💎 총 보석 비용</span>
+        <span class="gem-cost-val" id="gem-total-cost">0골드</span>
+      </div>
+    </div>
+
+    <!-- 보충 안내 -->
+    <div class="supplement-box" id="supplement-box" style="display:none;"></div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  /* ═══ 비밀번호 ═══ */
+  const PW = 'dawn11!@';
+  function checkPw() {
+    const v = document.getElementById('pw-input').value;
+    if (v === PW) {
+      document.getElementById('pw-overlay').style.display = 'none';
+      sessionStorage.setItem('dawn-auth','1');
+    } else {
+      const box = document.querySelector('.pw-box');
+      document.getElementById('pw-err').textContent = '비밀번호가 틀렸어요 🌙';
+      box.classList.remove('pw-shake');
+      void box.offsetWidth;
+      box.classList.add('pw-shake');
+      document.getElementById('pw-input').value = '';
+    }
+  }
+  // 세션 내 이미 인증됐으면 오버레이 바로 숨김
+  if (sessionStorage.getItem('dawn-auth') === '1') {
+    document.getElementById('pw-overlay').style.display = 'none';
+  }
+
+  /* ═══ 스탯 계산기 ═══ */
+  const STATS = ['hp','atk','def','agi'];
+  const C = { hp:'#9b87f5', atk:'#f587b8', def:'#59bfe0', agi:'#e8a020' };
+  let toastTimer = null;
+
+  function n(id) { return parseInt(document.getElementById(id).value) || 0; }
+
+  function getTotal() {
+    const lv = Math.min(140, Math.max(1, n('level')));
+    return Math.max(0, n('bonus1lv')) + (lv - 1) * 3;
+  }
+
+  function usedExcept(except) {
+    return STATS.filter(s => s !== except).reduce((a, s) => a + Math.max(0, n(s)), 0);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function setSl(stat, val, total) {
+    const sl = document.getElementById('sl-' + stat);
+    const clamped = Math.min(Math.max(0, val), total);
+    sl.value = clamped;
+    const pct = total > 0 ? Math.min(100, clamped / total * 100) : 0;
+    sl.style.background = `linear-gradient(90deg, ${C[stat]} ${pct.toFixed(1)}%, #d4cbff ${pct.toFixed(1)}%)`;
+  }
+
+  function onSl(stat) {
+    const total = getTotal();
+    const rawVal = parseInt(document.getElementById('sl-'+stat).value);
+    const maxForThis = Math.max(0, total - usedExcept(stat));
+    const v = Math.min(rawVal, maxForThis);
+    document.getElementById('sl-'+stat).value = v;
+    document.getElementById(stat).value = v;
+    setSl(stat, v, total);
+    calc();
+  }
+
+  function onNum(stat) {
+    const total = getTotal();
+    const rawVal = parseInt(document.getElementById(stat).value) || 0;
+    const clamped = Math.max(0, rawVal);
+    const maxForThis = Math.max(0, total - usedExcept(stat));
+    const actual = Math.min(clamped, maxForThis);
+    if (clamped > maxForThis) {
+      showToast(`⚠️ 잔여 포인트 최대치에 도달하여 ${actual}포인트만 증가되었습니다.`);
+    }
+    document.getElementById(stat).value = actual;
+    setSl(stat, actual, total);
+    calc();
+  }
+
+  function adj(stat, d) {
+    const total = getTotal();
+    const cur = Math.max(0, n(stat));
+    const maxForThis = Math.max(0, total - usedExcept(stat));
+    let next = cur + d;
+    if (next < 0) next = 0;
+    if (next > maxForThis) { if (d > 0) showToast('⚠️ 잔여 포인트가 없어요!'); next = maxForThis; }
+    document.getElementById(stat).value = next;
+    setSl(stat, next, total);
+    calc();
+  }
+
+  function refreshSlMax() {
+    const total = getTotal();
+    STATS.forEach(s => { document.getElementById('sl-'+s).max = total; setSl(s, n(s), total); });
+  }
+
+  function clampAllStats() {
+    const total = getTotal();
+    let remain = total;
+    STATS.forEach(s => {
+      const cur = Math.max(0, n(s));
+      const actual = Math.min(cur, Math.max(0, remain));
+      document.getElementById(s).value = actual;
+      remain -= actual;
+    });
+  }
+
+  function onLvSl() {
+    const v = document.getElementById('lv-sl').value;
+    document.getElementById('level').value = v;
+    document.getElementById('lv-disp').textContent = v;
+    const pct = (v-1)/139*100;
+    document.getElementById('lv-sl').style.background = `linear-gradient(90deg,#9b87f5 ${pct.toFixed(1)}%,#d4cbff ${pct.toFixed(1)}%)`;
+    refreshSlMax(); calc();
+  }
+
+  function onLvNum() {
+    let v = parseInt(document.getElementById('level').value) || 1;
+    v = Math.min(140, Math.max(1, v));
+    document.getElementById('level').value = v;
+    document.getElementById('lv-sl').value = v;
+    document.getElementById('lv-disp').textContent = v;
+    const pct = (v-1)/139*100;
+    document.getElementById('lv-sl').style.background = `linear-gradient(90deg,#9b87f5 ${pct.toFixed(1)}%,#d4cbff ${pct.toFixed(1)}%)`;
+    clampAllStats(); refreshSlMax(); calc();
+  }
+
+  function calc() {
+    const total = getTotal();
+    const lv = Math.min(140, Math.max(1,n('level')));
+    const b1 = Math.max(0, n('bonus1lv'));
+    const lvb = (lv-1)*3;
+
+    const hp=Math.max(0,n('hp')), atk=Math.max(0,n('atk')), def=Math.max(0,n('def')), agi=Math.max(0,n('agi'));
+    const used=hp+atk+def+agi, rem=total-used;
+
+    const iHp=n('item-hp'), iAtk=n('item-atk'), iDef=n('item-def'), iAgi=n('item-agi');
+    const resHp=hp*4+atk+def+agi+iHp;
+    const resAtk=atk+iAtk+def/10+hp/10+agi/20;
+    const resDef=def+iDef+atk/10+hp/10+agi/20;
+    const resAgi=agi+iAgi;
+
+    document.getElementById('disp-total').textContent=total;
+    document.getElementById('point-sub').textContent=`환포 ${b1} + 레벨업 ${lvb}`;
+
+    const rEl=document.getElementById('rnum');
+    rEl.textContent=rem;
+    rEl.className='rnum'+(rem===0?' zero':' ok');
+    const pct=total>0?Math.min(100,used/total*100):0;
+    document.getElementById('bar-fill').style.width=pct+'%';
+
+    const fmt=v=>v%1===0?String(v):v.toFixed(2).replace(/\.?0+$/,'');
+    document.getElementById('res-hp').textContent=fmt(resHp);
+    document.getElementById('res-atk').textContent=fmt(resAtk);
+    document.getElementById('res-def').textContent=fmt(resDef);
+    document.getElementById('res-agi').textContent=fmt(resAgi);
+
+    const bkHp=[];
+    if(hp) bkHp.push(`체력${hp}×4=${hp*4}`);
+    const plus=atk+def+agi; if(plus) bkHp.push(`+(${plus})`);
+    if(iHp) bkHp.push(`아이템${iHp>0?'+':''}${iHp}`);
+    document.getElementById('bk-hp').textContent=bkHp.join(' · ')||'–';
+
+    const bkAtk=[];
+    if(atk) bkAtk.push(`완력 ${atk}`);
+    if(def) bkAtk.push(`건강/10 +${(def/10).toFixed(1)}`);
+    if(hp)  bkAtk.push(`체력/10 +${(hp/10).toFixed(1)}`);
+    if(agi) bkAtk.push(`속도/20 +${(agi/20).toFixed(1)}`);
+    if(iAtk) bkAtk.push(`아이템${iAtk>0?'+':''}${iAtk}`);
+    document.getElementById('bk-atk').textContent=bkAtk.join(' · ')||'–';
+
+    const bkDef=[];
+    if(def) bkDef.push(`건강 ${def}`);
+    if(atk) bkDef.push(`완력/10 +${(atk/10).toFixed(1)}`);
+    if(hp)  bkDef.push(`체력/10 +${(hp/10).toFixed(1)}`);
+    if(agi) bkDef.push(`속도/20 +${(agi/20).toFixed(1)}`);
+    if(iDef) bkDef.push(`아이템${iDef>0?'+':''}${iDef}`);
+    document.getElementById('bk-def').textContent=bkDef.join(' · ')||'–';
+
+    const bkAgi=[];
+    if(agi) bkAgi.push(`스피드 ${agi}`);
+    if(iAgi) bkAgi.push(`아이템${iAgi>0?'+':''}${iAgi}`);
+    document.getElementById('bk-agi').textContent=bkAgi.join(' · ')||'–';
+
+    // 보석 계산기 현재 포인트 표시 동기화
+    document.getElementById('gem-cur-hp').textContent=`현재 ${hp}p`;
+    document.getElementById('gem-cur-atk').textContent=`현재 ${atk}p`;
+    document.getElementById('gem-cur-def').textContent=`현재 ${def}p`;
+    document.getElementById('gem-cur-agi').textContent=`현재 ${agi}p`;
+    calcGem();
+  }
+
+  /* ═══ 보석 계산기 ═══ */
+  // 보석 단위: 하급3, 중급6, 상급9, 최상급12
+  const GEM_SIZES = [12, 9, 6, 3]; // 큰 것부터
+  const GEM_NAMES = ['최상급','상급','중급','하급'];
+  const GEM_EMOJI = ['🔴','🟣','🔵','🟢'];
+
+  // p포인트를 초기화하기 위한 최적 보석 조합
+  // 보석은 정확히 해당 단위로만 쓸 수 있으므로,
+  // 현재 스탯이 보석 단위의 배수여야 사용 가능
+  function calcGemNeeded(resetP, currentP) {
+    // resetP: 초기화하고 싶은 포인트
+    // currentP: 현재 찍혀 있는 포인트
+    if (resetP <= 0) return { counts:[0,0,0,0], supplement:null, valid:true, total:0 };
+    if (resetP > currentP) {
+      return { counts:[0,0,0,0], supplement:null, valid:false, err:`현재 ${currentP}p 중 최대 ${currentP}p까지만 초기화 가능`, total:0 };
+    }
+
+    // 최적 조합 (최상급 우선, 적은 보석 개수)
+    function solve(p) {
+      let rem = p, cnts = [0,0,0,0]; // [최상급,상급,중급,하급]
+      GEM_SIZES.forEach((sz, i) => { cnts[i] = Math.floor(rem / sz); rem -= cnts[i]*sz; });
+      return { cnts, leftover: rem };
+    }
+
+    // 정확히 resetP를 맞추려면 현재 스탯이 각 보석 단위의 배수여야 함
+    // 우선 resetP가 3의 배수인지 확인 (하급이 3p이므로 최소 단위)
+    if (resetP % 3 !== 0) {
+      // 올림해서 3의 배수로 만들어야 함
+      const needed = Math.ceil(resetP / 3) * 3;
+      const suppl = needed - resetP; // 다른 스탯에서 빌려와서 현재 스탯에 추가 찍어야 할 포인트
+      const r = solve(needed);
+      return {
+        counts: r.cnts, valid: false,
+        supplement: { resetP, needed, suppl },
+        total: needed
+      };
+    }
+
+    const r = solve(resetP);
+    return { counts: r.cnts, valid: true, supplement: null, total: resetP };
+  }
+
+  function calcGem() {
+    const STAT_IDS = ['hp','atk','def','agi'];
+    const STAT_NAMES = ['체력','완력','건강','스피드'];
+    const STAT_DOTS = [
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-hp);margin-right:4px;"></span>',
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-atk);margin-right:4px;"></span>',
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-def);margin-right:4px;"></span>',
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-agi);margin-right:4px;"></span>',
+    ];
+
+    const prices = [
+      parseInt(document.getElementById('gp-top').value)||0,   // 최상급
+      parseInt(document.getElementById('gp-high').value)||0,  // 상급
+      parseInt(document.getElementById('gp-mid').value)||0,   // 중급
+      parseInt(document.getElementById('gp-low').value)||0,   // 하급
+    ];
+
+    let totalCost = 0;
+    let rowsHTML = '';
+    let supplements = [];
+
+    STAT_IDS.forEach((sid, i) => {
+      const curP  = Math.max(0, n(sid));
+      const resetP = Math.max(0, parseInt(document.getElementById('gr-'+sid).value)||0);
+      const res = calcGemNeeded(resetP, curP);
+
+      // 비용 계산
+      let cost = 0;
+      res.counts.forEach((cnt, gi) => cost += cnt * prices[gi]);
+      totalCost += cost;
+
+      // 상태 메시지
+      let statusHTML = '';
+      if (resetP === 0) {
+        statusHTML = `<span style="color:var(--t3);font-size:10px;">–</span>`;
+      } else if (res.err) {
+        statusHTML = `<span class="gem-warn">❌ ${res.err}</span>`;
+      } else if (res.supplement) {
+        const s = res.supplement;
+        statusHTML = `<span class="gem-warn">⚠️ ${s.suppl}p 보충 필요</span>`;
+        supplements.push({
+          stat: STAT_NAMES[i], dot: STAT_DOTS[i],
+          resetP: s.resetP, needed: s.needed, suppl: s.suppl
+        });
+      } else {
+        statusHTML = `<span class="gem-ok">✅ 가능</span>`;
+      }
+
+      // 서브 안내 업데이트
+      const subEl = document.getElementById('gem-sub-'+sid);
+      if (resetP > 0 && res.supplement) {
+        subEl.textContent = `→ ${res.needed}p 기준으로 계산`;
+      } else {
+        subEl.textContent = '';
+      }
+
+      const [top,high,mid,low] = res.counts;
+      const costStr = cost > 0 ? cost.toLocaleString()+'골드' : prices.some(p=>p>0)?'0골드':'–';
+
+      rowsHTML += `<div class="gem-result-row">
+        <div style="display:flex;align-items:center;">${STAT_DOTS[i]}<span style="font-size:12px;font-weight:800;">${STAT_NAMES[i]}</span></div>
+        <div><span class="gem-cnt">${top > 0 ? top : '–'}</span></div>
+        <div><span class="gem-cnt">${high > 0 ? high : '–'}</span></div>
+        <div><span class="gem-cnt">${mid > 0 ? mid : '–'}</span></div>
+        <div><span class="gem-cnt">${low > 0 ? low : '–'}</span></div>
+        <div style="font-size:11px;font-weight:700;color:var(--a1);font-family:'Nunito',sans-serif;">${costStr}</div>
+        <div>${statusHTML}</div>
+      </div>`;
+    });
+
+    document.getElementById('gem-rows').innerHTML = rowsHTML;
+    document.getElementById('gem-total-cost').textContent =
+      totalCost > 0 ? totalCost.toLocaleString()+'골드' : '–';
+
+    // 보충 안내
+    const suppBox = document.getElementById('supplement-box');
+    if (supplements.length > 0) {
+      let html = '<b>⚠️ 보충 포인트 필요 안내</b><br><br>';
+      supplements.forEach(s => {
+        html += `${s.dot}<b>${s.stat}</b>: 현재 ${s.resetP}p 초기화 → 보석 최소 단위(3p)를 맞추려면 `;
+        html += `<b>${s.suppl}p를 다른 스탯에서 빼서 ${s.stat}에 추가</b>로 찍어 <b>${s.needed}p</b>로 맞춘 뒤 사용 가능합니다.<br>`;
+        html += `&nbsp;&nbsp;(예: 다른 스탯 ${s.suppl}p 초기화 → ${s.stat}에 ${s.suppl}p 재배분 → 총 ${s.needed}p로 보석 사용)<br><br>`;
+      });
+      suppBox.innerHTML = html;
+      suppBox.style.display = 'block';
+    } else {
+      suppBox.style.display = 'none';
+    }
+  }
+
+  function resetAll() {
+    document.getElementById('level').value='140';
+    document.getElementById('lv-sl').value='140';
+    document.getElementById('lv-disp').textContent='140';
+    document.getElementById('lv-sl').style.background='linear-gradient(90deg,#9b87f5 100%,#d4cbff 100%)';
+    document.getElementById('bonus1lv').value='193';
+    STATS.forEach(s=>{ document.getElementById(s).value='0'; setSl(s,0,610); });
+    ['item-hp','item-atk','item-def','item-agi'].forEach(id=>document.getElementById(id).value='0');
+    ['gr-hp','gr-atk','gr-def','gr-agi'].forEach(id=>document.getElementById(id).value='0');
+    refreshSlMax(); calc();
+  }
+
+  onLvNum();
+  calc();
+</script>
+</body>
+</html>
