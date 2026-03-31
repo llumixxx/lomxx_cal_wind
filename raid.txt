@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>인력사무소 | WIND 서버</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#faf9ff;--bg2:#f3f0ff;--white:#fff;
+  --s1:#f8f7ff;--s2:#f0eeff;
+  --border:#e8e3ff;--border2:#d4cbff;
+  --a1:#9b87f5;--a2:#f587b8;--a3:#87d4f5;--a4:#f5c887;--a5:#87f5c0;
+  --t1:#3d3560;--t2:#7b72a8;--t3:#b0a8d4;--t4:#d4cff0;
+  --ok:#6dd5a0;--err:#f57878;
+  --wan:#f5a623;--wan-bg:rgba(245,166,35,.12);
+  --sun:#3db8e8;--sun-bg:rgba(61,184,232,.12);
+  --shadow:0 4px 24px rgba(155,135,245,.12);
+  --shadow2:0 8px 32px rgba(155,135,245,.22);
+}
+[data-theme="dark"]{
+  --bg:#0f0f1a;--bg2:#1a1a2e;--white:#252540;
+  --s1:#2a2a45;--s2:#353555;
+  --border:#404060;--border2:#505080;
+  --t1:#e8e8f0;--t2:#b0b0c8;--t3:#8080a0;--t4:#606080;
+  --shadow:0 4px 24px rgba(0,0,0,.4);--shadow2:0 8px 32px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:18px;}
+
+/* 다크토글 */
+.dark-toggle{position:fixed;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:1000;box-shadow:var(--shadow);}
+.dark-toggle:hover{transform:scale(1.1);border-color:var(--a1);}
+[data-theme="dark"] .toggle-moon{display:inline;}[data-theme="dark"] .toggle-sun{display:none!important;}
+[data-theme="light"] .toggle-moon{display:none!important;}[data-theme="light"] .toggle-sun{display:inline;}
+
+/* 헤더 */
+.top-bar{background:var(--white);border-bottom:1.5px solid var(--border);padding:14px 22px 12px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow);}
+.top-inner{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+.top-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.top-logo{font-family:'Nunito',sans-serif;font-weight:900;font-size:24px;color:var(--a1);}
+.timers{display:flex;gap:16px;font-size:13px;color:var(--t3);}
+.tv{font-family:'Nunito',sans-serif;font-weight:800;color:var(--a1);font-size:14px;}
+.top-nav{display:flex;gap:8px;flex-wrap:wrap;}
+.nav-btn{text-decoration:none;padding:7px 16px;border-radius:99px;font-size:14px;font-weight:700;border:1.5px solid var(--border2);background:var(--s1);color:var(--t2);transition:all .15s;}
+.nav-btn:hover,.nav-btn.active{background:var(--a1);color:#fff;border-color:var(--a1);}
+
+/* 탭바 */
+.tab-bar{max-width:900px;margin:18px auto 0;padding:0 18px;display:flex;gap:8px;}
+.tab-btn{padding:10px 24px;border-radius:12px 12px 0 0;font-size:16px;font-weight:700;border:1.5px solid var(--border);background:var(--s1);color:var(--t2);cursor:pointer;transition:all .2s;border-bottom:none;font-family:inherit;}
+.tab-btn.active{background:var(--white);color:var(--a1);position:relative;top:1px;}
+
+/* 메인 */
+.main{max-width:900px;margin:0 auto;padding:0 18px 60px;}
+.tab-panel{display:none;padding-top:22px;}
+.tab-panel.active{display:block;}
+
+/* 섹션 */
+.sec{background:var(--white);border:1.5px solid var(--border);border-radius:18px;margin-bottom:20px;box-shadow:var(--shadow);overflow:hidden;}
+.sec-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.sec-icon{font-size:22px;}
+.sec-title{font-size:18px;font-weight:800;}
+.sec-sub{font-size:13px;color:var(--t3);margin-top:2px;}
+.sec-badge{margin-left:auto;font-size:13px;padding:4px 12px;border-radius:99px;background:var(--s2);color:var(--t2);border:1px solid var(--border2);font-weight:700;}
+
+/* 지원서 종류 선택 */
+.rtype-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px;}
+.rtype-card{border:2px solid var(--border2);border-radius:18px;padding:24px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--s1);}
+.rtype-card:hover{border-color:var(--a1);background:var(--s2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.rtype-icon{font-size:36px;margin-bottom:10px;}
+.rtype-title{font-size:17px;font-weight:900;margin-bottom:6px;}
+.rtype-sub{font-size:13px;color:var(--t3);line-height:1.6;}
+
+/* 폼 */
+.form-wrap{padding:18px 20px;}
+.form-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+.form-lbl{font-size:15px;font-weight:700;color:var(--t2);width:76px;padding-top:10px;flex-shrink:0;}
+.form-inp{flex:1;min-width:140px;padding:10px 14px;border:1.5px solid var(--border2);border-radius:12px;font-size:16px;background:var(--white);color:var(--t1);font-family:inherit;outline:none;}
+.form-inp:focus{border-color:var(--a1);}
+
+/* 선택 버튼들 */
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;}
+.sel-btn{padding:9px 14px;border-radius:10px;border:1.5px solid var(--border2);font-size:15px;font-weight:700;cursor:pointer;background:var(--s1);color:var(--t2);transition:all .15s;font-family:inherit;min-width:52px;text-align:center;}
+.sel-btn:hover{border-color:var(--a1);color:var(--a1);}
+.sel-btn.on{background:var(--a1);border-color:var(--a1);color:#fff;}
+.sel-btn.wan-on{background:var(--wan);border-color:var(--wan);color:#fff;}
+.sel-btn.sun-on{background:var(--sun);border-color:var(--sun);color:#fff;}
+.sel-btn.today-d{border-color:var(--ok);color:var(--ok);font-weight:800;}
+.sel-btn.today-d.on{background:var(--ok);border-color:var(--ok);color:#fff;}
+/* 난이도 전용 */
+.sel-btn.easy-on{background:#6dd5a0;border-color:#6dd5a0;color:#fff;}
+.sel-btn.hard-on{background:#f5c887;border-color:#f5c887;color:#fff;}
+.sel-btn.vhard-on{background:#f57878;border-color:#f57878;color:#fff;}
+
+/* 시간 범위 */
+.time-range{display:flex;align-items:center;gap:10px;}
+.t-sel{padding:10px 14px;border-radius:12px;border:1.5px solid var(--border2);background:var(--white);color:var(--t1);font-size:17px;font-weight:700;font-family:'Nunito','Noto Sans KR',sans-serif;outline:none;cursor:pointer;}
+.t-sel:focus{border-color:var(--a1);}
+.t-sep{font-size:16px;color:var(--t3);font-weight:700;}
+
+/* 돌아가기 */
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:99px;border:1.5px solid var(--border2);background:var(--white);color:var(--t2);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:16px;font-family:inherit;transition:all .15s;}
+.back-btn:hover{border-color:var(--a1);color:var(--a1);}
+
+/* 제출 버튼 */
+.submit-btn{width:100%;padding:14px;border-radius:14px;border:none;background:var(--a1);color:#fff;font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;margin-top:4px;}
+.submit-btn:hover{opacity:.88;}
+
+/* 파티 카드 */
+.party-list{display:flex;flex-direction:column;gap:14px;padding:16px 20px;}
+.pcard{border:1.5px solid var(--border);border-radius:14px;overflow:hidden;background:var(--s1);}
+.pcard.done{border-color:var(--ok);background:rgba(109,213,160,.06);}
+.pc-head{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.pc-time{font-size:17px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);}
+.pc-label{font-size:14px;color:var(--t2);}
+.pc-auto{font-size:12px;padding:2px 9px;border-radius:99px;background:var(--a2);color:#fff;font-weight:700;}
+.pc-full{font-size:14px;color:var(--ok);font-weight:700;margin-left:auto;}
+.pc-members{padding:12px 16px;display:flex;flex-wrap:wrap;gap:8px;}
+.pc-member{padding:6px 14px;border-radius:10px;font-size:14px;font-weight:700;}
+.pc-member.wan{background:var(--wan-bg);color:var(--wan);}
+.pc-member.sun{background:var(--sun-bg);color:var(--sun);}
+
+/* 대기자 카드 */
+.wait-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;padding:16px 20px;}
+.wcard{border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;background:var(--s1);position:relative;}
+.wcard-nick{font-size:16px;font-weight:800;margin-bottom:5px;}
+.wcard-info{font-size:13px;color:var(--t3);margin-bottom:7px;}
+.wcard-chips{display:flex;gap:5px;flex-wrap:wrap;}
+.chip{font-size:12px;padding:3px 9px;border-radius:8px;font-weight:700;}
+.chip.wan{background:var(--wan-bg);color:var(--wan);}
+.chip.sun{background:var(--sun-bg);color:var(--sun);}
+.chip.day{background:var(--s2);color:var(--t2);border:1px solid var(--border);}
+.wcard-del{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;}
+.wcard-del:hover{color:var(--err);}
+
+/* 내 지원 현황 */
+.my-search{padding:18px 20px 0;}
+.my-search-row{display:flex;gap:10px;margin-bottom:18px;}
+.my-result{padding:0 20px 20px;}
+
+/* 알림 */
+.notif-area{position:fixed;top:80px;right:18px;z-index:800;display:flex;flex-direction:column;gap:10px;max-width:340px;}
+.notif{background:var(--white);border:1.5px solid var(--ok);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow2);animation:slideIn .3s ease-out;display:flex;gap:12px;align-items:flex-start;}
+@keyframes slideIn{from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.notif-icon{font-size:24px;flex-shrink:0;}
+.notif-txt{flex:1;}
+.notif-title{font-size:15px;font-weight:800;color:var(--ok);}
+.notif-msg{font-size:13px;color:var(--t2);margin-top:3px;}
+.notif-close{background:none;border:none;cursor:pointer;color:var(--t3);font-size:18px;flex-shrink:0;}
+
+/* 빈 상태 */
+.empty{padding:30px;text-align:center;color:var(--t3);font-size:16px;line-height:1.7;}
+
+/* 토스트 */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:99px;font-size:16px;font-weight:700;z-index:9999;display:none;box-shadow:var(--shadow2);}
+.toast.ok{background:var(--ok);color:#fff;}
+.toast.err{background:var(--err);color:#fff;}
+.toast.info{background:var(--t1);color:#fff;}
+</style>
+</head>
+<body>
+<button class="dark-toggle" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
+<div class="notif-area" id="notif-area"></div>
+
+<!-- 헤더 -->
+<div class="top-bar">
+  <div class="top-inner">
+    <div class="top-row">
+      <div class="top-logo">🏢 인력사무소</div>
+      <div class="timers">
+        <div>일일초기화 <span class="tv" id="tv-d">--:--:--</span></div>
+        <div>주간초기화 <span class="tv" id="tv-w">--일 --:--:--</span></div>
+      </div>
+    </div>
+    <nav class="top-nav">
+      <a href="index.html" class="nav-btn">🧮 환각계산기</a>
+      <a href="pokedex.html" class="nav-btn">📖 도감</a>
+      <a href="card.html" class="nav-btn">🃏 카드</a>
+      <a href="chat_viewer.html" class="nav-btn">💬 채팅뷰어</a>
+      <a href="raid.html" class="nav-btn active">🏢 인력사무소</a>
+    </nav>
+  </div>
+</div>
+
+<!-- 탭바 -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('apply',this)">📋 지원서</button>
+  <button class="tab-btn" onclick="switchTab('matched',this)">✅ 매칭 현황</button>
+  <button class="tab-btn" onclick="switchTab('mine',this)">🔍 내 지원</button>
+</div>
+
+<div class="main">
+
+  <!-- ════ 지원서 탭 ════ -->
+  <div class="tab-panel active" id="tab-apply">
+
+    <!-- 종류 선택 화면 -->
+    <div id="apply-select">
+      <div class="sec">
+        <div class="sec-head">
+          <span class="sec-icon">📋</span>
+          <div><div class="sec-title">지원서 작성</div><div class="sec-sub">매칭 조건: 완케 3명 + 순케 2명 자동 매칭</div></div>
+        </div>
+        <div class="rtype-grid">
+          <div class="rtype-card" onclick="openForm('daily')">
+            <div class="rtype-icon">⚔️</div>
+            <div class="rtype-title">일일 레이드</div>
+            <div class="rtype-sub">매일 00시 초기화<br>자신과의싸움 · 황금복덩이 · 골렘던전</div>
+          </div>
+          <div class="rtype-card" onclick="openForm('weekly')">
+            <div class="rtype-icon">🗓️</div>
+            <div class="rtype-title">주간 레이드</div>
+            <div class="rtype-sub">매주 금요일 초기화<br>얼음성(흑룡·헤티아·엘딘) · 정령</div>
+          </div>
+        </div>
+        <div style="padding:0 18px 18px;">
+          <button style="width:100%;padding:10px;border-radius:12px;border:1.5px solid var(--border2);background:var(--s1);color:var(--t2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;" onclick="reqNotif()">🔔 파티 완성 알림 허용</button>
+        </div>
+      </div>
+
+      <!-- 대기자 현황 -->
+      <div class="sec">
+        <div class="sec-head">
+          <span class="sec-icon">👥</span>
+          <div><div class="sec-title">대기자 현황</div><div class="sec-sub">매칭 대기 중인 지원서</div></div>
+          <span class="sec-badge" id="wl-count">0명</span>
+        </div>
+        <div id="wl-list"><div class="empty">대기자가 없어요</div></div>
+      </div>
+    </div>
+
+    <!-- 일일 지원서 폼 (숨김) -->
+    <div id="form-daily" style="display:none;">
+      <button class="back-btn" onclick="closeForm()">← 돌아가기</button>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-icon">⚔️</span>
+          <div><div class="sec-title">일일 레이드 지원서</div><div class="sec-sub">완케 3명 + 순케 2명 자동 매칭</div></div>
+        </div>
+        <div class="form-wrap">
+          <div style="background:rgba(155,135,245,.08);border:1px solid var(--border2);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14px;color:var(--t2);line-height:1.6;">
+            💡 지원 취소는 <strong>내 지원</strong> 탭에서 닉네임 검색 후 취소할 수 있어요
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">닉네임</span>
+            <input class="form-inp" id="fd-nick" placeholder="게임 내 닉네임" maxlength="20"/>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">역할</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="pick('fd-role','wan',this,'wan-on')">🟡 완케</button>
+              <button class="sel-btn" onclick="pick('fd-role','sun',this,'sun-on')">🔵 순케</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">요일</span>
+            <div class="btn-group" id="fd-day-btns"></div>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">던전</span>
+            <div class="btn-group" id="fd-dungeon-btns"><span style="font-size:14px;color:var(--t3);">요일을 먼저 선택하세요</span></div>
+          </div>
+          <div class="form-row" id="fd-diff-row" style="display:none;">
+            <span class="form-lbl">난이도</span>
+            <div class="btn-group" id="fd-diff-btns">
+              <button class="sel-btn diff-easy" style="border-color:#6dd5a0;color:#2a8a5e;" onclick="pick('fd-diff','easy',this,'easy-on')">🟢 쉬움</button>
+              <button class="sel-btn diff-hard" style="border-color:#f5c887;color:#a07020;" onclick="pick('fd-diff','hard',this,'hard-on')">🟡 어려움</button>
+              <button class="sel-btn diff-vhard" style="border-color:#f57878;color:#c03030;" onclick="pick('fd-diff','vhard',this,'vhard-on')">🔴 매우어려움</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">가능 시간</span>
+            <div class="time-range">
+              <select class="t-sel" id="fd-from"><option value="">시작</option></select>
+              <span class="t-sep">~</span>
+              <select class="t-sel" id="fd-to"><option value="">종료</option></select>
+            </div>
+          </div>
+          <button class="submit-btn" onclick="submitForm('daily')">📤 일일 레이드 지원서 제출</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 주간 지원서 폼 (숨김) -->
+    <div id="form-weekly" style="display:none;">
+      <button class="back-btn" onclick="closeForm()">← 돌아가기</button>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-icon">🗓️</span>
+          <div><div class="sec-title">주간 레이드 지원서</div><div class="sec-sub">완케 3명 + 순케 2명 자동 매칭</div></div>
+        </div>
+        <div class="form-wrap">
+          <div style="background:rgba(155,135,245,.08);border:1px solid var(--border2);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:14px;color:var(--t2);line-height:1.6;">
+            💡 지원 취소는 <strong>내 지원</strong> 탭에서 닉네임 검색 후 취소할 수 있어요
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">닉네임</span>
+            <input class="form-inp" id="fw-nick" placeholder="게임 내 닉네임" maxlength="20"/>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">역할</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="pick('fw-role','wan',this,'wan-on')">🟡 완케</button>
+              <button class="sel-btn" onclick="pick('fw-role','sun',this,'sun-on')">🔵 순케</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">종류</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="pickWeeklyType('ice',this)">❄️ 얼음성</button>
+              <button class="sel-btn" onclick="pickWeeklyType('spirit',this)">✨ 정령</button>
+            </div>
+          </div>
+          <!-- 얼음성 보스 -->
+          <div class="form-row" id="fw-boss-row" style="display:none;">
+            <span class="form-lbl">보스</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="pick('fw-boss','흑룡',this,'on')">🐉 흑룡</button>
+              <button class="sel-btn" onclick="pick('fw-boss','헤티아',this,'on')">🧊 헤티아</button>
+              <button class="sel-btn" onclick="pick('fw-boss','엘딘',this,'on')">⚡ 엘딘</button>
+            </div>
+          </div>
+          <!-- 얼음성 판수 -->
+          <div class="form-row" id="fw-count-row" style="display:none;">
+            <span class="form-lbl">판수</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="pick('fw-count',5,this,'on')">5판</button>
+              <button class="sel-btn" onclick="pick('fw-count',10,this,'on')">10판</button>
+            </div>
+          </div>
+          <!-- 정령 속성 -->
+          <div class="form-row" id="fw-attr-row" style="display:none;">
+            <span class="form-lbl">속성</span>
+            <div class="btn-group">
+              <button class="sel-btn" onclick="pick('fw-attr','화',this,'on')">🔥 화</button>
+              <button class="sel-btn" onclick="pick('fw-attr','풍',this,'on')">🌪️ 풍</button>
+              <button class="sel-btn" onclick="pick('fw-attr','지',this,'on')">🌱 지</button>
+              <button class="sel-btn" onclick="pick('fw-attr','수',this,'on')">💧 수</button>
+              <button class="sel-btn" onclick="pick('fw-attr','무관',this,'on')">⚪ 무관</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">요일</span>
+            <div class="btn-group" id="fw-day-btns"></div>
+          </div>
+          <div class="form-row">
+            <span class="form-lbl">가능 시간</span>
+            <div class="time-range">
+              <select class="t-sel" id="fw-from"><option value="">시작</option></select>
+              <span class="t-sep">~</span>
+              <select class="t-sel" id="fw-to"><option value="">종료</option></select>
+            </div>
+          </div>
+          <button class="submit-btn" onclick="submitForm('weekly')">📤 주간 레이드 지원서 제출</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════ 매칭 현황 탭 ════ -->
+  <div class="tab-panel" id="tab-matched">
+    <div class="sec">
+      <div class="sec-head"><span class="sec-icon">⚔️</span>
+        <div><div class="sec-title">일일 레이드 매칭</div><div class="sec-sub" id="matched-daily-sub">오늘의 매칭 결과</div></div>
+        <span class="sec-badge" id="matched-daily-badge">로딩중</span>
+      </div>
+      <div id="matched-daily-list"><div class="empty">매칭된 파티가 없어요</div></div>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><span class="sec-icon">❄️✨</span>
+        <div><div class="sec-title">주간 레이드 매칭</div><div class="sec-sub">이번 주 매칭 결과</div></div>
+      </div>
+      <div id="matched-weekly-list"><div class="empty">매칭된 파티가 없어요</div></div>
+    </div>
+  </div>
+
+  <!-- ════ 내 지원 탭 ════ -->
+  <div class="tab-panel" id="tab-mine">
+    <div class="sec">
+      <div class="sec-head"><span class="sec-icon">🔍</span>
+        <div><div class="sec-title">내 지원 현황</div><div class="sec-sub">닉네임으로 조회</div></div>
+      </div>
+      <div class="my-search">
+        <div class="my-search-row">
+          <input class="form-inp" id="mine-nick" placeholder="닉네임 입력" maxlength="20" onkeydown="if(event.key==='Enter')searchMine()"/>
+          <button onclick="searchMine()" style="padding:10px 22px;border-radius:12px;border:none;background:var(--a1);color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">조회</button>
+        </div>
+      </div>
+      <div class="my-result" id="mine-result"></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════ Firebase ════
+const FB="https://wind-972a1-default-rtdb.asia-southeast1.firebasedatabase.app";
+const fbGet=async p=>{try{const r=await fetch(`${FB}/${p}.json`);return r.ok?r.json():null;}catch{return null;}};
+const fbSet=async(p,d)=>fetch(`${FB}/${p}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)});
+const fbDel=async p=>fetch(`${FB}/${p}.json`,{method:'DELETE'});
+
+// ════ 상수 ════
+const DAYS_KR=['일','월','화','수','목','금','토'];
+const DAILY_SCHED={
+  0:['3종통합'],  // 일요일: 자신+복덩이+골렘 묶음
+  1:['자신과의싸움'],2:['황금복덩이'],3:['골렘던전'],
+  4:['자신과의싸움'],5:['황금복덩이'],6:['골렘던전']
+};
+const DNG={
+  '자신과의싸움':{e:'⚔️',days:'월·목·일'},
+  '황금복덩이':{e:'💰',days:'화·금·일'},
+  '골렘던전':{e:'🪨',days:'수·토·일'},
+  '3종통합':{e:'🎯',days:'일요일 전용'}
+};
+const DIFF={easy:'🟢 쉬움',hard:'🟡 어려움',vhard:'🔴 매우어려움'};
+
+// ════ 날짜 ════
+const kst=()=>new Date(Date.now()+9*3600*1000);
+const todayKey=()=>kst().toISOString().slice(0,10);
+const todayDow=()=>kst().getDay();
+const weekKey=()=>{
+  const d=kst(),dow=d.getDay();
+  const f=new Date(d);f.setDate(d.getDate()-((dow>=5)?dow-5:dow+2));
+  return f.toISOString().slice(0,10);
+};
+const weekDays=()=>{
+  const d=kst(),dow=d.getDay();
+  const mon=new Date(d);mon.setDate(d.getDate()-(dow===0?6:dow-1));
+  return Array.from({length:7},(_,i)=>{
+    const dd=new Date(mon);dd.setDate(mon.getDate()+i);
+    return{key:dd.toISOString().slice(0,10),dow:dd.getDay()};
+  });
+};
+
+// ════ 폼 상태 ════
+const F={
+  daily:{role:null,dow:null,dungeon:null,diff:null},
+  weekly:{role:null,wtype:null,boss:null,attr:null,count:null,dow:null}
+};
+
+// ════ 탭 전환 ════
+function switchTab(name,el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  el.classList.add('active');
+  if(name==='matched') loadMatched();
+  if(name==='apply') loadWaitlist();
+}
+
+// ════ 폼 열기/닫기 ════
+function openForm(type){
+  document.getElementById('apply-select').style.display='none';
+  document.getElementById('form-daily').style.display=type==='daily'?'block':'none';
+  document.getElementById('form-weekly').style.display=type==='weekly'?'block':'none';
+  if(type==='daily') initDailyForm();
+  else initWeeklyForm();
+}
+function closeForm(){
+  document.getElementById('apply-select').style.display='block';
+  document.getElementById('form-daily').style.display='none';
+  document.getElementById('form-weekly').style.display='none';
+}
+
+function initTimeSelects(fromId, toId){
+  [fromId,toId].forEach(id=>{
+    const s=document.getElementById(id);
+    if(s.options.length>1) return;
+    for(let i=0;i<24;i++){const o=document.createElement('option');o.value=i;o.textContent=`${i}시`;s.appendChild(o);}
+  });
+}
+
+function buildDayBtns(containerId, formKey, onChange){
+  const wrap=document.getElementById(containerId);
+  wrap.innerHTML='';
+  const today=todayDow();
+  [[1,'월'],[2,'화'],[3,'수'],[4,'목'],[5,'금'],[6,'토'],[0,'일']].forEach(([dow,label])=>{
+    const isToday=dow===today;
+    const btn=document.createElement('button');
+    // 오늘은 테두리+텍스트 색으로만 강조, 크기는 동일하게
+    btn.className='sel-btn'+(isToday?' today-d':'');
+    btn.dataset.dow=dow;
+    // "오늘" 표시는 텍스트 뒤에 작은 점/뱃지로
+    btn.textContent=label+(isToday?' ●':'');
+    btn.title=isToday?`${label}요일 (오늘)`:label+'요일';
+    btn.onclick=()=>{
+      wrap.querySelectorAll('.sel-btn').forEach(b=>{
+        b.classList.remove('on');
+      });
+      btn.classList.add('on');
+      F[formKey].dow=dow;
+      if(onChange) onChange(dow);
+    };
+    if(isToday){
+      btn.classList.add('on');
+      F[formKey].dow=dow;
+      setTimeout(()=>{if(onChange)onChange(dow);},0);
+    }
+    wrap.appendChild(btn);
+  });
+}
+
+function initDailyForm(){
+  Object.assign(F.daily,{role:null,dow:null,dungeon:null,diff:null});
+  initTimeSelects('fd-from','fd-to');
+  // 역할 버튼 초기화
+  document.querySelectorAll('#form-daily .sel-btn').forEach(b=>{
+    b.classList.remove('on','wan-on','sun-on','easy-on','hard-on','vhard-on');
+  });
+  document.getElementById('fd-diff-row').style.display='none';
+  document.getElementById('fd-nick').value='';
+
+  buildDayBtns('fd-day-btns','daily', dow=>{
+    F.daily.dow=dow; F.daily.dungeon=null; F.daily.diff=null;
+    document.getElementById('fd-diff-row').style.display='none';
+    buildDungeonBtns(dow);
+  });
+}
+
+function buildDungeonBtns(dow){
+  const wrap=document.getElementById('fd-dungeon-btns');
+  const dungeons=DAILY_SCHED[dow]||[];
+  wrap.innerHTML='';
+  document.getElementById('fd-diff-row').style.display='none';
+  F.daily.dungeon=null; F.daily.diff=null;
+  document.querySelectorAll('#fd-diff-row .sel-btn').forEach(x=>x.classList.remove('on','easy-on','hard-on','vhard-on'));
+
+  if(!dungeons.length){
+    wrap.innerHTML='<span style="font-size:14px;color:var(--t3);">해당 요일엔 던전이 없어요</span>';
+    return;
+  }
+
+  // 일요일(0) → 3종통합, 던전 선택 없이 바로 난이도 표시
+  if(dow===0){
+    F.daily.dungeon='3종통합';
+    wrap.innerHTML='<span style="font-size:15px;font-weight:800;color:var(--a1);">🎯 3종 통합 (자신+복덩이+골렘)</span>';
+    document.getElementById('fd-diff-row').style.display='flex';
+    return;
+  }
+
+  dungeons.forEach(name=>{
+    const b=document.createElement('button');
+    b.className='sel-btn';
+    b.textContent=`${DNG[name].e} ${name}`;
+    b.onclick=()=>{
+      wrap.querySelectorAll('.sel-btn').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      F.daily.dungeon=name; F.daily.diff=null;
+      document.getElementById('fd-diff-row').style.display='flex';
+      document.querySelectorAll('#fd-diff-row .sel-btn').forEach(x=>x.classList.remove('on','easy-on','hard-on','vhard-on'));
+      // 자신과의싸움: 쉬움/어려움은 1인던전이므로 숨기고 매우어려움 자동선택
+      const isJashin=name==='자신과의싸움';
+      document.querySelector('.diff-easy').style.display=isJashin?'none':'';
+      document.querySelector('.diff-hard').style.display=isJashin?'none':'';
+      if(isJashin){
+        F.daily.diff='vhard';
+        const vb=document.querySelector('.diff-vhard');
+        if(vb) vb.classList.add('on','vhard-on');
+      }
+    };
+    wrap.appendChild(b);
+  });
+  if(dungeons.length===1) wrap.querySelector('.sel-btn').click();
+}
+
+function initWeeklyForm(){
+  Object.assign(F.weekly,{role:null,wtype:null,boss:null,attr:null,count:null,dow:null});
+  initTimeSelects('fw-from','fw-to');
+  document.querySelectorAll('#form-weekly .sel-btn').forEach(b=>b.classList.remove('on','wan-on','sun-on'));
+  document.getElementById('fw-boss-row').style.display='none';
+  document.getElementById('fw-count-row').style.display='none';
+  document.getElementById('fw-attr-row').style.display='none';
+  document.getElementById('fw-nick').value='';
+  buildDayBtns('fw-day-btns','weekly', dow=>{F.weekly.dow=dow;});
+}
+
+function pickWeeklyType(type,el){
+  F.weekly.wtype=type; F.weekly.boss=null; F.weekly.attr=null; F.weekly.count=null;
+  el.closest('.btn-group').querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('fw-boss-row').style.display=type==='ice'?'flex':'none';
+  document.getElementById('fw-count-row').style.display=type==='ice'?'flex':'none';
+  document.getElementById('fw-attr-row').style.display=type==='spirit'?'flex':'none';
+  document.querySelectorAll('#fw-boss-row .sel-btn, #fw-count-row .sel-btn, #fw-attr-row .sel-btn').forEach(b=>b.classList.remove('on'));
+}
+
+// 범용 단일 선택 헬퍼 (상태객체 없이 클래스만 토글)
+const _pickState={};
+function pick(stateKey, val, el, onClass){
+  _pickState[stateKey]=val;
+  el.closest('.btn-group').querySelectorAll('.sel-btn').forEach(b=>{
+    b.classList.remove('on','wan-on','sun-on','easy-on','hard-on','vhard-on');
+  });
+  el.classList.add('on', onClass);
+  // form 상태에도 반영
+  if(stateKey==='fd-role') F.daily.role=val;
+  else if(stateKey==='fd-diff') F.daily.diff=val;
+  else if(stateKey==='fw-role') F.weekly.role=val;
+  else if(stateKey==='fw-boss') F.weekly.boss=val;
+  else if(stateKey==='fw-count') F.weekly.count=+val;
+  else if(stateKey==='fw-attr') F.weekly.attr=val;
+}
+
+// ════ 제출 ════
+async function submitForm(type){
+  if(type==='daily'){
+    const nick=document.getElementById('fd-nick').value.trim();
+    const from=document.getElementById('fd-from').value;
+    const to=document.getElementById('fd-to').value;
+    if(!nick){toast('닉네임을 입력해주세요!','err');return;}
+    if(!F.daily.role){toast('완케/순케를 선택해주세요!','err');return;}
+    if(F.daily.dow==null){toast('요일을 선택해주세요!','err');return;}
+    if(!F.daily.dungeon){toast('던전을 선택해주세요!','err');return;}
+    if(!F.daily.diff){toast('난이도를 선택해주세요!','err');return;}
+    if(from===''||to===''){toast('가능 시간을 선택해주세요!','err');return;}
+    if(+from>=+to){toast('종료 시간은 시작 시간보다 늦어야 해요!','err');return;}
+    const id=Date.now().toString();
+    await fbSet(`waitlist/${id}`,{
+      id,nick,role:F.daily.role,raidType:'daily',
+      dungeon:F.daily.dungeon,diff:F.daily.diff,
+      days:[F.daily.dow],from:+from,to:+to,ts:Date.now()
+    });
+  } else {
+    const nick=document.getElementById('fw-nick').value.trim();
+    const from=document.getElementById('fw-from').value;
+    const to=document.getElementById('fw-to').value;
+    if(!nick){toast('닉네임을 입력해주세요!','err');return;}
+    if(!F.weekly.role){toast('완케/순케를 선택해주세요!','err');return;}
+    if(!F.weekly.wtype){toast('얼음성/정령을 선택해주세요!','err');return;}
+    if(F.weekly.wtype==='ice'&&!F.weekly.boss){toast('보스를 선택해주세요!','err');return;}
+    if(F.weekly.wtype==='ice'&&!F.weekly.count){toast('5판/10판을 선택해주세요!','err');return;}
+    if(F.weekly.wtype==='spirit'&&!F.weekly.attr){toast('속성을 선택해주세요!','err');return;}
+    if(F.weekly.dow==null){toast('요일을 선택해주세요!','err');return;}
+    if(from===''||to===''){toast('가능 시간을 선택해주세요!','err');return;}
+    if(+from>=+to){toast('종료 시간은 시작 시간보다 늦어야 해요!','err');return;}
+    const id=Date.now().toString();
+    await fbSet(`waitlist/${id}`,{
+      id,nick,role:F.weekly.role,raidType:'weekly',
+      weeklyType:F.weekly.wtype,boss:F.weekly.boss,count:F.weekly.count,attr:F.weekly.attr,
+      days:[F.weekly.dow],from:+from,to:+to,ts:Date.now()
+    });
+  }
+  toast('지원서가 제출됐어요! 매칭을 기다려주세요 😊','ok');
+  closeForm();
+  await tryAutoMatch();
+  loadWaitlist();
+}
+
+// ════ 만료 자동 삭제 ════
+
+async function cleanExpired(){
+  // 1. 지원서 만료: 해당 요일 to시간 경과 시 삭제
+  const wlData=await fbGet('waitlist')||{};
+  for(const m of Object.values(wlData)){
+    if(!m||!m.id) continue;
+    const dow=(m.days||[])[0];
+    if(dow==null) continue;
+    const dayInfo=weekDays().find(d=>d.dow===dow);
+    if(!dayInfo) continue;
+    const expireMs=new Date(dayInfo.key+'T00:00:00+09:00').getTime()+(+m.to+1)*3600*1000;
+    if(Date.now()>expireMs) await fbDel(`waitlist/${m.id}`);
+  }
+
+  // 2. 일일 파티 만료: 파티 시간 + 2시간 경과
+  for(const{key,dow}of weekDays()){
+    for(const dng of DAILY_SCHED[dow]||[]){
+      for(const diff of['easy','hard','vhard']){
+        const data=await fbGet(`daily/${key}/${dng}/${diff}`)||{};
+        if(!data) continue;
+        for(const time of Object.keys(data)){
+          const h=parseInt(time.slice(0,2));
+          if(Date.now()>new Date(key+'T00:00:00+09:00').getTime()+(h+2)*3600*1000)
+            await fbDel(`daily/${key}/${dng}/${diff}/${time}`);
+        }
+      }
+    }
+  }
+
+  // 3. 주간 파티 만료
+  for(const boss of['흑룡','헤티아','엘딘']){
+    for(const count of[5,10]){
+      for(const{key}of weekDays()){
+        const data=await fbGet(`weekly/${weekKey()}/ice/${boss}-${count}판/${key}`)||{};
+        if(!data) continue;
+        for(const time of Object.keys(data)){
+          if(Date.now()>new Date(key+'T00:00:00+09:00').getTime()+(parseInt(time)+2)*3600*1000)
+            await fbDel(`weekly/${weekKey()}/ice/${boss}-${count}판/${key}/${time}`);
+        }
+      }
+    }
+  }
+  for(const attr of['화','풍','지','수','무관']){
+    for(const{key}of weekDays()){
+      const data=await fbGet(`weekly/${weekKey()}/spirit/${attr}/${key}`)||{};
+      if(!data) continue;
+      for(const time of Object.keys(data)){
+        if(Date.now()>new Date(key+'T00:00:00+09:00').getTime()+(parseInt(time)+2)*3600*1000)
+          await fbDel(`weekly/${weekKey()}/spirit/${attr}/${key}/${time}`);
+      }
+    }
+  }
+}
+
+// ════ 자동 매칭 ════
+async function tryAutoMatch(){
+  const data=await fbGet('waitlist')||{};
+  const list=Object.values(data).filter(m=>m&&m.id);
+  let any=false;
+
+  // 일일: 던전+난이도+요일 그룹 (3종통합 포함)
+  const dList=list.filter(m=>m.raidType==='daily');
+  const dGroups=[...new Set(dList.map(m=>`${m.dungeon}|${m.diff||'easy'}|${(m.days||[])[0]??''}`)
+    .filter(k=>!k.startsWith('|')))];
+  for(const key of dGroups){
+    const [dng,diff,dowStr]=key.split('|');
+    const dow=+dowStr;
+    const grp=dList.filter(m=>m.dungeon===dng&&(m.diff||'easy')===diff&&(m.days||[])[0]===dow);
+    const dayInfo=weekDays().find(d=>d.dow===dow);
+    if(!dayInfo) continue;
+    const label=dng==='3종통합'
+      ?`일요일 3종통합(${DIFF[diff]||diff})`
+      :`일일 ${dng}(${DIFF[diff]||diff})`;
+    const r=await matchGroup(grp,`daily/${dayInfo.key}/${dng}/${diff}`,label);
+    if(r) any=true;
+  }
+
+  // 주간 얼음성: 보스+판수별 그룹
+  for(const boss of ['흑룡','헤티아','엘딘']){
+    for(const count of [5,10]){
+      const grp=list.filter(m=>m.raidType==='weekly'&&m.weeklyType==='ice'&&m.boss===boss&&+m.count===count);
+      const byDow=[...new Set(grp.map(m=>(m.days||[])[0]).filter(d=>d!=null))];
+      for(const dow of byDow){
+        const g=grp.filter(m=>(m.days||[])[0]===dow);
+        const dayInfo=weekDays().find(d=>d.dow===dow);
+        if(!dayInfo) continue;
+        const r=await matchGroup(g,`weekly/${weekKey()}/ice/${boss}-${count}판/${dayInfo.key}`,`얼음성 ${boss}(${count}판)`);
+        if(r) any=true;
+      }
+    }
+  }
+
+  // 주간 정령
+  for(const attr of ['화','풍','지','수','무관']){
+    const grp=list.filter(m=>m.raidType==='weekly'&&m.weeklyType==='spirit'&&m.attr===attr);
+    const byDow=[...new Set(grp.map(m=>(m.days||[])[0]).filter(d=>d!=null))];
+    for(const dow of byDow){
+      const g=grp.filter(m=>(m.days||[])[0]===dow);
+      const dayInfo=weekDays().find(d=>d.dow===dow);
+      if(!dayInfo) continue;
+      const r=await matchGroup(g,`weekly/${weekKey()}/spirit/${attr}/${dayInfo.key}`,`정령(${attr})`);
+      if(r) any=true;
+    }
+  }
+
+  if(any) setTimeout(tryAutoMatch,500);
+  return any;
+}
+
+async function matchGroup(group, fbBasePath, label){
+  const wan=group.filter(m=>m.role==='wan');
+  const sun=group.filter(m=>m.role==='sun');
+  if(wan.length<3||sun.length<2) return false;
+
+  // 가장 많이 겹치는 시간 찾기
+  const slots=[];
+  for(let h=0;h<24;h++){
+    const wIn=wan.filter(m=>m.from<=h&&m.to>h);
+    const sIn=sun.filter(m=>m.from<=h&&m.to>h);
+    if(wIn.length>=3&&sIn.length>=2) slots.push({h,wIn,sIn,score:wIn.length+sIn.length});
+  }
+  if(!slots.length) return false;
+
+  slots.sort((a,b)=>b.score-a.score||a.h-b.h);
+  const best=slots[0];
+  const timeStr=`${String(best.h).padStart(2,'0')}:00`;
+
+  const matched=[
+    ...best.wIn.sort((a,b)=>a.ts-b.ts).slice(0,3),
+    ...best.sIn.sort((a,b)=>a.ts-b.ts).slice(0,2)
+  ];
+
+  const pid=`auto-${Date.now()}`;
+  const members={};
+  matched.forEach((m,i)=>{members[m.id]={id:m.id,nick:m.nick,role:m.role,ts:Date.now()+i};});
+  await fbSet(`${fbBasePath}/${timeStr}/parties/${pid}`,{id:pid,wan:3,sun:2,time:timeStr,members,autoMatched:true,label});
+  for(const m of matched) await fbDel(`waitlist/${m.id}`);
+
+  const names=matched.map(m=>`${m.nick}(${m.role==='wan'?'완':'순'})`).join(', ');
+  showNotif('🎉 자동 매칭 완료!',`${label} · ${timeStr} 출발\n${names}`,matched);
+  return true;
+}
+
+// ════ 대기자 목록 ════
+async function loadWaitlist(){
+  const data=await fbGet('waitlist')||{};
+  const list=Object.values(data).filter(m=>m&&m.id).sort((a,b)=>a.ts-b.ts);
+  document.getElementById('wl-count').textContent=`${list.length}명`;
+  const el=document.getElementById('wl-list');
+  if(!list.length){el.innerHTML='<div class="empty">대기자가 없어요</div>';return;}
+
+  el.innerHTML=`<div class="wait-list">${list.map(m=>{
+    let detail='';
+    if(m.raidType==='daily') detail=`${DNG[m.dungeon]?.e||'⚔️'} ${m.dungeon||''} · ${DIFF[m.diff]||m.diff||''}`;
+    else if(m.weeklyType==='ice') detail=`❄️ 얼음성 ${m.boss||''}`;
+    else detail=`✨ 정령(${m.attr||''})`;
+    const dayLabel=(m.days||[]).map(d=>DAYS_KR[d]).join('');
+    return `<div class="wcard">
+      <div class="wcard-nick">${m.nick}</div>
+      <div class="wcard-info">${detail} · ${dayLabel}요일</div>
+      <div class="wcard-chips">
+        <span class="chip ${m.role}">${m.role==='wan'?'완케':'순케'}</span>
+        <span class="chip day">${m.from}시~${m.to}시</span>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+async function delWait(id){
+  await fbDel(`waitlist/${id}`);
+  loadWaitlist();
+}
+
+// ════ 매칭 현황 ════
+async function loadMatched(){
+  // 일일: 오늘 날짜 기준
+  const today=todayDow();
+  const dungeons=DAILY_SCHED[today]||[];
+  document.getElementById('matched-daily-sub').textContent=`오늘(${DAYS_KR[today]}요일) 매칭 결과`;
+  document.getElementById('matched-daily-badge').textContent=DAYS_KR[today]+'요일';
+
+  let dHtml='', dN=0;
+  for(const dng of dungeons){
+    for(const diff of ['easy','hard','vhard']){
+      const data=await fbGet(`daily/${todayKey()}/${dng}/${diff}`)||{};
+      Object.keys(data).sort().forEach(time=>{
+        Object.values((data[time]||{}).parties||{}).forEach(p=>{
+          dHtml+=partyCard(p,`${DNG[dng].e} ${dng}(${DIFF[diff]||diff})`,time);dN++;
+        });
+      });
+    }
+  }
+  document.getElementById('matched-daily-list').innerHTML=dN
+    ?`<div class="party-list">${dHtml}</div>`
+    :'<div class="empty">오늘 매칭된 파티가 없어요</div>';
+
+  // 주간: 이번주 전체
+  let wHtml='', wN=0;
+  for(const boss of ['흑룡','헤티아','엘딘']){
+    for(const count of [5,10]){
+      for(const{key,dow} of weekDays()){
+        const data=await fbGet(`weekly/${weekKey()}/ice/${boss}-${count}판/${key}`)||{};
+        Object.keys(data).sort().forEach(time=>{
+          Object.values((data[time]||{}).parties||{}).forEach(p=>{
+            wHtml+=partyCard(p,`❄️ 얼음성 ${boss}(${count}판) (${DAYS_KR[dow]}요일)`,time);wN++;
+          });
+        });
+      }
+    }
+  }
+  for(const attr of ['화','풍','지','수','무관']){
+    for(const{key,dow} of weekDays()){
+      const data=await fbGet(`weekly/${weekKey()}/spirit/${attr}/${key}`)||{};
+      Object.keys(data).sort().forEach(time=>{
+        Object.values((data[time]||{}).parties||{}).forEach(p=>{
+          wHtml+=partyCard(p,`✨ 정령(${attr}) (${DAYS_KR[dow]}요일)`,time);wN++;
+        });
+      });
+    }
+  }
+  document.getElementById('matched-weekly-list').innerHTML=wN
+    ?`<div class="party-list">${wHtml}</div>`
+    :'<div class="empty">이번 주 매칭된 파티가 없어요</div>';
+}
+
+function partyCard(party, label, time){
+  const members=Object.values(party.members||{});
+  const wan=members.filter(m=>m.role==='wan');
+  const sun=members.filter(m=>m.role==='sun');
+  const full=wan.length>=party.wan&&sun.length>=party.sun;
+  return `<div class="pcard${full?' done':''}">
+    <div class="pc-head">
+      <span class="pc-time">⏰ ${time}</span>
+      <span class="pc-label">${label}</span>
+      ${party.autoMatched?'<span class="pc-auto">자동매칭</span>':''}
+      ${full?'<span class="pc-full">✅ 완성</span>':''}
+    </div>
+    <div class="pc-members">
+      ${[...wan,...sun].map(m=>`<span class="pc-member ${m.role}">${m.nick}</span>`).join('')}
+      ${wan.length<party.wan?Array(party.wan-wan.length).fill('<span class="pc-member wan" style="opacity:.35;">완케 대기</span>').join(''):''}
+      ${sun.length<party.sun?Array(party.sun-sun.length).fill('<span class="pc-member sun" style="opacity:.35;">순케 대기</span>').join(''):''}
+    </div>
+  </div>`;
+}
+
+// ════ 내 지원 조회 ════
+async function searchMine(){
+  const nick=document.getElementById('mine-nick').value.trim();
+  if(!nick){toast('닉네임을 입력해주세요!','err');return;}
+  const el=document.getElementById('mine-result');
+  el.innerHTML='<div class="empty">조회 중...</div>';
+
+  // 대기자 + 일일/주간 파티 데이터를 한꺼번에 병렬로 가져오기
+  const days=weekDays();
+  const wk=weekKey();
+
+  // 가져올 경로 목록 생성
+  const paths=[];
+  // 일일
+  days.forEach(({key,dow})=>{
+    (DAILY_SCHED[dow]||[]).forEach(dng=>{
+      ['easy','hard','vhard'].forEach(diff=>{
+        paths.push({type:'daily',key,dow,dng,diff,path:`daily/${key}/${dng}/${diff}`});
+      });
+    });
+  });
+  // 주간 얼음성
+  ['흑룡','헤티아','엘딘'].forEach(boss=>{
+    [5,10].forEach(count=>{
+      days.forEach(({key,dow})=>{
+        paths.push({type:'ice',boss,count,key,dow,path:`weekly/${wk}/ice/${boss}-${count}판/${key}`});
+      });
+    });
+  });
+  // 주간 정령
+  ['화','풍','지','수','무관'].forEach(attr=>{
+    days.forEach(({key,dow})=>{
+      paths.push({type:'spirit',attr,key,dow,path:`weekly/${wk}/spirit/${attr}/${key}`});
+    });
+  });
+
+  // 병렬 fetch
+  const [wlData, ...results] = await Promise.all([
+    fbGet('waitlist'),
+    ...paths.map(p=>fbGet(p.path))
+  ]);
+
+  const waiting=Object.values(wlData||{}).filter(m=>m&&m.nick===nick);
+  const matched=[];
+
+  results.forEach((data,i)=>{
+    if(!data) return;
+    const p=paths[i];
+    Object.keys(data).forEach(time=>{
+      Object.values((data[time]||{}).parties||{}).forEach(party=>{
+        if(!Object.values(party.members||{}).some(m=>m.nick===nick)) return;
+        let label='';
+        if(p.type==='daily') label=`${DNG[p.dng]?.e||'⚔️'} ${p.dng}(${DIFF[p.diff]||p.diff})`;
+        else if(p.type==='ice') label=`❄️ 얼음성 ${p.boss} (${DAYS_KR[p.dow]}요일)`;
+        else label=`✨ 정령(${p.attr}) (${DAYS_KR[p.dow]}요일)`;
+        matched.push({label,time,party});
+      });
+    });
+  });
+
+  if(!waiting.length&&!matched.length){
+    el.innerHTML=`<div class="empty"><strong>${nick}</strong>님의 지원 내역이 없어요</div>`;
+    return;
+  }
+
+  let html='';
+  if(waiting.length){
+    html+=`<p style="font-size:15px;font-weight:700;color:var(--t3);margin-bottom:10px;">⏳ 매칭 대기 중 (${waiting.length}건)</p>`;
+    waiting.forEach(m=>{
+      let detail='';
+      if(m.raidType==='daily') detail=`${DNG[m.dungeon]?.e||'⚔️'} ${m.dungeon} · ${DIFF[m.diff]||m.diff}`;
+      else if(m.weeklyType==='ice') detail=`❄️ 얼음성 ${m.boss}`;
+      else detail=`✨ 정령(${m.attr})`;
+      const dayLabel=(m.days||[]).map(d=>DAYS_KR[d]).join('');
+      html+=`<div class="pcard" style="margin-bottom:10px;">
+        <div class="pc-head">
+          <span class="pc-label">${detail}</span>
+          <span class="pc-label" style="margin-left:8px;">${dayLabel}요일 ${m.from}시~${m.to}시</span>
+          <span class="chip ${m.role}" style="margin-left:auto;">${m.role==='wan'?'완케':'순케'}</span>
+          <button class="wcard-del" style="position:static;margin-left:8px;" onclick="delWait('${m.id}');setTimeout(searchMine,400);">취소</button>
+        </div>
+      </div>`;
+    });
+  }
+  if(matched.length){
+    html+=`<p style="font-size:15px;font-weight:700;color:var(--ok);margin:14px 0 10px;">✅ 매칭 완료 (${matched.length}건)</p>`;
+    matched.forEach(({label,time,party})=>{
+      html+=partyCard(party,label,time);
+      html+='<div style="margin-bottom:10px;"></div>';
+    });
+  }
+  el.innerHTML=html;
+}
+
+// ════ 알림 ════
+function showNotif(title,msg,members){
+  const area=document.getElementById('notif-area');
+  const div=document.createElement('div');div.className='notif';
+  const chips=members?members.map(m=>`<span class="chip ${m.role}" style="margin-right:4px;">${m.nick}</span>`).join(''):'';
+  div.innerHTML=`
+    <div class="notif-icon">🎉</div>
+    <div class="notif-txt">
+      <div class="notif-title">${title}</div>
+      <div class="notif-msg">${msg.replace('\n','<br>')}</div>
+      ${chips?`<div style="margin-top:7px;display:flex;flex-wrap:wrap;gap:4px;">${chips}</div>`:''}
+    </div>
+    <button class="notif-close" onclick="this.closest('.notif').remove()">✕</button>`;
+  area.appendChild(div);
+  try{
+    const ctx=new AudioContext();
+    [523,659,784,1047].forEach((f,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;g.gain.setValueAtTime(.25,ctx.currentTime+i*.15);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.15+.3);
+      o.start(ctx.currentTime+i*.15);o.stop(ctx.currentTime+i*.15+.3);
+    });
+  }catch(e){}
+  if(Notification.permission==='granted')
+    new Notification('🎉 파티 자동 매칭!',{body:msg.replace('\n',' ')});
+  setTimeout(()=>div.remove(),12000);
+}
+function reqNotif(){
+  Notification.requestPermission().then(p=>{
+    if(p==='granted') toast('브라우저 알림이 허용됐어요!','ok');
+    else toast('알림이 거부됐어요. 브라우저 설정에서 허용해주세요.','info');
+  });
+}
+
+// ════ 타이머 ════
+const p2=n=>String(n).padStart(2,'0');
+function updateTimers(){
+  // KST 기준 현재 시각 (ms 단위)
+  const nowMs=Date.now()+9*3600*1000;  // KST
+  const now=new Date(nowMs);
+
+  // 일일: 다음 KST 00:00 = UTC 15:00
+  // KST 오늘 00:00 = today의 UTC 15:00
+  // 남은 시간 = 오늘 KST 24:00 - 현재 KST 시각
+  const todayKstMs = Math.floor(nowMs / 86400000) * 86400000; // 오늘 UTC 00:00
+  const nextMidKst = todayKstMs + 86400000; // 내일 UTC 00:00 = KST 내일 09:00 이 아님
+  // 정확히: KST 자정 = UTC (전날) 15:00
+  // KST 오늘 날짜의 00:00 = UTC로 (KST날짜-1일) 15:00:00
+  // 그냥 남은 초: 하루(86400000)에서 (현재KST - 오늘KST00:00) 빼기
+  const kstTodayStart = Math.floor((Date.now()+9*3600000) / 86400000) * 86400000 - 9*3600000; // UTC로 오늘 KST 00:00
+  const nextMid = kstTodayStart + 86400000; // UTC로 내일 KST 00:00
+  const dd = nextMid - Date.now();
+  document.getElementById('tv-d').textContent=`${p2(Math.floor(dd/3600000))}:${p2(Math.floor(dd%3600000/60000))}:${p2(Math.floor(dd%60000/1000))}`;
+
+  // 주간: 다음 금요일 KST 00:00
+  // kst().getDay() 기준으로 금요일(5)까지 남은 일수
+  const kstDow=new Date(Date.now()+9*3600000).getDay();
+  let daysToFri=(5-kstDow+7)%7;
+  if(daysToFri===0) daysToFri=7; // 오늘이 금요일이면 다음주 금요일
+  const nextFriMs = kstTodayStart + daysToFri*86400000; // UTC로 다음 금요일 KST 00:00
+  const wd = nextFriMs - Date.now();
+  const wdays=Math.floor(wd/86400000);
+  document.getElementById('tv-w').textContent=`${wdays}일 ${p2(Math.floor(wd%86400000/3600000))}:${p2(Math.floor(wd%3600000/60000))}:${p2(Math.floor(wd%60000/1000))}`;
+}
+
+// ════ 다크모드 ════
+function toggleDark(){
+  const h=document.documentElement;
+  const n=h.getAttribute('data-theme')==='dark'?'light':'dark';
+  h.setAttribute('data-theme',n);localStorage.setItem('wind-dark',n);
+}
+(()=>document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light'))();
+
+// ════ 토스트 ════
+let _tt;
+function toast(msg,type='info'){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className=`toast ${type}`;el.style.display='block';
+  clearTimeout(_tt);_tt=setTimeout(()=>el.style.display='none',2500);
+}
+
+// ════ 초기화 ════
+setInterval(updateTimers,1000);
+updateTimers();
+loadWaitlist();
+setInterval(tryAutoMatch,30000);
+// 만료 삭제: 시작 시 1회 + 5분마다
+cleanExpired();
+setInterval(cleanExpired, 5*60*1000);
+</script>
+</body>
+</html>
