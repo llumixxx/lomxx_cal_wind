@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <title>WIND 알림 및 채팅뷰어</title>
@@ -573,6 +573,78 @@ mark { background:rgba(245,200,135,.4); color:#806010; border-radius:3px; paddin
   white-space:nowrap; letter-spacing:0.3px;
   opacity:.7;
 }
+[data-theme="dark"] {
+  --bg:#0f0f1a; --bg2:#1a1a2e; --white:#252540;
+  --s1:#2a2a45; --s2:#353555;
+  --border:#404060; --border2:#505080;
+  --t1:#e8e8f0; --t2:#b0b0c8; --t3:#8080a0; --t4:#606080;
+  --ok:#6dd5a0; --err:#f57878;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+  --shadow2:0 8px 32px rgba(0,0,0,.55);
+}
+[data-theme="dark"] body { background:#0f0f1a; }
+[data-theme="dark"] .hdr { background:#252540; border-color:#404060; }
+[data-theme="dark"] .live-chip { background:#1a1a2e; border-color:#404060; color:#8080a0; }
+[data-theme="dark"] .hdr-file { color:#8080a0; }
+[data-theme="dark"] .hdr-file:hover { color:#9b87f5; }
+[data-theme="dark"] .hdr-toggle { border-color:#404060; color:#8080a0; }
+[data-theme="dark"] .hdr-toggle:hover { border-color:#9b87f5; color:#9b87f5; }
+[data-theme="dark"] .section { background:#252540; border-color:#404060; }
+[data-theme="dark"] .btn { background:#2a2a45; border-color:#404060; color:#b0b0c8; }
+[data-theme="dark"] .btn:hover { background:#353555; border-color:#9b87f5; color:#9b87f5; }
+[data-theme="dark"] .sep { background:#404060; }
+[data-theme="dark"] .input-field { background:#1a1a2e; border-color:#404060; }
+[data-theme="dark"] .input-field:focus-within { border-color:#9b87f5; background:#252540; }
+[data-theme="dark"] .input-field input { color:#e8e8f0; }
+[data-theme="dark"] .input-field input::placeholder { color:#606080; }
+[data-theme="dark"] .fs-btn { background:#353555; border-color:#404060; color:#b0b0c8; }
+[data-theme="dark"] .fs-btn:hover { background:#9b87f5; border-color:#9b87f5; color:#fff; }
+[data-theme="dark"] .notif-btn { background:#2a2a45; border-color:#404060; color:#8080a0; }
+[data-theme="dark"] .notif-btn:hover { border-color:#9b87f5; color:#9b87f5; }
+[data-theme="dark"] .counter-item { background:#1a1a2e; border-color:#404060; }
+[data-theme="dark"] .counter-toggle { color:#b0b0c8; }
+[data-theme="dark"] .counter-toggle:hover { color:#9b87f5; background:#252540; }
+[data-theme="dark"] .counter-num { color:#9b87f5; border-color:#404060; }
+[data-theme="dark"] .counter-reset { color:#606080; border-color:#404060; }
+[data-theme="dark"] .tabs { background:#252540; border-color:#404060; }
+[data-theme="dark"] .tab { color:#606080; }
+[data-theme="dark"] .tab:hover { color:#b0b0c8; background:#2a2a45; }
+[data-theme="dark"] .tab.active { color:#9b87f5 !important; border-bottom-color:#9b87f5; background:#2a2a45; }
+[data-theme="dark"] .sys-toggle { background:#2a2a45; border-color:#404060; color:#8080a0; }
+[data-theme="dark"] .sys-toggle.on { background:#9b87f5; color:#fff; }
+[data-theme="dark"] .chat { background:#0f0f1a; }
+[data-theme="dark"] .t-other .bubble { background:linear-gradient(135deg,#2a2a45,#252540); color:#e8e8f0; }
+[data-theme="dark"] .t-npc .bubble { background:#2a1f00; color:#f5c887; }
+[data-theme="dark"] .t-win .bubble { background:rgba(245,135,184,.18); color:#f587b8; }
+[data-theme="dark"] .t-wout .bubble { background:rgba(220,60,100,.12); color:#f08080; }
+[data-theme="dark"] .t-sys .sysmsg { background:#1a1a2e; border-color:#353555; color:#8080a0; }
+[data-theme="dark"] .date-sep span { background:#252540; color:#606080; }
+[data-theme="dark"] .toast { background:#252540; border-color:#404060; }
+[data-theme="dark"] ::-webkit-scrollbar-track { background:#1a1a2e; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background:#404060; }
+
+/* ═══ 헤더 내 동그라미 다크토글 ═══ */
+.hdr-dark-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--border2);
+  background: var(--white);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), border-color .2s, box-shadow .2s;
+  box-shadow: 0 1px 6px rgba(155,135,245,.15);
+}
+.hdr-dark-btn:hover { transform: scale(1.18) rotate(22deg); border-color: var(--a1); box-shadow: 0 3px 12px rgba(155,135,245,.4); }
+.hdr-dark-btn:active { transform: scale(.88) rotate(-15deg); }
+[data-theme="dark"] .hdr-dark-btn { background: #2a2a45; border-color: #505080; }
+[data-theme="dark"] .hdr-dark-btn:hover { border-color: #9b87f5; }
+[data-theme="dark"] .toggle-moon { display: inline !important; }
+[data-theme="dark"] .toggle-sun  { display: none !important; }
+[data-theme="light"] .toggle-moon { display: none !important; }
+[data-theme="light"] .toggle-sun  { display: inline !important; }
+
 </style>
 </head>
 <body>
@@ -587,6 +659,7 @@ mark { background:rgba(245,200,135,.4); color:#806010; border-radius:3px; paddin
   </div>
   <div class="hdr-file" id="hfile" onclick="selFolder()" title="클릭하여 폴더 변경">폴더 미지정</div>
   <div class="hdr-cnt" id="hcnt">0줄</div>
+  <button class="hdr-dark-btn" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
   <button class="hdr-toggle" id="panel-toggle" onclick="togglePanel()" title="설정 메뉴 접기/펼치기">▼</button>
 </div>
 
@@ -1359,6 +1432,15 @@ function toggleSizeLock() {
   if(ls === '1') { sizeLocked = false; toggleSizeLock(); }
 })();
 
+
+
+// Dark Mode
+function toggleDark(){
+  const h=document.documentElement;
+  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
+  localStorage.setItem('wind-dark',h.getAttribute('data-theme'));
+}
+(function(){ document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light'); })();
 </script>
 </body>
 </html>
