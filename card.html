@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -16,6 +16,7 @@
   --shadow2:0 8px 32px rgba(155,135,245,0.18);
   --rare:#6db8f5; --epic:#b87af5; --unique:#f5a623; --legendary:#f55a5a;
 }
+[data-theme="dark"]{--bg:#0f0f1a;--white:#252540;--s1:#2a2a45;--s2:#353555;--border:#404060;--border2:#505080;--t1:#e8e8f0;--t2:#b0b0c8;--t3:#8080a0;--t4:#606080;--shadow:0 4px 24px rgba(0,0,0,.4);--shadow2:0 8px 32px rgba(0,0,0,.55);--rare:#6db8f5;--epic:#b87af5;--unique:#f5a623;--legendary:#f55a5a;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;min-height:100vh;}
 
@@ -172,9 +173,74 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
 .sim-modal-btns{display:flex;gap:8px;margin-top:18px;}
 .m-btn-main{flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(155,135,245,0.3);}
 .m-btn-sub{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);}
+/* float-btns */
+.float-btns{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:9999;}
+.dark-toggle{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1.1rem;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.dark-toggle:hover{transform:scale(1.18) rotate(22deg);border-color:var(--a1);box-shadow:0 4px 16px rgba(155,135,245,.4);}
+.dark-toggle:active{transform:scale(.88) rotate(-15deg);}
+[data-theme="dark"] .dark-toggle{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .dark-toggle:hover{border-color:#9b87f5;}
+[data-theme="dark"] .toggle-moon{display:inline!important;}
+[data-theme="dark"] .toggle-sun{display:none!important;}
+[data-theme="light"] .toggle-moon{display:none!important;}
+[data-theme="light"] .toggle-sun{display:inline!important;}
+.chat-float-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1rem;text-decoration:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.chat-float-btn:hover{transform:scale(1.18) rotate(-22deg);border-color:var(--a2);box-shadow:0 4px 16px rgba(245,135,184,.4);}
+.chat-float-btn:active{transform:scale(.88) rotate(15deg);}
+[data-theme="dark"] .chat-float-btn{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .chat-float-btn:hover{border-color:#f587b8;}
+[data-theme="dark"] body{background:#0f0f1a;color:#e8e8f0;}
+[data-theme="dark"] .top-bar{background:#252540;border-color:#404060;}
+[data-theme="dark"] .top-title{color:#e8e8f0;}
+[data-theme="dark"] .panel{background:#252540;border-color:#404060;}
+[data-theme="dark"] .grade-btn{background:#1a1a2e;}
+[data-theme="dark"] .card-icon.rare{background:linear-gradient(145deg,#1a2a3a,#1e3050);}
+[data-theme="dark"] .card-icon.epic{background:linear-gradient(145deg,#231a35,#2e1a45);}
+[data-theme="dark"] .card-icon.unique{background:linear-gradient(145deg,#2a2010,#352810);}
+[data-theme="dark"] .card-icon.legendary{background:linear-gradient(145deg,#2a1010,#3a1515);}
+[data-theme="dark"] .br{background:rgba(109,184,245,.18);color:#6db8f5;border-color:rgba(109,184,245,.3);}
+[data-theme="dark"] .be{background:rgba(184,122,245,.18);color:#b87af5;border-color:rgba(184,122,245,.3);}
+[data-theme="dark"] .bu{background:rgba(245,166,35,.18);color:#f5a623;border-color:rgba(245,166,35,.3);}
+[data-theme="dark"] .bl{background:rgba(245,85,85,.18);color:#f55a5a;border-color:rgba(245,85,85,.3);}
+[data-theme="dark"] .prob-chip{background:#353555;border-color:#505080;color:#9b87f5;}
+[data-theme="dark"] .seal-row{background:#1a1a2e;border-color:#404060;}
+[data-theme="dark"] .seal-lbl{color:#e8e8f0;}[data-theme="dark"] .seal-desc{color:#8080a0;}
+[data-theme="dark"] .opts-box{background:#1a1a2e;border-color:#404060;}
+[data-theme="dark"] .opt-chip{background:#252540;border-color:#404060;}
+[data-theme="dark"] .opt-name{color:#e8e8f0;}[data-theme="dark"] .opt-val{color:#9b87f5;}
+[data-theme="dark"] .t-epic{background:rgba(184,122,245,.2);color:#b87af5;border-color:rgba(184,122,245,.4);}
+[data-theme="dark"] .t-unique{background:rgba(245,166,35,.2);color:#f5a623;border-color:rgba(245,166,35,.4);}
+[data-theme="dark"] .t-legendary{background:rgba(245,85,85,.2);color:#f55a5a;border-color:rgba(245,85,85,.4);}
+[data-theme="dark"] .ctab{background:#1a1a2e;border-color:#404060;color:#b0b0c8;}
+[data-theme="dark"] .ctab.cact{background:linear-gradient(135deg,#2a2a45,#353555);border-color:#9b87f5;color:#9b87f5!important;}
+[data-theme="dark"] .btn-sub{background:#252540;color:#9b87f5;border-color:#505080;}
+[data-theme="dark"] .btn-auto{background:#1a2a20;border-color:#2d6a4f;color:#6dd5a0;}
+[data-theme="dark"] .btn-rst{background:#252540;color:#b0b0c8;border-color:#404060;}
+[data-theme="dark"] .btn-resel{background:#252540;color:#8080a0;border-color:#404060;}
+[data-theme="dark"] .sitem{background:#1a1a2e;border-color:#404060;}
+[data-theme="dark"] .slbl{color:#8080a0;}
+[data-theme="dark"] .sitem.hl{background:linear-gradient(135deg,#2a2a45,#353555);border-color:#505080;}
+[data-theme="dark"] .log-box{background:#252540;border-color:#404060;}
+[data-theme="dark"] .lu-epic{background:rgba(184,122,245,.18);color:#b87af5;}
+[data-theme="dark"] .lu-unique{background:rgba(245,166,35,.18);color:#f5a623;}
+[data-theme="dark"] .lu-legendary{background:rgba(245,85,85,.18);color:#f55a5a;}
+[data-theme="dark"] .footer-card{background:#252540;border-color:#404060;}
+[data-theme="dark"] .sim-modal{background:#252540;}
+[data-theme="dark"] .sim-modal .m-title{color:#e8e8f0;}
+[data-theme="dark"] .sim-modal .m-count{background:#1a1a2e;border-color:#404060;color:#e8e8f0;}
+[data-theme="dark"] .m-btn-sub{background:#353555;border-color:#505080;color:#b0b0c8;}
+[data-theme="dark"] .pnav-tab-c{background:#2a2a45;color:#b0b0c8;border-color:#404060;}
+[data-theme="dark"] .pnav-tab-c:hover{color:#9b87f5;border-color:#9b87f5;}
+[data-theme="dark"] .pnav-active-c{background:linear-gradient(135deg,#3a3010,#3a2030)!important;color:#f5c887!important;border-color:#806030!important;}
+[data-theme="dark"] ::-webkit-scrollbar-track{background:#1a1a2e;}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#404060;}
 </style>
 </head>
 <body>
+<div class="float-btns">
+  <button class="dark-toggle" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
+  <button class="chat-float-btn" onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" title="채팅뷰어">💬</button>
+</div>
 
 <div class="top-bar">
   <div class="tb-title-wrap">
@@ -185,7 +251,6 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
     <a href="index.html"   class="pnav-tab-c">🏠 환각 계산기</a>
     <a href="pokedex.html" class="pnav-tab-c">🐾 펫 도감</a>
     <a href="card.html"    class="pnav-tab-c pnav-active-c">🎲 큐브 시뮬레이터</a>
-    <button onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" style="background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💬 채팅</button>
     <a href="raid.html" class="pnav-tab-c">🏢 인력사무소</a>
     
     
@@ -825,6 +890,9 @@ function showOptSuccessModal(optName, count) {
 }
 
 
+
+function toggleDark(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==="dark"?"light":"dark");localStorage.setItem('wind-dark',h.getAttribute('data-theme'));}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light');})();
 </script>
 </body>
 </html>
