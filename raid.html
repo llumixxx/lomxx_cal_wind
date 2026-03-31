@@ -30,10 +30,12 @@
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:18px;}
 
 /* 다크토글 */
-.dark-toggle{position:fixed;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;font-size:1.3rem;display:flex;align-items:center;justify-content:center;transition:all .3s;z-index:1000;box-shadow:var(--shadow);}
-.dark-toggle:hover{transform:scale(1.1);border-color:var(--a1);}
-[data-theme="dark"] .toggle-moon{display:inline;}[data-theme="dark"] .toggle-sun{display:none!important;}
-[data-theme="light"] .toggle-moon{display:none!important;}[data-theme="light"] .toggle-sun{display:inline;}
+
+
+/* ── 채팅뷰어 고정 버튼 ── */
+
+
+
 
 /* 헤더 */
 .top-bar{background:var(--white);border-bottom:1.5px solid var(--border);padding:14px 22px 12px;position:sticky;top:0;z-index:200;box-shadow:var(--shadow);}
@@ -157,10 +159,65 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);
 .toast.ok{background:var(--ok);color:#fff;}
 .toast.err{background:var(--err);color:#fff;}
 .toast.info{background:var(--t1);color:#fff;}
+
+/* ── 다크모드 탭 글씨 수정 ── */
+[data-theme="dark"] .tab-btn{color:#8080a0;}
+[data-theme="dark"] .tab-btn.active{color:#9b87f5 !important;background:var(--white);}
+[data-theme="dark"] .nav-btn{color:#b0b0c8;}
+[data-theme="dark"] .nav-btn:hover,[data-theme="dark"] .nav-btn.active{color:#fff !important;}
+[data-theme="dark"] .sel-btn.on{color:#fff !important;}
+[data-theme="dark"] .sel-btn.wan-on{color:#fff !important;}
+[data-theme="dark"] .sel-btn.sun-on{color:#fff !important;}
+[data-theme="dark"] .sel-btn.today-d.on{color:#fff !important;}
+[data-theme="dark"] .sub-tab.active{color:#fff !important;}
+[data-theme="dark"] .week-tab.active{color:#fff !important;}
+
+/* raid 탭 글씨 다크 */
+[data-theme="dark"] .tab-btn{color:#8080a0;}
+[data-theme="dark"] .tab-btn.active{color:#9b87f5!important;}
+[data-theme="dark"] .nav-btn{color:#b0b0c8;}
+[data-theme="dark"] .nav-btn:hover,[data-theme="dark"] .nav-btn.active{color:#fff!important;}
+[data-theme="dark"] .sel-btn.on{color:#fff!important;}
+[data-theme="dark"] .sel-btn.wan-on{color:#fff!important;}
+[data-theme="dark"] .sel-btn.sun-on{color:#fff!important;}
+[data-theme="dark"] .sub-tab.active{color:#fff!important;}
+[data-theme="dark"] .week-tab.active{color:#fff!important;}
+
+/* 헤더 오른쪽에서 살짝 안쪽 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+}
+/* ═══ 플로팅 버튼 그룹 ═══ */
+
+
+
+
+.float-btns{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:9999;}
+.dark-toggle{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1.1rem;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.dark-toggle:hover{transform:scale(1.18) rotate(22deg);border-color:var(--a1);box-shadow:0 4px 16px rgba(155,135,245,.4);}
+.dark-toggle:active{transform:scale(.88) rotate(-15deg);}
+[data-theme="dark"] .dark-toggle{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .dark-toggle:hover{border-color:#9b87f5;}
+[data-theme="dark"] .toggle-moon{display:inline!important;}
+[data-theme="dark"] .toggle-sun{display:none!important;}
+[data-theme="light"] .toggle-moon{display:none!important;}
+[data-theme="light"] .toggle-sun{display:inline!important;}
+.chat-float-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1rem;text-decoration:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.chat-float-btn:hover{transform:scale(1.18) rotate(-22deg);border-color:var(--a2);box-shadow:0 4px 16px rgba(245,135,184,.4);}
+.chat-float-btn:active{transform:scale(.88) rotate(15deg);}
+[data-theme="dark"] .chat-float-btn{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .chat-float-btn:hover{border-color:#f587b8;}
+
 </style>
 </head>
 <body>
-<button class="dark-toggle" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
+<div style="position:fixed!important;top:14px!important;right:14px!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:7px!important;z-index:99999!important;">
+  <button class="dark-toggle" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
+  <button class="chat-float-btn" onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" title="채팅뷰어">💬</button>
+</div>
 <div class="notif-area" id="notif-area"></div>
 
 <!-- 헤더 -->
@@ -177,7 +234,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);
       <a href="index.html" class="nav-btn">🧮 환각계산기</a>
       <a href="pokedex.html" class="nav-btn">📖 도감</a>
       <a href="card.html" class="nav-btn">🃏 카드</a>
-      <a href="chat_viewer.html" class="nav-btn">💬 채팅뷰어</a>
       <a href="raid.html" class="nav-btn active">🏢 인력사무소</a>
     </nav>
   </div>
@@ -1078,6 +1134,23 @@ setInterval(tryAutoMatch,30000);
 // 만료 삭제: 시작 시 1회 + 5분마다
 cleanExpired();
 setInterval(cleanExpired, 5*60*1000);
+
+
+
+
+
+
+
+
+function toggleDark(){
+  const h=document.documentElement;
+  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
+  localStorage.setItem('wind-dark',h.getAttribute('data-theme'));
+}
+(function(){ document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light'); })();
+
+function toggleDark(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==="dark"?"light":"dark");localStorage.setItem('wind-dark',h.getAttribute('data-theme'));}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light');})();
 </script>
 </body>
 </html>
