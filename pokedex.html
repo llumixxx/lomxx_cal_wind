@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -655,10 +655,191 @@
       flex: 1; border-right: 1px solid rgba(255,255,255,0.25);
     }
     .asg:last-child { border-right: none; }
+/* ════════════════════════════════
+   다크모드 변수
+════════════════════════════════ */
+[data-theme="dark"] {
+  --bg:#0f0f1a; --bg2:#1a1a2e; --white:#252540;
+  --s1:#2a2a45; --s2:#353555;
+  --border:#404060; --border2:#505080;
+  --t1:#e8e8f0; --t2:#b0b0c8; --t3:#8080a0; --t4:#606080;
+  --ok:#6dd5a0; --err:#f57878;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+  --shadow2:0 8px 32px rgba(0,0,0,.55);
+}
+
+/* ════ 다크모드 스타일 ════ */
+[data-theme="dark"] body {
+  background:#0f0f1a;
+  background-image:
+    radial-gradient(circle at 15% 20%,rgba(155,135,245,.05) 0%,transparent 50%),
+    radial-gradient(circle at 85% 80%,rgba(245,135,184,.04) 0%,transparent 50%);
+}
+[data-theme="dark"] .page-header { background:#252540; border-color:#404060; box-shadow:0 4px 24px rgba(0,0,0,.4); }
+[data-theme="dark"] .back-btn { background:#2a2a45; border-color:#404060; color:#9b87f5; }
+[data-theme="dark"] .back-btn:hover { background:#9b87f5; color:#fff; }
+
+/* 테이블 */
+[data-theme="dark"] .pet-table-wrap { background:#252540; border-color:#404060; }
+[data-theme="dark"] thead tr { background:#1a1a2e !important; }
+[data-theme="dark"] th { background:#1a1a2e !important; color:#b0b0c8; border-color:#404060; }
+[data-theme="dark"] td { border-color:#353555; color:#e8e8f0; }
+[data-theme="dark"] tbody tr:hover { background:#2a2a45; }
+[data-theme="dark"] td.col-highlight { background:rgba(155,135,245,.07); }
+
+/* 등급/속성 뱃지 */
+[data-theme="dark"] .grade-1등급 { background:rgba(245,135,184,.15)!important; color:#f587b8!important; border-color:rgba(245,135,184,.3)!important; }
+[data-theme="dark"] .grade-2등급   { background:rgba(155,135,245,.15)!important; color:#b8a8ff!important; border-color:rgba(155,135,245,.3)!important; }
+[data-theme="dark"] .grade-2등급  { background:rgba(135,212,245,.12)!important; color:#7ec8e8!important; border-color:rgba(135,212,245,.25)!important; }
+[data-theme="dark"] .grade-일반   { background:rgba(255,255,255,.06)!important; color:#8080a0!important; border-color:#404060!important; }
+[data-theme="dark"] .attr-지 { background:rgba(56,142,60,.2)!important; color:#66bb6a!important; border-color:rgba(56,142,60,.35)!important; }
+[data-theme="dark"] .attr-수 { background:rgba(25,118,210,.2)!important; color:#64b5f6!important; border-color:rgba(25,118,210,.35)!important; }
+[data-theme="dark"] .attr-화 { background:rgba(198,40,40,.2)!important; color:#ef9a9a!important; border-color:rgba(198,40,40,.3)!important; }
+[data-theme="dark"] .attr-풍 { background:rgba(123,31,162,.2)!important; color:#ce93d8!important; border-color:rgba(123,31,162,.3)!important; }
+
+/* 필터 패널 */
+[data-theme="dark"] .filter-panel { background:#252540; border-color:#404060; }
+[data-theme="dark"] .filter-row { border-color:#353555; }
+[data-theme="dark"] .filter-btn { background:#2a2a45!important; color:#b0b0c8!important; border-color:#404060!important; }
+[data-theme="dark"] .filter-btn:hover { border-color:#9b87f5!important; color:#9b87f5!important; }
+[data-theme="dark"] .filter-btn.active { background:#9b87f5!important; color:#fff!important; border-color:#9b87f5!important; }
+[data-theme="dark"] .filter-btn.active-수 { background:#1565c0!important; color:#fff!important; border-color:#1565c0!important; }
+[data-theme="dark"] .filter-btn.active-지 { background:#2e7d32!important; color:#fff!important; border-color:#2e7d32!important; }
+[data-theme="dark"] .filter-btn.active-화 { background:#b71c1c!important; color:#fff!important; border-color:#b71c1c!important; }
+[data-theme="dark"] .filter-btn.active-풍 { background:#6a1b9a!important; color:#fff!important; border-color:#6a1b9a!important; }
+
+/* ── 다크모드 계열별 보기 버튼 ── */
+[data-theme="dark"] .family-view-btn {
+  background: linear-gradient(135deg, #2a2a45, #353555)!important;
+  color: #9b87f5!important;
+  border-color: #505080!important;
+}
+[data-theme="dark"] .family-view-btn:hover {
+  background: #9b87f5!important;
+  color: #fff!important;
+  border-color: #9b87f5!important;
+}
+[data-theme="dark"] .family-view-btn.active {
+  background: #9b87f5!important;
+  color: #fff!important;
+  border-color: #9b87f5!important;
+}
+
+/* ── 다크모드 속성 슬라이더 선택 상태 ── */
+[data-theme="dark"] .attr-combined-item input[type=range] { accent-color: #9b87f5; }
+[data-theme="dark"] .attr-combined-item { background: #1a1a2e!important; border-color: #404060!important; }
+[data-theme="dark"] .attr-combined-label { color: #b0b0c8!important; }
+[data-theme="dark"] .attr-combined-val { color: #9b87f5!important; font-weight: 900; }
+
+/* ── 속성 수치 슬라이더 - 지/수/화/풍 선택시 배경 구분 ── */
+[data-theme="dark"] .attr-bar-지 { accent-color: #66bb6a; }
+[data-theme="dark"] .attr-bar-수 { accent-color: #64b5f6; }
+[data-theme="dark"] .attr-bar-화 { accent-color: #ef9a9a; }
+[data-theme="dark"] .attr-bar-풍 { accent-color: #ce93d8; }
+
+/* ── 다크모드 슬라이더 트랙/텍스트 ── */
+[data-theme="dark"] .attr-slider-track { background: #1a1a2e!important; border-color: #404060!important; }
+[data-theme="dark"] .attr-slider-track:hover { border-color: #9b87f5!important; }
+[data-theme="dark"] .attr-slider-lbl { color: #b0b0c8!important; }
+[data-theme="dark"] .attr-slider-val { color: #9b87f5!important; }
+[data-theme="dark"] .attr-slider-item { background: transparent; }
+
+/* ── 다크모드 속성 슬라이더 카드 ── */
+[data-theme="dark"] .asl-item { background: #1a1a2e!important; border-color: #404060!important; }
+[data-theme="dark"] .asl-item:hover { border-color: #505080!important; }
+[data-theme="dark"] .asl-name { color: #e8e8f0!important; }
+[data-theme="dark"] .asl-track { background: #353555!important; }
+/* 활성화 상태 - 배경 어둡게, 테두리만 색상 */
+[data-theme="dark"] .asl-item.active-지 { background: rgba(56,142,60,.15)!important; border-color: #66bb6a!important; }
+[data-theme="dark"] .asl-item.active-수 { background: rgba(25,118,210,.15)!important; border-color: #64b5f6!important; }
+[data-theme="dark"] .asl-item.active-화 { background: rgba(198,40,40,.15)!important; border-color: #ef9a9a!important; }
+[data-theme="dark"] .asl-item.active-풍 { background: rgba(245,127,23,.12)!important; border-color: #ffd54f!important; }
+/* 수치 텍스트 - 밝게 */
+[data-theme="dark"] .asl-val-지 { color: #81c784!important; }
+[data-theme="dark"] .asl-val-수 { color: #64b5f6!important; }
+[data-theme="dark"] .asl-val-화 { color: #ef9a9a!important; }
+[data-theme="dark"] .asl-val-풍 { color: #ffd54f!important; }
+[data-theme="dark"] .attr-fill-지 { background: linear-gradient(90deg, #388e3c, #66bb6a)!important; }
+[data-theme="dark"] .attr-fill-수 { background: linear-gradient(90deg, #1565c0, #64b5f6)!important; }
+[data-theme="dark"] .attr-fill-화 { background: linear-gradient(90deg, #b71c1c, #ef9a9a)!important; }
+[data-theme="dark"] .attr-fill-풍 { background: linear-gradient(90deg, #6a1b9a, #ce93d8)!important; }
+[data-theme="dark"] .asg { border-color: rgba(255,255,255,0.1)!important; }
+[data-theme="dark"] .search-input { background:#1a1a2e; border-color:#404060; color:#e8e8f0; }
+[data-theme="dark"] .search-input:focus { border-color:#9b87f5; background:#252540; }
+
+/* 속성 수치 필터 */
+[data-theme="dark"] .attr-val-item { background:#1a1a2e!important; border-color:#404060!important; }
+[data-theme="dark"] .attr-val-lbl { color:#b0b0c8!important; }
+[data-theme="dark"] .attr-val-input { color:#9b87f5!important; background:transparent!important; }
+[data-theme="dark"] .attr-val-reset { background:#1a1a2e!important; border-color:#404060!important; color:#8080a0!important; }
+[data-theme="dark"] .attr-val-reset:hover { border-color:#f57878!important; color:#f57878!important; }
+[data-theme="dark"] input[type=range] { accent-color:#9b87f5; }
+
+/* 모달 */
+[data-theme="dark"] .modal-overlay { background:rgba(0,0,0,.65); }
+[data-theme="dark"] .modal-card { background:#252540; border:1.5px solid #404060; }
+[data-theme="dark"] .modal-hero { background:linear-gradient(135deg,#1a1a2e,#252540); border-color:#404060; }
+[data-theme="dark"] .modal-img-box { background:#1a1a2e; border-color:#505080; }
+[data-theme="dark"] .modal-name { color:#e8e8f0; }
+[data-theme="dark"] .modal-obtain { background:#1a1a2e; border-color:#404060; color:#b0b0c8; }
+[data-theme="dark"] .modal-stat-box { background:#1a1a2e; border-color:#404060; }
+[data-theme="dark"] .modal-stat-val { color:#e8e8f0; }
+[data-theme="dark"] .modal-stat-sg { color:#8080a0; }
+[data-theme="dark"] .modal-close { background:#353555; color:#b0b0c8; }
+[data-theme="dark"] .modal-close:hover { background:#f57878; color:#fff; }
+[data-theme="dark"] .modal-section-title { color:#8080a0; }
+[data-theme="dark"] .modal-attr-chip.attr-지 { background:rgba(56,142,60,.2)!important; color:#66bb6a!important; border-color:rgba(56,142,60,.3)!important; }
+[data-theme="dark"] .modal-attr-chip.attr-수 { background:rgba(25,118,210,.2)!important; color:#64b5f6!important; border-color:rgba(25,118,210,.3)!important; }
+[data-theme="dark"] .modal-attr-chip.attr-화 { background:rgba(198,40,40,.2)!important; color:#ef9a9a!important; border-color:rgba(198,40,40,.25)!important; }
+[data-theme="dark"] .modal-attr-chip.attr-풍 { background:rgba(123,31,162,.2)!important; color:#ce93d8!important; border-color:rgba(123,31,162,.25)!important; }
+
+/* 패밀리 카드 */
+[data-theme="dark"] .family-pet-card { background:#1a1a2e; border-color:#404060; }
+[data-theme="dark"] .family-pet-card:hover { border-color:#9b87f5; box-shadow:0 4px 20px rgba(155,135,245,.25); }
+[data-theme="dark"] .family-pet-card .fpc-name { color:#e8e8f0; }
+
+/* 네비 */
+[data-theme="dark"] .page-nav-pd { background:#252540; border-color:#404060; }
+[data-theme="dark"] .pnav-tab-pd { background:#2a2a45; color:#b0b0c8; border-color:#404060; }
+[data-theme="dark"] .pnav-tab-pd:hover { background:#353555; color:#9b87f5; border-color:#9b87f5; }
+[data-theme="dark"] .pnav-active-pd { background:linear-gradient(135deg,#2a2a45,#353555)!important; color:#9b87f5!important; border-color:#9b87f5!important; }
+
+/* 스크롤바 */
+[data-theme="dark"] ::-webkit-scrollbar-track { background:#1a1a2e; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background:#404060; }
+
+/* 헤더 오른쪽에서 살짝 안쪽 */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  z-index: 9999;
+}
+/* float-btns */
+.float-btns{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:9999;}
+.dark-toggle{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1.1rem;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.dark-toggle:hover{transform:scale(1.18) rotate(22deg);border-color:var(--a1);box-shadow:0 4px 16px rgba(155,135,245,.4);}
+.dark-toggle:active{transform:scale(.88) rotate(-15deg);}
+[data-theme="dark"] .dark-toggle{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .dark-toggle:hover{border-color:#9b87f5;}
+[data-theme="dark"] .toggle-moon{display:inline!important;}
+[data-theme="dark"] .toggle-sun{display:none!important;}
+[data-theme="light"] .toggle-moon{display:none!important;}
+[data-theme="light"] .toggle-sun{display:inline!important;}
+.chat-float-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1rem;text-decoration:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.chat-float-btn:hover{transform:scale(1.18) rotate(-22deg);border-color:var(--a2);box-shadow:0 4px 16px rgba(245,135,184,.4);}
+.chat-float-btn:active{transform:scale(.88) rotate(15deg);}
+[data-theme="dark"] .chat-float-btn{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .chat-float-btn:hover{border-color:#f587b8;}
+
+
 </style>
 </head>
 <body>
-
+<div style="position:fixed!important;top:14px!important;right:14px!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:7px!important;z-index:99999!important;">
+  <button class="dark-toggle" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
+  <button class="chat-float-btn" onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" title="채팅뷰어">💬</button>
+</div>
 <div class="page-header">
   <div class="header-inner">
     <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
@@ -670,8 +851,7 @@
     <a href="index.html"   class="pnav-tab-pd">🏠 환각 계산기</a>
     <a href="pokedex.html" class="pnav-tab-pd pnav-active-pd">🐾 펫 도감</a>
     <a href="card.html"    class="pnav-tab-pd">🎲 큐브 시뮬레이터</a>
-    <button onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" style="background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;border:none;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💬 채팅</button>
-    <a href="raid.html" class="pnav-tab-pd">🏢 인력사무소</a>
+    <a href="raid.html"    class="pnav-tab-pd">🏢 인력사무소</a>
     
     
     
@@ -2054,6 +2234,24 @@ function openModalByName(name) {
 
 
 
+
+// ── Dark Mode ──
+
+
+
+
+
+
+
+
+function toggleDark(){
+  const h=document.documentElement;
+  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
+  localStorage.setItem('wind-dark',h.getAttribute('data-theme'));
+}
+(function(){ document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light'); })();
+function toggleDark(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==="dark"?"light":"dark");localStorage.setItem('wind-dark',h.getAttribute('data-theme'));}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light');})();
 </script>
 <!-- 상세 모달 -->
 <div class="modal-overlay" id="pet-modal" style="display:none" onclick="closeModal(event)">
