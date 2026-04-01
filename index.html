@@ -1926,7 +1926,7 @@ const DEFAULT_PETS = {
   "그리프스": {initialCoefficient:26,healthCoefficient:24,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:33,grade:"2등급",attrs:["지","풍"],attr:{"지":5,"수":0,"화":0,"풍":5},sg:{"hp":9.903,"atk":2.141,"def":1.286,"agi":1.781},obtain:"경험치 상점",routeType:"상점",mount:false},
   "메카비스": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:34,defenseCoefficient:16,agilityCoefficient:30,grade:"일반",attrs:["화","풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":10.046,"atk":2.148,"def":1.378,"agi":1.638},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
   "메카카키": {initialCoefficient:17,healthCoefficient:24,attackCoefficient:32,defenseCoefficient:9,agilityCoefficient:39,grade:"일반",attrs:["화","풍"],attr:{"지":0,"수":0,"화":5,"풍":5},sg:{"hp":9.856,"atk":2.036,"def":1.053,"agi":2.066},obtain:"코스 포인트 상점",routeType:"코스",mount:false},
-  "물범": {initialCoefficient:2,healthCoefficient:400,attackCoefficient:418,defenseCoefficient:235,agilityCoefficient:350,grade:"일반",attrs:["지","수"],attr:{"지":2,"수":8,"화":0,"풍":0},sg:{"hp":10.806,"atk":2.205,"def":1.350,"agi":1.448},obtain:"얼음성 대기실 전역",routeType:"포획",mount:false},
+  "물범": {initialCoefficient:2,healthCoefficient:400,attackCoefficient:418,defenseCoefficient:235,agilityCoefficient:350,ic_real:{hp:52.325,atk:10.677,def:6.537,agi:7.015},grade:"일반",attrs:["지","수"],attr:{"지":2,"수":8,"화":0,"풍":0},sg:{"hp":10.806,"atk":2.205,"def":1.350,"agi":1.448},obtain:"얼음성 대기실 전역",routeType:"포획",mount:false},
 };
 let petData = { ...DEFAULT_PETS };
 
@@ -1975,8 +1975,8 @@ function calcIdeal(pet) {
   return {
     atk:Math.floor(rAtk), def:Math.floor(rDef),
     agi:Math.floor(rAgi), hp:Math.floor(rHp),
-    atkF:+rAtk.toFixed(3), defF:+rDef.toFixed(3),
-    agiF:+rAgi.toFixed(3), hpF:+rHp.toFixed(3),
+    atkF:Math.floor(rAtk), defF:Math.floor(rDef),
+    agiF:Math.floor(rAgi), hpF:Math.floor(rHp),
   };
 }
 
