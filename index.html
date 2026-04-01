@@ -2423,6 +2423,14 @@ document.getElementById("calc-btn").addEventListener("click",()=>{
     const canMax=r.hallCases>0;
     const expect=canMax?(1/(prob/100)).toFixed(2):null;
 
+    // 🐾 이스터에그: 물범 99.9900% 이상이면 직범으로 변신
+    if(selectedPet==="물범" && parseFloat(prob)>=99.99){
+      const nameEl=document.getElementById("pi-name");
+      if(nameEl){ nameEl.innerHTML=""; nameEl.appendChild(document.createTextNode("직범")); }
+      const imgInner=document.getElementById("pi-img-inner");
+      if(imgInner){ imgInner.innerHTML=`<img src="https://i.ibb.co/Y7MLGvy2/dd156242-2975-4ebd-ba18-7929b6e8a2f8.jpg" alt="직범" style="width:86px;height:86px;object-fit:contain;">`; }
+    }
+
     // 등급 분포 바 차트 생성
     // 확률별 멘트
     function getProbMsg(p) {
