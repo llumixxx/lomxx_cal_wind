@@ -1064,30 +1064,58 @@ function renderUserGrid(sorted, gridId, extraInnerId, moreBtnId, detailPrefix, f
 function renderAllUserTabs(pets) {
   const userMap = buildUserStats(pets);
 
-  // 전체 랭킹: 총 랭킹 보유 수 기준 (모든 펫 표시)
+  // 전체 랭킹: total 많은순 → 동률시 first 많은순 → 동률시 top3 많은순
   const totalSorted = Object.entries(userMap)
     .map(([name, d]) => ({ name, ...d }))
-    .sort((a, b) => b.total - a.total);
-  const totalRanked = denseRank(totalSorted, u => u.total);
+    .sort((a, b) =>
+      b.total !== a.total ? b.total - a.total :
+      b.first !== a.first ? b.first - a.first :
+      b.top3 - a.top3
+    );
+  // 등수 부여: [total, first, top3] 세 값이 모두 같을 때만 동률
+  const totalRanked = denseRankMulti(totalSorted, u => [u.total, u.first, u.top3]);
   renderUserGrid(totalRanked, 'userGrid', 'userGridExtraInner', 'userMoreBtn', 'u', null);
 
-  // 1등 펫 보유 랭킹: 1등인 펫만 표시
+  // 1등 펫 보유 랭킹: first 많은순 → 동률시 total 많은순 → top3 많은순
   const firstSorted = Object.entries(userMap)
     .map(([name, d]) => ({ name, ...d }))
     .filter(u => u.first > 0)
-    .sort((a, b) => b.first - a.first);
-  const firstRanked = denseRank(firstSorted, u => u.first);
+    .sort((a, b) =>
+      b.first !== a.first ? b.first - a.first :
+      b.total !== a.total ? b.total - a.total :
+      b.top3 - a.top3
+    );
+  const firstRanked = denseRankMulti(firstSorted, u => [u.first, u.total, u.top3]);
   renderUserGrid(firstRanked, 'firstGrid', 'firstGridExtraInner', 'firstMoreBtn', 'f',
     p => p.rank === 1);
 
-  // TOP3 펫 보유 랭킹: 3등 이내 펫만 표시
+  // TOP3 펫 보유 랭킹: top3 많은순 → 동률시 first 많은순 → total 많은순
   const top3Sorted = Object.entries(userMap)
     .map(([name, d]) => ({ name, ...d }))
     .filter(u => u.top3 > 0)
-    .sort((a, b) => b.top3 - a.top3);
-  const top3Ranked = denseRank(top3Sorted, u => u.top3);
+    .sort((a, b) =>
+      b.top3 !== a.top3 ? b.top3 - a.top3 :
+      b.first !== a.first ? b.first - a.first :
+      b.total - a.total
+    );
+  const top3Ranked = denseRankMulti(top3Sorted, u => [u.top3, u.first, u.total]);
   renderUserGrid(top3Ranked, 'top3Grid', 'top3GridExtraInner', 'top3MoreBtn', 't',
     p => p.rank <= 3);
+}
+
+// 다중 기준 dense rank (배열의 모든 값이 같아야 동률)
+function denseRankMulti(arr, getScores) {
+  if (!arr || arr.length === 0) return [];
+  const result = [];
+  let rank = 1;
+  for (let i = 0; i < arr.length; i++) {
+    if (i > 0) {
+      const sa = getScores(arr[i]), sb = getScores(arr[i-1]);
+      if (sa.some((v, j) => v !== sb[j])) rank++;
+    }
+    result.push({ ...arr[i], displayRank: rank });
+  }
+  return result;
 }
 
 // ── 펫별 랭킹 렌더 ──
