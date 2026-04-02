@@ -171,25 +171,55 @@
       padding:3px 9px; border-radius:99px;
       font-size:11px; color:var(--a1); font-weight:700;
     }
-    /* 유저 카드 내 펫 상세 */
-    .user-pet-detail {
-      margin-top:14px; border-top:1.5px solid var(--border); padding-top:12px;
-      display:none;
+    /* 유저 상세 팝업 모달 */
+    .detail-modal-overlay {
+      position:fixed; inset:0; z-index:600;
+      background:rgba(61,53,96,0.5); backdrop-filter:blur(6px);
+      display:none; align-items:center; justify-content:center;
+      padding:20px;
     }
-    .user-pet-detail.open { display:block; }
+    .detail-modal-overlay.active { display:flex; animation:fadeIn .2s ease; }
+    .detail-modal-card {
+      background:var(--white); border-radius:24px;
+      box-shadow:0 24px 64px rgba(155,135,245,0.28);
+      width:100%; max-width:460px; max-height:85vh;
+      overflow-y:auto; animation:slideUp .25s ease;
+      position:relative;
+    }
+    .detail-modal-card::-webkit-scrollbar { width:4px; }
+    .detail-modal-card::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+    .detail-modal-head {
+      background:linear-gradient(135deg,var(--s1),var(--s2));
+      border-radius:24px 24px 0 0;
+      padding:20px 24px 16px;
+      display:flex; align-items:center; gap:14px;
+      border-bottom:1.5px solid var(--border);
+      position:sticky; top:0; z-index:2;
+    }
+    .detail-modal-close {
+      position:absolute; top:14px; right:14px;
+      width:32px; height:32px; border-radius:50%;
+      background:var(--s2); border:none; cursor:pointer;
+      font-size:14px; color:var(--t2); transition:all .15s;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .detail-modal-close:hover { background:var(--err); color:#fff; }
+    .detail-modal-body { padding:16px 20px 24px; }
     .user-pet-row {
-      display:flex; align-items:center; gap:8px;
-      padding:6px 0; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:10px;
+      padding:9px 12px; margin-bottom:6px;
+      background:var(--s1); border:1px solid var(--border);
+      border-radius:12px; transition:all .15s;
     }
-    .user-pet-row:last-child { border-bottom:none; }
+    .user-pet-row:hover { border-color:var(--border2); background:var(--s2); }
     .user-pet-img {
-      width:32px; height:32px; flex-shrink:0;
-      background:var(--s1); border:1px solid var(--border2);
+      width:36px; height:36px; flex-shrink:0;
+      background:var(--white); border:1px solid var(--border2);
       border-radius:8px; overflow:hidden;
       display:flex; align-items:center; justify-content:center;
     }
-    .user-pet-img img { width:28px; height:28px; object-fit:contain; image-rendering:pixelated; }
-    .user-pet-name { font-size:12px; font-weight:700; color:var(--t1); flex:1; }
+    .user-pet-img img { width:30px; height:30px; object-fit:contain; image-rendering:pixelated; }
+    .user-pet-name { font-size:13px; font-weight:700; color:var(--t1); flex:1; }
     .user-pet-type {
       font-size:10px; font-weight:700; padding:2px 6px;
       border-radius:5px; font-family:'Nunito',sans-serif;
@@ -197,8 +227,20 @@
     .type-general { background:#f0eeff; color:var(--a1); border:1px solid var(--border2); }
     .type-rebirth { background:#fff0f6; color:var(--a2); border:1px solid #f5c8de; }
     .user-pet-rank-badge {
-      font-size:11px; font-weight:800; min-width:22px; text-align:right;
-      font-family:'Nunito',sans-serif; color:var(--t2);
+      font-size:12px; font-weight:900; min-width:28px; text-align:right;
+      font-family:'Nunito',sans-serif; color:var(--a1);
+    }
+    /* 섹션 구분 */
+    .detail-section-label {
+      font-size:10px; letter-spacing:2px; text-transform:uppercase;
+      color:var(--t3); font-family:'Nunito',sans-serif; font-weight:800;
+      margin:14px 0 8px;
+      display:flex; align-items:center; gap:6px;
+    }
+    .detail-section-label::before {
+      content:''; display:block; width:3px; height:11px;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      border-radius:2px;
     }
 
     /* ── Pet Cards ── */
@@ -398,7 +440,12 @@
     [data-theme="dark"] .stat-exp { background:rgba(245,200,135,.12); color:#d4b060; border-color:rgba(245,200,135,.25); }
     [data-theme="dark"] .pet-img-box { background:linear-gradient(135deg,#2a2a45,#353555); border-color:#505080; }
     [data-theme="dark"] .user-pet-img { background:#2a2a45; border-color:#404060; }
-    [data-theme="dark"] .modal-pet-img { background:#252540; border-color:#505080; }
+    [data-theme="dark"] .detail-modal-card { background:#252540; }
+    [data-theme="dark"] .detail-modal-head { background:linear-gradient(135deg,#2a2a45,#353555); border-color:#404060; }
+    [data-theme="dark"] .user-pet-row { background:#2a2a45; border-color:#404060; }
+    [data-theme="dark"] .user-pet-row:hover { background:#353555; }
+    [data-theme="dark"] .type-general { background:rgba(155,135,245,.15); color:#b8a8ff; border-color:rgba(155,135,245,.3); }
+    [data-theme="dark"] .type-rebirth { background:rgba(245,135,184,.15); color:#f5a8cc; border-color:rgba(245,135,184,.3); }
     [data-theme="dark"] .view-more-btn { background:#2a2a45; border-color:#505080; color:#9b87f5; }
     [data-theme="dark"] .view-more-btn:hover { background:#9b87f5; color:#fff; border-color:#9b87f5; }
     [data-theme="dark"] .pet-badge { background:#2a2a45; border-color:#505080; color:#9b87f5; }
@@ -480,6 +527,23 @@
   </div>
 
 </div><!-- /main-wrap -->
+
+<!-- 펫 상세 팝업 모달 -->
+<div class="detail-modal-overlay" id="detailModal" onclick="handleDetailModalClick(event)">
+  <div class="detail-modal-card">
+    <button class="detail-modal-close" onclick="closeDetailModal()">✕</button>
+    <div class="detail-modal-head">
+      <div class="pet-img-box" style="width:56px;height:56px;" id="detailModalImg">
+        <span class="no-img">👤</span>
+      </div>
+      <div>
+        <div style="font-family:'Nunito',sans-serif;font-size:20px;font-weight:900;color:var(--t1);" id="detailModalName"></div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;" id="detailModalSub"></div>
+      </div>
+    </div>
+    <div class="detail-modal-body" id="detailModalBody"></div>
+  </div>
+</div>
 
 
 
@@ -866,17 +930,10 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
   else if (displayRank === 3) { rankClass = 'bronze'; rankLabel = '🥉 3위'; }
   else rankLabel = `${displayRank}위`;
 
+  // user.pets는 이미 필터된 상태 (renderUserGrid에서 filterFn 적용됨)
   const uniquePets = [...new Set(user.pets.map(p => p.petName))];
-  const petRows = user.pets.map(p =>
-    `<div class="user-pet-row">
-      <div class="user-pet-img">${getPetImg(p.petName)}</div>
-      <div class="user-pet-name">${p.petName}</div>
-      <span class="user-pet-type ${p.type==='general'?'type-general':'type-rebirth'}">${p.type==='general'?'일반':'환생'}</span>
-      <div class="user-pet-rank-badge">${p.rank}위</div>
-    </div>`
-  ).join('');
+  const petsJson = encodeURIComponent(JSON.stringify(user.pets));
 
-  const detailId = `${detailPrefix}-${cardIdx}`;
   return `<div class="user-card">
     <div class="user-rank-num ${rankClass}">${rankLabel}</div>
     <div class="user-name">${user.name}</div>
@@ -889,49 +946,80 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       ${uniquePets.slice(0,4).map(n=>`<span class="pet-badge">${n}</span>`).join('')}
       ${uniquePets.length > 4 ? `<span class="pet-badge">+${uniquePets.length-4}</span>` : ''}
     </div>
-    <div class="user-pet-detail" id="${detailId}">${petRows}</div>
-    <button class="view-more-btn" style="margin-top:12px;" onclick="toggleDetail('${detailId}',this)">펫 상세 보기 ▼</button>
+    <button class="view-more-btn" style="margin-top:12px;"
+      onclick="openDetailModal('${user.name}', '${user.pets.length}개 랭킹', '${petsJson}')">
+      펫 상세 보기 ↗
+    </button>
   </div>`;
 }
 
-function toggleDetail(id, btn) {
-  const el = document.getElementById(id);
-  if (el.classList.contains('open')) {
-    el.classList.remove('open');
-    btn.textContent = '펫 상세 보기 ▼';
-  } else {
-    el.classList.add('open');
-    btn.textContent = '접기 ▲';
+// ── 상세 팝업 ──
+function openDetailModal(userName, subText, petsEnc) {
+  const pets = JSON.parse(decodeURIComponent(petsEnc));
+
+  document.getElementById('detailModalImg').innerHTML = `<span style="font-size:28px;">👤</span>`;
+  document.getElementById('detailModalName').textContent = userName;
+  document.getElementById('detailModalSub').textContent = subText;
+
+  // 일반 / 환생 분류
+  const generalPets = pets.filter(p => p.type === 'general');
+  const rebirthPets = pets.filter(p => p.type === 'rebirth');
+
+  let html = '';
+  if (generalPets.length > 0) {
+    html += `<div class="detail-section-label">일반 랭킹 (${generalPets.length}개)</div>`;
+    html += generalPets.map(p => `
+      <div class="user-pet-row">
+        <div class="user-pet-img">${getPetImg(p.petName)}</div>
+        <div class="user-pet-name">${p.petName}</div>
+        <span class="user-pet-type type-general">일반</span>
+        <div class="user-pet-rank-badge">${p.rank}위</div>
+      </div>`).join('');
   }
+  if (rebirthPets.length > 0) {
+    html += `<div class="detail-section-label">환생 랭킹 (${rebirthPets.length}개)</div>`;
+    html += rebirthPets.map(p => `
+      <div class="user-pet-row">
+        <div class="user-pet-img">${getPetImg(p.petName)}</div>
+        <div class="user-pet-name">${p.petName}</div>
+        <span class="user-pet-type type-rebirth">환생</span>
+        <div class="user-pet-rank-badge">${p.rank}위</div>
+      </div>`).join('');
+  }
+
+  document.getElementById('detailModalBody').innerHTML = html;
+  document.getElementById('detailModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
-// ── 전체보기 인라인 펼치기 ──
-function toggleMore(extraId, btnId) {
-  const extra = document.getElementById(extraId);
-  const btn = document.getElementById(btnId);
-  if (extra.style.display === 'none') {
-    extra.style.display = 'block';
-    btn.textContent = '접기 ▲';
-  } else {
-    extra.style.display = 'none';
-    btn.textContent = `전체보기 ▼`;
-  }
+function closeDetailModal() {
+  document.getElementById('detailModal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function handleDetailModalClick(e) {
+  if (e.target === document.getElementById('detailModal')) closeDetailModal();
 }
 
 // ── 유저 그리드 렌더 (공통) ──
-function renderUserGrid(sorted, gridId, extraInnerId, moreBtnId, detailPrefix, countLabel) {
-  // dense rank by score
+// filterFn: 카드에 표시할 pets를 필터링하는 함수 (null이면 전체)
+function renderUserGrid(sorted, gridId, extraInnerId, moreBtnId, detailPrefix, filterFn) {
   const top10 = sorted.filter(u => u.displayRank <= 10);
   const rest   = sorted.filter(u => u.displayRank > 10);
 
+  const makeCard = (u, i, prefix) => {
+    const filteredUser = filterFn ? { ...u, pets: u.pets.filter(filterFn) } : u;
+    return makeUserCard(filteredUser, u.displayRank, i, prefix);
+  };
+
   const grid = document.getElementById(gridId);
-  grid.innerHTML = top10.map((u, i) => makeUserCard(u, u.displayRank, `${detailPrefix}-${i}`, detailPrefix)).join('');
+  grid.innerHTML = top10.map((u, i) => makeCard(u, i, detailPrefix)).join('');
 
   const extraInner = document.getElementById(extraInnerId);
   const moreBtn = document.getElementById(moreBtnId);
 
   if (rest.length > 0) {
-    extraInner.innerHTML = rest.map((u, i) => makeUserCard(u, u.displayRank, `${detailPrefix}-extra-${i}`, detailPrefix+'x')).join('');
+    extraInner.innerHTML = rest.map((u, i) => makeCard(u, i, detailPrefix+'x')).join('');
     moreBtn.style.display = 'inline-block';
     moreBtn.textContent = `전체보기 (${rest.length}명 더) ▼`;
   } else {
@@ -943,28 +1031,30 @@ function renderUserGrid(sorted, gridId, extraInnerId, moreBtnId, detailPrefix, c
 function renderAllUserTabs(pets) {
   const userMap = buildUserStats(pets);
 
-  // 전체 랭킹: 총 랭킹 보유 수 기준
+  // 전체 랭킹: 총 랭킹 보유 수 기준 (모든 펫 표시)
   const totalSorted = Object.entries(userMap)
     .map(([name, d]) => ({ name, ...d }))
     .sort((a, b) => b.total - a.total);
   const totalRanked = denseRank(totalSorted, u => u.total);
-  renderUserGrid(totalRanked, 'userGrid', 'userGridExtraInner', 'userMoreBtn', 'u', '총 랭킹 보유');
+  renderUserGrid(totalRanked, 'userGrid', 'userGridExtraInner', 'userMoreBtn', 'u', null);
 
-  // 1등 펫 보유 랭킹
+  // 1등 펫 보유 랭킹: 1등인 펫만 표시
   const firstSorted = Object.entries(userMap)
     .map(([name, d]) => ({ name, ...d }))
     .filter(u => u.first > 0)
     .sort((a, b) => b.first - a.first);
   const firstRanked = denseRank(firstSorted, u => u.first);
-  renderUserGrid(firstRanked, 'firstGrid', 'firstGridExtraInner', 'firstMoreBtn', 'f', '1등 펫 보유');
+  renderUserGrid(firstRanked, 'firstGrid', 'firstGridExtraInner', 'firstMoreBtn', 'f',
+    p => p.rank === 1);
 
-  // TOP3 펫 보유 랭킹
+  // TOP3 펫 보유 랭킹: 3등 이내 펫만 표시
   const top3Sorted = Object.entries(userMap)
     .map(([name, d]) => ({ name, ...d }))
     .filter(u => u.top3 > 0)
     .sort((a, b) => b.top3 - a.top3);
   const top3Ranked = denseRank(top3Sorted, u => u.top3);
-  renderUserGrid(top3Ranked, 'top3Grid', 'top3GridExtraInner', 'top3MoreBtn', 't', 'TOP3 펫 보유');
+  renderUserGrid(top3Ranked, 'top3Grid', 'top3GridExtraInner', 'top3MoreBtn', 't',
+    p => p.rank <= 3);
 }
 
 // ── 펫별 랭킹 렌더 ──
@@ -1099,6 +1189,35 @@ function toggleDark() {
 // ── Init ──
 loadData();
 setInterval(loadData, 15000);
+
+// URL 파라미터로 특정 펫 바로 열기 (pokedex에서 넘어온 경우)
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const petName = params.get('pet');
+  if (petName) {
+    // 데이터 로드 후 펫별 랭킹 탭으로 이동 + 검색어 설정
+    const waitAndJump = setInterval(() => {
+      const petCards = document.querySelectorAll('[data-pet]');
+      if (petCards.length > 0) {
+        clearInterval(waitAndJump);
+        // 펫별 랭킹 탭으로 전환
+        const petTabBtn = document.querySelector('.tab-btn:last-child');
+        switchTab('pet-tab', petTabBtn);
+        // 검색어 설정
+        const searchInput = document.getElementById('petSearch');
+        if (searchInput) {
+          searchInput.value = petName;
+          applySearch(petName);
+        }
+        // 해당 펫 카드로 스크롤
+        setTimeout(() => {
+          const target = document.querySelector(`[data-pet="${petName}"]`);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+      }
+    }, 300);
+  }
+})();
 </script>
 </body>
 </html>
