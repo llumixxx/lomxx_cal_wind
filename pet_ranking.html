@@ -443,49 +443,48 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <button class="tab-btn active" onclick="switchTab('user-tab', this)">🏆 유저 순위</button>
+    <button class="tab-btn active" onclick="switchTab('user-tab', this)">🏆 전체 펫 보유 랭킹</button>
+    <button class="tab-btn" onclick="switchTab('first-tab', this)">🥇 1등 펫 보유 랭킹</button>
+    <button class="tab-btn" onclick="switchTab('top3-tab', this)">🎖️ TOP3 펫 보유 랭킹</button>
     <button class="tab-btn" onclick="switchTab('pet-tab', this)">🐾 펫별 랭킹</button>
   </div>
 
-  <!-- 유저 순위 탭 -->
+  <!-- 전체 펫 보유 랭킹 -->
   <div id="user-tab" class="tab-content active">
-    <div class="user-grid" id="userGrid">
-      <div class="empty-state">데이터를 불러오는 중입니다...</div>
-    </div>
+    <div class="user-grid" id="userGrid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
+    <div id="userGridExtra" style="display:none;"><div class="user-grid" id="userGridExtraInner"></div></div>
+    <div style="text-align:center;margin-top:8px;"><button class="view-more-btn" id="userMoreBtn" style="max-width:320px;display:none;" onclick="toggleMore('userGridExtra','userMoreBtn')">전체보기 ▼</button></div>
   </div>
 
-  <!-- 펫별 랭킹 탭 -->
+  <!-- 1등 펫 보유 랭킹 -->
+  <div id="first-tab" class="tab-content">
+    <div class="user-grid" id="firstGrid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
+    <div id="firstGridExtra" style="display:none;"><div class="user-grid" id="firstGridExtraInner"></div></div>
+    <div style="text-align:center;margin-top:8px;"><button class="view-more-btn" id="firstMoreBtn" style="max-width:320px;display:none;" onclick="toggleMore('firstGridExtra','firstMoreBtn')">전체보기 ▼</button></div>
+  </div>
+
+  <!-- TOP3 펫 보유 랭킹 -->
+  <div id="top3-tab" class="tab-content">
+    <div class="user-grid" id="top3Grid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
+    <div id="top3GridExtra" style="display:none;"><div class="user-grid" id="top3GridExtraInner"></div></div>
+    <div style="text-align:center;margin-top:8px;"><button class="view-more-btn" id="top3MoreBtn" style="max-width:320px;display:none;" onclick="toggleMore('top3GridExtra','top3MoreBtn')">전체보기 ▼</button></div>
+  </div>
+
+  <!-- 펫별 랭킹 -->
   <div id="pet-tab" class="tab-content">
     <div class="search-wrap">
       <span style="font-size:14px;">🔍</span>
       <input type="text" id="petSearch" placeholder="펫 이름으로 검색...">
     </div>
-    <div id="petContainer">
-      <div class="empty-state">데이터를 불러오는 중입니다...</div>
-    </div>
+    <div id="petContainer"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
   </div>
 
 </div><!-- /main-wrap -->
 
-<!-- ── Modal ── -->
-<div class="modal-overlay" id="rankModal" onclick="handleModalClick(event)">
-  <div class="modal-card">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-hero">
-      <div class="modal-pet-img" id="modalImg">
-        <span class="no-img">🐾</span>
-      </div>
-      <div>
-        <div class="modal-title-txt" id="modalTitle"></div>
-        <div class="modal-sub-txt" id="modalSub"></div>
-      </div>
-    </div>
-    <div class="modal-body-inner" id="modalBody"></div>
-  </div>
-</div>
+
 
 <script>
-// ── PET IMAGES (from pokedex) ──
+// ── PET IMAGES ──
 const PET_IMAGES = {
   "골드부비":"https://pooyas.com/files/extravar_upload/109631/277/167/67b0567fe1337c024792130f463c3dfb.gif",
   "꼬꼬비":"https://pooyas.com/files/extravar_upload/109631/312/167/daab9bb325477e4015b1f7bde4c2ff88.gif",
@@ -772,8 +771,6 @@ const PET_IMAGES = {
   "데라":"https://wind01.net/info/img/300237.gif",
   "테라죠":"https://wind01.net/info/img/300376.gif",
   "미르":"https://wind01.net/info/img/160056.gif",
-  "물범":"https://pooyas.com/files/extravar_upload/109631/000/000/placeholder.gif",
-  "킹북이":"https://pooyas.com/files/extravar_upload/109631/594/167/9eadedc741d98f83f47517689189fe31.gif",
 };
 
 function getPetImg(name) {
@@ -782,22 +779,30 @@ function getPetImg(name) {
   return `<img src="${url}" alt="${name}" onerror="this.parentElement.innerHTML='<span class=\\'no-img\\'>🐾</span>'">`;
 }
 
-// ── Data ──
+// ── 데이터 ──
 let latestData = null;
+let petRankingRendered = false; // 펫별 랭킹은 한 번만 렌더링
 
 async function loadData() {
   try {
     const r = await fetch('pet_ranking_data.json');
     const allData = await r.json();
     if (allData && allData.length > 0) {
-      latestData = allData[allData.length - 1];
+      const newData = allData[allData.length - 1];
+      const isNew = !latestData || latestData.timestamp !== newData.timestamp;
+      latestData = newData;
+
       const dt = new Date(latestData.timestamp);
       document.getElementById('updateTime').textContent =
         `마지막 업데이트: ${dt.toLocaleString('ko-KR')}`;
       document.getElementById('updateNotice').textContent =
         `총 ${latestData.total_pets}마리 펫 랭킹 데이터 로드 완료`;
-      renderUserRanking(latestData.pets);
-      renderPetRanking(latestData.pets);
+
+      if (isNew) {
+        renderAllUserTabs(latestData.pets);
+        // 펫별 랭킹은 데이터 변경시에만 재렌더링 (검색 상태 유지를 위해)
+        renderPetRanking(latestData.pets);
+      }
     }
   } catch(e) {
     document.getElementById('updateTime').textContent = '데이터를 불러올 수 없습니다.';
@@ -805,97 +810,92 @@ async function loadData() {
   }
 }
 
-// ── 동률 처리 ──
-function assignRanks(arr) {
+// ── Dense 등수 계산 (1,1,2,2,3 방식) ──
+// 동점이면 같은 등수, 그 다음은 +1 (건너뜀 없음)
+function denseRank(arr, getScore) {
   if (!arr || arr.length === 0) return [];
   const result = [];
   let rank = 1;
   for (let i = 0; i < arr.length; i++) {
-    const cur = parseFloat(arr[i].score);
-    if (i > 0 && cur !== parseFloat(arr[i-1].score)) rank = i + 1;
-    result.push({ ...arr[i], displayRank: rank, isTie: i > 0 && cur === parseFloat(arr[i-1].score) });
+    if (i > 0 && getScore(arr[i]) !== getScore(arr[i-1])) rank++;
+    result.push({ ...arr[i], displayRank: rank });
   }
   return result;
 }
 
-// ── 유저 순위 ──
-function renderUserRanking(pets) {
-  // 유저별 펫 집계: {nickname: {count, pets: [{petName, type, rank, score}]}}
+// ── 유저 집계 ──
+function buildUserStats(pets) {
   const userMap = {};
   pets.forEach(pet => {
-    const all = [
-      ...(pet.general_ranking||[]).map(r=>({...r, type:'general'})),
-      ...(pet.rebirth_ranking||[]).map(r=>({...r, type:'rebirth'}))
+    // 일반/환생 각각 처리
+    const sections = [
+      { list: pet.general_ranking || [], type: 'general' },
+      { list: pet.rebirth_ranking || [], type: 'rebirth' }
     ];
-    all.forEach(r => {
-      if (!r.nickname) return;
-      if (!userMap[r.nickname]) userMap[r.nickname] = { count:0, pets:[] };
-      userMap[r.nickname].count++;
-      userMap[r.nickname].pets.push({ petName:pet.name, type:r.type, rank:r.rank, score:r.score, level:r.level, attack:r.attack, defense:r.defense, speed:r.speed, exp:r.exp });
+    sections.forEach(({ list, type }) => {
+      // 이 펫에서의 등수 계산 (dense)
+      const ranked = denseRank(list, r => parseFloat(r.score));
+      ranked.forEach(r => {
+        if (!r.nickname) return;
+        if (!userMap[r.nickname]) userMap[r.nickname] = { total: 0, first: 0, top3: 0, pets: [] };
+        userMap[r.nickname].total++;
+        if (r.displayRank === 1) userMap[r.nickname].first++;
+        if (r.displayRank <= 3) userMap[r.nickname].top3++;
+        userMap[r.nickname].pets.push({
+          petName: pet.name,
+          type,
+          rank: r.displayRank,
+          score: r.score,
+          level: r.level,
+          attack: r.attack,
+          defense: r.defense,
+          speed: r.speed,
+          exp: r.exp
+        });
+      });
     });
   });
-
-  // 정렬
-  const sorted = Object.entries(userMap)
-    .map(([name, d]) => ({ name, ...d }))
-    .sort((a,b) => b.count - a.count);
-
-  // 동률 등수
-  let displayRank = 1;
-  for (let i = 0; i < sorted.length; i++) {
-    if (i > 0 && sorted[i].count !== sorted[i-1].count) displayRank = i + 1;
-    sorted[i].displayRank = displayRank;
-  }
-
-  const grid = document.getElementById('userGrid');
-  // 10위까지
-  const visible = sorted.filter(u => u.displayRank <= 10);
-  const rest = sorted.filter(u => u.displayRank > 10);
-
-  grid.innerHTML = visible.map((user, i) => {
-    const r = user.displayRank;
-    let rankClass = '';
-    let rankLabel = r;
-    if (r === 1) { rankClass = 'gold'; rankLabel = '🥇 1위'; }
-    else if (r === 2) { rankClass = 'silver'; rankLabel = '🥈 2위'; }
-    else if (r === 3) { rankClass = 'bronze'; rankLabel = '🥉 3위'; }
-    else rankLabel = `${r}위`;
-
-    const isTie = i > 0 && user.count === sorted[i-1]?.count;
-
-    const petRows = user.pets.map(p =>
-      `<div class="user-pet-row">
-        <div class="user-pet-img">${getPetImg(p.petName)}</div>
-        <div class="user-pet-name">${p.petName}</div>
-        <span class="user-pet-type ${p.type==='general'?'type-general':'type-rebirth'}">${p.type==='general'?'일반':'환생'}</span>
-        <div class="user-pet-rank-badge">${p.rank}위</div>
-      </div>`
-    ).join('');
-
-    return `<div class="user-card">
-      <div class="user-rank-num ${rankClass}">${rankLabel}${isTie?' <span style="font-size:12px;font-family:Noto Sans KR;">동률</span>':''}</div>
-      <div class="user-name">${user.name}</div>
-      <div class="user-count">랭킹 보유: <strong>${user.count}마리</strong></div>
-      <div class="pet-badges">
-        ${[...new Set(user.pets.map(p=>p.petName))].slice(0,4).map(n=>`<span class="pet-badge">${n}</span>`).join('')}
-        ${[...new Set(user.pets.map(p=>p.petName))].length > 4 ? `<span class="pet-badge">+${[...new Set(user.pets.map(p=>p.petName))].length - 4}</span>` : ''}
-      </div>
-      <div class="user-pet-detail" id="detail-${i}">
-        ${petRows}
-      </div>
-      <button class="view-more-btn" style="margin-top:12px;" onclick="toggleUserDetail(${i}, this)">펫 상세 보기 ▼</button>
-    </div>`;
-  }).join('');
-
-  if (rest.length > 0) {
-    grid.innerHTML += `<div style="grid-column:1/-1; text-align:center;">
-      <button class="view-more-btn" style="max-width:300px;margin:0 auto;" onclick="showAllUsers(${JSON.stringify(sorted.map(u=>({name:u.name,count:u.count,rank:u.displayRank,pets:u.pets}))).replace(/"/g,'&quot;')})">전체보기 (${sorted.length}명) ▼</button>
-    </div>`;
-  }
+  return userMap;
 }
 
-function toggleUserDetail(i, btn) {
-  const el = document.getElementById('detail-' + i);
+// ── 유저 카드 HTML ──
+function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
+  let rankClass = '', rankLabel;
+  if (displayRank === 1) { rankClass = 'gold'; rankLabel = '🥇 1위'; }
+  else if (displayRank === 2) { rankClass = 'silver'; rankLabel = '🥈 2위'; }
+  else if (displayRank === 3) { rankClass = 'bronze'; rankLabel = '🥉 3위'; }
+  else rankLabel = `${displayRank}위`;
+
+  const uniquePets = [...new Set(user.pets.map(p => p.petName))];
+  const petRows = user.pets.map(p =>
+    `<div class="user-pet-row">
+      <div class="user-pet-img">${getPetImg(p.petName)}</div>
+      <div class="user-pet-name">${p.petName}</div>
+      <span class="user-pet-type ${p.type==='general'?'type-general':'type-rebirth'}">${p.type==='general'?'일반':'환생'}</span>
+      <div class="user-pet-rank-badge">${p.rank}위</div>
+    </div>`
+  ).join('');
+
+  const detailId = `${detailPrefix}-${cardIdx}`;
+  return `<div class="user-card">
+    <div class="user-rank-num ${rankClass}">${rankLabel}</div>
+    <div class="user-name">${user.name}</div>
+    <div class="user-count">
+      랭킹 보유: <strong>${user.total}개</strong>
+      &nbsp;·&nbsp; 1등: <strong style="color:var(--a2);">${user.first}개</strong>
+      &nbsp;·&nbsp; TOP3: <strong style="color:#5acba8;">${user.top3}개</strong>
+    </div>
+    <div class="pet-badges">
+      ${uniquePets.slice(0,4).map(n=>`<span class="pet-badge">${n}</span>`).join('')}
+      ${uniquePets.length > 4 ? `<span class="pet-badge">+${uniquePets.length-4}</span>` : ''}
+    </div>
+    <div class="user-pet-detail" id="${detailId}">${petRows}</div>
+    <button class="view-more-btn" style="margin-top:12px;" onclick="toggleDetail('${detailId}',this)">펫 상세 보기 ▼</button>
+  </div>`;
+}
+
+function toggleDetail(id, btn) {
+  const el = document.getElementById(id);
   if (el.classList.contains('open')) {
     el.classList.remove('open');
     btn.textContent = '펫 상세 보기 ▼';
@@ -905,46 +905,85 @@ function toggleUserDetail(i, btn) {
   }
 }
 
-function showAllUsers(users) {
-  const imgEl = document.getElementById('modalImg');
-  imgEl.innerHTML = '<span class="no-img">🏆</span>';
-  document.getElementById('modalTitle').textContent = '유저 전체 순위';
-  document.getElementById('modalSub').textContent = `총 ${users.length}명`;
-
-  let html = '';
-  users.forEach((user, i) => {
-    const r = user.rank;
-    let label = r===1?'🥇':r===2?'🥈':r===3?'🥉':'';
-    const isTie = i > 0 && user.count === users[i-1]?.count;
-    html += `<div class="modal-rank-item" style="flex-direction:column;align-items:flex-start;gap:4px;">
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div class="rank-badge ${r<=3?'rank-'+r:''}" style="min-width:36px;height:28px;border-radius:8px;">${label||r+'위'}</div>
-        <div>
-          <div style="font-size:14px;font-weight:800;color:var(--t1);">${user.name}</div>
-          <div style="font-size:11px;color:var(--t2);">랭킹 보유 ${user.count}마리${isTie?' · 동률':''}</div>
-        </div>
-      </div>
-    </div>`;
-  });
-
-  document.getElementById('modalBody').innerHTML = html;
-  document.getElementById('rankModal').classList.add('active');
+// ── 전체보기 인라인 펼치기 ──
+function toggleMore(extraId, btnId) {
+  const extra = document.getElementById(extraId);
+  const btn = document.getElementById(btnId);
+  if (extra.style.display === 'none') {
+    extra.style.display = 'block';
+    btn.textContent = '접기 ▲';
+  } else {
+    extra.style.display = 'none';
+    btn.textContent = `전체보기 ▼`;
+  }
 }
 
-// ── 펫별 랭킹 ──
+// ── 유저 그리드 렌더 (공통) ──
+function renderUserGrid(sorted, gridId, extraInnerId, moreBtnId, detailPrefix, countLabel) {
+  // dense rank by score
+  const top10 = sorted.filter(u => u.displayRank <= 10);
+  const rest   = sorted.filter(u => u.displayRank > 10);
+
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = top10.map((u, i) => makeUserCard(u, u.displayRank, `${detailPrefix}-${i}`, detailPrefix)).join('');
+
+  const extraInner = document.getElementById(extraInnerId);
+  const moreBtn = document.getElementById(moreBtnId);
+
+  if (rest.length > 0) {
+    extraInner.innerHTML = rest.map((u, i) => makeUserCard(u, u.displayRank, `${detailPrefix}-extra-${i}`, detailPrefix+'x')).join('');
+    moreBtn.style.display = 'inline-block';
+    moreBtn.textContent = `전체보기 (${rest.length}명 더) ▼`;
+  } else {
+    moreBtn.style.display = 'none';
+  }
+}
+
+// ── 세 탭 모두 렌더 ──
+function renderAllUserTabs(pets) {
+  const userMap = buildUserStats(pets);
+
+  // 전체 랭킹: 총 랭킹 보유 수 기준
+  const totalSorted = Object.entries(userMap)
+    .map(([name, d]) => ({ name, ...d }))
+    .sort((a, b) => b.total - a.total);
+  const totalRanked = denseRank(totalSorted, u => u.total);
+  renderUserGrid(totalRanked, 'userGrid', 'userGridExtraInner', 'userMoreBtn', 'u', '총 랭킹 보유');
+
+  // 1등 펫 보유 랭킹
+  const firstSorted = Object.entries(userMap)
+    .map(([name, d]) => ({ name, ...d }))
+    .filter(u => u.first > 0)
+    .sort((a, b) => b.first - a.first);
+  const firstRanked = denseRank(firstSorted, u => u.first);
+  renderUserGrid(firstRanked, 'firstGrid', 'firstGridExtraInner', 'firstMoreBtn', 'f', '1등 펫 보유');
+
+  // TOP3 펫 보유 랭킹
+  const top3Sorted = Object.entries(userMap)
+    .map(([name, d]) => ({ name, ...d }))
+    .filter(u => u.top3 > 0)
+    .sort((a, b) => b.top3 - a.top3);
+  const top3Ranked = denseRank(top3Sorted, u => u.top3);
+  renderUserGrid(top3Ranked, 'top3Grid', 'top3GridExtraInner', 'top3MoreBtn', 't', 'TOP3 펫 보유');
+}
+
+// ── 펫별 랭킹 렌더 ──
 function renderPetRanking(pets) {
   const container = document.getElementById('petContainer');
+  // 검색어 저장
+  const savedQ = document.getElementById('petSearch') ? document.getElementById('petSearch').value : '';
 
   container.innerHTML = pets.map(pet => {
-    const general = assignRanks(pet.general_ranking || []);
-    const rebirth = assignRanks(pet.rebirth_ranking || []);
-    const imgHTML = getPetImg(pet.name);
+    const general = denseRank(pet.general_ranking || [], r => parseFloat(r.score));
+    const rebirth = denseRank(pet.rebirth_ranking || [], r => parseFloat(r.score));
 
-    const makeItems = (list, limit) =>
-      list.slice(0, limit).map(r => {
-        const rClass = r.displayRank <= 3 ? `rank-${r.displayRank}` : r.isTie ? 'tie' : '';
+    const makeItems = (list, containerId) => {
+      const top10 = list.slice(0, 10);
+      const rest  = list.slice(10);
+      let html = top10.map(r => {
+        const rClass = r.displayRank <= 3 ? `rank-${r.displayRank}` : '';
         return `<div class="ranking-item">
-          <div class="rank-badge ${rClass}">${r.isTie?'=':r.displayRank}</div>
+          <div class="rank-badge ${rClass}">${r.displayRank}</div>
           <div class="rank-info">
             <div class="rank-nick">${r.nickname}</div>
             <div class="rank-score">점수: ${r.score}</div>
@@ -959,19 +998,41 @@ function renderPetRanking(pets) {
         </div>`;
       }).join('');
 
-    const genHTML = general.length > 0
-      ? makeItems(general, 10) +
-        (general.length > 10 ? `<button class="view-more-btn" onclick="openPetModal('${pet.name}','일반 랭킹',${JSON.stringify(general).replace(/"/g,'&quot;')})">전체보기 (${general.length}명) ▼</button>` : '')
-      : '<div class="empty-state">랭킹 데이터 없음</div>';
+      if (rest.length > 0) {
+        const extraId = `extra-${containerId}`;
+        const btnId   = `btn-${containerId}`;
+        const extraHtml = rest.map(r => {
+          const rClass = r.displayRank <= 3 ? `rank-${r.displayRank}` : '';
+          return `<div class="ranking-item">
+            <div class="rank-badge ${rClass}">${r.displayRank}</div>
+            <div class="rank-info">
+              <div class="rank-nick">${r.nickname}</div>
+              <div class="rank-score">점수: ${r.score}</div>
+              <div class="rank-stats">
+                <span class="stat-chip stat-lv">Lv.${r.level}</span>
+                <span class="stat-chip stat-exp">내구 ${r.exp}</span>
+                <span class="stat-chip stat-atk">공격 ${r.attack}</span>
+                <span class="stat-chip stat-def">방어 ${r.defense}</span>
+                <span class="stat-chip stat-agi">순발 ${r.speed}</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+        html += `<div id="${extraId}" style="display:none;flex-direction:column;gap:6px;">${extraHtml}</div>
+          <button class="view-more-btn" id="${btnId}" onclick="togglePetExtra('${extraId}','${btnId}',${rest.length})">전체보기 (${rest.length}명 더) ▼</button>`;
+      }
+      return html;
+    };
 
-    const rebHTML = rebirth.length > 0
-      ? makeItems(rebirth, 10) +
-        (rebirth.length > 10 ? `<button class="view-more-btn" onclick="openPetModal('${pet.name}','환생 랭킹',${JSON.stringify(rebirth).replace(/"/g,'&quot;')})">전체보기 (${rebirth.length}명) ▼</button>` : '')
-      : '';
+    const genContId = `gen-${pet.name.replace(/[^a-zA-Z0-9가-힣]/g,'_')}`;
+    const rebContId = `reb-${pet.name.replace(/[^a-zA-Z0-9가-힣]/g,'_')}`;
+
+    const genHTML = general.length > 0 ? makeItems(general, genContId) : '<div class="empty-state">랭킹 데이터 없음</div>';
+    const rebHTML = rebirth.length > 0 ? makeItems(rebirth, rebContId) : '';
 
     return `<div class="pet-card" data-pet="${pet.name}">
       <div class="pet-card-header">
-        <div class="pet-img-box">${imgHTML}</div>
+        <div class="pet-img-box">${getPetImg(pet.name)}</div>
         <div>
           <div class="pet-card-name">${pet.name}</div>
           <div class="pet-card-sub">일반 ${general.length}명 · 환생 ${rebirth.length}명</div>
@@ -988,60 +1049,40 @@ function renderPetRanking(pets) {
     </div>`;
   }).join('');
 
-  // 검색
-  document.getElementById('petSearch').addEventListener('input', e => {
-    const q = e.target.value.toLowerCase();
-    document.querySelectorAll('[data-pet]').forEach(el => {
-      el.style.display = el.dataset.pet.toLowerCase().includes(q) ? '' : 'none';
-    });
+  // 검색어 복원 및 이벤트 (한 번만 등록)
+  const searchInput = document.getElementById('petSearch');
+  searchInput.value = savedQ;
+  if (savedQ) applySearch(savedQ);
+
+  // 이벤트는 container에 위임 방식으로 (중복 방지)
+  searchInput.oninput = (e) => applySearch(e.target.value);
+}
+
+function applySearch(q) {
+  const lower = q.toLowerCase();
+  document.querySelectorAll('[data-pet]').forEach(el => {
+    el.style.display = el.dataset.pet.toLowerCase().includes(lower) ? '' : 'none';
   });
 }
 
-function openPetModal(petName, typeLabel, rankings) {
-  const imgEl = document.getElementById('modalImg');
-  const url = PET_IMAGES[petName];
-  imgEl.innerHTML = url
-    ? `<img src="${url}" alt="${petName}" onerror="this.parentElement.innerHTML='<span class=\\'no-img\\'>🐾</span>'">`
-    : '<span class="no-img">🐾</span>';
-
-  document.getElementById('modalTitle').textContent = petName;
-  document.getElementById('modalSub').textContent = typeLabel + ' · 전체 ' + rankings.length + '명';
-
-  document.getElementById('modalBody').innerHTML = rankings.map(r => {
-    const rClass = r.displayRank<=3?`rank-${r.displayRank}`:r.isTie?'tie':'';
-    return `<div class="modal-rank-item">
-      <div class="rank-badge ${rClass}" style="flex-shrink:0;">${r.isTie?'=':r.displayRank}</div>
-      <div class="rank-info">
-        <div class="rank-nick">${r.nickname}</div>
-        <div class="rank-score">점수: ${r.score}</div>
-        <div class="rank-stats">
-          <span class="stat-chip stat-lv">Lv.${r.level}</span>
-          <span class="stat-chip stat-exp">내구 ${r.exp}</span>
-          <span class="stat-chip stat-atk">공격 ${r.attack}</span>
-          <span class="stat-chip stat-def">방어 ${r.defense}</span>
-          <span class="stat-chip stat-agi">순발 ${r.speed}</span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  document.getElementById('rankModal').classList.add('active');
+function togglePetExtra(extraId, btnId, count) {
+  const el = document.getElementById(extraId);
+  const btn = document.getElementById(btnId);
+  if (el.style.display === 'none') {
+    el.style.display = 'flex';
+    btn.textContent = '접기 ▲';
+  } else {
+    el.style.display = 'none';
+    btn.textContent = `전체보기 (${count}명 더) ▼`;
+  }
 }
 
-// ── Tab & Modal ──
+// ── Tab ──
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-}
-
-function closeModal() {
-  document.getElementById('rankModal').classList.remove('active');
-}
-
-function handleModalClick(e) {
-  if (e.target === document.getElementById('rankModal')) closeModal();
 }
 
 // ── Dark Mode ──
