@@ -1,361 +1,497 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WIND 펫 랭킹</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:#faf9ff; --bg2:#f3f0ff; --white:#ffffff;
-      --s1:#f8f7ff; --s2:#f0eeff;
-      --border:#e8e3ff; --border2:#d4cbff;
-      --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5; --a4:#f5c887; --a5:#87f5c0;
-      --t1:#3d3560; --t2:#7b72a8; --t3:#b0a8d4; --t4:#d4cff0;
-      --ok:#6dd5a0; --err:#f57878;
-      --shadow:0 4px 24px rgba(155,135,245,0.12);
-      --shadow2:0 8px 32px rgba(155,135,245,0.18);
-    }
-    [data-theme="dark"] {
-      --bg:#0f0f1a; --bg2:#1a1a2e; --white:#252540;
-      --s1:#2a2a45; --s2:#353555;
-      --border:#404060; --border2:#505080;
-      --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5; --a4:#f5c887; --a5:#87f5c0;
-      --t1:#e8e8f0; --t2:#b0b0c8; --t3:#8080a0; --t4:#606080;
-      --ok:#6dd5a0; --err:#f57878;
-      --shadow:0 4px 24px rgba(0,0,0,0.4);
-      --shadow2:0 8px 32px rgba(0,0,0,0.5);
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    * { box-sizing:border-box; margin:0; padding:0; }
     body {
-      font-family:'Noto Sans KR',sans-serif;
-      background:var(--bg); color:var(--t1); min-height:100vh;
-      background-image:
-        radial-gradient(circle at 15% 20%,rgba(155,135,245,0.08) 0%,transparent 50%),
-        radial-gradient(circle at 85% 80%,rgba(245,135,184,0.07) 0%,transparent 50%);
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
     }
 
-    .page-header {
-      background:var(--white); border-bottom:1.5px solid var(--border);
-      padding:16px 20px; position:sticky; top:0; z-index:100;
-      box-shadow:var(--shadow);
-    }
-    .header-inner {
-      max-width:1280px; margin:0 auto;
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-    }
-    .back-btn {
-      display:flex; align-items:center; gap:5px;
-      padding:7px 14px; border:1.5px solid var(--border2);
-      border-radius:10px; background:var(--s1); color:var(--a1);
-      font-size:12px; font-weight:700; font-family:'Noto Sans KR',sans-serif;
-      cursor:pointer; text-decoration:none; transition:all .15s;
-    }
-    .back-btn:hover { background:var(--a1); color:#fff; border-color:var(--a1); }
-    .header-title {
-      font-family:'Nunito',sans-serif; font-weight:900; font-size:20px;
-      background:linear-gradient(135deg,var(--a1),var(--a2));
-      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
-    .header-update {
-      font-size:11px; color:var(--t3); font-weight:600;
+    /* Header Navigation */
+    .nav-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 16px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    .filter-bar {
-      max-width:1280px; margin:16px auto 0; padding:0 16px; width:100%;
-    }
-    .filter-row {
-      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; align-items:center; width:100%;
-    }
-    .search-input {
-      flex:1; min-width:160px; max-width:260px;
-      padding:6px 14px; border:1.5px solid var(--border);
-      border-radius:99px; font-size:12px; color:var(--t1);
-      font-family:'Noto Sans KR',sans-serif; background:var(--white);
-      transition:border-color .15s;
-    }
-    .search-input:focus { outline:none; border-color:var(--a1); }
-
-    .tab-bar {
-      max-width:1280px; margin:0 auto; padding:12px 16px;
-      border-bottom:1.5px solid var(--border);
-      display:flex; gap:8px;
-    }
-    .tab-btn {
-      padding:8px 16px; font-size:12px; font-weight:700;
-      border:1.5px solid transparent; border-radius:8px;
-      background:transparent; color:var(--t2);
-      cursor:pointer; transition:all .15s;
-      font-family:'Noto Sans KR',sans-serif;
-    }
-    .tab-btn:hover { color:var(--a1); }
-    .tab-btn.active {
-      background:var(--a1); color:#fff; border-color:var(--a1);
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
     }
 
-    .content-wrap {
-      max-width:1280px; margin:0 auto; padding:0 16px 40px;
+    .nav-title {
+      font-size: 24px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Nunito', sans-serif;
     }
 
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 8px 16px;
+      background: #f0f0f0;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #667eea;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* Main Content */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* Header Section */
+    .header-section {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .header-section h1 {
+      font-size: 36px;
+      font-weight: 900;
+      color: #333;
+      margin-bottom: 10px;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .header-section p {
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* Tabs */
+    .tabs-container {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .tab-button {
+      padding: 12px 24px;
+      border: none;
+      background: white;
+      color: #667eea;
+      border-bottom: 3px solid transparent;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tab-button.active {
+      background: white;
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .tab-button:hover {
+      background: #f8f8f8;
+    }
+
+    /* Tab Content */
     .tab-content {
-      display:none;
+      display: none;
     }
+
     .tab-content.active {
-      display:block;
+      display: block;
+    }
+
+    /* Search */
+    .search-container {
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #667eea;
     }
 
     /* User Cards Grid */
-    .user-card-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-      gap:12px;
-      margin-bottom:20px;
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
     }
 
     .user-card {
-      background:var(--white); border:1.5px solid var(--border);
-      border-radius:16px; padding:16px;
-      box-shadow:var(--shadow);
-      cursor:pointer;
-      transition:all .15s;
-    }
-    .user-card:hover {
-      border-color:var(--a1);
-      box-shadow:var(--shadow2);
-      transform:translateY(-2px);
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
     }
 
-    .user-rank {
-      font-size:28px; font-weight:900; color:var(--a1);
-      font-family:'Nunito',sans-serif;
-      margin-bottom:8px;
+    .user-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+      border-color: #667eea;
+    }
+
+    .medal-rank {
+      font-size: 32px;
+      font-weight: 900;
+      color: #667eea;
+      margin-bottom: 8px;
+      font-family: 'Nunito', sans-serif;
     }
 
     .user-name {
-      font-size:16px; font-weight:700; color:var(--t1);
-      margin-bottom:4px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
     }
 
     .user-count {
-      font-size:13px; color:var(--t3);
-      margin-bottom:12px;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
     }
 
-    .pet-mini-list {
-      display:flex; gap:6px; flex-wrap:wrap;
+    .pet-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .pet-tag {
-      display:flex; align-items:center; gap:4px;
-      padding:4px 8px; background:var(--s1); border-radius:6px;
-      font-size:10px; border:1px solid var(--border);
+    .pet-badge {
+      background: #f0f0f0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #667eea;
+      font-weight: 600;
+      border: 1px solid #e0e0e0;
     }
 
-    .pet-tag img {
-      width:16px; height:16px; object-fit:contain;
-    }
-
-    /* Pet Grid */
-    .pet-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-      gap:12px;
-      margin-bottom:20px;
-    }
-
+    /* Pet Cards */
     .pet-card {
-      background:var(--white); border:1.5px solid var(--border);
-      border-radius:16px; padding:16px;
-      box-shadow:var(--shadow);
-      transition:all .15s;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 20px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
     }
+
     .pet-card:hover {
-      border-color:var(--a1);
-      box-shadow:var(--shadow2);
-      transform:translateY(-2px);
+      border-color: #667eea;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
     }
 
     .pet-header {
-      display:flex; align-items:center; gap:12px; margin-bottom:12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f0f0f0;
     }
 
-    .pet-img-box {
-      width:60px; height:60px; flex-shrink:0;
-      background:var(--s1); border:1.5px solid var(--border);
-      border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      overflow:hidden;
-    }
-
-    .pet-img-box img {
-      width:100%; height:100%; object-fit:contain;
+    .pet-image {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      flex-shrink: 0;
     }
 
     .pet-name {
-      font-size:16px; font-weight:700; color:var(--t1);
-      font-family:'Nunito',sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: #333;
+      font-family: 'Nunito', sans-serif;
     }
 
     .ranking-section {
-      margin-bottom:12px;
+      margin-bottom: 24px;
     }
+
     .ranking-section:last-child {
-      margin-bottom:0;
+      margin-bottom: 0;
     }
 
     .ranking-title {
-      font-size:11px; font-weight:700; color:var(--a1);
-      letter-spacing:1px; margin-bottom:8px;
-      font-family:'Nunito',sans-serif;
-      text-transform:uppercase;
+      font-size: 14px;
+      font-weight: 700;
+      color: #667eea;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      font-family: 'Nunito', sans-serif;
     }
 
     .ranking-list {
-      list-style:none; display:flex; flex-direction:column; gap:6px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .ranking-item {
-      display:flex; align-items:center; gap:6px;
-      padding:6px; background:var(--s1); border-radius:6px;
-      border-left:3px solid var(--a1);
-      font-size:12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f8f8f8;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
     }
 
-    .rank-badge {
-      display:flex; align-items:center; justify-content:center;
-      width:24px; height:24px; border-radius:50%;
-      background:var(--a1); color:#fff;
-      font-weight:700; font-size:10px;
-      flex-shrink:0;
-      font-family:'Nunito',sans-serif;
+    .rank-number {
+      min-width: 32px;
+      height: 32px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      flex-shrink: 0;
+      font-family: 'Nunito', sans-serif;
     }
 
-    .rank-badge.tie {
-      background:var(--t3);
+    .rank-number.tie {
+      background: #999;
     }
 
     .ranking-info {
-      flex:1;
+      flex: 1;
     }
 
-    .nick {
-      font-size:11px; font-weight:700; color:var(--t1);
-      margin-bottom:1px;
+    .ranking-nick {
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 2px;
     }
 
-    .score {
-      color:var(--a2); font-weight:700; font-size:10px;
+    .ranking-score {
+      font-size: 12px;
+      color: #764ba2;
+      font-weight: 600;
     }
 
-    .view-more-btn {
-      padding:6px 12px; margin-top:8px;
-      background:var(--s1); border:1px solid var(--border);
-      border-radius:6px; color:var(--a1); font-size:11px;
-      font-weight:700; cursor:pointer; width:100%;
-      transition:all .15s;
-    }
-    .view-more-btn:hover {
-      background:var(--a1); color:#fff; border-color:var(--a1);
-    }
-
-    .empty {
-      padding:12px; color:var(--t3); font-size:11px; text-align:center;
-      font-style:italic;
+    .view-more {
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+      transition: all 0.3s;
     }
 
-    .full-ranking-modal {
-      display:none; position:fixed; top:0; left:0; right:0; bottom:0;
-      background:rgba(0,0,0,0.5); z-index:1000;
-      align-items:center; justify-content:center;
+    .view-more:hover {
+      transform: scale(1.02);
     }
 
-    .full-ranking-modal.active {
-      display:flex;
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
     }
 
     .modal-content {
-      background:var(--white); border-radius:16px;
-      max-width:600px; width:90%; max-height:80vh;
-      overflow-y:auto; box-shadow:var(--shadow2);
+      background: white;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
 
     .modal-header {
-      padding:20px; border-bottom:1.5px solid var(--border);
-      display:flex; justify-content:space-between; align-items:center;
+      padding: 20px;
+      border-bottom: 2px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .modal-title {
-      font-size:18px; font-weight:700;
+      font-size: 18px;
+      font-weight: 700;
     }
 
     .modal-close {
-      background:none; border:none; font-size:24px;
-      color:var(--t3); cursor:pointer;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
     }
 
     .modal-body {
-      padding:20px;
+      padding: 20px;
     }
 
-    .full-ranking-item {
-      display:flex; align-items:center; gap:10px;
-      padding:10px; border-bottom:1px solid var(--border);
+    .modal-ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
     }
 
-    .full-ranking-item:last-child {
-      border-bottom:none;
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
     }
 
-    @media(max-width:768px) {
-      .pet-grid, .user-card-grid {
-        grid-template-columns:1fr;
+    @media (max-width: 768px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
       }
-      .header-inner {
-        flex-direction:column; align-items:flex-start;
+
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
       }
-      .search-input {
-        min-width:100%;
+
+      .header-section h1 {
+        font-size: 28px;
+      }
+
+      .pet-header {
+        flex-direction: column;
+        text-align: center;
       }
     }
   </style>
 </head>
 <body>
-  <div class="page-header">
-    <div class="header-inner">
-      <a href="index__3_.html" class="back-btn">← 돌아가기</a>
-      <div class="header-title">🐾 펫 랭킹</div>
-      <div class="header-update" id="updateTime"></div>
+  <div class="nav-header">
+    <div class="nav-container">
+      <div class="nav-title">🐾 WIND 펫 랭킹</div>
+      <div class="nav-links">
+        <a href="index__3_.html" class="nav-link">📊 계산기</a>
+        <a href="pokedex.html" class="nav-link">📖 도감</a>
+        <a href="raid.html" class="nav-link">⚔️ 레이드</a>
+        <a href="card.html" class="nav-link">🃏 카드</a>
+        <a href="pet_ranking.html" class="nav-link active">🏆 랭킹</a>
+      </div>
     </div>
   </div>
 
-  <div class="filter-bar">
-    <div class="filter-row">
-      <input type="text" class="search-input" id="searchInput" placeholder="펫 이름으로 검색...">
+  <div class="main-container">
+    <div class="header-section">
+      <h1>펫 랭킹</h1>
+      <p id="updateTime">데이터 로드 중...</p>
     </div>
-  </div>
 
-  <div class="tab-bar">
-    <button class="tab-btn active" data-tab="user-ranking">🏆 유저 순위</button>
-    <button class="tab-btn" data-tab="pet-ranking">🐾 펫별 랭킹</button>
-  </div>
+    <div class="tabs-container">
+      <button class="tab-button active" onclick="switchTab('user-ranking')">🏆 유저 순위</button>
+      <button class="tab-button" onclick="switchTab('pet-ranking')">🐾 펫별 랭킹</button>
+    </div>
 
-  <div class="content-wrap">
     <!-- 유저 순위 탭 -->
     <div id="user-ranking" class="tab-content active">
-      <div class="user-card-grid" id="userGrid"></div>
+      <div class="cards-grid" id="userGrid"></div>
     </div>
 
     <!-- 펫별 랭킹 탭 -->
     <div id="pet-ranking" class="tab-content">
-      <div class="pet-grid" id="petGrid"></div>
+      <div class="search-container">
+        <input type="text" class="search-input" id="searchInput" placeholder="펫 이름으로 검색...">
+      </div>
+      <div id="petContainer"></div>
     </div>
   </div>
 
-  <!-- 전체 랭킹 보기 모달 -->
-  <div class="full-ranking-modal" id="fullRankingModal">
+  <!-- 전체 랭킹 모달 -->
+  <div class="modal" id="rankingModal">
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title" id="modalTitle"></div>
@@ -368,23 +504,8 @@
   <script>
     let allData = [];
     let latestData = null;
-    let petImageMap = {};
 
-    // 펫 이미지 데이터 (pokedex에서 추출)
-    const petImages = {
-      '우리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/우리.png',
-      '두리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/두리.png',
-      '얼룩우리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/얼룩우리.png',
-      '불그리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/불그리.png',
-      '실버우리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/실버우리.png',
-      '부비': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/부비.png',
-      '부이': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/부이.png',
-      '부이비': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/부이비.png',
-      '쿠로로': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/쿠로로.png',
-      '골드부비': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/골드부비.png',
-    };
-
-    // JSON 데이터 로드
+    // 데이터 로드
     async function loadData() {
       try {
         const response = await fetch('pet_ranking_data.json');
@@ -393,28 +514,26 @@
         if (allData.length > 0) {
           latestData = allData[allData.length - 1];
           
-          // 마지막 업데이트 시간 표시
           const updateTime = new Date(latestData.timestamp);
-          document.getElementById('updateTime').innerHTML = 
+          document.getElementById('updateTime').textContent = 
             `마지막 업데이트: ${updateTime.toLocaleString('ko-KR')}`;
           
-          // 데이터 렌더링
           renderUserRanking(latestData.pets);
           renderPetRanking(latestData.pets);
         }
       } catch (error) {
         console.error('데이터 로드 실패:', error);
+        document.getElementById('updateTime').textContent = '데이터를 불러올 수 없습니다.';
       }
     }
 
-    // 동률 처리 함수
+    // 동률 처리
     function addRanksWithTies(rankings) {
-      if (rankings.length === 0) return [];
+      if (!rankings || rankings.length === 0) return [];
       
       const result = [];
       let currentRank = 1;
       let prevScore = null;
-      let count = 0;
 
       rankings.forEach((item, idx) => {
         const score = parseFloat(item.score);
@@ -441,8 +560,8 @@
 
       pets.forEach(pet => {
         const rankings = [
-          ...pet.general_ranking,
-          ...pet.rebirth_ranking
+          ...(pet.general_ranking || []),
+          ...(pet.rebirth_ranking || [])
         ];
 
         rankings.forEach(rank => {
@@ -458,166 +577,146 @@
         .map(([name, data]) => ({ 
           name, 
           count: data.count,
-          petList: Array.from(data.petList)
+          petList: Array.from(data.petList).sort()
         }))
         .sort((a, b) => b.count - a.count);
 
       const grid = document.getElementById('userGrid');
-      grid.innerHTML = sortedUsers.map((user, idx) => `
-        <div class="user-card">
-          <div class="user-rank">${getMedalEmoji(idx + 1)} ${idx + 1}위</div>
-          <div class="user-name">${user.name}</div>
-          <div class="user-count">보유 펫: ${user.count}마리</div>
-          <div class="pet-mini-list">
-            ${user.petList.slice(0, 5).map(petName => `
-              <div class="pet-tag">
-                <span>${petName}</span>
-              </div>
-            `).join('')}
-            ${user.petList.length > 5 ? `<div class="pet-tag">+${user.petList.length - 5}</div>` : ''}
+      grid.innerHTML = sortedUsers.map((user, idx) => {
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1;
+        return `
+          <div class="user-card">
+            <div class="medal-rank">${medal}</div>
+            <div class="user-name">${user.name}</div>
+            <div class="user-count">보유 펫: <strong>${user.count}마리</strong></div>
+            <div class="pet-badges">
+              ${user.petList.slice(0, 4).map(pet => `<div class="pet-badge">${pet}</div>`).join('')}
+              ${user.petList.length > 4 ? `<div class="pet-badge">+${user.petList.length - 4}</div>` : ''}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // 펫별 랭킹 렌더링
     function renderPetRanking(pets) {
-      const grid = document.getElementById('petGrid');
-      grid.innerHTML = '';
+      const container = document.getElementById('petContainer');
+      container.innerHTML = pets.map(pet => {
+        const general = addRanksWithTies(pet.general_ranking || []);
+        const rebirth = addRanksWithTies(pet.rebirth_ranking || []);
 
-      pets.forEach(pet => {
-        const generalWithRanks = addRanksWithTies(pet.general_ranking);
-        const rebirthWithRanks = addRanksWithTies(pet.rebirth_ranking);
+        return `
+          <div class="pet-card" data-pet="${pet.name}">
+            <div class="pet-header">
+              <div class="pet-image">🐾</div>
+              <div class="pet-name">${pet.name}</div>
+            </div>
 
-        const petImg = petImages[pet.name] || '';
-        
-        const card = document.createElement('div');
-        card.className = 'pet-card';
-        card.dataset.petName = pet.name;
-        
-        card.innerHTML = `
-          <div class="pet-header">
-            ${petImg ? `<div class="pet-img-box"><img src="${petImg}" alt="${pet.name}" onerror="this.style.display='none'"></div>` : ''}
-            <div class="pet-name">${pet.name}</div>
-          </div>
-          
-          <div class="ranking-section">
-            <div class="ranking-title">⭐ 일반 랭킹</div>
-            <ul class="ranking-list">
-              ${generalWithRanks.length > 0 
-                ? generalWithRanks.slice(0, 10).map(rank => `
-                    <li class="ranking-item">
-                      <div class="rank-badge ${rank.isTie ? 'tie' : ''}">${rank.isTie ? '=' : '#' + rank.displayRank}</div>
-                      <div class="ranking-info">
-                        <div class="nick">${rank.nickname}</div>
-                        <div class="score">점수: ${rank.score}</div>
-                      </div>
-                    </li>
-                  `).join('')
-                : '<li class="empty">데이터 없음</li>'
-              }
-            </ul>
-            ${generalWithRanks.length > 10 ? `
-              <button class="view-more-btn" onclick="showFullRanking('${pet.name}', 'general', ${JSON.stringify(generalWithRanks).replace(/'/g, '&#39;')})">
-                전체보기 (${generalWithRanks.length}명)
-              </button>
-            ` : ''}
-          </div>
-          
-          ${rebirthWithRanks.length > 0 ? `
             <div class="ranking-section">
-              <div class="ranking-title">🔥 환생 랭킹</div>
+              <div class="ranking-title">⭐ 일반 랭킹</div>
               <ul class="ranking-list">
-                ${rebirthWithRanks.slice(0, 10).map(rank => `
-                  <li class="ranking-item">
-                    <div class="rank-badge ${rank.isTie ? 'tie' : ''}">${rank.isTie ? '=' : '#' + rank.displayRank}</div>
-                    <div class="ranking-info">
-                      <div class="nick">${rank.nickname}</div>
-                      <div class="score">점수: ${rank.score}</div>
-                    </div>
-                  </li>
-                `).join('')}
+                ${general.length > 0 
+                  ? general.slice(0, 10).map((rank, i) => `
+                      <li class="ranking-item">
+                        <div class="rank-number ${rank.isTie ? 'tie' : ''}">
+                          ${rank.isTie ? '=' : rank.displayRank}
+                        </div>
+                        <div class="ranking-info">
+                          <div class="ranking-nick">${rank.nickname}</div>
+                          <div class="ranking-score">점수: ${rank.score}</div>
+                        </div>
+                      </li>
+                    `).join('')
+                  : '<div class="empty-state">데이터 없음</div>'
+                }
               </ul>
-              ${rebirthWithRanks.length > 10 ? `
-                <button class="view-more-btn" onclick="showFullRanking('${pet.name}', 'rebirth', ${JSON.stringify(rebirthWithRanks).replace(/'/g, '&#39;')})">
-                  전체보기 (${rebirthWithRanks.length}명)
+              ${general.length > 10 ? `
+                <button class="view-more" onclick="showFullRanking('${pet.name}', 'general', ${JSON.stringify(general).replace(/"/g, '&quot;')})">
+                  전체보기 (${general.length}명)
                 </button>
               ` : ''}
             </div>
-          ` : ''}
+
+            ${rebirth.length > 0 ? `
+              <div class="ranking-section">
+                <div class="ranking-title">🔥 환생 랭킹</div>
+                <ul class="ranking-list">
+                  ${rebirth.slice(0, 10).map(rank => `
+                    <li class="ranking-item">
+                      <div class="rank-number ${rank.isTie ? 'tie' : ''}">
+                        ${rank.isTie ? '=' : rank.displayRank}
+                      </div>
+                      <div class="ranking-info">
+                        <div class="ranking-nick">${rank.nickname}</div>
+                        <div class="ranking-score">점수: ${rank.score}</div>
+                      </div>
+                    </li>
+                  `).join('')}
+                </ul>
+                ${rebirth.length > 10 ? `
+                  <button class="view-more" onclick="showFullRanking('${pet.name}', 'rebirth', ${JSON.stringify(rebirth).replace(/"/g, '&quot;')})">
+                    전체보기 (${rebirth.length}명)
+                  </button>
+                ` : ''}
+              </div>
+            ` : ''}
+          </div>
         `;
-        grid.appendChild(card);
-      });
+      }).join('');
 
       setupSearch();
     }
 
-    // 전체 랭킹 보기
-    function showFullRanking(petName, type, rankings) {
-      const modal = document.getElementById('fullRankingModal');
-      const title = document.getElementById('modalTitle');
-      const body = document.getElementById('modalBody');
+    // 탭 전환
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
       
-      title.textContent = `${petName} - ${type === 'general' ? '일반' : '환생'} 랭킹`;
-      
-      body.innerHTML = rankings.map((rank, idx) => `
-        <div class="full-ranking-item">
-          <div class="rank-badge ${rank.isTie ? 'tie' : ''}" style="margin-right:10px;">
-            ${rank.isTie ? '=' : '#' + rank.displayRank}
-          </div>
-          <div style="flex:1;">
-            <div class="nick">${rank.nickname}</div>
-            <div class="score">점수: ${rank.score}</div>
-          </div>
-        </div>
-      `).join('');
-      
-      modal.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
     }
 
-    function closeModal() {
-      document.getElementById('fullRankingModal').classList.remove('active');
-    }
-
-    // 검색 기능
+    // 검색
     function setupSearch() {
       document.getElementById('searchInput').addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
-        const cards = document.querySelectorAll('.pet-card');
-
-        cards.forEach(card => {
-          const petName = card.dataset.petName.toLowerCase();
-          if (petName.includes(keyword)) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
+        document.querySelectorAll('[data-pet]').forEach(card => {
+          const petName = card.dataset.pet.toLowerCase();
+          card.style.display = petName.includes(keyword) ? 'block' : 'none';
         });
       });
     }
 
-    // 탭 전환
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        
-        btn.classList.add('active');
-        const tabId = btn.dataset.tab;
-        document.getElementById(tabId).classList.add('active');
-      });
+    // 전체보기 모달
+    function showFullRanking(petName, type, rankings) {
+      const modal = document.getElementById('rankingModal');
+      document.getElementById('modalTitle').textContent = `${petName} - ${type === 'general' ? '일반' : '환생'} 랭킹`;
+      document.getElementById('modalBody').innerHTML = rankings.map(rank => `
+        <div class="modal-ranking-item">
+          <div class="rank-number ${rank.isTie ? 'tie' : ''}">
+            ${rank.isTie ? '=' : rank.displayRank}
+          </div>
+          <div class="ranking-info">
+            <div class="ranking-nick">${rank.nickname}</div>
+            <div class="ranking-score">점수: ${rank.score}</div>
+          </div>
+        </div>
+      `).join('');
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('rankingModal').classList.remove('active');
+    }
+
+    // 외부 클릭 시 모달 닫기
+    document.getElementById('rankingModal').addEventListener('click', (e) => {
+      if (e.target.id === 'rankingModal') closeModal();
     });
 
-    // 모달 외부 클릭 시 닫기
-    document.getElementById('fullRankingModal').addEventListener('click', (e) => {
-      if (e.target.id === 'fullRankingModal') {
-        closeModal();
-      }
-    });
-
-    // 페이지 로드
+    // 초기 로드
     loadData();
-    setInterval(loadData, 10000);
+    setInterval(loadData, 15000);
   </script>
 </body>
 </html>
