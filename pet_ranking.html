@@ -203,36 +203,36 @@
       box-shadow:0 6px 28px rgba(160,120,24,0.35);
     }
 
-    /* ── 2위: 은색 흐르는 그라데이션 ── */
+    /* ── 2위: 밝은 은색 ── */
     .user-card.rank-silver {
-      background:linear-gradient(270deg,#f0f0f4,#e4e4ec,#f4f4f8,#e8e8f0);
+      background:linear-gradient(270deg,#eef0ff,#dde2f8,#e8ecff,#d8dff5);
       background-size:400% 400%;
       animation:gradientShift 6s ease infinite;
-      border:2px solid #9898b0;
-      box-shadow:0 4px 18px rgba(120,120,160,0.18);
+      border:2.5px solid #7080d0;
+      box-shadow:0 6px 24px rgba(100,120,220,0.28);
     }
     [data-theme="dark"] .user-card.rank-silver {
-      background:linear-gradient(270deg,#252342,#2e2c4e,#201e3a,#252342);
+      background:linear-gradient(270deg,#1e2248,#252c5a,#192040,#1e2248);
       background-size:400% 400%;
       animation:gradientShift 6s ease infinite;
-      border-color:#6060a0;
-      box-shadow:0 4px 20px rgba(96,96,160,0.35);
+      border-color:#6878d8;
+      box-shadow:0 6px 28px rgba(100,120,220,0.5);
     }
 
-    /* ── 3위: 브론즈 흐르는 그라데이션 ── */
+    /* ── 3위: 차분한 브론즈 ── */
     .user-card.rank-bronze {
-      background:linear-gradient(270deg,#fff3e8,#fde4cc,#fff0e0,#fde8d4);
+      background:linear-gradient(270deg,#fdf6f0,#f8ece0,#fdf2e8,#f5e8d8);
       background-size:400% 400%;
       animation:gradientShift 7s ease infinite;
-      border:2px solid #b87030;
-      box-shadow:0 4px 18px rgba(184,112,48,0.18);
+      border:1.5px solid #c89060;
+      box-shadow:0 3px 14px rgba(184,130,80,0.14);
     }
     [data-theme="dark"] .user-card.rank-bronze {
-      background:linear-gradient(270deg,#261808,#341e08,#1e1206,#261808);
+      background:linear-gradient(270deg,#221608,#2c1c08,#1c1206,#221608);
       background-size:400% 400%;
       animation:gradientShift 7s ease infinite;
-      border-color:#885020;
-      box-shadow:0 4px 20px rgba(136,80,32,0.35);
+      border-color:#7a5028;
+      box-shadow:0 3px 16px rgba(120,80,40,0.28);
     }
 
     /* ── 4~10위: 은은한 보라 흐름 ── */
@@ -250,29 +250,25 @@
       border-color:#4e4c7a;
     }
 
-    /* 카드 꾸밈 - 오른쪽 위 다이아몬드 패턴 (원 대신) */
+    /* 카드 꾸밈 - 오른쪽 위 별 + 도트 */
     .user-card::before {
-      content:'';
-      position:absolute; top:12px; right:14px;
-      width:28px; height:28px;
-      border:2px solid currentColor; opacity:.08;
-      transform:rotate(45deg);
-      border-radius:4px;
-      pointer-events:none;
+      content:'✦';
+      position:absolute; top:14px; right:16px;
+      font-size:22px; opacity:.12; pointer-events:none;
+      line-height:1;
     }
     .user-card::after {
-      content:'';
-      position:absolute; top:20px; right:22px;
-      width:14px; height:14px;
-      border:2px solid currentColor; opacity:.06;
-      transform:rotate(45deg);
-      border-radius:2px;
-      pointer-events:none;
+      content:'·';
+      position:absolute; top:34px; right:14px;
+      font-size:28px; opacity:.10; pointer-events:none;
+      line-height:1;
     }
-    .user-card.rank-hero::before { color:#d9a010; opacity:.15; width:36px; height:36px; }
-    .user-card.rank-hero::after  { color:#d9a010; opacity:.10; width:20px; height:20px; }
-    .user-card.rank-silver::before { color:#8888b0; }
-    .user-card.rank-bronze::before { color:#b87030; }
+    .user-card.rank-hero::before   { color:#d9a010; opacity:.22; font-size:28px; }
+    .user-card.rank-hero::after    { color:#d9a010; opacity:.14; }
+    .user-card.rank-silver::before { color:#4060c0; opacity:.22; }
+    .user-card.rank-silver::after  { color:#4060c0; opacity:.12; }
+    .user-card.rank-bronze::before { color:#b07040; opacity:.16; }
+    .user-card.rank-bronze::after  { color:#b07040; opacity:.10; }
 
     /* 카드 내용 */
     .rank-label-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
@@ -281,14 +277,25 @@
       padding:3px 10px; border-radius:99px; letter-spacing:.5px;
     }
     .rank-num-badge.gold   { background:rgba(217,160,16,.18); color:#a07010; border:1.5px solid rgba(217,160,16,.4); }
-    .rank-num-badge.silver { background:rgba(140,140,180,.18); color:#5858a0; border:1.5px solid rgba(140,140,180,.4); }
+    .rank-num-badge.silver { background:rgba(100,120,220,.18); color:#4060c0; border:1.5px solid rgba(100,120,220,.45); }
     .rank-num-badge.bronze { background:rgba(184,112,48,.18);  color:#906020; border:1.5px solid rgba(184,112,48,.4); }
     .rank-num-badge.normal { background:var(--s2); color:var(--a1); border:1.5px solid var(--border2); }
     [data-theme="dark"] .rank-num-badge.gold   { background:rgba(217,160,16,.22); color:#d4a820; border-color:rgba(217,160,16,.45); }
-    [data-theme="dark"] .rank-num-badge.silver { background:rgba(160,160,220,.2); color:#a0a0e0; border-color:rgba(160,160,220,.4); }
+    [data-theme="dark"] .rank-num-badge.silver { background:rgba(100,120,230,.28); color:#8cacff; border-color:rgba(100,120,230,.55); }
     [data-theme="dark"] .rank-num-badge.bronze { background:rgba(184,112,48,.22); color:#d08040; border-color:rgba(184,112,48,.45); }
     [data-theme="dark"] .rank-num-badge.normal { background:#312f4c; color:var(--a1); border-color:#4e4c7a; }
     .rank-emoji { font-size:20px; line-height:1; }
+    .rank-comment {
+      font-size:11px; font-weight:700; color:var(--t3);
+      font-family:'Nunito',sans-serif; letter-spacing:.3px;
+      margin-bottom:8px; margin-top:-2px;
+    }
+    .user-card.rank-hero .rank-comment   { color:#b08010; }
+    .user-card.rank-silver .rank-comment { color:#4060b0; }
+    .user-card.rank-bronze .rank-comment { color:#9a6840; }
+    [data-theme="dark"] .user-card.rank-hero .rank-comment   { color:#d4a820; }
+    [data-theme="dark"] .user-card.rank-silver .rank-comment { color:#8cacff; }
+    [data-theme="dark"] .user-card.rank-bronze .rank-comment { color:#c08848; }
     .user-name { font-size:17px; font-weight:800; color:var(--t1); margin-bottom:8px; }
     .user-card.rank-hero .user-name { font-size:20px; }
 
@@ -1104,6 +1111,20 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
 
   const detailBtn = `<button class="view-more-btn" onclick="openDetailModal('${user.name}','${user.pets.length}개 랭킹','${petsJson}')">펫 상세 보기 ↗</button>`;
 
+  // 등수별 멘트
+  const RANK_COMMENTS = {
+    1:  '👑 넘사벽의 절대 강자!',
+    2:  '🌙 왕좌를 노리는 도전자',
+    3:  '🔥 TOP3의 자리를 굳건히',
+    4:  '💖 4위도 충분히 대단해!',
+    5:  '💖 TOP5 진입 성공!',
+    6:  '💖 TOP10의 중심',
+    7:  '💖 럭키 세븐!',
+    8:  '💖 꾸준한 강자',
+    9:  '💖 한 걸음만 더!',
+    10: '💖 TOP10 마지막 관문 수호',
+  };
+
   if (displayRank <= 10) {
     let cardClass, badgeClass, emoji, rankText;
     if (displayRank === 1) {
@@ -1114,14 +1135,16 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       cardClass = 'rank-bronze'; badgeClass = 'bronze'; emoji = '🥉'; rankText = '3위';
     } else {
       cardClass = 'rank-top10'; badgeClass = 'normal';
-      emoji = ['','','','🏅','🎗','⭐','🌟','💫','✨','🎀'][displayRank] || '🏅';
+      emoji = '💖';
       rankText = `${displayRank}위`;
     }
+    const comment = RANK_COMMENTS[displayRank] || '';
     return `<div class="user-card ${cardClass}">
       <div class="rank-label-row">
         <span class="rank-emoji">${emoji}</span>
         <span class="rank-num-badge ${badgeClass}">${rankText}</span>
       </div>
+      <div class="rank-comment">${comment}</div>
       <div class="user-name">${user.name}</div>
       ${statChips}${badges}${detailBtn}
     </div>`;
