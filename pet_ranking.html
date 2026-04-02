@@ -37,7 +37,6 @@
         radial-gradient(circle at 85% 80%,rgba(245,135,184,0.07) 0%,transparent 50%);
     }
 
-    /* ── Header ── */
     .page-header {
       background:var(--white); border-bottom:1.5px solid var(--border);
       padding:16px 20px; position:sticky; top:0; z-index:100;
@@ -65,28 +64,12 @@
       font-size:11px; color:var(--t3); font-weight:600;
     }
 
-    /* ── Filters ── */
     .filter-bar {
       max-width:1280px; margin:16px auto 0; padding:0 16px; width:100%;
     }
     .filter-row {
       display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; align-items:center; width:100%;
     }
-    .filter-label {
-      font-size:10px; font-weight:700; color:var(--t3);
-      letter-spacing:1.5px; font-family:'Nunito',sans-serif;
-      min-width:50px;
-    }
-    .filter-btn {
-      padding:5px 12px; font-size:11px; font-weight:700;
-      font-family:'Noto Sans KR',sans-serif;
-      border:1.5px solid var(--border); border-radius:99px;
-      background:var(--white); color:var(--t2);
-      cursor:pointer; transition:all .15s;
-    }
-    .filter-btn:hover { border-color:var(--a1); color:var(--a1); }
-    .filter-btn.active { background:var(--a1); color:#fff; border-color:var(--a1); }
-
     .search-input {
       flex:1; min-width:160px; max-width:260px;
       padding:6px 14px; border:1.5px solid var(--border);
@@ -96,7 +79,6 @@
     }
     .search-input:focus { outline:none; border-color:var(--a1); }
 
-    /* ── Tabs ── */
     .tab-bar {
       max-width:1280px; margin:0 auto; padding:12px 16px;
       border-bottom:1.5px solid var(--border);
@@ -114,7 +96,6 @@
       background:var(--a1); color:#fff; border-color:var(--a1);
     }
 
-    /* ── Content ── */
     .content-wrap {
       max-width:1280px; margin:0 auto; padding:0 16px 40px;
     }
@@ -126,7 +107,58 @@
       display:block;
     }
 
-    /* ── Pet Cards (Grid) ── */
+    /* User Cards Grid */
+    .user-card-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+      gap:12px;
+      margin-bottom:20px;
+    }
+
+    .user-card {
+      background:var(--white); border:1.5px solid var(--border);
+      border-radius:16px; padding:16px;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:all .15s;
+    }
+    .user-card:hover {
+      border-color:var(--a1);
+      box-shadow:var(--shadow2);
+      transform:translateY(-2px);
+    }
+
+    .user-rank {
+      font-size:28px; font-weight:900; color:var(--a1);
+      font-family:'Nunito',sans-serif;
+      margin-bottom:8px;
+    }
+
+    .user-name {
+      font-size:16px; font-weight:700; color:var(--t1);
+      margin-bottom:4px;
+    }
+
+    .user-count {
+      font-size:13px; color:var(--t3);
+      margin-bottom:12px;
+    }
+
+    .pet-mini-list {
+      display:flex; gap:6px; flex-wrap:wrap;
+    }
+
+    .pet-tag {
+      display:flex; align-items:center; gap:4px;
+      padding:4px 8px; background:var(--s1); border-radius:6px;
+      font-size:10px; border:1px solid var(--border);
+    }
+
+    .pet-tag img {
+      width:16px; height:16px; object-fit:contain;
+    }
+
+    /* Pet Grid */
     .pet-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
@@ -146,9 +178,24 @@
       transform:translateY(-2px);
     }
 
+    .pet-header {
+      display:flex; align-items:center; gap:12px; margin-bottom:12px;
+    }
+
+    .pet-img-box {
+      width:60px; height:60px; flex-shrink:0;
+      background:var(--s1); border:1.5px solid var(--border);
+      border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+
+    .pet-img-box img {
+      width:100%; height:100%; object-fit:contain;
+    }
+
     .pet-name {
       font-size:16px; font-weight:700; color:var(--t1);
-      margin-bottom:12px;
       font-family:'Nunito',sans-serif;
     }
 
@@ -171,22 +218,23 @@
     }
 
     .ranking-item {
-      display:flex; align-items:center; gap:8px;
-      padding:8px; background:var(--s1); border-radius:8px;
+      display:flex; align-items:center; gap:6px;
+      padding:6px; background:var(--s1); border-radius:6px;
       border-left:3px solid var(--a1);
-      transition:background .12s;
-    }
-    .ranking-item:hover {
-      background:var(--s2);
+      font-size:12px;
     }
 
     .rank-badge {
       display:flex; align-items:center; justify-content:center;
-      width:28px; height:28px; border-radius:50%;
+      width:24px; height:24px; border-radius:50%;
       background:var(--a1); color:#fff;
-      font-weight:700; font-size:11px;
+      font-weight:700; font-size:10px;
       flex-shrink:0;
       font-family:'Nunito',sans-serif;
+    }
+
+    .rank-badge.tie {
+      background:var(--t3);
     }
 
     .ranking-info {
@@ -194,75 +242,79 @@
     }
 
     .nick {
-      font-size:12px; font-weight:700; color:var(--t1);
-      margin-bottom:2px;
-    }
-
-    .stats {
-      font-size:10px; color:var(--t3);
-      line-height:1.4;
+      font-size:11px; font-weight:700; color:var(--t1);
+      margin-bottom:1px;
     }
 
     .score {
-      color:var(--a2); font-weight:700;
-      margin-top:2px;
+      color:var(--a2); font-weight:700; font-size:10px;
+    }
+
+    .view-more-btn {
+      padding:6px 12px; margin-top:8px;
+      background:var(--s1); border:1px solid var(--border);
+      border-radius:6px; color:var(--a1); font-size:11px;
+      font-weight:700; cursor:pointer; width:100%;
+      transition:all .15s;
+    }
+    .view-more-btn:hover {
+      background:var(--a1); color:#fff; border-color:var(--a1);
     }
 
     .empty {
-      padding:12px; color:var(--t3); font-size:12px; text-align:center;
+      padding:12px; color:var(--t3); font-size:11px; text-align:center;
       font-style:italic;
     }
 
-    /* ── User Ranking Table ── */
-    .table-wrap {
-      overflow-x:auto; margin-bottom:20px;
+    .full-ranking-modal {
+      display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.5); z-index:1000;
+      align-items:center; justify-content:center;
     }
-    table {
-      width:100%; border-collapse:collapse;
+
+    .full-ranking-modal.active {
+      display:flex;
+    }
+
+    .modal-content {
       background:var(--white); border-radius:16px;
-      overflow:hidden; box-shadow:var(--shadow);
+      max-width:600px; width:90%; max-height:80vh;
+      overflow-y:auto; box-shadow:var(--shadow2);
     }
-    thead tr {
-      background:linear-gradient(135deg,var(--s2),var(--s1));
-      border-bottom:2px solid var(--border);
-    }
-    th {
-      padding:10px 12px; font-size:11px; letter-spacing:1px;
-      color:var(--t2); font-family:'Nunito',sans-serif; font-weight:800;
-      text-align:center; white-space:nowrap;
-    }
-    th:first-child, th:nth-child(2) { text-align:left; }
 
-    tbody tr {
-      border-bottom:1px solid var(--border);
-      transition:background .12s;
+    .modal-header {
+      padding:20px; border-bottom:1.5px solid var(--border);
+      display:flex; justify-content:space-between; align-items:center;
     }
-    tbody tr:last-child { border-bottom:none; }
-    tbody tr:hover { background:var(--s1); }
 
-    td {
-      padding:10px 12px; font-size:13px; color:var(--t1); vertical-align:middle;
+    .modal-title {
+      font-size:18px; font-weight:700;
     }
-    td:first-child { text-align:left; font-weight:700; }
-    td:nth-child(2) { text-align:left; }
-    td { text-align:center; }
 
-    .medal {
-      font-size:18px; margin-right:4px;
+    .modal-close {
+      background:none; border:none; font-size:24px;
+      color:var(--t3); cursor:pointer;
+    }
+
+    .modal-body {
+      padding:20px;
+    }
+
+    .full-ranking-item {
+      display:flex; align-items:center; gap:10px;
+      padding:10px; border-bottom:1px solid var(--border);
+    }
+
+    .full-ranking-item:last-child {
+      border-bottom:none;
     }
 
     @media(max-width:768px) {
-      .pet-grid {
+      .pet-grid, .user-card-grid {
         grid-template-columns:1fr;
       }
       .header-inner {
         flex-direction:column; align-items:flex-start;
-      }
-      .header-update {
-        margin-left:0;
-      }
-      .filter-row {
-        flex-wrap:wrap;
       }
       .search-input {
         min-width:100%;
@@ -281,43 +333,56 @@
 
   <div class="filter-bar">
     <div class="filter-row">
-      <span class="filter-label">펫 검색</span>
       <input type="text" class="search-input" id="searchInput" placeholder="펫 이름으로 검색...">
     </div>
   </div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="pet-ranking">펫별 랭킹</button>
-    <button class="tab-btn" data-tab="user-ranking">유저 순위</button>
+    <button class="tab-btn active" data-tab="user-ranking">🏆 유저 순위</button>
+    <button class="tab-btn" data-tab="pet-ranking">🐾 펫별 랭킹</button>
   </div>
 
   <div class="content-wrap">
-    <!-- 펫별 랭킹 탭 -->
-    <div id="pet-ranking" class="tab-content active">
-      <div class="pet-grid" id="petGrid"></div>
+    <!-- 유저 순위 탭 -->
+    <div id="user-ranking" class="tab-content active">
+      <div class="user-card-grid" id="userGrid"></div>
     </div>
 
-    <!-- 유저 순위 탭 -->
-    <div id="user-ranking" class="tab-content">
-      <div class="table-wrap">
-        <table id="userTable">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>유저명</th>
-              <th>보유 펫 수</th>
-            </tr>
-          </thead>
-          <tbody id="userTableBody">
-          </tbody>
-        </table>
+    <!-- 펫별 랭킹 탭 -->
+    <div id="pet-ranking" class="tab-content">
+      <div class="pet-grid" id="petGrid"></div>
+    </div>
+  </div>
+
+  <!-- 전체 랭킹 보기 모달 -->
+  <div class="full-ranking-modal" id="fullRankingModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle"></div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
+      <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
 
   <script>
     let allData = [];
     let latestData = null;
+    let petImageMap = {};
+
+    // 펫 이미지 데이터 (pokedex에서 추출)
+    const petImages = {
+      '우리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/우리.png',
+      '두리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/두리.png',
+      '얼룩우리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/얼룩우리.png',
+      '불그리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/불그리.png',
+      '실버우리': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/실버우리.png',
+      '부비': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/부비.png',
+      '부이': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/부이.png',
+      '부이비': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/부이비.png',
+      '쿠로로': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/쿠로로.png',
+      '골드부비': 'https://llumixxx.github.io/lomxx_cal_wind/assets/pets/골드부비.png',
+    };
 
     // JSON 데이터 로드
     async function loadData() {
@@ -334,39 +399,117 @@
             `마지막 업데이트: ${updateTime.toLocaleString('ko-KR')}`;
           
           // 데이터 렌더링
-          renderPetRanking(latestData.pets);
           renderUserRanking(latestData.pets);
+          renderPetRanking(latestData.pets);
         }
       } catch (error) {
         console.error('데이터 로드 실패:', error);
       }
     }
 
-    // 펫 랭킹 렌더링
+    // 동률 처리 함수
+    function addRanksWithTies(rankings) {
+      if (rankings.length === 0) return [];
+      
+      const result = [];
+      let currentRank = 1;
+      let prevScore = null;
+      let count = 0;
+
+      rankings.forEach((item, idx) => {
+        const score = parseFloat(item.score);
+        
+        if (prevScore !== null && prevScore !== score) {
+          currentRank = idx + 1;
+        }
+        
+        result.push({
+          ...item,
+          displayRank: currentRank,
+          isTie: prevScore === score
+        });
+        
+        prevScore = score;
+      });
+
+      return result;
+    }
+
+    // 유저 순위 렌더링
+    function renderUserRanking(pets) {
+      const userStats = {};
+
+      pets.forEach(pet => {
+        const rankings = [
+          ...pet.general_ranking,
+          ...pet.rebirth_ranking
+        ];
+
+        rankings.forEach(rank => {
+          if (!userStats[rank.nickname]) {
+            userStats[rank.nickname] = { count: 0, petList: new Set() };
+          }
+          userStats[rank.nickname].count++;
+          userStats[rank.nickname].petList.add(pet.name);
+        });
+      });
+
+      const sortedUsers = Object.entries(userStats)
+        .map(([name, data]) => ({ 
+          name, 
+          count: data.count,
+          petList: Array.from(data.petList)
+        }))
+        .sort((a, b) => b.count - a.count);
+
+      const grid = document.getElementById('userGrid');
+      grid.innerHTML = sortedUsers.map((user, idx) => `
+        <div class="user-card">
+          <div class="user-rank">${getMedalEmoji(idx + 1)} ${idx + 1}위</div>
+          <div class="user-name">${user.name}</div>
+          <div class="user-count">보유 펫: ${user.count}마리</div>
+          <div class="pet-mini-list">
+            ${user.petList.slice(0, 5).map(petName => `
+              <div class="pet-tag">
+                <span>${petName}</span>
+              </div>
+            `).join('')}
+            ${user.petList.length > 5 ? `<div class="pet-tag">+${user.petList.length - 5}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 펫별 랭킹 렌더링
     function renderPetRanking(pets) {
       const grid = document.getElementById('petGrid');
       grid.innerHTML = '';
 
       pets.forEach(pet => {
+        const generalWithRanks = addRanksWithTies(pet.general_ranking);
+        const rebirthWithRanks = addRanksWithTies(pet.rebirth_ranking);
+
+        const petImg = petImages[pet.name] || '';
+        
         const card = document.createElement('div');
         card.className = 'pet-card';
         card.dataset.petName = pet.name;
         
         card.innerHTML = `
-          <div class="pet-name">${pet.name}</div>
+          <div class="pet-header">
+            ${petImg ? `<div class="pet-img-box"><img src="${petImg}" alt="${pet.name}" onerror="this.style.display='none'"></div>` : ''}
+            <div class="pet-name">${pet.name}</div>
+          </div>
           
           <div class="ranking-section">
-            <div class="ranking-title">⭐ 일반 랭킹 TOP 5</div>
+            <div class="ranking-title">⭐ 일반 랭킹</div>
             <ul class="ranking-list">
-              ${pet.general_ranking.length > 0 
-                ? pet.general_ranking.map(rank => `
+              ${generalWithRanks.length > 0 
+                ? generalWithRanks.slice(0, 10).map(rank => `
                     <li class="ranking-item">
-                      <div class="rank-badge">#${rank.rank}</div>
+                      <div class="rank-badge ${rank.isTie ? 'tie' : ''}">${rank.isTie ? '=' : '#' + rank.displayRank}</div>
                       <div class="ranking-info">
                         <div class="nick">${rank.nickname}</div>
-                        <div class="stats">
-                          Lv${rank.level} • ${rank.exp}
-                        </div>
                         <div class="score">점수: ${rank.score}</div>
                       </div>
                     </li>
@@ -374,25 +517,32 @@
                 : '<li class="empty">데이터 없음</li>'
               }
             </ul>
+            ${generalWithRanks.length > 10 ? `
+              <button class="view-more-btn" onclick="showFullRanking('${pet.name}', 'general', ${JSON.stringify(generalWithRanks).replace(/'/g, '&#39;')})">
+                전체보기 (${generalWithRanks.length}명)
+              </button>
+            ` : ''}
           </div>
           
-          ${pet.rebirth_ranking.length > 0 ? `
+          ${rebirthWithRanks.length > 0 ? `
             <div class="ranking-section">
-              <div class="ranking-title">🔥 환생 랭킹 TOP 5</div>
+              <div class="ranking-title">🔥 환생 랭킹</div>
               <ul class="ranking-list">
-                ${pet.rebirth_ranking.map(rank => `
+                ${rebirthWithRanks.slice(0, 10).map(rank => `
                   <li class="ranking-item">
-                    <div class="rank-badge">#${rank.rank}</div>
+                    <div class="rank-badge ${rank.isTie ? 'tie' : ''}">${rank.isTie ? '=' : '#' + rank.displayRank}</div>
                     <div class="ranking-info">
                       <div class="nick">${rank.nickname}</div>
-                      <div class="stats">
-                        Lv${rank.level} • ${rank.exp}
-                      </div>
                       <div class="score">점수: ${rank.score}</div>
                     </div>
                   </li>
                 `).join('')}
               </ul>
+              ${rebirthWithRanks.length > 10 ? `
+                <button class="view-more-btn" onclick="showFullRanking('${pet.name}', 'rebirth', ${JSON.stringify(rebirthWithRanks).replace(/'/g, '&#39;')})">
+                  전체보기 (${rebirthWithRanks.length}명)
+                </button>
+              ` : ''}
             </div>
           ` : ''}
         `;
@@ -402,47 +552,31 @@
       setupSearch();
     }
 
-    // 유저 순위 렌더링 (가장 많이 보유한 펫 순서)
-    function renderUserRanking(pets) {
-      const userStats = {};
-
-      // 각 유저별 랭킹 펫 수 카운트
-      pets.forEach(pet => {
-        const rankings = [
-          ...pet.general_ranking,
-          ...pet.rebirth_ranking
-        ];
-
-        rankings.forEach(rank => {
-          if (!userStats[rank.nickname]) {
-            userStats[rank.nickname] = 0;
-          }
-          userStats[rank.nickname]++;
-        });
-      });
-
-      // 유저별 정렬 (많은 순)
-      const sortedUsers = Object.entries(userStats)
-        .map(([name, count]) => ({ name, count }))
-        .sort((a, b) => b.count - a.count);
-
-      // 테이블에 데이터 삽입
-      const tbody = document.getElementById('userTableBody');
-      tbody.innerHTML = sortedUsers.map((user, idx) => `
-        <tr>
-          <td>${getMedalEmoji(idx + 1)} ${idx + 1}위</td>
-          <td>${user.name}</td>
-          <td>${user.count}마리</td>
-        </tr>
+    // 전체 랭킹 보기
+    function showFullRanking(petName, type, rankings) {
+      const modal = document.getElementById('fullRankingModal');
+      const title = document.getElementById('modalTitle');
+      const body = document.getElementById('modalBody');
+      
+      title.textContent = `${petName} - ${type === 'general' ? '일반' : '환생'} 랭킹`;
+      
+      body.innerHTML = rankings.map((rank, idx) => `
+        <div class="full-ranking-item">
+          <div class="rank-badge ${rank.isTie ? 'tie' : ''}" style="margin-right:10px;">
+            ${rank.isTie ? '=' : '#' + rank.displayRank}
+          </div>
+          <div style="flex:1;">
+            <div class="nick">${rank.nickname}</div>
+            <div class="score">점수: ${rank.score}</div>
+          </div>
+        </div>
       `).join('');
+      
+      modal.classList.add('active');
     }
 
-    // 순위 메달 이모지
-    function getMedalEmoji(rank) {
-      if (rank === 1) return '🥇';
-      if (rank === 2) return '🥈';
-      if (rank === 3) return '🥉';
-      return '';
+    function closeModal() {
+      document.getElementById('fullRankingModal').classList.remove('active');
     }
 
     // 검색 기능
@@ -474,10 +608,15 @@
       });
     });
 
+    // 모달 외부 클릭 시 닫기
+    document.getElementById('fullRankingModal').addEventListener('click', (e) => {
+      if (e.target.id === 'fullRankingModal') {
+        closeModal();
+      }
+    });
+
     // 페이지 로드
     loadData();
-
-    // 10초마다 자동 새로고침
     setInterval(loadData, 10000);
   </script>
 </body>
