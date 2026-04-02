@@ -338,6 +338,7 @@
     .empty-state {
       text-align:center; padding:24px; color:var(--t3); font-size:13px;
     }
+    #nickResults .user-grid { margin-top:0; }
 
     /* ── Modal ── */
     .modal-overlay {
@@ -490,31 +491,44 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <button class="tab-btn active" onclick="switchTab('user-tab', this)">🏆 전체 펫 보유 랭킹</button>
-    <button class="tab-btn" onclick="switchTab('first-tab', this)">🥇 1등 펫 보유 랭킹</button>
-    <button class="tab-btn" onclick="switchTab('top3-tab', this)">🎖️ TOP3 펫 보유 랭킹</button>
+    <button class="tab-btn active" onclick="switchTab('user-tab', this)">🏆 전체 랭킹</button>
+    <button class="tab-btn" onclick="switchTab('first-tab', this)">🥇 1등 보유</button>
+    <button class="tab-btn" onclick="switchTab('top3-tab', this)">🎖️ TOP3 보유</button>
+    <button class="tab-btn" onclick="switchTab('nick-tab', this)">🔍 닉네임 검색</button>
     <button class="tab-btn" onclick="switchTab('pet-tab', this)">🐾 펫별 랭킹</button>
   </div>
 
   <!-- 전체 펫 보유 랭킹 -->
   <div id="user-tab" class="tab-content active">
     <div class="user-grid" id="userGrid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
-    <div id="userGridExtra" style="display:none;"><div class="user-grid" id="userGridExtraInner"></div></div>
-    <div style="text-align:center;margin-top:8px;"><button class="view-more-btn" id="userMoreBtn" style="max-width:320px;display:none;" onclick="toggleMore('userGridExtra','userMoreBtn')">전체보기 ▼</button></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="view-more-btn" id="userMoreBtn" style="max-width:320px;display:none;" onclick="expandGrid('userGrid','userGrid','userMoreBtn')">전체보기 ▼</button>
+    </div>
   </div>
 
   <!-- 1등 펫 보유 랭킹 -->
   <div id="first-tab" class="tab-content">
     <div class="user-grid" id="firstGrid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
-    <div id="firstGridExtra" style="display:none;"><div class="user-grid" id="firstGridExtraInner"></div></div>
-    <div style="text-align:center;margin-top:8px;"><button class="view-more-btn" id="firstMoreBtn" style="max-width:320px;display:none;" onclick="toggleMore('firstGridExtra','firstMoreBtn')">전체보기 ▼</button></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="view-more-btn" id="firstMoreBtn" style="max-width:320px;display:none;" onclick="expandGrid('firstGrid','firstGrid','firstMoreBtn')">전체보기 ▼</button>
+    </div>
   </div>
 
   <!-- TOP3 펫 보유 랭킹 -->
   <div id="top3-tab" class="tab-content">
     <div class="user-grid" id="top3Grid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
-    <div id="top3GridExtra" style="display:none;"><div class="user-grid" id="top3GridExtraInner"></div></div>
-    <div style="text-align:center;margin-top:8px;"><button class="view-more-btn" id="top3MoreBtn" style="max-width:320px;display:none;" onclick="toggleMore('top3GridExtra','top3MoreBtn')">전체보기 ▼</button></div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="view-more-btn" id="top3MoreBtn" style="max-width:320px;display:none;" onclick="expandGrid('top3Grid','top3Grid','top3MoreBtn')">전체보기 ▼</button>
+    </div>
+  </div>
+
+  <!-- 닉네임 검색 탭 -->
+  <div id="nick-tab" class="tab-content">
+    <div class="search-wrap" style="max-width:480px;">
+      <span style="font-size:14px;">🔍</span>
+      <input type="text" id="nickSearch" placeholder="닉네임으로 검색..." oninput="searchNickname(this.value)">
+    </div>
+    <div id="nickResults"><div class="empty-state" style="padding:40px;">닉네임을 입력하면 해당 유저의 랭킹 정보를 보여드립니다.</div></div>
   </div>
 
   <!-- 펫별 랭킹 -->
@@ -1034,30 +1048,106 @@ function handleDetailModalClick(e) {
   if (e.target === document.getElementById('detailModal')) closeDetailModal();
 }
 
+// ── 전체 데이터 저장소 (전체보기용) ──
+const gridDataStore = {};
+
 // ── 유저 그리드 렌더 (공통) ──
-// filterFn: 카드에 표시할 pets를 필터링하는 함수 (null이면 전체)
-function renderUserGrid(sorted, gridId, extraInnerId, moreBtnId, detailPrefix, filterFn) {
+function renderUserGrid(sorted, gridId, storeKey, moreBtnId, detailPrefix, filterFn) {
+  const makeCard = (u, i, prefix) => {
+    const fu = filterFn ? { ...u, pets: u.pets.filter(filterFn) } : u;
+    return makeUserCard(fu, u.displayRank, `${prefix}-${i}`, prefix);
+  };
+
+  // 전체 데이터 저장 (전체보기 클릭시 사용)
+  gridDataStore[storeKey] = { sorted, detailPrefix, filterFn };
+
   const top10 = sorted.filter(u => u.displayRank <= 10);
   const rest   = sorted.filter(u => u.displayRank > 10);
 
-  const makeCard = (u, i, prefix) => {
-    const filteredUser = filterFn ? { ...u, pets: u.pets.filter(filterFn) } : u;
-    return makeUserCard(filteredUser, u.displayRank, i, prefix);
-  };
-
   const grid = document.getElementById(gridId);
-  grid.innerHTML = top10.map((u, i) => makeCard(u, i, detailPrefix)).join('');
+  grid.innerHTML = top10.map((u, i) => makeCard(u, i, detailPrefix)).join('') ||
+    '<div class="empty-state">데이터 없음</div>';
 
-  const extraInner = document.getElementById(extraInnerId);
   const moreBtn = document.getElementById(moreBtnId);
-
   if (rest.length > 0) {
-    extraInner.innerHTML = rest.map((u, i) => makeCard(u, i, detailPrefix+'x')).join('');
     moreBtn.style.display = 'inline-block';
     moreBtn.textContent = `전체보기 (${rest.length}명 더) ▼`;
+    moreBtn._expanded = false;
   } else {
     moreBtn.style.display = 'none';
   }
+}
+
+// ── 전체보기 펼치기 / 접기 ──
+function expandGrid(gridId, storeKey, moreBtnId) {
+  const btn = document.getElementById(moreBtnId);
+  const grid = document.getElementById(gridId);
+  const store = gridDataStore[storeKey];
+  if (!store) return;
+  const { sorted, detailPrefix, filterFn } = store;
+
+  const makeCard = (u, i, pfx) => {
+    const fu = filterFn ? { ...u, pets: u.pets.filter(filterFn) } : u;
+    return makeUserCard(fu, u.displayRank, `${pfx}-${i}`, pfx);
+  };
+
+  if (btn._expanded) {
+    // 접기 → 10위까지만
+    const top10 = sorted.filter(u => u.displayRank <= 10);
+    const rest   = sorted.filter(u => u.displayRank > 10);
+    grid.innerHTML = top10.map((u, i) => makeCard(u, i, detailPrefix)).join('');
+    btn.textContent = `전체보기 (${rest.length}명 더) ▼`;
+    btn._expanded = false;
+    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    // 펼치기 → 전체
+    grid.innerHTML = sorted.map((u, i) => makeCard(u, i, detailPrefix+'a')).join('');
+    btn.textContent = `접기 ▲`;
+    btn._expanded = true;
+  }
+}
+
+// ── 닉네임 검색 ──
+function searchNickname(q) {
+  const container = document.getElementById('nickResults');
+  const keyword = q.trim().toLowerCase();
+
+  if (!keyword) {
+    container.innerHTML = '<div class="empty-state" style="padding:40px;">닉네임을 입력하면 해당 유저의 랭킹 정보를 보여드립니다.</div>';
+    return;
+  }
+  if (!latestData) {
+    container.innerHTML = '<div class="empty-state">데이터 로드 중입니다...</div>';
+    return;
+  }
+
+  const userMap = buildUserStats(latestData.pets);
+
+  // 전체 등수 계산
+  const allSorted = Object.entries(userMap)
+    .map(([name, d]) => ({ name, ...d }))
+    .sort((a, b) =>
+      b.total !== a.total ? b.total - a.total :
+      b.first !== a.first ? b.first - a.first :
+      b.top3 - a.top3
+    );
+  const allRanked = denseRankMulti(allSorted, u => [u.total, u.first, u.top3]);
+  const rankMap = {};
+  allRanked.forEach(u => { rankMap[u.name] = u.displayRank; });
+
+  // 검색 매칭
+  const matched = allRanked.filter(u => u.name.toLowerCase().includes(keyword));
+
+  if (matched.length === 0) {
+    container.innerHTML = `<div class="empty-state" style="padding:40px;">"${q}"와 일치하는 유저가 없습니다.</div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="font-size:12px;color:var(--t3);margin-bottom:12px;">"${q}" 검색 결과 — ${matched.length}명</div>
+    <div class="user-grid">
+      ${matched.map((u, i) => makeUserCard(u, u.displayRank, 'ns-' + i, 'ns')).join('')}
+    </div>`;
 }
 
 // ── 세 탭 모두 렌더 ──
@@ -1074,7 +1164,7 @@ function renderAllUserTabs(pets) {
     );
   // 등수 부여: [total, first, top3] 세 값이 모두 같을 때만 동률
   const totalRanked = denseRankMulti(totalSorted, u => [u.total, u.first, u.top3]);
-  renderUserGrid(totalRanked, 'userGrid', 'userGridExtraInner', 'userMoreBtn', 'u', null);
+  renderUserGrid(totalRanked, 'userGrid', 'userGrid', 'userMoreBtn', 'u', null);
 
   // 1등 펫 보유 랭킹: first 많은순 → 동률시 total 많은순 → top3 많은순
   const firstSorted = Object.entries(userMap)
@@ -1086,7 +1176,7 @@ function renderAllUserTabs(pets) {
       b.top3 - a.top3
     );
   const firstRanked = denseRankMulti(firstSorted, u => [u.first, u.total, u.top3]);
-  renderUserGrid(firstRanked, 'firstGrid', 'firstGridExtraInner', 'firstMoreBtn', 'f',
+  renderUserGrid(firstRanked, 'firstGrid', 'firstGrid', 'firstMoreBtn', 'f',
     p => p.rank === 1);
 
   // TOP3 펫 보유 랭킹: top3 많은순 → 동률시 first 많은순 → total 많은순
@@ -1099,7 +1189,7 @@ function renderAllUserTabs(pets) {
       b.total - a.total
     );
   const top3Ranked = denseRankMulti(top3Sorted, u => [u.top3, u.first, u.total]);
-  renderUserGrid(top3Ranked, 'top3Grid', 'top3GridExtraInner', 'top3MoreBtn', 't',
+  renderUserGrid(top3Ranked, 'top3Grid', 'top3Grid', 'top3MoreBtn', 't',
     p => p.rank <= 3);
 }
 
