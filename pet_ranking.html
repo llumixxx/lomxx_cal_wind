@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>WIND 펫 랭킹</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:#faf9ff; --bg2:#f3f0ff; --white:#ffffff;
+      --s1:#f8f7ff; --s2:#f0eeff;
+      --border:#e8e3ff; --border2:#d4cbff;
+      --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5; --a4:#f5c887; --a5:#87f5c0;
+      --t1:#3d3560; --t2:#7b72a8; --t3:#b0a8d4; --t4:#d4cff0;
+      --ok:#6dd5a0; --err:#f57878;
+      --shadow:0 4px 24px rgba(155,135,245,0.12);
+      --shadow2:0 8px 32px rgba(155,135,245,0.18);
+    }
+    [data-theme="dark"] {
+      --bg:#0f0f1a; --bg2:#1a1a2e; --white:#252540;
+      --s1:#2a2a45; --s2:#353555;
+      --border:#404060; --border2:#505080;
+      --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5; --a4:#f5c887; --a5:#87f5c0;
+      --t1:#e8e8f0; --t2:#b0b0c8; --t3:#8080a0; --t4:#606080;
+      --ok:#6dd5a0; --err:#f57878;
+      --shadow:0 4px 24px rgba(0,0,0,0.4);
+      --shadow2:0 8px 32px rgba(0,0,0,0.5);
+    }
+
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      font-family:'Noto Sans KR',sans-serif;
+      background:var(--bg); color:var(--t1); min-height:100vh;
+      background-image:
+        radial-gradient(circle at 15% 20%,rgba(155,135,245,0.08) 0%,transparent 50%),
+        radial-gradient(circle at 85% 80%,rgba(245,135,184,0.07) 0%,transparent 50%);
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background:var(--white); border-bottom:1.5px solid var(--border);
+      padding:16px 20px; position:sticky; top:0; z-index:100;
+      box-shadow:var(--shadow);
+    }
+    .header-inner {
+      max-width:1280px; margin:0 auto;
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .back-btn {
+      display:flex; align-items:center; gap:5px;
+      padding:7px 14px; border:1.5px solid var(--border2);
+      border-radius:10px; background:var(--s1); color:var(--a1);
+      font-size:12px; font-weight:700; font-family:'Noto Sans KR',sans-serif;
+      cursor:pointer; text-decoration:none; transition:all .15s;
+    }
+    .back-btn:hover { background:var(--a1); color:#fff; border-color:var(--a1); }
+    .header-title {
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:20px;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .header-update {
+      font-size:11px; color:var(--t3); font-weight:600;
+    }
+
+    /* ── Filters ── */
+    .filter-bar {
+      max-width:1280px; margin:16px auto 0; padding:0 16px; width:100%;
+    }
+    .filter-row {
+      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; align-items:center; width:100%;
+    }
+    .filter-label {
+      font-size:10px; font-weight:700; color:var(--t3);
+      letter-spacing:1.5px; font-family:'Nunito',sans-serif;
+      min-width:50px;
+    }
+    .filter-btn {
+      padding:5px 12px; font-size:11px; font-weight:700;
+      font-family:'Noto Sans KR',sans-serif;
+      border:1.5px solid var(--border); border-radius:99px;
+      background:var(--white); color:var(--t2);
+      cursor:pointer; transition:all .15s;
+    }
+    .filter-btn:hover { border-color:var(--a1); color:var(--a1); }
+    .filter-btn.active { background:var(--a1); color:#fff; border-color:var(--a1); }
+
+    .search-input {
+      flex:1; min-width:160px; max-width:260px;
+      padding:6px 14px; border:1.5px solid var(--border);
+      border-radius:99px; font-size:12px; color:var(--t1);
+      font-family:'Noto Sans KR',sans-serif; background:var(--white);
+      transition:border-color .15s;
+    }
+    .search-input:focus { outline:none; border-color:var(--a1); }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      max-width:1280px; margin:0 auto; padding:12px 16px;
+      border-bottom:1.5px solid var(--border);
+      display:flex; gap:8px;
+    }
+    .tab-btn {
+      padding:8px 16px; font-size:12px; font-weight:700;
+      border:1.5px solid transparent; border-radius:8px;
+      background:transparent; color:var(--t2);
+      cursor:pointer; transition:all .15s;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .tab-btn:hover { color:var(--a1); }
+    .tab-btn.active {
+      background:var(--a1); color:#fff; border-color:var(--a1);
+    }
+
+    /* ── Content ── */
+    .content-wrap {
+      max-width:1280px; margin:0 auto; padding:0 16px 40px;
+    }
+
+    .tab-content {
+      display:none;
+    }
+    .tab-content.active {
+      display:block;
+    }
+
+    /* ── Pet Cards (Grid) ── */
+    .pet-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+      gap:12px;
+      margin-bottom:20px;
+    }
+
+    .pet-card {
+      background:var(--white); border:1.5px solid var(--border);
+      border-radius:16px; padding:16px;
+      box-shadow:var(--shadow);
+      transition:all .15s;
+    }
+    .pet-card:hover {
+      border-color:var(--a1);
+      box-shadow:var(--shadow2);
+      transform:translateY(-2px);
+    }
+
+    .pet-name {
+      font-size:16px; font-weight:700; color:var(--t1);
+      margin-bottom:12px;
+      font-family:'Nunito',sans-serif;
+    }
+
+    .ranking-section {
+      margin-bottom:12px;
+    }
+    .ranking-section:last-child {
+      margin-bottom:0;
+    }
+
+    .ranking-title {
+      font-size:11px; font-weight:700; color:var(--a1);
+      letter-spacing:1px; margin-bottom:8px;
+      font-family:'Nunito',sans-serif;
+      text-transform:uppercase;
+    }
+
+    .ranking-list {
+      list-style:none; display:flex; flex-direction:column; gap:6px;
+    }
+
+    .ranking-item {
+      display:flex; align-items:center; gap:8px;
+      padding:8px; background:var(--s1); border-radius:8px;
+      border-left:3px solid var(--a1);
+      transition:background .12s;
+    }
+    .ranking-item:hover {
+      background:var(--s2);
+    }
+
+    .rank-badge {
+      display:flex; align-items:center; justify-content:center;
+      width:28px; height:28px; border-radius:50%;
+      background:var(--a1); color:#fff;
+      font-weight:700; font-size:11px;
+      flex-shrink:0;
+      font-family:'Nunito',sans-serif;
+    }
+
+    .ranking-info {
+      flex:1;
+    }
+
+    .nick {
+      font-size:12px; font-weight:700; color:var(--t1);
+      margin-bottom:2px;
+    }
+
+    .stats {
+      font-size:10px; color:var(--t3);
+      line-height:1.4;
+    }
+
+    .score {
+      color:var(--a2); font-weight:700;
+      margin-top:2px;
+    }
+
+    .empty {
+      padding:12px; color:var(--t3); font-size:12px; text-align:center;
+      font-style:italic;
+    }
+
+    /* ── User Ranking Table ── */
+    .table-wrap {
+      overflow-x:auto; margin-bottom:20px;
+    }
+    table {
+      width:100%; border-collapse:collapse;
+      background:var(--white); border-radius:16px;
+      overflow:hidden; box-shadow:var(--shadow);
+    }
+    thead tr {
+      background:linear-gradient(135deg,var(--s2),var(--s1));
+      border-bottom:2px solid var(--border);
+    }
+    th {
+      padding:10px 12px; font-size:11px; letter-spacing:1px;
+      color:var(--t2); font-family:'Nunito',sans-serif; font-weight:800;
+      text-align:center; white-space:nowrap;
+    }
+    th:first-child, th:nth-child(2) { text-align:left; }
+
+    tbody tr {
+      border-bottom:1px solid var(--border);
+      transition:background .12s;
+    }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:var(--s1); }
+
+    td {
+      padding:10px 12px; font-size:13px; color:var(--t1); vertical-align:middle;
+    }
+    td:first-child { text-align:left; font-weight:700; }
+    td:nth-child(2) { text-align:left; }
+    td { text-align:center; }
+
+    .medal {
+      font-size:18px; margin-right:4px;
+    }
+
+    @media(max-width:768px) {
+      .pet-grid {
+        grid-template-columns:1fr;
+      }
+      .header-inner {
+        flex-direction:column; align-items:flex-start;
+      }
+      .header-update {
+        margin-left:0;
+      }
+      .filter-row {
+        flex-wrap:wrap;
+      }
+      .search-input {
+        min-width:100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <div class="header-inner">
+      <a href="index__3_.html" class="back-btn">← 돌아가기</a>
+      <div class="header-title">🐾 펫 랭킹</div>
+      <div class="header-update" id="updateTime"></div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-row">
+      <span class="filter-label">펫 검색</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="펫 이름으로 검색...">
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="pet-ranking">펫별 랭킹</button>
+    <button class="tab-btn" data-tab="user-ranking">유저 순위</button>
+  </div>
+
+  <div class="content-wrap">
+    <!-- 펫별 랭킹 탭 -->
+    <div id="pet-ranking" class="tab-content active">
+      <div class="pet-grid" id="petGrid"></div>
+    </div>
+
+    <!-- 유저 순위 탭 -->
+    <div id="user-ranking" class="tab-content">
+      <div class="table-wrap">
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>순위</th>
+              <th>유저명</th>
+              <th>보유 펫 수</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allData = [];
+    let latestData = null;
+
+    // JSON 데이터 로드
+    async function loadData() {
+      try {
+        const response = await fetch('pet_ranking_data.json');
+        allData = await response.json();
+        
+        if (allData.length > 0) {
+          latestData = allData[allData.length - 1];
+          
+          // 마지막 업데이트 시간 표시
+          const updateTime = new Date(latestData.timestamp);
+          document.getElementById('updateTime').innerHTML = 
+            `마지막 업데이트: ${updateTime.toLocaleString('ko-KR')}`;
+          
+          // 데이터 렌더링
+          renderPetRanking(latestData.pets);
+          renderUserRanking(latestData.pets);
+        }
+      } catch (error) {
+        console.error('데이터 로드 실패:', error);
+      }
+    }
+
+    // 펫 랭킹 렌더링
+    function renderPetRanking(pets) {
+      const grid = document.getElementById('petGrid');
+      grid.innerHTML = '';
+
+      pets.forEach(pet => {
+        const card = document.createElement('div');
+        card.className = 'pet-card';
+        card.dataset.petName = pet.name;
+        
+        card.innerHTML = `
+          <div class="pet-name">${pet.name}</div>
+          
+          <div class="ranking-section">
+            <div class="ranking-title">⭐ 일반 랭킹 TOP 5</div>
+            <ul class="ranking-list">
+              ${pet.general_ranking.length > 0 
+                ? pet.general_ranking.map(rank => `
+                    <li class="ranking-item">
+                      <div class="rank-badge">#${rank.rank}</div>
+                      <div class="ranking-info">
+                        <div class="nick">${rank.nickname}</div>
+                        <div class="stats">
+                          Lv${rank.level} • ${rank.exp}
+                        </div>
+                        <div class="score">점수: ${rank.score}</div>
+                      </div>
+                    </li>
+                  `).join('')
+                : '<li class="empty">데이터 없음</li>'
+              }
+            </ul>
+          </div>
+          
+          ${pet.rebirth_ranking.length > 0 ? `
+            <div class="ranking-section">
+              <div class="ranking-title">🔥 환생 랭킹 TOP 5</div>
+              <ul class="ranking-list">
+                ${pet.rebirth_ranking.map(rank => `
+                  <li class="ranking-item">
+                    <div class="rank-badge">#${rank.rank}</div>
+                    <div class="ranking-info">
+                      <div class="nick">${rank.nickname}</div>
+                      <div class="stats">
+                        Lv${rank.level} • ${rank.exp}
+                      </div>
+                      <div class="score">점수: ${rank.score}</div>
+                    </div>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
+        `;
+        grid.appendChild(card);
+      });
+
+      setupSearch();
+    }
+
+    // 유저 순위 렌더링 (가장 많이 보유한 펫 순서)
+    function renderUserRanking(pets) {
+      const userStats = {};
+
+      // 각 유저별 랭킹 펫 수 카운트
+      pets.forEach(pet => {
+        const rankings = [
+          ...pet.general_ranking,
+          ...pet.rebirth_ranking
+        ];
+
+        rankings.forEach(rank => {
+          if (!userStats[rank.nickname]) {
+            userStats[rank.nickname] = 0;
+          }
+          userStats[rank.nickname]++;
+        });
+      });
+
+      // 유저별 정렬 (많은 순)
+      const sortedUsers = Object.entries(userStats)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count);
+
+      // 테이블에 데이터 삽입
+      const tbody = document.getElementById('userTableBody');
+      tbody.innerHTML = sortedUsers.map((user, idx) => `
+        <tr>
+          <td>${getMedalEmoji(idx + 1)} ${idx + 1}위</td>
+          <td>${user.name}</td>
+          <td>${user.count}마리</td>
+        </tr>
+      `).join('');
+    }
+
+    // 순위 메달 이모지
+    function getMedalEmoji(rank) {
+      if (rank === 1) return '🥇';
+      if (rank === 2) return '🥈';
+      if (rank === 3) return '🥉';
+      return '';
+    }
+
+    // 검색 기능
+    function setupSearch() {
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.pet-card');
+
+        cards.forEach(card => {
+          const petName = card.dataset.petName.toLowerCase();
+          if (petName.includes(keyword)) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+
+    // 탭 전환
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        const tabId = btn.dataset.tab;
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // 페이지 로드
+    loadData();
+
+    // 10초마다 자동 새로고침
+    setInterval(loadData, 10000);
+  </script>
+</body>
+</html>
