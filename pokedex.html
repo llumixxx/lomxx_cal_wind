@@ -2231,6 +2231,13 @@ function goToCalc() {
   }
 }
 
+function goToRanking() {
+  const name = document.getElementById("modal-name")?.textContent?.trim();
+  if (name) {
+    window.location.href = "pet_ranking.html?pet=" + encodeURIComponent(name);
+  }
+}
+
 function openModalByName(name) {
   if (PET_DATA[name]) openModal(name);
 }
@@ -2316,9 +2323,9 @@ function toggleDark(){const h=document.documentElement;h.setAttribute('data-them
         </div>
       </div>
     <!-- 환각 계산하기 버튼 -->
-    <div style="padding:12px 20px 16px;">
+    <div style="padding:0 20px 16px;display:flex;gap:8px;">
       <button id="modal-calc-btn" onclick="goToCalc()" style="
-        width:100%; padding:12px 0;
+        flex:1; padding:12px 0;
         background:linear-gradient(135deg,var(--a1),var(--a2));
         color:#fff; font-size:14px; font-weight:800;
         font-family:'Noto Sans KR',sans-serif;
@@ -2326,6 +2333,16 @@ function toggleDark(){const h=document.documentElement;h.setAttribute('data-them
         letter-spacing:0.5px; transition:opacity .15s;
       " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
         ✦ 환각 계산하기 ✦
+      </button>
+      <button id="modal-ranking-btn" onclick="goToRanking()" style="
+        flex:1; padding:12px 0;
+        background:linear-gradient(135deg,#f5c842,#e8a020);
+        color:#fff; font-size:14px; font-weight:800;
+        font-family:'Noto Sans KR',sans-serif;
+        border:none; border-radius:14px; cursor:pointer;
+        letter-spacing:0.5px; transition:opacity .15s;
+      " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        🏆 랭킹 보러가기
       </button>
     </div>
     </div>
