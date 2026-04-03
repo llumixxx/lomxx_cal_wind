@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>윈드 시뮬레이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#faf9ff; --white:#ffffff;
+  --s1:#f8f7ff; --s2:#f0eeff;
+  --border:#e8e3ff; --border2:#d4cbff;
+  --a1:#9b87f5; --a2:#f587b8; --a3:#87d4f5; --a4:#f5c887; --a5:#87f5c0;
+  --t1:#3d3560; --t2:#7b72a8; --t3:#b0a8d4; --t4:#d4cff0;
+  --ok:#6dd5a0; --err:#f57878;
+  --shadow:0 4px 24px rgba(155,135,245,0.12);
+  --shadow2:0 8px 32px rgba(155,135,245,0.18);
+  --rare:#6db8f5; --epic:#b87af5; --unique:#f5a623; --legendary:#f55a5a;
+}
+[data-theme="dark"]{
+  --bg:#0f0f1a;--white:#252540;--s1:#2a2a45;--s2:#353555;
+  --border:#404060;--border2:#505080;
+  --t1:#e8e8f0;--t2:#b0b0c8;--t3:#8080a0;--t4:#606080;
+  --shadow:0 4px 24px rgba(0,0,0,.4);--shadow2:0 8px 32px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;min-height:100vh;}
+
+/* ── Float ── */
+.float-btns{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;align-items:center;gap:7px;z-index:9999;}
+.dark-toggle{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1.1rem;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.dark-toggle:hover{transform:scale(1.18) rotate(22deg);border-color:var(--a1);box-shadow:0 4px 16px rgba(155,135,245,.4);}
+.dark-toggle:active{transform:scale(.88) rotate(-15deg);}
+[data-theme="dark"] .dark-toggle{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .dark-toggle:hover{border-color:#9b87f5;}
+[data-theme="dark"] .toggle-moon{display:inline!important;}[data-theme="dark"] .toggle-sun{display:none!important;}
+[data-theme="light"] .toggle-moon{display:none!important;}[data-theme="light"] .toggle-sun{display:inline!important;}
+.chat-float-btn{width:38px;height:38px;border-radius:50%;border:2px solid var(--border2);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(155,135,245,.18);font-size:1rem;text-decoration:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .2s,box-shadow .2s;}
+.chat-float-btn:hover{transform:scale(1.18) rotate(-22deg);border-color:var(--a2);box-shadow:0 4px 16px rgba(245,135,184,.4);}
+.chat-float-btn:active{transform:scale(.88) rotate(15deg);}
+[data-theme="dark"] .chat-float-btn{background:#2a2a45;border-color:#505080;}
+[data-theme="dark"] .chat-float-btn:hover{border-color:#f587b8;}
+
+/* ── Header ── */
+.top-bar{background:var(--white);border-bottom:1.5px solid var(--border);padding:12px 20px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.top-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:var(--t1);}
+.top-sub{font-size:11px;color:var(--t3);font-family:'Nunito',sans-serif;}
+.page-nav-sim{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;}
+.pnav-tab-s{text-decoration:none;background:var(--s1);border:1.5px solid var(--border2);border-radius:99px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--t2);transition:all .15s;font-family:'Noto Sans KR',sans-serif;}
+.pnav-tab-s:hover{background:var(--s2);color:var(--a1);border-color:var(--a1);}
+.pnav-active-s{background:linear-gradient(135deg,var(--s2),#ffeef6);color:var(--a1);border-color:var(--a1);font-weight:800;}
+[data-theme="dark"] .top-bar{background:#252540;border-color:#404060;}
+[data-theme="dark"] .top-title{color:#e8e8f0;}
+[data-theme="dark"] .pnav-tab-s{background:#2a2a45;color:#b0b0c8;border-color:#404060;}
+[data-theme="dark"] .pnav-tab-s:hover{color:#9b87f5;border-color:#9b87f5;}
+[data-theme="dark"] .pnav-active-s{background:linear-gradient(135deg,#2a2a45,#353555)!important;color:#9b87f5!important;border-color:#9b87f5!important;}
+
+/* ── 모드 선택 화면 ── */
+.mode-select-screen{max-width:600px;margin:60px auto;padding:0 20px;}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+.mode-card{
+  background:var(--white);border:2px solid var(--border);
+  border-radius:24px;padding:32px 20px;text-align:center;
+  cursor:pointer;transition:all .2s;box-shadow:var(--shadow);
+  font-family:'Nunito',sans-serif;
+}
+.mode-card:hover{transform:translateY(-6px);box-shadow:var(--shadow2);}
+.mode-card.cube-mode:hover{border-color:var(--epic);}
+.mode-card.enhance-mode:hover{border-color:var(--unique);}
+.mode-card .mc-icon{font-size:52px;margin-bottom:14px;line-height:1;}
+.mode-card .mc-title{font-size:20px;font-weight:900;margin-bottom:6px;color:var(--t1);}
+.mode-card .mc-desc{font-size:12px;color:var(--t3);line-height:1.7;}
+.mode-card .mc-badge{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:99px;font-size:11px;font-weight:800;}
+.cube-mode .mc-badge{background:#eedeff;color:var(--epic);border:1.5px solid #d4b8f8;}
+.enhance-mode .mc-badge{background:#fff4de;color:#d48800;border:1.5px solid #f8d890;}
+[data-theme="dark"] .mode-card{background:#252540;border-color:#404060;}
+[data-theme="dark"] .mode-card .mc-title{color:#e8e8f0;}
+
+.mode-hero{text-align:center;padding:20px 0 0;}
+.mode-hero-title{font-family:'Nunito',sans-serif;font-size:28px;font-weight:900;
+  background:linear-gradient(135deg,var(--a1),var(--a2),var(--a4));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px;}
+.mode-hero-sub{font-size:12px;color:var(--t3);}
+
+/* ── 공통 패널/버튼 ── */
+.sec-title{font-size:10px;letter-spacing:2px;color:var(--t3);font-family:'Nunito',sans-serif;font-weight:800;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.sec-title::before{content:'';display:block;width:3px;height:14px;background:linear-gradient(135deg,var(--a1),var(--a2));border-radius:2px;}
+.panel{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:22px;margin-bottom:14px;box-shadow:var(--shadow);}
+.main-screen{max-width:800px;margin:0 auto;padding:20px 16px 80px;display:none;}
+[data-theme="dark"] .panel{background:#252540;border-color:#404060;}
+
+/* ── 뒤로가기 버튼 ── */
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:1.5px solid var(--border2);border-radius:10px;background:var(--s1);color:var(--a1);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;margin-bottom:16px;font-family:'Noto Sans KR',sans-serif;}
+.back-btn:hover{background:var(--a1);color:#fff;border-color:var(--a1);}
+[data-theme="dark"] .back-btn{background:#2a2a45;border-color:#505080;}
+
+/* ══════════════════════════════
+   큐브 시뮬레이터 CSS (card.html 그대로)
+════════════════════════════════ */
+.grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.grade-btn{padding:16px;border-radius:14px;border:2px solid;cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;transition:all .15s;background:var(--white);}
+.grade-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow2);}
+.grade-btn .gi{font-size:26px;margin-bottom:4px;}
+.grade-btn .gs{font-size:10px;font-weight:700;opacity:0.65;margin-top:2px;}
+.g-rare{border-color:var(--rare);color:var(--rare);}
+.g-epic{border-color:var(--epic);color:var(--epic);}
+.g-unique{border-color:var(--unique);color:#d48800;}
+.g-legendary{border-color:var(--legendary);color:var(--legendary);}
+.card-row{display:flex;align-items:center;gap:18px;margin-bottom:16px;flex-wrap:wrap;}
+.card-icon{width:96px;height:132px;flex-shrink:0;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid;position:relative;overflow:hidden;transition:all .3s;}
+.card-icon::before{content:'';position:absolute;top:0;left:0;right:0;height:38%;background:rgba(255,255,255,0.13);}
+.card-icon .cie{font-size:36px;position:relative;z-index:1;}
+.card-icon .cil{font-size:9px;font-weight:900;font-family:'Nunito',sans-serif;letter-spacing:1.5px;text-transform:uppercase;position:relative;z-index:1;}
+.card-icon.rare{background:linear-gradient(145deg,#c8e6ff,#a8d4f8);border-color:var(--rare);}
+.card-icon.epic{background:linear-gradient(145deg,#e8d4ff,#d4b0f8);border-color:var(--epic);}
+.card-icon.unique{background:linear-gradient(145deg,#fff0c8,#f8d890);border-color:var(--unique);}
+.card-icon.legendary{background:linear-gradient(145deg,#ffd4d4,#f8a0a0);border-color:var(--legendary);}
+.card-meta{flex:1;min-width:0;}
+.gbadge{display:inline-flex;align-items:center;font-size:11px;font-weight:900;font-family:'Nunito',sans-serif;padding:3px 10px;border-radius:99px;margin-bottom:6px;}
+.br{background:#deeeff;color:var(--rare);border:1.5px solid #b8d8f8;}
+.be{background:#eedeff;color:var(--epic);border:1.5px solid #d4b8f8;}
+.bu{background:#fff4de;color:#d48800;border:1.5px solid #f8d890;}
+.bl{background:#ffeeee;color:var(--legendary);border:1.5px solid #f8b8b8;}
+.prob-chip{font-size:10px;font-weight:800;font-family:'Nunito',sans-serif;background:var(--s2);border:1px solid var(--border2);border-radius:6px;padding:2px 7px;color:var(--a1);}
+.next-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.seal-row{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--s1);border:1.5px solid var(--border);border-radius:12px;margin-bottom:14px;cursor:pointer;transition:all .15s;-webkit-user-select:none;user-select:none;}
+.seal-row:hover{border-color:var(--border2);background:var(--s2);}
+.seal-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--a1);cursor:pointer;flex-shrink:0;}
+.seal-lbl{font-size:13px;font-weight:700;}
+.seal-desc{font-size:11px;color:var(--t3);margin-left:auto;}
+.opts-box{background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:12px;}
+.opts-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.opts-title{font-size:11px;font-weight:800;color:var(--t2);font-family:'Nunito',sans-serif;}
+.info-btn{background:none;border:1.5px solid var(--border2);border-radius:8px;padding:2px 8px;font-size:10px;color:var(--t2);cursor:pointer;font-weight:700;font-family:'Nunito',sans-serif;transition:all .15s;}
+.info-btn:hover{background:var(--s2);}
+.opts-list{display:flex;flex-direction:column;gap:6px;}
+.opt-chip{display:flex;justify-content:space-between;align-items:center;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;transition:border-color .2s;}
+.opt-chip.rolling{animation:pop .3s ease;}
+@keyframes pop{0%{transform:scale(0.93);opacity:0.4}65%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.opt-name{font-size:13px;font-weight:700;}
+.opt-val{font-size:13px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);}
+.nbadge{font-size:9px;font-weight:800;background:var(--a2);color:#fff;border-radius:4px;padding:1px 4px;margin-left:4px;font-family:'Nunito',sans-serif;}
+.toast{display:none;padding:11px 16px;border-radius:12px;margin-bottom:12px;text-align:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;animation:tpop .35s ease;}
+@keyframes tpop{0%{transform:scale(0.88);opacity:0}65%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.toast.show{display:block;}
+.t-epic{background:#eedeff;color:var(--epic);border:2px solid #d4b8f8;}
+.t-unique{background:#fff4de;color:#d48800;border:2px solid #f8d890;}
+.t-legendary{background:#ffeeee;color:var(--legendary);border:2px solid #f8b8b8;}
+.cube-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.ctab{flex:1;padding:11px 8px;border-radius:12px;border:2px solid var(--border);background:var(--s1);cursor:pointer;text-align:center;transition:all .15s;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--t2);}
+.ctab:hover:not(.cdis){border-color:var(--border2);background:var(--s2);}
+.ctab.cact{background:linear-gradient(135deg,var(--s2),#ffeef6);border-color:var(--a1);color:var(--a1);}
+.ctab.cdis{opacity:0.32;cursor:not-allowed;pointer-events:none;}
+.ctab .ct-name{font-size:13px;}
+.ctab .ct-prob{font-size:10px;color:var(--t3);font-weight:700;margin-top:2px;}
+.ctab.cact .ct-prob{color:var(--t2);}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.btn-main{flex:1;min-width:80px;padding:12px 8px;border-radius:13px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 16px rgba(155,135,245,0.28);transition:all .15s;}
+.btn-main:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(155,135,245,0.38);}
+.btn-main:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-sub{flex:1;min-width:80px;padding:12px 8px;border-radius:13px;border:1.5px solid var(--a1);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:var(--white);color:var(--a1);transition:all .15s;}
+.btn-sub:hover{background:var(--s2);}
+.btn-auto{flex:1;min-width:80px;padding:12px 8px;border-radius:13px;border:1.5px solid #6dd5a0;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:var(--white);color:#38a169;transition:all .15s;}
+.btn-auto:hover{background:#f0fff4;}
+.btn-auto.running{background:linear-gradient(135deg,#38a169,#6dd5a0);color:#fff;border-color:#38a169;box-shadow:0 4px 14px rgba(109,213,160,0.35);}
+.btn-row2{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-rst{flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);transition:all .15s;}
+.btn-rst:hover{background:var(--s2);border-color:var(--a1);}
+.btn-resel{flex:1;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t3);transition:all .15s;}
+.btn-resel:hover{background:#fff5f5;border-color:#f57878;color:#f57878;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+@media(max-width:400px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.sitem{background:var(--s1);border:1.5px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;}
+.sval{font-size:22px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);}
+.slbl{font-size:10px;color:var(--t3);font-weight:700;margin-top:2px;}
+.sitem.hl{background:linear-gradient(135deg,var(--s2),#ffeef6);border-color:var(--border2);}
+.sitem.hl .sval{background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.log-box{background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:14px;box-shadow:var(--shadow);max-height:220px;overflow-y:auto;}
+.log-box::-webkit-scrollbar{width:4px;}
+.log-box::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+.lentry{font-size:11px;padding:5px 8px;border-radius:7px;margin-bottom:3px;display:flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;font-weight:700;}
+.ln{color:var(--t2);}
+.lu-epic{background:#eedeff;color:var(--epic);}
+.lu-unique{background:#fff4de;color:#d48800;}
+.lu-legendary{background:#ffeeee;color:var(--legendary);}
+.lnum{color:var(--t4);font-size:10px;min-width:30px;}
+#otable-wrap{margin-top:12px;overflow-x:auto;}
+#otable-wrap table{width:100%;border-collapse:collapse;font-size:11px;}
+#otable-wrap th,#otable-wrap td{padding:6px 8px;border-bottom:1px solid var(--border);}
+#otable-wrap th{background:var(--s2);font-weight:800;color:var(--t2);text-align:center;}
+#otable-wrap td:first-child{text-align:left;font-weight:700;}
+.sim-modal-overlay{position:fixed;inset:0;background:rgba(61,53,96,0.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;animation:mfade .2s ease;}
+@keyframes mfade{from{opacity:0}to{opacity:1}}
+.sim-modal{background:var(--white);border-radius:22px;padding:28px 24px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(155,135,245,0.25);animation:mslide .25s ease;text-align:center;}
+@keyframes mslide{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.sim-modal .m-icon{font-size:44px;margin-bottom:12px;}
+.sim-modal .m-title{font-size:20px;font-weight:900;font-family:'Nunito',sans-serif;margin-bottom:6px;}
+.sim-modal .m-sub{font-size:12px;color:var(--t2);margin-bottom:4px;line-height:1.6;}
+.sim-modal .m-count{font-size:28px;font-weight:900;font-family:'Nunito',sans-serif;margin:10px 0;padding:10px;background:var(--s1);border-radius:12px;border:1.5px solid var(--border);}
+.sim-modal .m-count span{font-size:13px;font-weight:700;color:var(--t3);}
+.sim-modal-btns{display:flex;gap:8px;margin-top:18px;}
+.m-btn-main{flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(155,135,245,0.3);}
+.m-btn-sub{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);}
+
+/* ══════════════════════════════
+   강화 시뮬레이터 CSS
+════════════════════════════════ */
+/* 강화 레벨 색상 변수 */
+:root {
+  --elv0:#a0a0a0; --elv1:#6db8f5; --elv2:#6db8f5;
+  --elv3:#6dd5a0; --elv4:#6dd5a0;
+  --elv5:#f5c842; --elv6:#f5c842;
+  --elv7:#f587b8; --elv8:#f587b8;
+  --elv9:#b87af5; --elv10:#b87af5;
+}
+.equip-display{display:flex;align-items:center;gap:20px;margin-bottom:18px;}
+.equip-icon{
+  width:100px;height:100px;flex-shrink:0;border-radius:18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  border:3px solid var(--border2);background:linear-gradient(145deg,var(--s1),var(--s2));
+  position:relative;overflow:hidden;transition:all .4s;font-size:40px;box-shadow:var(--shadow);
+}
+.equip-icon::before{content:'';position:absolute;top:0;left:0;right:0;height:35%;background:rgba(255,255,255,0.12);}
+.equip-icon .elv-txt{font-size:12px;font-weight:900;font-family:'Nunito',sans-serif;letter-spacing:1px;position:relative;z-index:1;}
+.ei-0{border-color:var(--elv0);background:linear-gradient(145deg,#f0f0f0,#e0e0e0);}
+.ei-1,.ei-2{border-color:var(--elv1);background:linear-gradient(145deg,#d0e8ff,#b8d8ff);}
+.ei-3,.ei-4{border-color:var(--elv3);background:linear-gradient(145deg,#c8f5e0,#a8e8c8);}
+.ei-5,.ei-6{border-color:var(--elv5);background:linear-gradient(145deg,#fff8c8,#fce890);}
+.ei-7,.ei-8{border-color:var(--elv7);background:linear-gradient(145deg,#ffd8ec,#ffb8dc);}
+.ei-9,.ei-10{border-color:var(--elv9);background:linear-gradient(145deg,#e8d0ff,#d0b0ff);}
+[data-theme="dark"] .ei-0{background:linear-gradient(145deg,#1a1a1a,#242424);border-color:#606060;}
+[data-theme="dark"] .ei-1,[data-theme="dark"] .ei-2{background:linear-gradient(145deg,#0d1e2e,#122030);}
+[data-theme="dark"] .ei-3,[data-theme="dark"] .ei-4{background:linear-gradient(145deg,#0a1e14,#0e2018);}
+[data-theme="dark"] .ei-5,[data-theme="dark"] .ei-6{background:linear-gradient(145deg,#1e1a08,#261e0a);}
+[data-theme="dark"] .ei-7,[data-theme="dark"] .ei-8{background:linear-gradient(145deg,#1e0814,#280a18);}
+[data-theme="dark"] .ei-9,[data-theme="dark"] .ei-10{background:linear-gradient(145deg,#160822,#1c0a2c);}
+@keyframes shine-burst{0%{transform:scale(1);box-shadow:0 0 0 rgba(255,200,50,0);}50%{transform:scale(1.08);box-shadow:0 0 32px 8px rgba(255,200,50,0.5);}100%{transform:scale(1);box-shadow:var(--shadow);}}
+@keyframes fail-shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
+.anim-success{animation:shine-burst .5s ease;}
+.anim-fail{animation:fail-shake .4s ease;}
+.equip-level-txt{font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;line-height:1;margin-bottom:4px;transition:color .3s;}
+.equip-name{font-size:14px;font-weight:700;color:var(--t2);margin-bottom:8px;}
+.prob-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.prob-badge{font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;padding:3px 10px;border-radius:99px;border:1.5px solid;}
+.pb-suc{background:#e8fff0;color:#2d8a50;border-color:#6dd5a0;}
+.pb-fail{background:#fffbe8;color:#b87000;border-color:#f5c842;}
+.pb-bonus{background:#f0eeff;color:var(--a1);border-color:var(--border2);}
+[data-theme="dark"] .pb-suc{background:rgba(109,213,160,.16);color:#6dd5a0;border-color:rgba(109,213,160,.35);}
+[data-theme="dark"] .pb-fail{background:rgba(245,200,66,.12);color:#f5c842;border-color:rgba(245,200,66,.3);}
+[data-theme="dark"] .pb-bonus{background:rgba(155,135,245,.14);color:#9b87f5;border-color:rgba(155,135,245,.3);}
+.level-bar-e{display:flex;gap:5px;margin:12px 0;flex-wrap:wrap;}
+.lseg{flex:1;min-width:20px;height:8px;border-radius:4px;background:var(--border);transition:background .3s,transform .25s;}
+.lseg.done{transform:scaleY(1.3);}
+.lseg.s1,.lseg.s2{background:var(--elv1);}
+.lseg.s3,.lseg.s4{background:var(--elv3);}
+.lseg.s5,.lseg.s6{background:var(--elv5);}
+.lseg.s7,.lseg.s8{background:var(--elv7);}
+.lseg.s9,.lseg.s10{background:var(--elv9);}
+.equip-sel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+@media(max-width:480px){.equip-sel-grid{grid-template-columns:repeat(2,1fr);}}
+.esel-btn{padding:14px 8px;border-radius:14px;border:2px solid var(--border);cursor:pointer;text-align:center;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;transition:all .15s;background:var(--white);color:var(--t1);}
+.esel-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow2);border-color:var(--a1);color:var(--a1);}
+.esel-btn .ei2{font-size:28px;margin-bottom:4px;}
+.esel-btn .en2{font-size:10px;color:var(--t3);margin-top:2px;font-weight:700;}
+.esel-btn.esel-active{border-color:var(--a1);background:linear-gradient(135deg,var(--s2),#ffeef6);color:var(--a1);}
+[data-theme="dark"] .esel-btn{background:#1a1a2e;border-color:#404060;color:#e8e8f0;}
+[data-theme="dark"] .esel-btn.esel-active{background:linear-gradient(135deg,#2a2a45,#353555);border-color:#9b87f5;color:#9b87f5;}
+/* 스톤포스 */
+.stoneforce-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--s1);border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;cursor:pointer;transition:all .15s;-webkit-user-select:none;user-select:none;}
+.stoneforce-row:hover{border-color:var(--border2);background:var(--s2);}
+.stoneforce-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--a1);cursor:pointer;flex-shrink:0;}
+.sf-icon{font-size:22px;}
+.sf-info{flex:1;}
+.sf-name{font-size:13px;font-weight:700;color:var(--t1);}
+.sf-desc{font-size:10px;color:var(--t3);margin-top:1px;}
+.sf-bonus{font-size:12px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);background:var(--s2);border:1px solid var(--border2);border-radius:6px;padding:2px 8px;}
+[data-theme="dark"] .stoneforce-row{background:#1a1a2e;border-color:#404060;}
+/* 결과 토스트 */
+.result-toast{display:none;padding:13px 16px;border-radius:14px;margin-bottom:12px;text-align:center;font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;animation:tpop .35s ease;}
+.result-toast.show{display:block;}
+.rt-ok{background:#e8fff0;color:#2d8a50;border:2px solid #6dd5a0;}
+.rt-fail{background:#fffbe8;color:#b87000;border:2px solid #f5c842;}
+[data-theme="dark"] .rt-ok{background:rgba(109,213,160,.16);color:#6dd5a0;border-color:rgba(109,213,160,.35);}
+[data-theme="dark"] .rt-fail{background:rgba(245,200,66,.12);color:#f5c842;border-color:rgba(245,200,66,.3);}
+/* 강화 통계 */
+.estats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+/* 확률표 */
+.etable{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px;}
+.etable th,.etable td{padding:7px 8px;border-bottom:1px solid var(--border);text-align:center;}
+.etable th{background:var(--s2);font-weight:800;color:var(--t2);}
+.etable td:first-child{text-align:left;font-weight:700;}
+.etable .td-stat{font-size:10px;color:var(--t3);}
+/* 스탯 비교 */
+.stat-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.stat-box{background:var(--s1);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;}
+.stat-label{font-size:10px;letter-spacing:1px;color:var(--t3);font-family:'Nunito',sans-serif;font-weight:700;text-transform:uppercase;}
+.stat-val{font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t1);}
+.stat-bonus{font-size:11px;color:var(--ok);font-weight:700;}
+[data-theme="dark"] .stat-box{background:#1a1a2e;border-color:#404060;}
+
+/* 로그 */
+.elog-ok{background:#e8fff0;color:#2d8a50;}
+.elog-fail{background:#fffbe8;color:#b87000;}
+[data-theme="dark"] .elog-ok{background:rgba(109,213,160,.14);color:#6dd5a0;}
+[data-theme="dark"] .elog-fail{background:rgba(245,200,66,.1);color:#f5c842;}
+/* 목표 설정 */
+.target-btns{display:flex;gap:5px;flex-wrap:wrap;margin-left:10px;}
+.tbtn{padding:5px 12px;border-radius:8px;border:1.5px solid var(--border2);font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;cursor:pointer;background:var(--s1);color:var(--t2);transition:all .15s;}
+.tbtn:hover{border-color:var(--a1);color:var(--a1);}
+.tbtn.tsel{background:linear-gradient(135deg,var(--s2),#ffeef6);border-color:var(--a1);color:var(--a1);}
+[data-theme="dark"] .tbtn{background:#2a2a45;border-color:#404060;color:#b0b0c8;}
+[data-theme="dark"] .tbtn.tsel{background:linear-gradient(135deg,#2a2a45,#353555);border-color:#9b87f5;color:#9b87f5;}
+
+/* 다크모드 공통 */
+[data-theme="dark"] .panel{background:#252540;border-color:#404060;}
+[data-theme="dark"] .grade-btn{background:#1a1a2e;}
+[data-theme="dark"] .card-icon.rare{background:linear-gradient(145deg,#1a2a3a,#1e3050);}
+[data-theme="dark"] .card-icon.epic{background:linear-gradient(145deg,#231a35,#2e1a45);}
+[data-theme="dark"] .card-icon.unique{background:linear-gradient(145deg,#2a2010,#352810);}
+[data-theme="dark"] .card-icon.legendary{background:linear-gradient(145deg,#2a1010,#3a1515);}
+[data-theme="dark"] .br{background:rgba(109,184,245,.18);color:#6db8f5;border-color:rgba(109,184,245,.3);}
+[data-theme="dark"] .be{background:rgba(184,122,245,.18);color:#b87af5;border-color:rgba(184,122,245,.3);}
+[data-theme="dark"] .bu{background:rgba(245,166,35,.18);color:#f5a623;border-color:rgba(245,166,35,.3);}
+[data-theme="dark"] .bl{background:rgba(245,85,85,.18);color:#f55a5a;border-color:rgba(245,85,85,.3);}
+[data-theme="dark"] .prob-chip{background:#353555;border-color:#505080;color:#9b87f5;}
+[data-theme="dark"] .seal-row{background:#1a1a2e;border-color:#404060;}
+[data-theme="dark"] .seal-lbl{color:#e8e8f0;}[data-theme="dark"] .seal-desc{color:#8080a0;}
+[data-theme="dark"] .opts-box{background:#1a1a2e;border-color:#404060;}
+[data-theme="dark"] .opt-chip{background:#252540;border-color:#404060;}
+[data-theme="dark"] .opt-name{color:#e8e8f0;}[data-theme="dark"] .opt-val{color:#9b87f5;}
+[data-theme="dark"] .t-epic{background:rgba(184,122,245,.2);color:#b87af5;border-color:rgba(184,122,245,.4);}
+[data-theme="dark"] .t-unique{background:rgba(245,166,35,.2);color:#f5a623;border-color:rgba(245,166,35,.4);}
+[data-theme="dark"] .t-legendary{background:rgba(245,85,85,.2);color:#f55a5a;border-color:rgba(245,85,85,.4);}
+[data-theme="dark"] .ctab{background:#1a1a2e;border-color:#404060;color:#b0b0c8;}
+[data-theme="dark"] .ctab.cact{background:linear-gradient(135deg,#2a2a45,#353555);border-color:#9b87f5;color:#9b87f5!important;}
+[data-theme="dark"] .btn-sub{background:#252540;color:#9b87f5;border-color:#505080;}
+[data-theme="dark"] .btn-auto{background:#1a2a20;border-color:#2d6a4f;color:#6dd5a0;}
+[data-theme="dark"] .btn-rst{background:#252540;color:#b0b0c8;border-color:#404060;}
+[data-theme="dark"] .btn-resel{background:#252540;color:#8080a0;border-color:#404060;}
+[data-theme="dark"] .sitem{background:#1a1a2e;border-color:#404060;}
+[data-theme="dark"] .slbl{color:#8080a0;}
+[data-theme="dark"] .sitem.hl{background:linear-gradient(135deg,#2a2a45,#353555);border-color:#505080;}
+[data-theme="dark"] .log-box{background:#252540;border-color:#404060;}
+[data-theme="dark"] .lu-epic{background:rgba(184,122,245,.18);color:#b87af5;}
+[data-theme="dark"] .lu-unique{background:rgba(245,166,35,.18);color:#f5a623;}
+[data-theme="dark"] .lu-legendary{background:rgba(245,85,85,.18);color:#f55a5a;}
+[data-theme="dark"] .sim-modal{background:#252540;}
+[data-theme="dark"] .sim-modal .m-title{color:#e8e8f0;}
+[data-theme="dark"] .sim-modal .m-count{background:#1a1a2e;border-color:#404060;color:#e8e8f0;}
+[data-theme="dark"] .m-btn-sub{background:#353555;border-color:#505080;color:#b0b0c8;}
+[data-theme="dark"] .etable th{background:#353555;}
+[data-theme="dark"] .stat-box{background:#1a1a2e;border-color:#404060;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+[data-theme="dark"] ::-webkit-scrollbar-track{background:#1a1a2e;}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#404060;}
+
+/* 푸터 */
+.footer{text-align:center;padding:28px 16px 36px;font-family:'Noto Sans KR',sans-serif;}
+.footer-card{display:inline-block;background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:14px 24px;box-shadow:var(--shadow);line-height:2;font-size:12px;color:var(--t2);}
+[data-theme="dark"] .footer-card{background:#252540;border-color:#404060;}
+</style>
+</head>
+<body>
+
+<div class="float-btns">
+  <button class="dark-toggle" onclick="toggleDark()"><span class="toggle-moon">🌙</span><span class="toggle-sun">☀️</span></button>
+  <button class="chat-float-btn" onclick="window.open('chat_viewer.html','SA채팅뷰어','width=700,height=850,left=100,top=100,resizable=yes')" title="채팅뷰어">💬</button>
+</div>
+
+<div class="top-bar">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+    <div class="top-title" id="page-title">🎮 시뮬레이터</div>
+    <div class="top-sub" id="page-sub">큐브 강화 · 아이템 강화</div>
+  </div>
+  <div class="page-nav-sim">
+    <a href="index.html"   class="pnav-tab-s">🏠 환각 계산기</a>
+    <a href="pokedex.html" class="pnav-tab-s">🐾 펫 도감</a>
+    <a href="sim.html"     class="pnav-tab-s pnav-active-s">🎮 시뮬레이터</a>
+    <a href="raid.html"    class="pnav-tab-s">🏢 인력사무소</a>
+    <a href="pet_ranking.html" class="pnav-tab-s">🏆 펫 랭킹</a>
+  </div>
+</div>
+
+<!-- ══════ 모드 선택 화면 ══════ -->
+<div id="screen-mode" style="display:block;">
+  <div class="mode-select-screen">
+    <div class="mode-hero">
+      <div class="mode-hero-title">🎮 윈드 시뮬레이터</div>
+      <div class="mode-hero-sub">어떤 시뮬레이터를 사용하시겠어요?</div>
+    </div>
+    <div class="mode-grid">
+      <div class="mode-card cube-mode" onclick="enterMode('cube')">
+        <div class="mc-icon">🃏</div>
+        <div class="mc-title">큐브 시뮬</div>
+        <div class="mc-desc">카드 등급 강화<br>레어 → 레전드리<br>수상한·레드 큐브</div>
+        <div class="mc-badge">CARD UPGRADE</div>
+      </div>
+      <div class="mode-card enhance-mode" onclick="enterMode('enhance')">
+        <div class="mc-icon">⚔️</div>
+        <div class="mc-title">아이템 강화</div>
+        <div class="mc-desc">장비 수치 강화<br>+0 → +10<br>스톤포스 지원</div>
+        <div class="mc-badge">ITEM ENHANCE</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ 큐브 시뮬 화면 ══════ -->
+<div class="main-screen" id="screen-cube">
+  <button class="back-btn" onclick="goMode()">← 시뮬 선택으로</button>
+
+  <!-- ① 등급 선택 -->
+  <div id="cube-screen-select">
+    <div class="panel">
+      <div class="sec-title">시작 등급 선택</div>
+      <p style="font-size:12px;color:var(--t2);margin-bottom:4px;">강화를 시작할 카드 등급을 선택하세요</p>
+      <div class="grade-grid">
+        <button class="grade-btn g-rare"      onclick="startSim('rare')"><div class="gi">🃏</div><div>레어</div><div class="gs">RARE</div></button>
+        <button class="grade-btn g-epic"      onclick="startSim('epic')"><div class="gi">🃏</div><div>에픽</div><div class="gs">EPIC</div></button>
+        <button class="grade-btn g-unique"    onclick="startSim('unique')"><div class="gi">🃏</div><div>유니크</div><div class="gs">UNIQUE</div></button>
+        <button class="grade-btn g-legendary" onclick="startSim('legendary')"><div class="gi">🃏</div><div>레전드리</div><div class="gs">LEGENDARY</div></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 큐브 시뮬레이터 본체 -->
+  <div id="cube-screen-sim" style="display:none;">
+    <div class="toast" id="toast" onclick="hideToast()" style="cursor:pointer;" title="클릭하여 닫기"></div>
+    <div class="panel">
+      <div class="sec-title">현재 카드 상태 <button class="info-btn" onclick="toggleTable()">옵션 표 ▾</button></div>
+      <div class="card-row">
+        <div class="card-icon" id="card-icon"><span class="cie">🃏</span><span class="cil" id="cil">RARE</span></div>
+        <div class="card-meta">
+          <div class="gbadge" id="gbadge">레어</div>
+          <div style="font-size:12px;color:var(--t2);margin-bottom:4px;" id="next-txt"></div>
+          <div class="next-row" id="next-row"></div>
+        </div>
+      </div>
+      <label class="seal-row"><input type="checkbox" id="seal" onchange="onSeal()"><span class="seal-lbl">📜 인장 사용</span><span class="seal-desc">옵션 2줄로 확장</span></label>
+      <div class="opts-box">
+        <div class="opts-hdr"><div class="opts-title">✨ 현재 옵션</div></div>
+        <div class="opts-list" id="opts-list"></div>
+      </div>
+      <div id="otable-wrap" style="display:none;">
+        <table><thead><tr>
+          <th style="text-align:left;">옵션</th>
+          <th style="color:var(--rare);">레어</th><th style="color:var(--epic);">에픽</th>
+          <th style="color:#d48800;">유니크</th><th style="color:var(--legendary);">레전드리</th>
+        </tr></thead><tbody id="otbody"></tbody></table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="sec-title">큐브 선택</div>
+      <div class="cube-tabs">
+        <div class="ctab" id="tab-sus" onclick="selCube('sus')"><div class="ct-name">🎲 수상한 큐브</div><div class="ct-prob" id="sus-txt"></div></div>
+        <div class="ctab" id="tab-red" onclick="selCube('red')"><div class="ct-name">🔴 레드 큐브</div><div class="ct-prob" id="red-txt"></div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-main" id="btn1" onclick="roll(1)">1회</button>
+        <button class="btn-sub"  id="btn10" onclick="roll(10)">10회</button>
+        <button class="btn-auto" id="btn-auto" onclick="toggleAuto()">⚡ 자동강화</button>
+      </div>
+      <div class="btn-row2">
+        <button class="btn-rst" onclick="resetStats()">↩ 초기화</button>
+        <button class="btn-resel" onclick="goSelect()">🃏 카드 재선택</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="sec-title">사용 통계</div>
+      <div class="stats-grid">
+        <div class="sitem hl"><div class="sval" id="s0">0</div><div class="slbl">총 사용</div></div>
+        <div class="sitem"><div class="sval" id="s1">0</div><div class="slbl">수상한 큐브</div></div>
+        <div class="sitem"><div class="sval" id="s2">0</div><div class="slbl">레드 큐브</div></div>
+        <div class="sitem"><div class="sval" id="s3">0</div><div class="slbl">강화 성공</div></div>
+        <div class="sitem"><div class="sval" id="s4">0</div><div class="slbl">옵션 변경</div></div>
+        <div class="sitem"><div class="sval" id="s5" style="font-size:15px;padding-top:3px;">레어</div><div class="slbl">현재 등급</div></div>
+      </div>
+    </div>
+    <div class="log-box" id="logbox"><div style="font-size:11px;color:var(--t3);text-align:center;font-family:'Nunito',sans-serif;font-weight:700;">큐브를 사용하면 로그가 표시됩니다</div></div>
+  </div>
+</div>
+
+<!-- ══════ 아이템 강화 화면 ══════ -->
+<div class="main-screen" id="screen-enhance">
+  <button class="back-btn" onclick="goMode()">← 시뮬 선택으로</button>
+
+  <!-- 장비 선택 -->
+  <div class="panel">
+    <div class="sec-title">강화할 장비 선택</div>
+    <div class="equip-sel-grid" style="grid-template-columns:1fr 1fr;max-width:320px;">
+      <button class="esel-btn esel-active" onclick="selectEquip('weapon')" id="ebtn-weapon"><div class="ei2">⚔️</div><div>무기</div><div class="en2">ATK / PEN / ACC</div></button>
+      <button class="esel-btn" onclick="selectEquip('armor')"  id="ebtn-armor"><div class="ei2">🛡️</div><div>방어구</div><div class="en2">DEF / SHD / HP</div></button>
+    </div>
+  </div>
+
+  <!-- 강화 현황 -->
+  <div class="panel">
+    <div class="sec-title">강화 현황</div>
+    <div class="equip-display">
+      <div class="equip-icon ei-0" id="e-icon">
+        <span id="e-emoji">⚔️</span>
+        <span class="elv-txt" id="e-lv-txt" style="color:var(--elv0);">+0</span>
+      </div>
+      <div style="flex:1;">
+        <div class="equip-level-txt" id="e-lv-big" style="color:var(--elv0);">+0</div>
+        <div class="equip-name" id="e-name">무기 · 기본 상태</div>
+        <div class="prob-row" id="e-prob-row">
+          <span class="prob-badge pb-suc">성공 100%</span>
+        </div>
+      </div>
+    </div>
+    <!-- 이번 강화 소모 비용 카드 -->
+    <div id="e-cost-card" style="margin-top:12px;"></div>
+    <!-- 레벨바 -->
+    <div class="level-bar-e" id="e-levelbar"></div>
+    <!-- 스탯 비교 -->
+    <div class="stat-compare" id="e-stat-compare"></div>
+  </div>
+
+  <!-- 강화 설정 -->
+  <div class="panel">
+    <div class="sec-title">강화 설정</div>
+
+    <!-- 목표 수치 -->
+    <div style="display:flex;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <span style="font-size:12px;font-weight:700;color:var(--t2);">🎯 목표</span>
+      <div class="target-btns" id="e-target-btns"></div>
+    </div>
+
+    <!-- 스톤포스 -->
+    <label class="stoneforce-row">
+      <input type="checkbox" id="chk-sf" onchange="eUpdateDisplay()">
+      <span class="sf-icon">💎</span>
+      <div class="sf-info">
+        <div class="sf-name">💎 스톤포스 사용</div>
+        <div class="sf-desc" id="sf-cost-desc">기본 비용 + 추가 비용으로 성공 확률 보너스</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px;font-weight:900;color:var(--a1);font-family:'Nunito',sans-serif;" id="sf-bonus-txt">+0%</div>
+        <div style="font-size:10px;color:var(--t3);" id="sf-cost-preview">—</div>
+      </div>
+    </label>
+  </div>
+
+  <!-- 강화 버튼 -->
+  <div class="panel">
+    <div class="result-toast" id="e-toast"></div>
+    <div id="e-max-msg" style="display:none;text-align:center;padding:12px;background:linear-gradient(135deg,var(--s2),#ffeef6);border-radius:12px;font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:var(--a1);">🎊 최고 강화 달성! (+10)</div>
+    <div class="btn-row">
+      <button class="btn-main" id="e-btn-enhance" onclick="eEnhance()">⚔️ 강화하기</button>
+      <button class="btn-auto" id="e-btn-auto" onclick="eToggleAuto()">⚡ 자동 강화</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-rst" onclick="eResetAll()">🔄 +0으로 초기화</button>
+      <button class="btn-rst" onclick="eResetStats()">📊 통계 초기화</button>
+    </div>
+  </div>
+
+  <!-- 통계 -->
+  <div class="panel">
+    <div class="sec-title">강화 통계</div>
+    <div class="estats" style="grid-template-columns:repeat(3,1fr);">
+      <div class="sitem hl"><div class="sval" id="es0">0</div><div class="slbl">총 시도</div></div>
+      <div class="sitem"><div class="sval" id="es1" style="color:#2d8a50;">0</div><div class="slbl">성공</div></div>
+      <div class="sitem"><div class="sval" id="es2" style="color:#b87000;">0</div><div class="slbl">실패</div></div>
+      <div class="sitem hl"><div class="sval" id="es3">+0</div><div class="slbl">최고 달성</div></div>
+      <div class="sitem"><div class="sval" id="es-stones" style="color:#d4943a;">0</div><div class="slbl">소모 강화석</div></div>
+      <div class="sitem"><div class="sval" id="es-sfcnt" style="color:var(--a1);">0</div><div class="slbl">스톤포스 횟수</div></div>
+      <div class="sitem" style="grid-column:1/-1;"><div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:8px;">
+        <div style="text-align:center;"><div class="sval" id="es5" style="font-size:16px;">0</div><div class="slbl">기본 비용 합계</div></div>
+        <div style="text-align:center;"><div class="sval" id="es-sfcost" style="font-size:16px;color:var(--a1);">0</div><div class="slbl">스톤포스 추가비용</div></div>
+        <div style="text-align:center;"><div class="sval" id="es-total-cost" style="font-size:16px;background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0</div><div class="slbl">총 소모 스톤</div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- 로그 -->
+  <div class="panel">
+    <div class="sec-title">강화 로그</div>
+    <div class="log-box" id="e-logbox"><div style="font-size:11px;color:var(--t3);text-align:center;font-family:'Nunito',sans-serif;font-weight:700;">강화하면 로그가 표시됩니다</div></div>
+  </div>
+
+  <!-- 확률표 -->
+  <div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div class="sec-title" style="margin-bottom:0;">강화 확률표</div>
+      <button class="tbtn" onclick="toggleETable()" id="e-table-btn">▾ 보기</button>
+    </div>
+    <div id="e-table-wrap" style="display:none;">
+      <p style="font-size:11px;color:var(--t2);line-height:1.8;margin-bottom:10px;">
+        · 강화 단계에 따라 능력치 상승 수치, 필요 비용, 성공 확률이 다르게 적용됩니다.<br>
+        · 스톤포스를 사용하면 단계별 성공 확률을 추가로 높일 수 있습니다.<br>
+        · 스톤포스는 기본 비용에 추가비용 합산 된 최종 합산비용이 표기됩니다.
+      </p>
+      <div style="overflow-x:auto;">
+        <table class="etable" id="e-prob-table"><thead><tr>
+          <th>강화</th>
+          <th>무기 (공/관/명)</th>
+          <th>방어구 (방/쉴/내구)</th>
+          <th>기본비용</th><th>강화석</th>
+          <th style="color:#2d8a50;">성공</th>
+          <th style="color:#b87000;">실패</th>
+          <th style="color:var(--a1);">스톤포스 확률</th>
+          <th>스톤포스 합산비용</th>
+        </tr></thead><tbody id="e-prob-tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div><!-- /screen-enhance -->
+
+<div class="footer">
+  <div class="footer-card">
+    만든이 &nbsp;<span style="background:linear-gradient(135deg,var(--a1),#b8a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:800;font-family:'Nunito',sans-serif;">새벽부족 루믹스</span>
+    <div style="margin-top:4px;font-size:10px;color:var(--t4);">© 윈드 시뮬레이터 v2.0</div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// 화면 전환
+// ════════════════════════════════════════════════
+function enterMode(mode) {
+  document.getElementById('screen-mode').style.display = 'none';
+  if (mode === 'cube') {
+    document.getElementById('screen-cube').style.display = 'block';
+    document.getElementById('page-title').textContent = '🃏 큐브 시뮬레이터';
+    document.getElementById('page-sub').textContent = '카드 등급 강화 시뮬레이션';
+  } else {
+    document.getElementById('screen-enhance').style.display = 'block';
+    document.getElementById('page-title').textContent = '⚔️ 아이템 강화 시뮬레이터';
+    document.getElementById('page-sub').textContent = '장비 강화 시뮬레이션';
+    eInit();
+  }
+  window.scrollTo(0,0);
+}
+function goMode() {
+  stopAuto(); eStopAuto();
+  document.getElementById('screen-cube').style.display = 'none';
+  document.getElementById('screen-enhance').style.display = 'none';
+  document.getElementById('screen-mode').style.display = 'block';
+  document.getElementById('page-title').textContent = '🎮 시뮬레이터';
+  document.getElementById('page-sub').textContent = '큐브 강화 · 아이템 강화';
+  window.scrollTo(0,0);
+}
+// 큐브: goSelect는 screen-select/sim 토글
+function goSelect() {
+  stopAuto(); hideToast();
+  document.getElementById('cube-screen-sim').style.display='none';
+  document.getElementById('cube-screen-select').style.display='block';
+  clearLog();
+}
+
+// ════════════════════════════════════════════════
+// ◼ 큐브 시뮬레이터 JS (card.html 그대로)
+// ════════════════════════════════════════════════
+
+/* ── 옵션 데이터 ── */
+const OPTS=[
+  {n:"공격력",    d:"공격력 상승",            r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"방어력",    d:"방어력 상승",            r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"순발력",    d:"순발력 상승",            r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"체력",      d:"내구력 상승",            r:[1,6], e:[1,12], u:[1,18],    l:[9,24]},
+  {n:"이동속도",  d:"이동속도 증가",          r:[1,2], e:[1,4],  u:[1,6],     l:[3,8],  p:1},
+  {n:"올스탯",    d:"공격·방어·순발 상승",    r:[1,1], e:[1,2],  u:[1,3],     l:[1,4]},
+  {n:"관통",      d:"관통 상승",              r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"쉴드",      d:"쉴드 상승",              r:[1,2], e:[1,4],  u:[1,6],     l:[3,8]},
+  {n:"절약정신",  d:"특수비용 할인",          r:[1,2], e:[1,4],  u:[1,6],     l:[3,8],  p:1},
+  {n:"포획률",    d:"포획 성공률 증가",       r:[1,2], e:[1,4],  u:[1,6],     l:[3,8],  p:1},
+  {n:"명중",      d:"명중 상승",              r:null,  e:null,   u:[1,2],     l:[1,4]},
+  {n:"회피",      d:"회피 상승",              r:null,  e:null,   u:[1,2],     l:[1,4]},
+  {n:"상태이상내성",d:"모든 상태이상 내성",  r:null,  e:null,   u:[1,4],     l:[3,8]},
+  {n:"캐릭터경험치",d:"캐릭터 경험치 증가",  r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"펫경험치",  d:"펫 경험치 증가",         r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"탑승경험치",d:"탑승펫 경험치 증가",    r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"아이템획득",d:"아이템 획득확률 증가",   r:null,  e:null,   u:[1,2],     l:[1,4],  p:1},
+  {n:"HP/MP회복", d:"체력·기력 회복량 증가",  r:null,  e:null,   u:[0.1,0.1], l:[0.1,0.1]},
+  {n:"PVE데미지", d:"듀얼 외 데미지 증가",    r:null,  e:null,   u:[1,3],     l:[1,6],  p:1},
+  {n:"PVP데미지", d:"듀얼 데미지 증가",       r:null,  e:null,   u:null,      l:[1,2],  p:1},
+  {n:"매력유지",  d:"죽어도 매력 안 떨어짐",  r:null,  e:null,   u:null,      l:"fixed"},
+];
+const GK={rare:'r',epic:'e',unique:'u',legendary:'l'};
+const GRADES=['rare','epic','unique','legendary'];
+const GKR={rare:'레어',epic:'에픽',unique:'유니크',legendary:'레전드리'};
+const GEN={rare:'RARE',epic:'EPIC',unique:'UNIQUE',legendary:'LEGENDARY'};
+const GCL={rare:'var(--rare)',epic:'var(--epic)',unique:'#d48800',legendary:'var(--legendary)'};
+const GBCL={rare:'br',epic:'be',unique:'bu',legendary:'bl'};
+// 레드큐브 확률
+const RED={rare:0.05,epic:0.01,unique:0.003};
+// 수상한큐브: 알 수 없음, 임시 5% 고정
+const SUS={rare:0.05};
+
+let ST={
+  grade:'rare', opts:[], cube:'sus',
+  stat:{t:0,s:0,r:0,up:0,oc:0},
+  lc:0, timer:null, autoTimer:null, isAuto:false
+};
+
+function ri(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function avail(g){return OPTS.filter(o=>o[GK[g]]!==null&&o[GK[g]]!==undefined);}
+function mkVal(o,g){
+  const v=o[GK[g]];
+  if(!v)return'—';
+  if(v==='fixed')return'고정';
+  const n=v[0]===v[1]?v[0]:ri(v[0],v[1]);
+  return n+(o.p?'%':'');
+}
+function genOpts(g,cnt){
+  return avail(g).sort(()=>Math.random()-0.5).slice(0,cnt).map(o=>({n:o.n,v:mkVal(o,g)}));
+}
+function cnt(){return document.getElementById('seal').checked?2:1;}
+
+/* ── 시작 ── */
+function startSim(g){
+  stopAuto();
+  ST.grade=g; ST.startGrade=g; ST.opts=genOpts(g,1);
+  ST.cube=(g==='rare')?'sus':'red'; // 수상한큐브는 레어만
+  ST.stat={t:0,s:0,r:0,up:0,oc:0}; ST.lc=0;
+  document.getElementById('seal').checked=false;
+  document.getElementById('cube-screen-select').style.display='none';
+  document.getElementById('cube-screen-sim').style.display='block';
+  buildTable(); render(); clearLog();
+}
+
+/* ── 렌더 ── */
+function render(){
+  const g=ST.grade;
+  document.getElementById('card-icon').className='card-icon '+g;
+  document.getElementById('cil').textContent=GEN[g];
+  const b=document.getElementById('gbadge');
+  b.textContent=GKR[g]; b.className='gbadge '+GBCL[g];
+  const gi=GRADES.indexOf(g),ng=GRADES[gi+1];
+  if(g==='legendary'){
+    document.getElementById('next-txt').innerHTML='<span style="color:var(--legendary);font-weight:800;">✨ 최고 등급 달성!</span>';
+    document.getElementById('next-row').innerHTML='';
+  } else {
+    document.getElementById('next-txt').textContent='다음 단계: '+GKR[ng];
+    let h=`<span style="font-size:11px;color:var(--t2);font-weight:700;">🔴 레드큐브</span><span class="prob-chip">${(RED[g]*100).toFixed(1)}% → ${GKR[ng]}</span>`;
+    if(g==='rare') h=`<span style="font-size:11px;color:var(--t2);font-weight:700;">🎲 수상한큐브</span><span class="prob-chip">알 수 없음 (임시 5%)</span>&nbsp;`+h;
+    document.getElementById('next-row').innerHTML=h;
+  }
+  renderTabs(); renderOpts();
+  // 레전드리면 자동강화 버튼 → 옵션 뽑기로 변경
+  const autoBtn = document.getElementById('btn-auto');
+  if(autoBtn && !ST.isAuto) {
+    if(g==='legendary') {
+      autoBtn.textContent = '🎯 옵션 뽑기';
+    } else {
+      autoBtn.textContent = '⚡ 자동강화';
+    }
+  }
+  document.getElementById('s0').textContent=ST.stat.t;
+  document.getElementById('s1').textContent=ST.stat.s;
+  document.getElementById('s2').textContent=ST.stat.r;
+  document.getElementById('s3').textContent=ST.stat.up;
+  document.getElementById('s4').textContent=ST.stat.oc;
+  const sg=document.getElementById('s5');
+  sg.textContent=GKR[g]; sg.style.color=GCL[g];
+}
+
+function renderTabs(){
+  const g=ST.grade;
+  const susDis=(g!=='rare'); // 수상한큐브는 레어만 허용
+  document.getElementById('tab-sus').className='ctab'+(susDis?' cdis':ST.cube==='sus'?' cact':'');
+  document.getElementById('tab-red').className='ctab'+(ST.cube==='red'?' cact':'');
+  if(g==='legendary'){
+    document.getElementById('sus-txt').textContent='사용 불가';
+    document.getElementById('red-txt').textContent='최고 등급 달성';
+  } else {
+    const ng=GRADES[GRADES.indexOf(g)+1];
+    document.getElementById('sus-txt').textContent=g==='rare'?'→에픽  알 수 없음 (임시 5%)':'사용 불가';
+    document.getElementById('red-txt').textContent=`→${GKR[ng]} ${(RED[g]*100).toFixed(1)}%`;
+  }
+}
+
+function renderOpts(changed){
+  const el=document.getElementById('opts-list');
+  el.innerHTML='';
+  ST.opts.forEach((o,i)=>{
+    const isNew=changed&&changed.includes(i);
+    const d=document.createElement('div');
+    d.className='opt-chip'+(isNew?' rolling':'');
+    d.innerHTML=`<span class="opt-name">${o.n}${isNew?'<span class="nbadge">NEW</span>':''}</span><span class="opt-val">${o.v}</span>`;
+    el.appendChild(d);
+  });
+}
+
+function selCube(t){
+  if(t==='sus'&&ST.grade!=='rare')return; // 수상한큐브는 레어만
+  ST.cube=t; renderTabs();
+}
+
+function onSeal(){
+  const c=cnt();
+  if(c>ST.opts.length){
+    const extra=avail(ST.grade).filter(o=>o.n!==ST.opts[0].n).sort(()=>Math.random()-0.5)[0];
+    ST.opts=[ST.opts[0],extra?{n:extra.n,v:mkVal(extra,ST.grade)}:genOpts(ST.grade,1)[0]];
+  } else {
+    ST.opts=[ST.opts[0]];
+  }
+  renderOpts();
+}
+
+/* ── 큐브 굴리기 ── */
+function roll(times){
+  hideToast();
+  let lastUp=null, lastChanged=null, lastUpCount=null;
+
+  for(let i=0;i<times;i++){
+    const cb=ST.cube;
+    ST.stat.t++; if(cb==='sus')ST.stat.s++; else ST.stat.r++;
+
+    // 이전 옵션 저장
+    const prevOpts = ST.opts.map(o=>({n:o.n, v:o.v}));
+
+    // 옵션 변경 (항상)
+    ST.opts=genOpts(ST.grade,cnt());
+    lastChanged=ST.opts.map((_,i)=>i);
+    ST.stat.oc++;
+
+    // 강화 시도
+    const gi=GRADES.indexOf(ST.grade);
+    if(ST.grade!=='legendary'){
+      const prob=cb==='sus'?SUS[ST.grade]:RED[ST.grade];
+      if(prob&&Math.random()<prob){
+        if(cb==='sus'&&gi>=1){/* 수상한큐브는 에픽까지만 */}
+        else if(GRADES[gi+1]){
+          ST.grade=GRADES[gi+1]; ST.stat.up++;
+          ST.opts=genOpts(ST.grade,cnt());
+          lastChanged=ST.opts.map((_,i)=>i);
+          lastUp=ST.grade;
+          lastUpCount=ST.stat.t; // 성공 시점의 정확한 횟수
+          if(ST.grade==='unique'||ST.grade==='legendary') ST.cube='red';
+          // 강화 성공 → 자동강화였으면 정지
+          if(ST.isAuto) stopAuto();
+          addLog(true,cb,ST.stat.t,ST.grade,null);
+          break; // 성공 시 즉시 중단
+        }
+      }
+    }
+    // 이미 강화가 이루어진 등급에서는 "옵션 변경"만 로그
+    addLog(false,cb,ST.stat.t,ST.grade,prevOpts);
+  }
+
+  render();
+  if(lastChanged) renderOpts(lastChanged);
+  if(lastUp) showToast(lastUp, lastUpCount ?? ST.stat.t);
+}
+
+/* ── 자동 강화 ── */
+function toggleAuto(){
+  // 레전드리면 옵션 뽑기 모달 표시
+  if(ST.grade==='legendary' && !ST.isAuto) {
+    showOptModal(); return;
+  }
+  if(ST.isAuto){ stopAuto(); return; }
+  if(ST.grade==='legendary'){ return; }
+  ST.isAuto=true;
+  document.getElementById('btn-auto').classList.add('running');
+  document.getElementById('btn-auto').textContent='⏹ 정지';
+  document.getElementById('btn1').disabled=true;
+  document.getElementById('btn10').disabled=true;
+  autoStep();
+}
+function stopAuto(){
+  ST.isAuto=false;
+  if(ST.autoTimer){ clearTimeout(ST.autoTimer); ST.autoTimer=null; }
+  const ab=document.getElementById('btn-auto');
+  if(ab){ ab.classList.remove('running'); ab.textContent='⚡ 자동강화'; }
+  document.getElementById('btn1').disabled=false;
+  document.getElementById('btn10').disabled=false;
+}
+function autoStep(){
+  if(!ST.isAuto) return;
+  if(ST.grade==='legendary'){ stopAuto(); return; }
+  roll(1);
+  // 강화 성공 시 stopAuto가 roll 안에서 호출됨
+  if(ST.isAuto){
+    ST.autoTimer=setTimeout(autoStep, 60); // 60ms 간격
+  }
+}
+
+/* ── 토스트 ── */
+function showToast(g, count){
+  const t=document.getElementById('toast');
+  const m={epic:'💜 에픽 강화 성공!',unique:'🟡 유니크 강화 성공!',legendary:'🔥 레전드리 강화 성공! 최고 등급 달성 🎊'};
+  t.textContent=m[g]||'🎉 강화 성공!';
+  showUpgradeGoto(g, count);
+  t.className='toast show t-'+g;
+  if(ST.timer) clearTimeout(ST.timer);
+  // 자동으로 사라지지 않음 - 클릭해야 닫힘
+}
+function hideToast(){ document.getElementById('toast').className='toast'; hideUpgradeGoto(); }
+
+/* ── 로그 (강화성공 후에는 "옵션 변경"만 기록) ── */
+function addLog(isUp,cube,cnt,grade,prevOpts){
+  const box=document.getElementById('logbox');
+  if(ST.lc===0) box.innerHTML='';
+  ST.lc++;
+  const ci=cube==='sus'?'🎲':'🔴';
+  const d=document.createElement('div');
+  const ucl={epic:'lu-epic',unique:'lu-unique',legendary:'lu-legendary'};
+  if(isUp){
+    d.className='lentry '+(ucl[grade]||'lu-epic');
+    d.innerHTML=`<span class="lnum">#${cnt}</span>${ci} ${GKR[grade]} 강화 성공! 🎉`;
+  } else {
+    d.className='lentry ln';
+    // 이전 옵션 표시
+    let prevStr = '';
+    if(prevOpts && prevOpts.length > 0){
+      prevStr = prevOpts.map(o=>`<span style="color:var(--t3);font-size:10px;">${o.n} ${o.v}</span>`).join(' · ');
+    }
+    d.innerHTML=`<span class="lnum">#${cnt}</span>${ci} 옵션 변경 &nbsp;${prevStr?'<span style="color:var(--t4);font-size:10px;">이전: </span>'+prevStr:''}`;
+  }
+  box.insertBefore(d,box.firstChild);
+  while(box.children.length>150) box.removeChild(box.lastChild);
+}
+function clearLog(){
+  ST.lc=0;
+  document.getElementById('logbox').innerHTML='<div style="font-size:11px;color:var(--t3);text-align:center;font-family:\'Nunito\',sans-serif;font-weight:700;">큐브를 사용하면 로그가 표시됩니다</div>';
+}
+
+/* ── 초기화 (등급 포함 전체 초기화) ── */
+function resetStats(){
+  stopAuto();
+  hideToast();
+  closeUpgradeModal();
+  const el = document.getElementById('opt-success-overlay');
+  if(el) el.remove();
+  // 등급 포함 전체 초기화
+  ST.stat={t:0,s:0,r:0,up:0,oc:0}; ST.lc=0;
+  ST.grade = ST.startGrade; // 시작 등급으로 복귀
+  ST.cube = (ST.startGrade==='rare')?'sus':'red';
+  ST.opts=genOpts(ST.startGrade, 1);
+  document.getElementById('seal').checked = false;
+  render(); renderOpts(); clearLog();
+}
+
+/* ── 카드 재선택 ── */
+function goSelect(){
+  stopAuto(); hideToast();
+  document.getElementById('cube-screen-sim').style.display='none';
+  document.getElementById('cube-screen-select').style.display='block';
+  clearLog();
+}
+
+/* ── 옵션 표 ── */
+function buildTable(){
+  const tb=document.getElementById('otbody');
+  tb.innerHTML='';
+  OPTS.forEach(o=>{
+    const fv=(v,p)=>{
+      if(!v) return'<span style="color:var(--t4)">—</span>';
+      if(v==='fixed') return'<span style="color:var(--legendary)">고정</span>';
+      const s=v[0]===v[1]?v[0]:`${v[0]}~${v[1]}`;
+      return s+(p?'%':'');
+    };
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${o.n}<br><span style="font-size:10px;color:var(--t3);font-weight:400;">${o.d}</span></td>
+      <td style="text-align:center;color:var(--rare);">${fv(o.r,o.p)}</td>
+      <td style="text-align:center;color:var(--epic);">${fv(o.e,o.p)}</td>
+      <td style="text-align:center;color:#d48800;">${fv(o.u,o.p)}</td>
+      <td style="text-align:center;color:var(--legendary);">${fv(o.l,o.p)}</td>`;
+    tb.appendChild(tr);
+  });
+}
+function toggleTable(){
+  const w=document.getElementById('otable-wrap'),b=document.querySelector('.info-btn');
+  const s=w.style.display!=='none';
+  w.style.display=s?'none':'block';
+  b.textContent=s?'옵션 표 ▾':'옵션 표 ▴';
+}
+
+/* ── 강화성공 팝업 모달 ── */
+const GKR_MODAL={rare:'레어',epic:'에픽',unique:'유니크',legendary:'레전드리'};
+const GRADE_ICON={rare:'🃏',epic:'💜',unique:'🟡',legendary:'🔥'};
+const GRADES_MODAL=['rare','epic','unique','legendary'];
+
+function getUpgradeMsg(count, grade) {
+  // 등급별 평균 횟수 기준으로 문구 조정
+  // 레어→에픽: 평균 20회 / 에픽→유니크: 평균 100회 / 유니크→레전드리: 평균 333회
+  const thresholds = {
+    epic:      [5,  15,  30,  60,  100],  // 평균 20회
+    unique:    [20, 50, 120, 200,  350],  // 평균 100회
+    legendary: [50,150, 300, 500, 800],   // 평균 333회
+  };
+  const t = thresholds[grade] || thresholds.epic;
+  if(count <= t[0]) return '🍀 오늘 로또 사세요!';
+  if(count <= t[1]) return '✨ 당신은 신의 손!';
+  if(count <= t[2]) return '🎯 완전 상위권 뽑기 운!';
+  if(count <= t[3]) return '😊 충분히 좋은 결과입니다';
+  if(count <= t[4]) return '🤔 평균 정도..?';
+  return '😅 음.. 큐브는 다음에 하는 걸로';
+}
+function showUpgradeGoto(grade, count) {
+  if(count == null) count = ST.stat.t;
+  const gi = GRADES_MODAL.indexOf(grade);
+  const ng = GRADES_MODAL[gi+1];
+  
+  // 모달 생성/표시
+  let overlay = document.getElementById('upgrade-modal-overlay');
+  if(overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'upgrade-modal-overlay';
+  overlay.className = 'sim-modal-overlay';
+  
+  const gradeColor = {rare:'var(--rare)',epic:'var(--epic)',unique:'#d48800',legendary:'var(--legendary)'};
+  const isMax = !ng;
+  
+  overlay.innerHTML = `
+    <div class="sim-modal">
+      <div class="m-icon">${GRADE_ICON[grade]}</div>
+      <div class="m-title" style="color:${gradeColor[grade]};">${GKR_MODAL[grade]} 강화 성공!</div>
+      <div class="m-sub">${isMax ? '축하합니다! 최고 등급 달성!' : `다음 단계: ${GKR_MODAL[ng]}`}</div>
+      <div class="m-count">${count}<span> 회 만에 성공</span></div>
+      <div style="margin-top:8px;padding:7px 12px;background:var(--s1);border-radius:10px;font-size:12px;font-weight:800;color:var(--t2);">${getUpgradeMsg(count, grade)}</div>
+      <div class="sim-modal-btns">
+        ${ng ? `<button class="m-btn-main" onclick="gotoNext()">${GKR_MODAL[ng]} 도전 →</button>` : ''}
+        <button class="m-btn-sub" onclick="closeUpgradeModal()">계속 뽑기</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+function gotoNext() {
+  closeUpgradeModal();
+  const gi = GRADES_MODAL.indexOf(ST.grade);
+  const ng = GRADES_MODAL[gi+1];
+  if(!ng) return;
+  stopAuto();
+  startSim(ng);
+}
+function closeUpgradeModal() {
+  const el = document.getElementById('upgrade-modal-overlay');
+  if(el) el.remove();
+}
+function hideUpgradeGoto() {
+  closeUpgradeModal();
+}
+
+/* ── 옵션 뽑기 모달 ── */
+let targetOpt = null;
+
+function showOptModal() {
+  const avail_opts = OPTS.filter(o => o[GK[ST.grade]] !== null && o[GK[ST.grade]] !== undefined);
+  let html_opts = avail_opts.map(o =>
+    `<option value="${o.n}">${o.n} (${o.d})</option>`
+  ).join('');
+  
+  // 모달 없으면 생성
+  let modal = document.getElementById('opt-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'opt-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(61,53,96,0.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = `
+      <div style="background:var(--white);border-radius:20px;padding:24px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(155,135,245,0.25);">
+        <div style="font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;margin-bottom:6px;">🎯 옵션 자동 뽑기</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:8px;">원하는 옵션을 선택하면 해당 옵션 <b>최고 수치</b>가 나올 때까지 자동으로 큐브를 사용합니다</div><div style="font-size:11px;font-weight:800;color:#d48800;background:#fff4de;border-radius:8px;padding:5px 10px;margin-bottom:12px;">⭐ 최고옵 기준 뽑기입니다</div>
+        <div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:6px;">원하는 옵션 선택</div>
+        <select id="opt-select" style="width:100%;padding:10px 12px;border:1.5px solid var(--border2);border-radius:10px;font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:700;color:var(--t1);background:var(--s1);outline:none;margin-bottom:16px;">
+          <option value="">-- 옵션 선택 --</option>
+          ${html_opts}
+        </select>
+        <div style="display:flex;gap:8px;">
+          <button onclick="startOptAuto()" style="flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;box-shadow:0 4px 14px rgba(155,135,245,0.3);">시작</button>
+          <button onclick="document.getElementById('opt-modal').style.display='none'" style="padding:12px 16px;border-radius:12px;border:1.5px solid var(--border2);cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;background:var(--white);color:var(--t2);">취소</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+  } else {
+    modal.style.display = 'flex';
+    // 옵션 목록 갱신
+    const sel = document.getElementById('opt-select');
+    sel.innerHTML = `<option value="">-- 옵션 선택 --</option>` + html_opts;
+  }
+}
+
+function startOptAuto() {
+  const sel = document.getElementById('opt-select');
+  targetOpt = sel.value;
+  if (!targetOpt) { alert('옵션을 선택해주세요'); return; }
+  document.getElementById('opt-modal').style.display = 'none';
+  ST.isAuto = true;
+  const ab = document.getElementById('btn-auto');
+  if(ab) { ab.classList.add('running'); ab.textContent = '⏹ 정지'; }
+  document.getElementById('btn1').disabled = true;
+  document.getElementById('btn10').disabled = true;
+  optAutoStep();
+}
+
+// 레전드리 등급에서 해당 옵션의 최고값 구하기
+function getMaxVal(optName) {
+  const opt = OPTS.find(o => o.n === optName);
+  if (!opt) return null;
+  const range = opt[GK[ST.grade]];
+  if (!range || range === 'fixed') return range;
+  return range[1]; // 최고값
+}
+
+function optAutoStep() {
+  if (!ST.isAuto) return;
+  // 현재 옵션에 targetOpt 최고값이 있으면 정지
+  const maxVal = getMaxVal(targetOpt);
+  const found = ST.opts.some(o => {
+    if (o.n !== targetOpt) return false;
+    if (maxVal === 'fixed') return o.v === '고정';
+    const numVal = parseFloat(o.v);
+    return numVal >= maxVal;
+  });
+  if (found) {
+    stopAuto();
+    showOptSuccessModal(targetOpt, ST.stat.t);
+    return;
+  }
+  roll(1);
+  if (ST.isAuto) {
+    ST.autoTimer = setTimeout(optAutoStep, 60);
+  }
+}
+
+function getOptMsg(count) {
+  if(count <= 30)  return '🍀 오늘 로또 사세요!';
+  if(count <= 80)  return '✨ 당신은 신의 손!';
+  if(count <= 150) return '🎯 완전 상위권 뽑기 운!';
+  if(count <= 250) return '😊 충분히 좋은 결과입니다';
+  if(count <= 400) return '🤔 평균 정도..?';
+  return '😅 음.. 큐브는 다음에 하는 걸로';
+}
+function showOptSuccessModal(optName, count) {
+  let overlay = document.getElementById('opt-success-overlay');
+  if(overlay) overlay.remove();
+  overlay = document.createElement('div');
+  overlay.id = 'opt-success-overlay';
+  overlay.className = 'sim-modal-overlay';
+  const maxVal = getMaxVal(optName);
+  const valStr = maxVal === 'fixed' ? '고정' : maxVal;
+  const opt = OPTS.find(o => o.n === optName);
+  overlay.innerHTML = `
+    <div class="sim-modal">
+      <div class="m-icon">🎯</div>
+      <div class="m-title" style="color:var(--legendary);">최고옵 뽑기 성공!</div>
+      <div class="m-sub"><b>${optName}</b> 최고수치 <b style="color:var(--legendary);">${valStr}${opt&&opt.p?'%':''}</b> 획득<br>✦ 최고옵 기준 뽑기</div>
+      <div class="m-count">${count}<span> 회 만에 성공</span></div>
+      <div style="margin-top:8px;padding:7px 12px;background:var(--s1);border-radius:10px;font-size:12px;font-weight:800;color:var(--t2);">${getOptMsg(count)}</div>
+      <div class="sim-modal-btns">
+        <button class="m-btn-main" onclick="document.getElementById('opt-success-overlay').remove();showOptModal();">다시 뽑기</button>
+        <button class="m-btn-sub" onclick="document.getElementById('opt-success-overlay').remove();">닫기</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+
+
+function toggleDark(){const h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==="dark"?"light":"dark");localStorage.setItem('wind-dark',h.getAttribute('data-theme'));}
+(function(){document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light');})();
+
+
+// ════════════════════════════════════════════════
+// ◼ 아이템 강화 시뮬레이터
+//   이미지 제공 데이터 기반 (공식 확률표)
+// ════════════════════════════════════════════════
+
+// ── 강화 데이터 (이미지 표 기반) ──
+// 무기: atk(공격), pen(관통), acc(명중)
+// 방어구: def(방어), shield(쉴드), hp(내구)
+// ── 강화 확률표 (공식 데이터 기반) ──
+// lv: 현재 강화 수치 (이 행을 사용해 lv+1로 강화)
+// atk/pen/acc: 무기 공격/관통/명중 상승치
+// def/shd/hp:  방어구 방어/쉴드/내구 상승치
+// sfBonus: 스톤포스 사용 시 추가 성공 확률 (0.10 = +10%)
+// sfCost:  스톤포스 합산비용 (기본비용 포함)
+const ENHANCE_TABLE = [
+  //lv  atk pen acc  def shd hp   base    stones suc   fail  sfBonus sfCost
+  { lv:0,  atk:1, pen:0, acc:0, def:1, shd:0, hp:0,  base:20000,  stones:1,  suc:1.00, fail:0,    sfBonus:0,    sfCost:0      },
+  { lv:1,  atk:1, pen:0, acc:0, def:1, shd:0, hp:0,  base:40000,  stones:2,  suc:0.90, fail:0.10, sfBonus:0.10, sfCost:60000  },
+  { lv:2,  atk:1, pen:0, acc:0, def:1, shd:0, hp:0,  base:60000,  stones:3,  suc:0.80, fail:0.20, sfBonus:0.09, sfCost:90000  },
+  { lv:3,  atk:2, pen:0, acc:0, def:2, shd:0, hp:0,  base:80000,  stones:4,  suc:0.70, fail:0.30, sfBonus:0.08, sfCost:120000 },
+  { lv:4,  atk:2, pen:0, acc:0, def:2, shd:0, hp:0,  base:100000, stones:6,  suc:0.60, fail:0.40, sfBonus:0.07, sfCost:150000 },
+  { lv:5,  atk:2, pen:1, acc:0, def:2, shd:0, hp:1,  base:130000, stones:8,  suc:0.50, fail:0.50, sfBonus:0.06, sfCost:200000 },
+  { lv:6,  atk:2, pen:2, acc:1, def:2, shd:1, hp:2,  base:160000, stones:10, suc:0.40, fail:0.60, sfBonus:0.05, sfCost:250000 },
+  { lv:7,  atk:4, pen:2, acc:1, def:4, shd:1, hp:2,  base:190000, stones:12, suc:0.20, fail:0.80, sfBonus:0.04, sfCost:300000 },
+  { lv:8,  atk:5, pen:5, acc:3, def:5, shd:3, hp:10, base:220000, stones:15, suc:0.12, fail:0.88, sfBonus:0.03, sfCost:350000 },
+  { lv:9,  atk:5, pen:10,acc:5, def:5, shd:5, hp:15, base:250000, stones:20, suc:0.08, fail:0.92, sfBonus:0.02, sfCost:400000 },
+];
+
+const EQUIP_META = {
+  weapon: { emoji:'⚔️',  name:'무기',   stats:['atk','pen','acc'] },
+  armor:  { emoji:'🛡️', name:'방어구', stats:['def','shd','hp']  },
+};
+const STAT_LABEL = { atk:'공격력', pen:'관통', acc:'명중', def:'방어력', shd:'쉴드', hp:'내구' };
+const LV_COLORS_E = ['#a0a0a0','#6db8f5','#6db8f5','#6dd5a0','#6dd5a0','#f5c842','#f5c842','#f587b8','#f587b8','#b87af5','#b87af5'];
+
+// ── 강화 상태 ──
+let ES = {
+  equip: 'weapon',
+  lv: 0,
+  target: 7,
+  useSF: false,
+  // total, ok, fail: 횟수 / stones: 소모강화석 / baseCost: 기본비용합 / sfCost: SF추가비용합 / sfCnt: SF사용횟수
+  stat: { total:0, ok:0, fail:0, stones:0, baseCost:0, sfCost:0, sfCnt:0 },
+  peak: 0,
+  logCnt: 0,
+  isAuto: false,
+  autoTimer: null,
+};
+
+function eInit() {
+  eBuildLevelBar();
+  eBuildTargetBtns();
+  eBuildProbTable();
+  eUpdateDisplay();
+}
+
+function eBuildLevelBar() {
+  const bar = document.getElementById('e-levelbar');
+  bar.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const s = document.createElement('div');
+    s.className = 'lseg';
+    s.id = 'els-' + i;
+    bar.appendChild(s);
+  }
+}
+
+function eBuildTargetBtns() {
+  const wrap = document.getElementById('e-target-btns');
+  wrap.innerHTML = '';
+  [3,5,7,8,9,10].forEach(lv => {
+    const b = document.createElement('button');
+    b.className = 'tbtn' + (ES.target === lv ? ' tsel' : '');
+    b.textContent = '+' + lv;
+    b.id = 'etbtn-' + lv;
+    b.onclick = () => eSetTarget(lv);
+    wrap.appendChild(b);
+  });
+}
+
+function eSetTarget(lv) {
+  ES.target = lv;
+  document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('tsel'));
+  const b = document.getElementById('etbtn-' + lv);
+  if (b) b.classList.add('tsel');
+}
+
+function eBuildProbTable() {
+  const tbody = document.getElementById('e-prob-tbody');
+  tbody.innerHTML = '';
+  ENHANCE_TABLE.forEach(d => {
+    const next = d.lv + 1;
+    const tr = document.createElement('tr');
+    // 스탯: 무기(공격/관통/명중), 방어구(방어/쉴드/내구)
+    const wStat = [d.atk, d.pen||'—', d.acc||'—'].map(v=>v||'—').join(' / ');
+    const aStat = [d.def, d.shd||'—', d.hp||'—'].map(v=>v||'—').join(' / ');
+    tr.innerHTML = `
+      <td style="color:${LV_COLORS_E[d.lv]};font-weight:800;">+${d.lv} → +${next}</td>
+      <td class="td-stat">${d.atk}${d.pen?'/'+d.pen:''}${d.acc?'/'+d.acc:''}</td>
+      <td class="td-stat">${d.def}${d.shd?'/'+d.shd:''}${d.hp?'/'+d.hp:''}</td>
+      <td>${d.base.toLocaleString()}</td>
+      <td>${d.stones}</td>
+      <td style="color:#2d8a50;font-weight:800;">${(d.suc*100).toFixed(0)}%</td>
+      <td style="color:#b87000;">${d.fail>0?(d.fail*100).toFixed(0)+'%':'—'}</td>
+      <td style="color:var(--a1);font-weight:800;">${d.sfBonus>0?'+'+(d.sfBonus*100).toFixed(0)+'%':'—'}</td>
+      <td style="color:var(--t2);">${d.sfCost>0?d.sfCost.toLocaleString():'—'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── 누적 스탯 계산 ──
+function eGetTotalStats(lv, equip) {
+  const meta = EQUIP_META[equip];
+  const totals = {};
+  meta.stats.forEach(s => { totals[s] = 0; });
+  for (let i = 0; i < lv && i < ENHANCE_TABLE.length; i++) {
+    const d = ENHANCE_TABLE[i];
+    meta.stats.forEach(s => { totals[s] += (d[s] || 0); });
+  }
+  return totals;
+}
+
+function eUpdateDisplay() {
+  const lv = ES.lv;
+  const meta = EQUIP_META[ES.equip];
+  const color = LV_COLORS_E[Math.min(lv, 10)];
+  const d = lv < ENHANCE_TABLE.length ? ENHANCE_TABLE[lv] : null;
+  const useSF = document.getElementById('chk-sf').checked;
+  ES.useSF = useSF;
+
+  // 아이콘
+  const icon = document.getElementById('e-icon');
+  icon.className = 'equip-icon ei-' + Math.min(lv, 10);
+  document.getElementById('e-emoji').textContent = meta.emoji;
+  const et = document.getElementById('e-lv-txt');
+  et.textContent = '+' + lv;
+  et.style.color = color;
+  document.getElementById('e-lv-big').textContent = '+' + lv;
+  document.getElementById('e-lv-big').style.color = color;
+  document.getElementById('e-name').textContent = meta.name + ' · ' + (lv === 0 ? '기본 상태' : '+'+lv+' 강화');
+
+  // 확률 표시
+  let probHTML = '';
+  if (d && lv < 10) {
+    const actualSuc = d.suc + (useSF && d.sfBonus > 0 ? d.sfBonus : 0);
+    probHTML += `<span class="prob-badge pb-suc">✅ 성공 ${(actualSuc*100).toFixed(0)}%</span>`;
+    probHTML += `<span class="prob-badge pb-fail">❌ 실패 ${((1-actualSuc)*100).toFixed(0)}%</span>`;
+    if (useSF && d.sfBonus > 0) {
+      probHTML += `<span class="prob-badge pb-bonus">💎 +${(d.sfBonus*100).toFixed(0)}% 적용</span>`;
+    }
+    // 스톤포스 보너스/비용 프리뷰
+    const sfPrevEl = document.getElementById('sf-bonus-txt');
+    const sfCostEl = document.getElementById('sf-cost-preview');
+    if (d && d.sfBonus > 0) {
+      sfPrevEl.textContent = '+'+(d.sfBonus*100).toFixed(0)+'%';
+      const sfExtra = d.sfCost - d.base;
+      sfCostEl.textContent = useSF ? `합산 ${d.sfCost.toLocaleString()}스톤` : `추가 ${sfExtra.toLocaleString()}스톤`;
+    } else {
+      sfPrevEl.textContent = d ? '이 단계 없음' : '—';
+      sfCostEl.textContent = '—';
+    }
+  } else if (lv >= 10) {
+    probHTML = '<span class="prob-badge pb-suc">🎊 최고 강화 달성!</span>';
+  }
+  document.getElementById('e-prob-row').innerHTML = probHTML;
+
+  // 레벨바
+  for (let i = 1; i <= 10; i++) {
+    const seg = document.getElementById('els-' + i);
+    if (!seg) continue;
+    seg.className = 'lseg' + (i <= lv ? ' done s' + i : '');
+  }
+
+  // 스탯 비교 - 장비 종류별로 해당 스탯만 표시
+  const totals = eGetTotalStats(lv, ES.equip);
+  const sc = document.getElementById('e-stat-compare');
+  // 다음 단계 스탯 (예고)
+  const nextD = lv < ENHANCE_TABLE.length ? ENHANCE_TABLE[lv] : null;
+  sc.innerHTML = Object.entries(totals).map(([key, val]) => {
+    const nextVal = nextD ? (nextD[key] || 0) : 0;
+    const nextStr = (nextVal > 0 && lv < 10)
+      ? `<div class="stat-bonus">다음 +${nextVal}</div>` : '';
+    return `<div class="stat-box">
+      <div class="stat-label">${STAT_LABEL[key]||key}</div>
+      <div class="stat-val" style="color:${val>0?'var(--ok)':'var(--t3)'};">+${val}</div>
+      ${nextStr}
+    </div>`;
+  }).join('');
+
+  // 최대 달성
+  document.getElementById('e-max-msg').style.display = lv >= 10 ? 'block' : 'none';
+  document.getElementById('e-btn-enhance').disabled = lv >= 10;
+  document.getElementById('e-btn-auto').disabled = lv >= 10;
+
+  // 통계
+  document.getElementById('es0').textContent = ES.stat.total;
+  document.getElementById('es1').textContent = ES.stat.ok;
+  document.getElementById('es2').textContent = ES.stat.fail;
+  document.getElementById('es3').textContent = '+' + ES.peak;
+  document.getElementById('es-stones').textContent = ES.stat.stones.toLocaleString();
+  document.getElementById('es-sfcnt').textContent = ES.stat.sfCnt;
+  const fmt = v => v >= 10000 ? (v/10000).toFixed(1)+'만 스톤' : v.toLocaleString();
+  document.getElementById('es5').textContent = fmt(ES.stat.baseCost);
+  document.getElementById('es-sfcost').textContent = fmt(ES.stat.sfCost);
+  document.getElementById('es-total-cost').textContent = fmt(ES.stat.baseCost + ES.stat.sfCost);
+
+  // 이번 강화 소모 비용 카드
+  const nd = lv < ENHANCE_TABLE.length ? ENHANCE_TABLE[lv] : null;
+  const cc = document.getElementById('e-cost-card');
+  if (nd && lv < 10) {
+    const sfOn = document.getElementById('chk-sf').checked && nd.sfBonus > 0;
+    const sfExtra = sfOn ? (nd.sfCost - nd.base) : 0;
+    cc.innerHTML = `<div style="background:var(--s1);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <span style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:1px;">이번 강화 소모</span>
+      <span style="font-size:12px;font-weight:700;background:#fffbf0;border:1px solid #f5deb0;border-radius:8px;padding:3px 10px;color:#d4943a;">🪨 강화석 ${nd.stones}개</span>
+      <span style="font-size:12px;font-weight:700;background:#f0eeff;border:1px solid var(--border2);border-radius:8px;padding:3px 10px;color:var(--a1);">💰 기본 ${nd.base.toLocaleString()}스톤</span>
+      ${sfOn ? `<span style="font-size:12px;font-weight:700;background:#fff0f6;border:1px solid #f5c8de;border-radius:8px;padding:3px 10px;color:var(--a2);">💎 SF ${sfExtra.toLocaleString()}스톤 추가</span>` : ''}
+      ${sfOn ? `<span style="font-size:12px;font-weight:900;font-family:'Nunito',sans-serif;background:linear-gradient(135deg,var(--s2),#ffeef6);border:1.5px solid var(--border2);border-radius:8px;padding:3px 10px;color:var(--a1);">합산 ${nd.sfCost.toLocaleString()}스톤</span>` : ''}
+    </div>`;
+  } else {
+    cc.innerHTML = '';
+  }
+}
+
+// ── 강화 실행 ──
+function eEnhance() {
+  const lv = ES.lv;
+  if (lv >= 10) return;
+  const d = ENHANCE_TABLE[lv];
+  const useSF = document.getElementById('chk-sf').checked && d.sfBonus > 0;
+
+  // 비용 분리 집계
+  const baseCostThis = d.base;
+  const sfCostExtra  = useSF ? (d.sfCost - d.base) : 0; // SF 추가비용만
+  const totalCostThis = d.base + sfCostExtra;
+
+  ES.stat.total++;
+  ES.stat.stones  += d.stones;
+  ES.stat.baseCost += baseCostThis;
+  ES.stat.sfCost   += sfCostExtra;
+  if (useSF) ES.stat.sfCnt++;
+
+  const actualSuc = d.suc + (useSF ? d.sfBonus : 0);
+
+  if (Math.random() < actualSuc) {
+    // ✅ 성공
+    ES.lv++;
+    ES.stat.ok++;
+    if (ES.lv > ES.peak) ES.peak = ES.lv;
+    eAnimIcon('success');
+    eShowToast('ok', `+${lv} → +${ES.lv} 강화 성공! 🎉`);
+    eAddLog('ok', lv, ES.lv, totalCostThis, d.stones, useSF);
+    if (ES.lv >= ES.target) { eStopAuto(); eShowSuccessModal(); }
+    if (ES.lv >= 10) eStopAuto();
+  } else {
+    // ❌ 실패
+    ES.stat.fail++;
+    eAnimIcon('fail');
+    eShowToast('fail', `+${lv} 강화 실패 📉`);
+    eAddLog('fail', lv, ES.lv, totalCostThis, d.stones, useSF);
+  }
+  eUpdateDisplay();
+}
+
+function eAnimIcon(type) {
+  const ic = document.getElementById('e-icon');
+  ic.classList.remove('anim-success','anim-fail');
+  void ic.offsetWidth;
+  ic.classList.add(type === 'success' ? 'anim-success' : 'anim-fail');
+}
+
+function eShowToast(type, msg) {
+  const t = document.getElementById('e-toast');
+  t.className = 'result-toast show ' + (type === 'ok' ? 'rt-ok' : 'rt-fail');
+  t.textContent = msg;
+  t.onclick = () => { t.className = 'result-toast'; };
+  t.title = '클릭하여 닫기';
+  t.style.cursor = 'pointer';
+  // 자동 꺼짐 없음
+}
+
+function eShowSuccessModal() {
+  let ov = document.getElementById('e-success-ov');
+  if (ov) ov.remove();
+  ov = document.createElement('div');
+  ov.id = 'e-success-ov';
+  ov.className = 'sim-modal-overlay';
+  const msgs = {
+    3:'🎉 기본 강화 완료!', 5:'✨ 중급 강화 성공!',
+    7:'⭐ 고급 강화 달성!', 8:'💜 상위권 강화!',
+    9:'🟡 최상급 강화!', 10:'🔥 최고 강화 달성!'
+  };
+  const color = LV_COLORS_E[Math.min(ES.lv,10)];
+  ov.innerHTML = `<div class="sim-modal">
+    <div class="m-icon">${ES.lv>=10?'🔥':ES.lv>=8?'⭐':'🎉'}</div>
+    <div class="m-title" style="color:${color};">+${ES.lv} 강화 달성!</div>
+    <div class="m-count">${ES.stat.total}<span> 회 시도</span></div>
+    <div style="font-size:12px;padding:8px 12px;background:var(--s1);border-radius:10px;font-weight:700;color:var(--t2);">${msgs[ES.target]||'목표 달성!'}</div>
+    <div style="font-size:11px;color:var(--t3);margin-top:6px;">성공 ${ES.stat.ok}회 · 실패 ${ES.stat.fail}회</div>
+    <div class="sim-modal-btns">
+      ${ES.lv < 10 ? `<button class="m-btn-main" onclick="eCloseModal();eSetTarget(${Math.min(ES.lv+1,10)});">+${Math.min(ES.lv+1,10)} 도전 →</button>` : ''}
+      <button class="m-btn-sub" onclick="eCloseModal()">계속</button>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+}
+function eCloseModal() { const e=document.getElementById('e-success-ov'); if(e)e.remove(); }
+
+function eAddLog(type, from, to, cost, stones, usedSF) {
+  const box = document.getElementById('e-logbox');
+  if (ES.logCnt === 0) box.innerHTML = '';
+  ES.logCnt++;
+  const d = document.createElement('div');
+  d.className = 'lentry ' + (type==='ok'?'elog-ok':'elog-fail');
+  const icon = type==='ok'?'✅':'❌';
+  const msg = type==='ok' ? `+${from}→+${to} 성공` : `+${from} 실패`;
+  const sfTag = usedSF ? '<span style="font-size:9px;background:rgba(155,135,245,.2);color:var(--a1);border-radius:4px;padding:1px 5px;margin-left:3px;">💎SF</span>' : '';
+  d.innerHTML = `<span class="lnum">#${ES.stat.total}</span>${icon} ${msg}${sfTag} <span style="color:var(--t4);font-size:10px;">(강화석 ${stones}개 · ${cost.toLocaleString()}스톤)</span>`;
+  box.insertBefore(d, box.firstChild);
+  while (box.children.length > 150) box.removeChild(box.lastChild);
+}
+
+function eToggleAuto() {
+  if (ES.isAuto) { eStopAuto(); return; }
+  if (ES.lv >= 10 || ES.lv >= ES.target) return;
+  ES.isAuto = true;
+  const btn = document.getElementById('e-btn-auto');
+  btn.classList.add('running');
+  btn.textContent = '⏹ 정지';
+  document.getElementById('e-btn-enhance').disabled = true;
+  eAutoStep();
+}
+function eStopAuto() {
+  ES.isAuto = false;
+  if (ES.autoTimer) { clearTimeout(ES.autoTimer); ES.autoTimer = null; }
+  const btn = document.getElementById('e-btn-auto');
+  btn.classList.remove('running');
+  btn.textContent = '⚡ 자동 강화';
+  if (ES.lv < 10) document.getElementById('e-btn-enhance').disabled = false;
+}
+function eAutoStep() {
+  if (!ES.isAuto) return;
+  if (ES.lv >= 10 || ES.lv >= ES.target) { eStopAuto(); return; }
+  eEnhance();
+  if (ES.isAuto) ES.autoTimer = setTimeout(eAutoStep, 80);
+}
+
+function selectEquip(type) {
+  ES.equip = type;
+  Object.keys(EQUIP_META).forEach(k => {
+    const b = document.getElementById('ebtn-'+k);
+    if (b) b.classList.toggle('esel-active', k === type);
+  });
+  eUpdateDisplay();
+}
+
+function eResetAll() {
+  eStopAuto(); eCloseModal();
+  ES.lv = 0;
+  document.getElementById('chk-sf').checked = false;
+  document.getElementById('e-toast').className = 'result-toast';
+  eUpdateDisplay();
+}
+function eResetStats() {
+  ES.stat = {total:0,ok:0,fail:0,stones:0,baseCost:0,sfCost:0,sfCnt:0};
+  ES.logCnt = 0;
+  document.getElementById('e-logbox').innerHTML = '<div style="font-size:11px;color:var(--t3);text-align:center;font-family:\'Nunito\',sans-serif;font-weight:700;">강화하면 로그가 표시됩니다</div>';
+  eUpdateDisplay();
+}
+
+function toggleETable() {
+  const w = document.getElementById('e-table-wrap');
+  const b = document.getElementById('e-table-btn');
+  const open = w.style.display !== 'none';
+  w.style.display = open ? 'none' : 'block';
+  b.textContent = open ? '▾ 보기' : '▴ 닫기';
+}
+
+// ── 다크모드 ──
+function toggleDark(){
+  const h=document.documentElement;
+  h.setAttribute('data-theme',h.getAttribute('data-theme')==='dark'?'light':'dark');
+  localStorage.setItem('wind-dark',h.getAttribute('data-theme'));
+}
+(function(){ document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light'); })();
+</script>
+</body>
+</html>
