@@ -991,8 +991,8 @@
         <th data-col="attr">속성</th>
         <th data-col="sg_atk" class="sorted">공격 성장률 <span class="sort-icon">↓</span></th>
         <th data-col="sg_def">방어 성장률 <span class="sort-icon">↕</span></th>
-        <th data-col="sg_hp">체력 성장률 <span class="sort-icon">↕</span></th>
         <th data-col="sg_agi">순발 성장률 <span class="sort-icon">↕</span></th>
+        <th data-col="sg_hp">체력 성장률 <span class="sort-icon">↕</span></th>
         <th data-col="obtain">획득방법 <span class="sort-icon">↕</span></th>
       </tr>
     </thead>
@@ -1141,7 +1141,7 @@ function renderTable() {
   const tbody = document.getElementById("pet-tbody");
   tbody.innerHTML = "";
 
-  const highlightCols = {"sg_atk":4,"sg_def":5,"sg_hp":6,"sg_agi":7};
+  const highlightCols = {"sg_atk":4,"sg_def":5,"sg_agi":6,"sg_hp":7};
   const hlIdx = highlightCols[sortCol] ?? -1;
 
   entries.forEach(([name, pet]) => {
@@ -1198,7 +1198,7 @@ function renderTable() {
     tr.appendChild(tdAttr);
 
     // 성장률 4개 (환생 모드 대응)
-    ["sg_atk","sg_def","sg_hp","sg_agi"].forEach((col,i) => {
+    ["sg_atk","sg_def","sg_agi","sg_hp"].forEach((col,i) => {
       const td = document.createElement("td");
       const isRebirth = rebirthMode && pet.rebirth === true;
       td.className = "td-num" + (col === sortCol ? " highlight" : "") + (isRebirth ? " rebirth-val" : "");
@@ -1512,7 +1512,7 @@ document.addEventListener("keydown", e => {
 
 const PET_FAMILIES = {
   "우리계열": ["우리", "얼룩우리", "불그리", "실버우리", "환생얼룩우리", "복우리", "푸우리", "두리", "녹우리"],
-  "후바바계열": ["후바바", "쿠로로", "라고고", "토루루", "루니", "라루루"],
+  "후바바계열": ["후바바", "쿠로로", "라고고", "토루루", "루니", "라루루", "주니"],
   "부비계열": ["부비", "골드부비", "부이", "부이비", "얼룩부이비", "푸비", "깡우비"],
   "꼬비계열": ["꼬비", "꼬미", "꼬비오", "꼬꼬비"],
   "우푸계열": ["우푸", "푸푸", "투투", "오투투", "노투투", "포포"],
@@ -1528,7 +1528,7 @@ const PET_FAMILIES = {
   "카쿠계열": ["카쿠", "바카", "바우", "카우"],
   "베르가계열": ["베르가", "베루루", "고르고르", "노르노르", "산타베르가", "타키온", "고루루", "성호", "금호", "레피아", "샤베르", "베라라", "도르도르"],
   "토리노프스계열": ["토리노프스", "펜타스", "토리케라", "토르프스", "코발스", "핑크프스"],
-  "쟈그계열": ["쟈그", "쟈그라", "고반케스", "판지", "석화케스", "쟈하드", "판그라"],
+  "쟈그계열": ["쟈그", "쟈그라", "고반케스", "판지", "석화케스", "쟈하드", "판그라", "판그"],
   "기가로스계열": ["기가로스", "메가로스", "비트로스", "가가로스"],
   "무이계열": ["무이", "씨보스", "루이", "투이", "노보스"],
   "다이노계열": ["다이노", "다이노스", "프라키토스", "스텐토스", "프리토스", "푸비토스"],
@@ -1603,8 +1603,6 @@ const PET_FAMILIES = {
   "아마란스계열": ["아마란스"],
   "그리프스계열": ["그리프스"],
   "물범계열": ["물범"],
-  "판그계열": ["판그"],
-  "주니계열": ["주니"],
   "구스터계열": ["구스터"],
 };
 
