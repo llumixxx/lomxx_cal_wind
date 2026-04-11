@@ -993,6 +993,19 @@ function getPetImg(name) {
 let latestData = null;
 let petRankingRendered = false; // 펫별 랭킹은 한 번만 렌더링
 
+// ── 베노노크 하드코딩 데이터 (공홈 미지원, 추후 JSON 반영시 제거) ──
+const BENONOK_DATA = {
+  name: "베노노크",
+  general_ranking: [
+    { rank:1, nickname:"수라",   level:"140", exp:"1556 (-3)", attack:"211 (-1)", defense:"313 (+0)", speed:"165 (-1)", score:"147.55200" },
+    { rank:2, nickname:"퀴즈왕", level:"140", exp:"1555 (-4)", attack:"209 (-2)", defense:"312 (-1)", speed:"167 (+1)", score:"147.55000" },
+    { rank:3, nickname:"도이",   level:"140", exp:"1554 (-2)", attack:"211 (+0)", defense:"311 (-2)", speed:"165 (-1)", score:"147.54100" },
+    { rank:4, nickname:"웅지",   level:"140", exp:"1552 (-7)", attack:"211 (+0)", defense:"311 (-2)", speed:"165 (-1)", score:"147.53799" },
+    { rank:5, nickname:"한국",   level:"140", exp:"1552 (-7)", attack:"209 (-2)", defense:"312 (-1)", speed:"166 (+0)", score:"147.53799" }
+  ],
+  rebirth_ranking: []
+};
+
 // ── 프로돈 하드코딩 데이터 (공홈 미지원, 추후 JSON 반영시 제거) ──
 const PRODON_DATA = {
   name: "프로돈",
@@ -1027,6 +1040,13 @@ async function loadData() {
         latestData.pets.push(PRODON_DATA);
       } else if (!latestData.pets[prodonIdx].general_ranking || latestData.pets[prodonIdx].general_ranking.length === 0) {
         latestData.pets[prodonIdx] = PRODON_DATA;
+      }
+      // 베노노크: JSON에 없거나, 있어도 일반랭킹이 비어있으면 하드코딩 사용
+      const benonokIdx = latestData.pets.findIndex(p => p.name === "베노노크");
+      if (benonokIdx === -1) {
+        latestData.pets.push(BENONOK_DATA);
+      } else if (!latestData.pets[benonokIdx].general_ranking || latestData.pets[benonokIdx].general_ranking.length === 0) {
+        latestData.pets[benonokIdx] = BENONOK_DATA;
       }
 
       const dt = new Date(latestData.timestamp);
