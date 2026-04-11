@@ -1023,6 +1023,70 @@
     /* 계산기 펫 정보창 커서 */
     .pet-info-card { cursor:pointer; transition:box-shadow 0.15s; }
     .pet-info-card:hover { box-shadow:0 4px 20px rgba(155,135,245,0.2); }
+
+    /* ── 계산기 펫 상세 팝업 모달 (도감 공유) ── */
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-card {
+      background:var(--white); border-radius:24px;
+      box-shadow:0 20px 60px rgba(155,135,245,0.25);
+      width:100%; max-width:480px; max-height:90vh;
+      overflow-y:auto; animation:slideUp .25s ease;
+      position:relative;
+    }
+    .modal-card::-webkit-scrollbar { width:4px; }
+    .modal-card::-webkit-scrollbar-thumb { background:var(--border2); border-radius:4px; }
+    .modal-close {
+      position:absolute; top:14px; right:14px;
+      width:32px; height:32px; border-radius:50%;
+      background:var(--s2); border:none; cursor:pointer;
+      font-size:14px; color:var(--t2); transition:all .15s;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .modal-close:hover { background:var(--err); color:#fff; }
+    .modal-hero {
+      background:linear-gradient(135deg,var(--s1),var(--s2));
+      border-radius:24px 24px 0 0;
+      padding:28px 24px 20px;
+      display:flex; align-items:center; gap:20px;
+      border-bottom:1.5px solid var(--border);
+    }
+    .modal-img-box {
+      width:90px; height:90px; flex-shrink:0;
+      background:var(--white); border:2px solid var(--border2);
+      border-radius:18px;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 4px 16px rgba(155,135,245,0.15);
+      overflow:hidden;
+    }
+    .modal-img-box img { width:80px; height:80px; object-fit:contain; image-rendering:pixelated; }
+    .modal-hero-info { flex:1; min-width:0; }
+    .modal-name { font-size:22px; font-weight:900; font-family:'Nunito',sans-serif; color:var(--t1); margin-bottom:6px; }
+    .modal-badges { display:flex; gap:5px; flex-wrap:wrap; }
+    .modal-body { padding:20px 24px 24px; }
+    .modal-section { margin-bottom:16px; }
+    .modal-section-title {
+      font-size:9px; letter-spacing:2px; color:var(--t3);
+      text-transform:uppercase; font-family:'Nunito',sans-serif;
+      font-weight:800; margin-bottom:8px;
+      display:flex; align-items:center; gap:6px;
+    }
+    .modal-section-title::before {
+      content:''; display:block; width:3px; height:12px;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      border-radius:2px;
+    }
+    .modal-obtain { font-size:13px; color:var(--t2); line-height:1.6; background:var(--s1); border:1.5px solid var(--border); border-radius:10px; padding:10px 14px; }
+    .modal-attr-row { display:flex; gap:6px; flex-wrap:wrap; }
+    .modal-attr-chip { display:flex; align-items:center; gap:4px; padding:5px 10px; border-radius:8px; font-size:12px; font-weight:700; font-family:'Noto Sans KR',sans-serif; }
+    .modal-attr-chip .chip-num { font-family:'Nunito',sans-serif; font-weight:900; font-size:14px; }
+    .modal-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .modal-stat-box { background:var(--s1); border:1.5px solid var(--border); border-radius:12px; padding:10px 14px; display:flex; flex-direction:column; gap:2px; }
+    .modal-stat-label { font-size:9px; letter-spacing:1px; color:var(--t3); font-family:'Nunito',sans-serif; font-weight:700; text-transform:uppercase; }
+    .modal-stat-val { font-size:18px; font-weight:900; font-family:'Nunito',sans-serif; color:var(--t1); }
+    .stat-atk .modal-stat-val { color:var(--a2); }
+    .stat-def .modal-stat-val { color:var(--a1); }
+    .stat-agi .modal-stat-val { color:#5acba8; }
+    .stat-hp  .modal-stat-val { color:#d4943a; }
 </style>
 </head>
 <body>
