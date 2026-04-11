@@ -1020,6 +1020,9 @@
 .chat-float-btn:active { transform: scale(.88) rotate(15deg); }
 [data-theme="dark"] .chat-float-btn { background: #2a2a45; border-color: #505080; }
 [data-theme="dark"] .chat-float-btn:hover { border-color: #f587b8; box-shadow: 0 4px 16px rgba(245,135,184,.35); }
+    /* 계산기 펫 정보창 커서 */
+    .pet-info-card { cursor:pointer; transition:box-shadow 0.15s; }
+    .pet-info-card:hover { box-shadow:0 4px 20px rgba(155,135,245,0.2); }
 </style>
 </head>
 <body>
@@ -1084,7 +1087,7 @@
     </div>
 
         <!-- Pet Info Card -->
-        <div class="pet-info-card" id="pet-info-card">
+        <div class="pet-info-card" id="pet-info-card" onclick="openCalcPetModal()" title="클릭하면 상세 정보를 볼 수 있어요">
           <div class="pic-inner">
             <!-- 왼쪽: 이미지 -->
             <div id="pi-img-side" class="pic-img-side">
@@ -1982,7 +1985,7 @@ const DEFAULT_PETS = {
   "우마왕": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:40,defenseCoefficient:14,agilityCoefficient:25,grade:"일반",attrs:["화"],attr:{"지": 0, "수": 0, "화": 10, "풍": 0},sg:{"hp": 9.998, "atk": 2.411, "def": 1.3, "agi": 1.401},obtain:"지원 페트(VP)",routeType:"VIP",mount:true},
   "테라르가": {initialCoefficient:25,healthCoefficient:24,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:26,grade:"일반",attrs:["지", "풍"],attr:{"지": 9, "수": 0, "화": 0, "풍": 1},sg:{"hp": 9.856, "atk": 2.281, "def": 1.426, "agi": 1.448},obtain:"펫 코인 상점",routeType:"기타",mount:false},
   "메카르가": {initialCoefficient:25,healthCoefficient:25,attackCoefficient:37,defenseCoefficient:17,agilityCoefficient:25,grade:"일반",attrs:["지", "수"],attr:{"지": 9, "수": 1, "화": 0, "풍": 0},sg:{"hp": 9.998, "atk": 2.283, "def": 1.428, "agi": 1.401},obtain:"펫 코인 상점",routeType:"기타",mount:false},
-  "카가로스": {initialCoefficient:27,healthCoefficient:26,attackCoefficient:38,defenseCoefficient:14,agilityCoefficient:26,grade:"일반",attrs:["화","풍"],attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.713,"atk":2.274,"def":1.333,"agi":1.591},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
+  "카가로스": {initialCoefficient:27,healthCoefficient:23,attackCoefficient:37,defenseCoefficient:15,agilityCoefficient:29,grade:"일반",attrs:["화","풍"],attr:{"지":0,"수":0,"화":7,"풍":3},sg:{"hp":9.713,"atk":2.274,"def":1.333,"agi":1.591},obtain:"지원 페트(VP 5500)",routeType:"VIP",mount:false},
 };
 let petData = { ...DEFAULT_PETS };
 
@@ -2300,6 +2303,115 @@ function setStats(s){
     const de=document.getElementById('diff-'+k);
     if(de){de.textContent='';de.className='sfn-diff';}
   });
+}
+
+function openCalcPetModal() {
+  if (!selectedPet || !petData[selectedPet]) return;
+  const name = selectedPet;
+  const pet = petData[name];
+
+  // 기존 모달 제거
+  const existing = document.getElementById("calc-pet-modal-overlay");
+  if (existing) existing.remove();
+
+  const attrColors = {
+    지: {bg:"#e8f5e9",color:"#388e3c",border:"#c8e6c9",emoji:"🌿"},
+    수: {bg:"#e3f2fd",color:"#1976d2",border:"#bbdefb",emoji:"💧"},
+    화: {bg:"#fff3e0",color:"#e65100",border:"#ffe0b2",emoji:"🔥"},
+    풍: {bg:"#f3e5f5",color:"#7b1fa2",border:"#e1bee7",emoji:"🌀"},
+  };
+
+  // 속성 칩 HTML
+  const attrObj = pet.attr || {};
+  const attrHtml = ["지","수","화","풍"].map(a => {
+    const v = attrObj[a] ?? 0;
+    if (!v) return "";
+    const c = attrColors[a];
+    return `<div class="modal-attr-chip" style="background:${c.bg};color:${c.color};border:1.5px solid ${c.border};">${c.emoji} ${a} <span class="chip-num">${v}</span></div>`;
+  }).join("") || '<span style="color:var(--t3);font-size:12px;">정보 없음</span>';
+
+  // 뱃지 HTML
+  let badgesHtml = "";
+  if (pet.grade) badgesHtml += `<span class="grade-badge grade-${pet.grade}">${pet.grade}</span>`;
+  if (pet.mount === true) badgesHtml += `<span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;background:#f0fff4;color:#38a169;border:1px solid #c6f6d5;font-family:'Nunito',sans-serif;">🐴 탑승</span>`;
+  else if (pet.mount === false) badgesHtml += `<span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;background:#fff0f0;color:#c53030;border:1px solid #fed7d7;font-family:'Nunito',sans-serif;">🚫 탑승불가</span>`;
+
+  // 이미지
+  const imgUrl = PET_IMAGES[name];
+  const imgHtml = imgUrl
+    ? `<img src="${imgUrl}" alt="${name}" style="width:80px;height:80px;object-fit:contain;image-rendering:pixelated;" onerror="this.onerror=null;this.src=LOGO_URL">`
+    : `<img src="${LOGO_URL}" style="width:64px;height:64px;object-fit:contain;opacity:0.75;">`;
+
+  // 성장률
+  const sg = pet.sg || {};
+  const sgAtk = sg.atk != null ? sg.atk.toFixed(3) : "—";
+  const sgDef = sg.def != null ? sg.def.toFixed(3) : "—";
+  const sgAgi = sg.agi != null ? sg.agi.toFixed(3) : "—";
+  const sgHp  = sg.hp  != null ? sg.hp.toFixed(3)  : "—";
+  const total = (sg.atk||0)+(sg.def||0)+(sg.agi||0)+(sg.hp||0);
+  const totalStr = total > 0 ? total.toFixed(3) : "—";
+
+  // 모달 HTML 생성
+  const overlay = document.createElement("div");
+  overlay.id = "calc-pet-modal-overlay";
+  overlay.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;background:rgba(61,53,96,0.45);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;";
+  overlay.onclick = (e) => { if (e.target === overlay) closeCalcPetModal(); };
+
+  overlay.innerHTML = `
+    <div class="modal-card" style="width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:slideUp .25s ease;">
+      <button class="modal-close" onclick="closeCalcPetModal()">✕</button>
+      <div class="modal-hero">
+        <div class="modal-img-box">${imgHtml}</div>
+        <div class="modal-hero-info">
+          <div class="modal-name">${name}</div>
+          <div class="modal-badges">${badgesHtml}</div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <div class="modal-section-title">속성</div>
+          <div class="modal-attr-row">${attrHtml}</div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">획득 방법</div>
+          <div class="modal-obtain">${pet.obtain || "정보 없음"}</div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title">성장률 <span style="font-size:10px;color:var(--t3);font-weight:400;">S급 성장률</span></div>
+          <div class="modal-stat-grid">
+            <div class="modal-stat-box stat-atk">
+              <span class="modal-stat-label">ATK 공격</span>
+              <span class="modal-stat-val">${sgAtk}</span>
+            </div>
+            <div class="modal-stat-box stat-def">
+              <span class="modal-stat-label">DEF 방어</span>
+              <span class="modal-stat-val">${sgDef}</span>
+            </div>
+            <div class="modal-stat-box stat-agi">
+              <span class="modal-stat-label">AGI 순발</span>
+              <span class="modal-stat-val">${sgAgi}</span>
+            </div>
+            <div class="modal-stat-box stat-hp">
+              <span class="modal-stat-label">HP 내구</span>
+              <span class="modal-stat-val">${sgHp}</span>
+            </div>
+          </div>
+          <div style="margin-top:8px;padding:10px 14px;background:linear-gradient(135deg,var(--s2),#ffeef6);border-radius:10px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:10px;font-weight:800;color:var(--t2);">S급 합계</span>
+            <span style="font-size:20px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);">${totalStr}</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden";
+}
+
+function closeCalcPetModal() {
+  const el = document.getElementById("calc-pet-modal-overlay");
+  if (el) el.remove();
+  document.body.style.overflow = "";
 }
 
 function selectPet(name){
@@ -5030,5 +5142,6 @@ function toggleDark(){
 }
 (function(){ document.documentElement.setAttribute('data-theme',localStorage.getItem('wind-dark')||'light'); })();
 </script>
+
 </body>
 </html>
