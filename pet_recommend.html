@@ -188,19 +188,19 @@ var Q = {
     q: '펫을 어떤 목적으로 사용할 건가요?',
     sub: '사용 목적에 따라 최적의 펫이 달라져요',
     opts: [
-      {icon:'⚔️', text:'레이드 전투용', sub:'속성 레이드에서 사용할 펫', val:'raid'},
-      {icon:'🗺️', text:'일반 사냥 / 활용', sub:'필드 사냥이나 범용 펫', val:'general'},
+      {icon:'⚔️', text:'레이드 펫 추천', sub:'속성 레이드에서 사용할 펫', val:'raid'},
+      {icon:'🗺️', text:'일반 추천', sub:'필드 사냥이나 범용 펫', val:'general'},
     ],
     next: function(v){ return v==='raid' ? 'raidAttr' : 'stat'; }
   },
   raidAttr: {
-    q: '어떤 속성 레이드를 주로 하나요?',
-    sub: '레이드 속성에 맞는 펫이 유리해요',
+    q: '어떤 레이드를 주로 하나요?',
+    sub: '레이드 종류에 따라 필요한 펫 속성이 달라요',
     opts: [
-      {icon:'🌿', text:'지(地) 레이드', val:'지'},
-      {icon:'💧', text:'수(水) 레이드', val:'수'},
-      {icon:'🔥', text:'화(火) 레이드', val:'화'},
-      {icon:'🌀', text:'풍(風) 레이드', val:'풍'},
+      {icon:'🌿', text:'지(地) 레이드', sub:'→ 풍속성 펫 유리', val:'지'},
+      {icon:'💧', text:'수(水) 레이드', sub:'→ 지속성 펫 유리', val:'수'},
+      {icon:'🔥', text:'화(火) 레이드', sub:'→ 수속성 펫 유리', val:'화'},
+      {icon:'🌀', text:'풍(風) 레이드', sub:'→ 화속성 펫 유리', val:'풍'},
     ],
     next: function(){ return 'chartype'; }
   },
@@ -342,11 +342,13 @@ function showQuizResult() {
     var chartype = quizAnswers.chartype;
     var role = quizAnswers.role;
 
-    // 해당 속성 8이상 필터
-    var attrFiltered = ALL_PETS.filter(function(p){ return (p.attr[attr]||0) >= 8; });
+    // 레이드 상성: 해당 레이드에 유리한 속성 8이상 필터
+    var counterAttr = {지:'풍', 수:'지', 화:'수', 풍:'화'}[attr];
+    var label_attr = counterAttr;
+    var attrFiltered = ALL_PETS.filter(function(p){ return (p.attr[counterAttr]||0) >= 8; });
 
     if (chartype === '완캐') {
-      label = attr + '속성 레이드 · 완캐용';
+      label = attr + '레이드 · 완캐용 (' + counterAttr + '속성 8이상)';
       sortDesc = '내구성장 → 방어성장 → 공격성장 → 순발성장';
       result = attrFiltered.slice().sort(function(a,b){
         function s(p){
@@ -355,9 +357,11 @@ function showQuizResult() {
         return s(b)-s(a);
       });
     } else if (role === '딜') {
-      label = attr + '속성 레이드 · 순캐 딜펫';
-      sortDesc = '공성장 → 순성장 → 방성장 → 체성장';
-      result = attrFiltered.slice().sort(function(a,b){
+      label = attr + '레이드 · 순캐 딜펫 (' + counterAttr + '속성 8이상)';
+      sortDesc = '공성장 → 순성장(1.2이상) → 방성장 → 체성장';
+      // 순발 성장률 1.2 이상 필터
+      var dilFiltered = attrFiltered.filter(function(p){ return (p.sg.agi||0) >= 1.2; });
+      result = (dilFiltered.length > 0 ? dilFiltered : attrFiltered).slice().sort(function(a,b){
         function s(p){
           return (p.sg.atk||0)*4 + (p.sg.agi||0)*3 + (p.sg.def||0)*2 + (p.sg.hp||0)*1;
         }
@@ -365,11 +369,11 @@ function showQuizResult() {
       });
     } else {
       // 순캐 탑펫: 전체 펫 중 순발 높은 순, 해당 속성 있으면 보너스
-      label = attr + '속성 레이드 · 순캐 탑펫';
+      label = attr + '레이드 · 순캐 탑펫 (' + counterAttr + '속성 보너스)';
       sortDesc = '순발력 우선 (해당 속성 보너스)';
       result = ALL_PETS.filter(function(p){ return p.mount; }).slice().sort(function(a,b){
         function s(p){
-          var bonus = (p.attr[attr]||0) >= 8 ? 1000 : ((p.attr[attr]||0) > 0 ? 300 : 0);
+          var bonus = (p.attr[counterAttr]||0) >= 8 ? 1000 : ((p.attr[counterAttr]||0) > 0 ? 300 : 0);
           return (p.ic.agi||0) + (p.sg.agi||0)*10 + bonus;
         }
         return s(b)-s(a);
