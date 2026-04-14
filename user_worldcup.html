@@ -8,60 +8,58 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;color:#3d3560;
-  background-image:radial-gradient(circle at 15% 20%,rgba(155,135,245,.1) 0%,transparent 50%),
-  radial-gradient(circle at 85% 80%,rgba(245,135,184,.08) 0%,transparent 50%)}
-.wrap{max-width:600px;margin:0 auto;padding:1.2rem 1rem 3rem}
-.header{text-align:center;margin-bottom:1.2rem;padding-top:.8rem}
+  background-image:radial-gradient(circle at 15% 20%,rgba(245,135,184,.1) 0%,transparent 50%),
+  radial-gradient(circle at 85% 80%,rgba(155,135,245,.08) 0%,transparent 50%)}
+.wrap{max-width:600px;margin:0 auto;padding:1.2rem 1rem 3rem;position:relative}
+.header{text-align:center;margin-bottom:1.2rem;padding-top:.8rem;position:relative}
 .title{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;
   background:linear-gradient(135deg,#f587b8,#9b87f5);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:3px}
 .sub{font-size:13px;color:#7b72a8}
+.home-btn{position:absolute;left:0;top:50%;transform:translateY(-50%);
+  background:none;border:1.5px solid #f8bbd0;border-radius:8px;padding:5px 12px;
+  font-size:12px;font-weight:700;color:#e91e63;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+.home-btn:hover{background:#fce4ec}
 .badges{display:flex;gap:7px;justify-content:center;margin-bottom:.9rem;flex-wrap:wrap}
 .badge{font-size:12px;padding:3px 11px;border-radius:8px;background:#f0eeff;color:#7b72a8;border:.5px solid #e8e3ff}
-.badge.round{background:#ede9ff;color:#6c5ce7;font-weight:700;border-color:#c5beff}
-.progress-wrap{height:6px;background:#e8e3ff;border-radius:3px;margin-bottom:1.4rem;overflow:hidden}
+.badge.round{background:#fce4ec;color:#e91e63;font-weight:700;border-color:#f8bbd0}
+.progress-wrap{height:6px;background:#fce4ec;border-radius:3px;margin-bottom:1.4rem;overflow:hidden}
 .progress-bar{height:100%;background:linear-gradient(90deg,#f587b8,#9b87f5);border-radius:3px;transition:width .4s}
-
-/* VS 아레나 */
 .arena{display:flex;align-items:stretch;gap:12px;margin-bottom:1.2rem}
-.card{flex:1;background:#fff;border:1.5px solid #e8e3ff;border-radius:18px;padding:2rem 1rem;
+.card{flex:1;background:#fff;border:1.5px solid #fce4ec;border-radius:18px;padding:2rem 1rem;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
   cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s;
-  box-shadow:0 2px 12px rgba(155,135,245,.07);min-height:180px}
+  box-shadow:0 2px 12px rgba(245,135,184,.07);min-height:180px}
 .card:hover{border-color:#f587b8;transform:translateY(-3px);box-shadow:0 8px 28px rgba(245,135,184,.2)}
 .card:active{transform:scale(.97)}
 .user-emoji{font-size:48px;line-height:1}
-.user-name{font-size:18px;font-weight:700;color:#3d3560;text-align:center;line-height:1.3;word-break:keep-all}
+.user-name{font-size:18px;font-weight:700;color:#3d3560;text-align:center;line-height:1.3;word-break:keep-all;padding:0 4px}
 .pick-btn{margin-top:4px;padding:8px 20px;border-radius:10px;font-size:13px;font-weight:700;
   font-family:'Noto Sans KR',sans-serif;cursor:pointer;background:#fce4ec;
-  border:1.5px solid #f8bbd0;color:#e91e63;transition:all .15s}
-.pick-btn:hover{background:#f587b8;color:#fff;border-color:#f587b8}
+  border:1.5px solid #f8bbd0;color:#e91e63;transition:all .15s;pointer-events:none}
+.card:hover .pick-btn{background:#f587b8;color:#fff;border-color:#f587b8}
 .vs-sep{display:flex;align-items:center;justify-content:center;width:34px;flex-shrink:0}
-.vs-text{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#c5beff}
-
-/* 설정 화면 */
-.config-box{background:#fff;border:1.5px solid #e8e3ff;border-radius:18px;padding:1.6rem;
-  margin-bottom:1rem;box-shadow:0 2px 12px rgba(155,135,245,.07);text-align:center}
-.config-title{font-size:14px;font-weight:700;color:#7b72a8;margin-bottom:.5rem}
+.vs-text{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#f8bbd0}
+.config-box{background:#fff;border:1.5px solid #fce4ec;border-radius:18px;padding:1.6rem;
+  margin-bottom:1rem;box-shadow:0 2px 12px rgba(245,135,184,.07);text-align:center}
+.config-title{font-size:14px;font-weight:700;color:#e91e63;margin-bottom:.4rem}
 .config-sub{font-size:13px;color:#b0a8d4;margin-bottom:1.2rem}
 .participant-list{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:1.4rem}
-.p-tag{background:#f7f5ff;border:1px solid #e8e3ff;border-radius:20px;padding:4px 12px;
-  font-size:12px;color:#7b72a8;font-weight:500}
+.p-tag{background:#fef0f5;border:1px solid #fce4ec;border-radius:20px;padding:4px 12px;
+  font-size:12px;color:#e91e63;font-weight:500}
 .start-btn{padding:13px 40px;border-radius:12px;
   background:linear-gradient(135deg,#f587b8,#9b87f5);color:#fff;border:none;
   font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:opacity .15s}
 .start-btn:hover{opacity:.88}
-
-/* 결과 화면 */
 .result-wrap{text-align:center;padding:.5rem}
-.trophy{font-size:56px;display:block;margin-bottom:.5rem}
+.trophy{font-size:56px;display:block;margin-bottom:.4rem}
 .champ-emoji{font-size:64px;display:block;margin-bottom:.4rem}
-.champ-name{font-size:28px;font-weight:700;color:#3d3560;margin-bottom:.5rem}
+.champ-name{font-size:28px;font-weight:700;color:#3d3560;margin-bottom:.4rem}
 .champ-sub{font-size:13px;color:#f587b8;font-weight:700;margin-bottom:1.4rem}
-.result-list{background:#fff;border:1.5px solid #e8e3ff;border-radius:16px;
-  padding:.5rem 1rem;margin-bottom:1.4rem;box-shadow:0 2px 12px rgba(155,135,245,.07)}
+.result-list{background:#fff;border:1.5px solid #fce4ec;border-radius:16px;
+  padding:.5rem 1rem;margin-bottom:1.4rem;box-shadow:0 2px 12px rgba(245,135,184,.07)}
 .result-item{display:flex;align-items:center;gap:10px;padding:9px 0;
-  border-bottom:.5px solid #f0eeff;font-size:14px}
+  border-bottom:.5px solid #fce4ec;font-size:14px}
 .result-item:last-child{border-bottom:none}
 .result-rank{font-weight:700;width:28px;font-size:18px}
 .result-name{color:#3d3560;font-weight:600;flex:1;text-align:left}
@@ -69,15 +67,13 @@ body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;c
   border:1.5px solid #f8bbd0;font-size:13px;font-weight:700;
   font-family:'Noto Sans KR',sans-serif;cursor:pointer;color:#e91e63;transition:all .15s}
 .restart-btn:hover{background:#f587b8;color:#fff;border-color:#f587b8}
-
-/* 라운드 토스트 */
-@keyframes toastIn{0%{opacity:0;transform:translateX(-50%) translateY(-16px) scale(.95)}100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
-@keyframes toastOut{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-12px) scale(.95)}}
+@keyframes toastIn{0%{opacity:0;transform:translateX(-50%) translateY(-16px)}100%{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-12px)}}
 .round-toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:999;pointer-events:none;
   background:linear-gradient(135deg,#f587b8,#9b87f5);border-radius:40px;
   padding:10px 28px;display:flex;align-items:center;gap:10px;
   box-shadow:0 4px 20px rgba(245,135,184,.4);white-space:nowrap;
-  animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) forwards}
+  animation:toastIn .28s ease forwards}
 .round-toast.out{animation:toastOut .22s ease-in forwards}
 .toast-main{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#fff}
 .toast-sub{font-size:11px;color:rgba(255,255,255,.8)}
@@ -85,19 +81,16 @@ body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;c
 </head>
 <body>
 <div class="wrap" id="app"></div>
-
 <script>
 var USERS = ['김인직','세종대왕','제갈공명','베루루(사망)','토니/언니','미친개','루믹스','미네르바','샤넬','저능아(사망)','궁수(전김봉준)','오이소박이','유피테르','카오루코','병아리에여','꼬막','선우','백미','식탐/만두','고죠','아레스','고루루','비연','흑풍','풍백','짤랑잘랑중새','미쯔','봉식','불카누스','산골총각','럭키봉봉/이만기','이다희','캔뉴','피피아','하비스트','싼타','타락천사','부평팔콘펀치','도이','vanila','눈아','뒹굴알피','뛰뛰/방방','스돈','맹구','강철','단종'];
+var EMOJIS = ['😎','🤩','😍','🥳','😏','🤪','😤','🫡','😈','🥸','🤓','😇','🤑','😜','🫠','🥹','🤭','😶','🫣','😬','🤯','😱','🥺','🤡','👻','💀','🤖','👽','🐸','🎭','🌟','💫','⚡','🔥','💎','🎯','🏆','🎪','🌈','✨','💥','🌊','🎃','🍀','🦋','🌸','🍭'];
 
-var EMOJIS = ['😎','🤩','😍','🥳','😏','🤪','😤','🫡','😈','🥸','🤓','😇','🤑','😜','🫠','🥹','😤','🤭','😶','🫣','😬','🤯','😱','🥺','😤','🤡','👻','💀','🤖','👽','🐸','🎭','🌟','💫','⚡','🔥','💎','🎯','🏆','🎪','🎨','🎭','🌈','✨','💥','🌊','🎃'];
+var st = {screen:'config',round:[],pair:0,winners:[],results:[],done:0,roundNum:1,totalRounds:0,originalCount:0};
 
-var state = {screen:'config', round:[], pair:0, winners:[], results:[], done:0, roundNum:1, totalRounds:0, originalCount:0};
-var history = [];
-
-function getEmoji(name) {
-  var idx = 0;
-  for (var i = 0; i < name.length; i++) idx += name.charCodeAt(i);
-  return EMOJIS[idx % EMOJIS.length];
+function emoji(name) {
+  var h = 0;
+  for (var i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
+  return EMOJIS[h % EMOJIS.length];
 }
 
 function shuffle(a) {
@@ -109,160 +102,130 @@ function shuffle(a) {
   return b;
 }
 
-function startGame() {
-  var picked = shuffle(USERS);
-  var total = picked.length;
-  var preWinners = [];
-  if (total % 2 === 1) preWinners.push(picked.pop());
-
-  state.round = picked;
-  state.pair = 0;
-  state.winners = preWinners;
-  state.results = [];
-  state.done = preWinners.length;
-  state.roundNum = 1;
-  state.screen = 'game';
-  state.originalCount = total;
-  state.totalRounds = Math.ceil(Math.log2(total));
-  history = [];
-
-  showRoundToast(state.roundNum, total, state.totalRounds, function() { render(); });
-}
-
 function roundName(count) {
-  var matches = Math.floor(count / 2);
-  if (matches <= 1) return '🏆 결승';
-  if (matches <= 2) return '준결승';
-  if (matches <= 4) return '4강';
-  if (matches <= 8) return '8강';
-  if (matches <= 16) return '16강';
-  if (matches <= 32) return '32강';
-  return matches + '강';
+  var m = Math.floor(count/2);
+  if (m<=1) return '🏆 결승';
+  if (m<=2) return '준결승';
+  if (m<=4) return '4강';
+  if (m<=8) return '8강';
+  if (m<=16) return '16강';
+  if (m<=32) return '32강';
+  return m+'강';
 }
 
-function showRoundToast(roundNum, total, totalRounds, cb) {
-  var petCount = Math.ceil(total / Math.pow(2, roundNum-1));
-  var name = roundName(petCount);
-  var overlay = document.createElement('div');
-  overlay.className = 'round-toast';
-  overlay.innerHTML = '<span class="toast-main">' + name + '</span><span class="toast-sub">' + petCount + '명 참가</span>';
-  document.body.appendChild(overlay);
+function showToast(roundNum, total, cb) {
+  var cnt = Math.ceil(total / Math.pow(2, roundNum-1));
+  var name = roundName(cnt);
+  var el = document.createElement('div');
+  el.className = 'round-toast';
+  el.innerHTML = '<span class="toast-main">'+name+'</span><span class="toast-sub">'+cnt+'명 참가</span>';
+  document.body.appendChild(el);
   if (cb) cb();
-  setTimeout(function() {
-    overlay.classList.add('out');
-    setTimeout(function() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 240);
+  setTimeout(function(){
+    el.classList.add('out');
+    setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 240);
   }, 900);
 }
 
-function choose(idx) {
-  history.push(JSON.parse(JSON.stringify(state)));
-  var a = state.round[state.pair*2], b = state.round[state.pair*2+1];
-  var win = idx===0 ? a : b, lose = idx===0 ? b : a;
-  state.winners.push(win);
-  state.results.push({win:win, lose:lose});
-  state.done++;
-  state.pair++;
+function startGame() {
+  var picked = shuffle(USERS);
+  var pre = [];
+  if (picked.length % 2 === 1) pre.push(picked.pop());
+  st.round = picked; st.pair = 0; st.winners = pre; st.results = [];
+  st.done = pre.length; st.roundNum = 1; st.screen = 'game';
+  st.originalCount = USERS.length;
+  st.totalRounds = Math.ceil(Math.log2(USERS.length));
+  showToast(1, USERS.length, render);
+}
 
-  if (state.pair*2 >= state.round.length) {
-    if (state.winners.length === 1) { state.screen = 'result'; render(); return; }
-    var nextPets = shuffle(state.winners);
-    var preW = [];
-    if (nextPets.length % 2 === 1) preW.push(nextPets.pop());
-    state.roundNum++;
-    state.round = nextPets;
-    state.pair = 0;
-    state.winners = preW;
-    state.done += preW.length;
-    showRoundToast(state.roundNum, state.originalCount, state.totalRounds, function() { render(); });
+function choose(idx) {
+  var a = st.round[st.pair*2], b = st.round[st.pair*2+1];
+  var win = idx===0?a:b, lose = idx===0?b:a;
+  st.winners.push(win);
+  st.results.push({win:win,lose:lose});
+  st.done++; st.pair++;
+  if (st.pair*2 >= st.round.length) {
+    if (st.winners.length===1) { st.screen='result'; render(); return; }
+    var next = shuffle(st.winners);
+    var pre = [];
+    if (next.length%2===1) pre.push(next.pop());
+    st.roundNum++; st.round=next; st.pair=0; st.winners=pre; st.done+=pre.length;
+    showToast(st.roundNum, st.originalCount, render);
     return;
   }
   render();
 }
 
 function pct() {
-  var total = state.originalCount - 1;
-  return total > 0 ? Math.round(state.done / total * 100) : 0;
-}
-
-var app = document.getElementById('app');
-
-function renderConfig() {
-  var tags = USERS.map(function(u) { return '<span class="p-tag">' + u + '</span>'; }).join('');
-  app.innerHTML = '<div class="header"><div class="title">👥 유저 이상형 월드컵</div>'
-    + '<div class="sub">WIND 유저 ' + USERS.length + '명 · 나의 최애 유저를 뽑아보세요</div></div>'
-    + '<div class="config-box">'
-    + '<div class="config-title">참가자 명단</div>'
-    + '<div class="config-sub">전체 ' + USERS.length + '명 참가 · 1:1 토너먼트</div>'
-    + '<div class="participant-list">' + tags + '</div>'
-    + '<button class="start-btn" onclick="startGame()">월드컵 시작! 🔥</button>'
-    + '</div>';
-}
-
-function renderGame() {
-  var a = state.round[state.pair*2], b = state.round[state.pair*2+1];
-  var petCount = Math.ceil(state.originalCount / Math.pow(2, state.roundNum-1));
-  var rn = roundName(petCount);
-  var p = pct();
-  app.innerHTML = '<div class="header">'
-    + '<div class="title">👥 유저 이상형 월드컵</div>'
-    + '<button class="home-btn" onclick="restart()" style="position:absolute;left:0;top:50%;transform:translateY(-50%);background:none;border:1.5px solid #f8bbd0;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;color:#e91e63;cursor:pointer;font-family:\'Noto Sans KR\',sans-serif">🏠 처음으로</button>'
-    + '</div>'
-    + '<div class="badges">'
-    + '<span class="badge round">' + rn + '</span>'
-    + '<span class="badge">' + (state.pair+1) + ' / ' + Math.floor(state.round.length/2) + ' 경기</span>'
-    + '<span class="badge">진행 ' + p + '%</span></div>'
-    + '<div class="progress-wrap"><div class="progress-bar" style="width:' + p + '%"></div></div>'
-    + '<div class="arena">' + cardHtml(a, 0) + '<div class="vs-sep"><span class="vs-text">VS</span></div>' + cardHtml(b, 1) + '</div>';
-}
-
-function cardHtml(name, idx) {
-  return '<div class="card" onclick="choose(' + idx + ')">'
-    + '<div class="user-emoji">' + getEmoji(name) + '</div>'
-    + '<div class="user-name">' + name + '</div>'
-    + '<button class="pick-btn" onclick="event.stopPropagation();choose(' + idx + ')">선택 ✓</button>'
-    + '</div>';
-}
-
-function renderResult() {
-  var champ = state.results[state.results.length-1].win;
-  var top4 = []; var seen = {};
-  for (var i = state.results.length-1; i >= 0 && top4.length < 4; i--) {
-    var r = state.results[i];
-    if (!seen[r.win]) { seen[r.win]=1; top4.push(r.win); }
-    if (top4.length < 4 && !seen[r.lose]) { seen[r.lose]=1; top4.push(r.lose); }
-  }
-  var medals = ['🥇','🥈','🥉','4위'];
-  var list = top4.map(function(name, i) {
-    return '<div class="result-item">'
-      + '<span class="result-rank">' + medals[i] + '</span>'
-      + '<span style="font-size:22px">' + getEmoji(name) + '</span>'
-      + '<span class="result-name">' + name + '</span></div>';
-  }).join('');
-  app.innerHTML = '<div class="result-wrap">'
-    + '<span class="trophy">🏆</span>'
-    + '<span class="champ-emoji">' + getEmoji(champ) + '</span>'
-    + '<div class="champ-name">' + champ + '</div>'
-    + '<div class="champ-sub">나의 최애 유저!</div>'
-    + '<div class="result-list">' + list + '</div>'
-    + '<button class="restart-btn" onclick="restart()">🔄 다시 하기</button>'
-    + '</div>';
+  return st.originalCount>1 ? Math.round(st.done/(st.originalCount-1)*100) : 0;
 }
 
 function restart() {
-  state = {screen:'config', round:[], pair:0, winners:[], results:[], done:0, roundNum:1, totalRounds:0, originalCount:0};
-  history = [];
+  st = {screen:'config',round:[],pair:0,winners:[],results:[],done:0,roundNum:1,totalRounds:0,originalCount:0};
   render();
 }
 
 function render() {
-  if (state.screen==='config') renderConfig();
-  else if (state.screen==='game') renderGame();
-  else renderResult();
+  var app = document.getElementById('app');
+  if (st.screen==='config') {
+    var tags = USERS.map(function(u){ return '<span class="p-tag">'+emoji(u)+' '+u+'</span>'; }).join('');
+    app.innerHTML = '<div class="header"><div class="title">👥 유저 이상형 월드컵</div>'
+      +'<div class="sub">WIND 유저 '+USERS.length+'명 · 나의 최애 유저는?</div></div>'
+      +'<div class="config-box">'
+      +'<div class="config-title">참가자 명단</div>'
+      +'<div class="config-sub">전체 '+USERS.length+'명 · 1:1 토너먼트</div>'
+      +'<div class="participant-list">'+tags+'</div>'
+      +'<button class="start-btn" id="startBtn">월드컵 시작! 🔥</button>'
+      +'</div>';
+    document.getElementById('startBtn').onclick = startGame;
+  } else if (st.screen==='game') {
+    var a = st.round[st.pair*2], b = st.round[st.pair*2+1];
+    var cnt = Math.ceil(st.originalCount/Math.pow(2,st.roundNum-1));
+    var rn = roundName(cnt);
+    var p = pct();
+    app.innerHTML = '<div class="header">'
+      +'<button class="home-btn" id="homeBtn">🏠 처음으로</button>'
+      +'<div class="title">👥 유저 이상형 월드컵</div>'
+      +'</div>'
+      +'<div class="badges">'
+      +'<span class="badge round">'+rn+'</span>'
+      +'<span class="badge">'+(st.pair+1)+' / '+Math.floor(st.round.length/2)+' 경기</span>'
+      +'<span class="badge">진행 '+p+'%</span></div>'
+      +'<div class="progress-wrap"><div class="progress-bar" style="width:'+p+'%"></div></div>'
+      +'<div class="arena">'
+      +'<div class="card" id="cardA"><div class="user-emoji">'+emoji(a)+'</div><div class="user-name">'+a+'</div><div class="pick-btn">선택 ✓</div></div>'
+      +'<div class="vs-sep"><span class="vs-text">VS</span></div>'
+      +'<div class="card" id="cardB"><div class="user-emoji">'+emoji(b)+'</div><div class="user-name">'+b+'</div><div class="pick-btn">선택 ✓</div></div>'
+      +'</div>';
+    document.getElementById('homeBtn').onclick = restart;
+    document.getElementById('cardA').onclick = function(){ choose(0); };
+    document.getElementById('cardB').onclick = function(){ choose(1); };
+  } else {
+    var champ = st.results[st.results.length-1].win;
+    var top4 = []; var seen = {};
+    for (var i = st.results.length-1; i>=0 && top4.length<4; i--) {
+      var r = st.results[i];
+      if (!seen[r.win]) { seen[r.win]=1; top4.push(r.win); }
+      if (top4.length<4 && !seen[r.lose]) { seen[r.lose]=1; top4.push(r.lose); }
+    }
+    var medals = ['🥇','🥈','🥉','4위'];
+    var list = top4.map(function(name,i){
+      return '<div class="result-item"><span class="result-rank">'+medals[i]+'</span>'
+        +'<span style="font-size:22px">'+emoji(name)+'</span>'
+        +'<span class="result-name">'+name+'</span></div>';
+    }).join('');
+    app.innerHTML = '<div class="result-wrap">'
+      +'<span class="trophy">🏆</span>'
+      +'<span class="champ-emoji">'+emoji(champ)+'</span>'
+      +'<div class="champ-name">'+champ+'</div>'
+      +'<div class="champ-sub">나의 최애 유저!</div>'
+      +'<div class="result-list">'+list+'</div>'
+      +'<button class="restart-btn" id="restartBtn">🔄 다시 하기</button>'
+      +'</div>';
+    document.getElementById('restartBtn').onclick = restart;
+  }
 }
 
-window.choose = choose;
-window.startGame = startGame;
-window.restart = restart;
 render();
 </script>
 </body>
