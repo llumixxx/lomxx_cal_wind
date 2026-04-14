@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>🐾 WIND 펫 추천</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Gmarket+Sans:wght@300;500;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#faf9ff;--bg2:#f3f0ff;--card:#fff;--border:#e8e3ff;
+  --purple:#9b87f5;--pink:#f587b8;--green:#4ade80;
+  --text:#3d3560;--text2:#7b72a8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(circle at 15% 20%,rgba(155,135,245,.07) 0%,transparent 50%),radial-gradient(circle at 85% 80%,rgba(245,135,184,.05) 0%,transparent 50%)}
+
+/* NAV */
+nav{display:flex;justify-content:center;gap:8px;padding:14px 16px;flex-wrap:wrap;border-bottom:1px solid var(--border);background:#fff}
+nav a{text-decoration:none;background:#f7f5ff;border:1px solid var(--border);border-radius:99px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--text2);transition:all .15s}
+nav a:hover{border-color:var(--purple);color:var(--purple)}
+nav a.active{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;border-color:transparent}
+
+.wrap{max-width:700px;margin:0 auto;padding:2rem 1.2rem 4rem}
+
+/* 헤더 */
+.header{text-align:center;margin-bottom:2rem}
+.header h1{font-family:'Gmarket Sans',sans-serif;font-size:28px;font-weight:700;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px}
+.header p{font-size:13px;color:var(--text2)}
+
+/* 입력창 */
+.input-wrap{position:relative;margin-bottom:1rem}
+textarea{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:16px;
+  padding:16px 56px 16px 18px;font-size:14px;font-family:'Noto Sans KR',sans-serif;
+  color:var(--text);resize:none;line-height:1.6;outline:none;transition:border-color .15s;min-height:80px}
+textarea:focus{border-color:var(--purple)}
+textarea::placeholder{color:var(--text2)}
+.send-btn{position:absolute;right:12px;bottom:12px;width:38px;height:38px;
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:opacity .15s;font-size:16px}
+.send-btn:hover{opacity:.85}
+.send-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* 예시 버튼 */
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
+.ex-btn{background:var(--card);border:1px solid var(--border);border-radius:20px;
+  padding:6px 14px;font-size:12px;color:var(--text2);cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap}
+.ex-btn:hover{border-color:var(--purple);color:var(--purple)}
+
+/* 응답 영역 */
+.response-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:1.4rem;min-height:120px}
+.response-placeholder{color:var(--text2);font-size:14px;text-align:center;padding:1.5rem 0;line-height:1.8}
+
+/* 로딩 */
+.loading{display:flex;align-items:center;gap:10px;color:var(--text2);font-size:14px;padding:.5rem 0}
+.dots{display:flex;gap:4px}
+.dot{width:6px;height:6px;background:var(--purple);border-radius:50%;animation:bounce .8s infinite}
+.dot:nth-child(2){animation-delay:.15s;background:linear-gradient(var(--purple),var(--pink))}
+.dot:nth-child(3){animation-delay:.3s;background:var(--pink)}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* 응답 텍스트 */
+.response-text{font-size:14px;line-height:1.9;color:var(--text)}
+.response-text strong{color:var(--purple);font-weight:700}
+.response-text .pet-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;margin:10px 0;border-left:3px solid var(--purple)}
+.response-text em{color:var(--pink);font-style:normal}
+
+/* 히스토리 */
+.history{margin-top:1.5rem;display:flex;flex-direction:column;gap:10px}
+.hist-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;cursor:pointer;transition:border-color .15s}
+.hist-item:hover{border-color:var(--purple)}
+.hist-q{color:var(--text2);margin-bottom:4px;font-size:12px}
+.hist-a{color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">🏠 환각 계산기</a>
+  <a href="pokedex.html">🐾 펫 도감</a>
+  <a href="sim.html">🎮 시뮬레이터</a>
+  <a href="raid.html">🏢 인력사무소</a>
+  <a href="pet_ranking.html">🏆 펫 랭킹</a>
+  <a href="pet_worldcup.html">🐾 이상형 월드컵</a>
+  <a href="pet_recommend.html" class="active">✨ 펫 추천</a>
+</nav>
+<div class="wrap">
+  <div class="header">
+    <h1>✨ AI 펫 추천</h1>
+    <p>원하는 조건을 자유롭게 말해주세요. AI가 최적의 펫을 추천해드려요!</p>
+  </div>
+
+  <div class="input-wrap">
+    <textarea id="query" placeholder="예: 탑승 가능하고 공격력 높은 펫 추천해줘&#10;예: 화속성 2등급 펫 중 성장률 좋은거 알려줘" rows="3"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="ask()">➤</button>
+  </div>
+
+  <div class="examples">
+    <button class="ex-btn" onclick="setQuery('탑승 가능한 펫 중 공격력이 가장 높은 펫 3개 추천해줘')">🐴 탑승 가능 + 공격력 최강</button>
+    <button class="ex-btn" onclick="setQuery('화속성이 강한 2등급 펫 추천해줘')">🔥 화속성 2등급</button>
+    <button class="ex-btn" onclick="setQuery('내구력과 방어력이 높은 탱커형 펫 추천해줘')">🛡️ 탱커형</button>
+    <button class="ex-btn" onclick="setQuery('성장률이 전체적으로 균형잡힌 펫 추천해줘')">⚖️ 균형형</button>
+    <button class="ex-btn" onclick="setQuery('포획으로 얻을 수 있는 펫 중 가장 강한 펫은?')">🌿 포획 가능</button>
+    <button class="ex-btn" onclick="setQuery('순발력이 제일 높은 펫 알려줘')">⚡ 순발력 최강</button>
+  </div>
+
+  <div class="response-wrap" id="responseWrap">
+    <div class="response-placeholder">👆 질문을 입력하거나 예시 버튼을 눌러보세요!</div>
+  </div>
+
+  <div class="history" id="history"></div>
+</div>
+
+<script>
+const GEMINI_API_KEY = 'AQ.Ab8RN6JMTugo74saHMgkaWd4ZEbUexVlq5dDkEb0bzBNIJpK-A';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY;
+
+let PET_DATA = '';
+const historyList = [];
+
+// pet_info_data.json fetch
+fetch('pet_info_data.json')
+  .then(r => r.json())
+  .then(data => {
+    const lines = data.map(p => {
+      const ic = p.ic, sg = p.sg;
+      const a = Object.entries(p.attr||{}).filter(([,v])=>v>0).map(([k,v])=>k+v).join('');
+      return p.name+'|'+(p.grade||'일반')+'|'+(p.mount?'탑승O':'탑승X')+'|'+(a||'무속성')
+        +'|내구'+ic.hp+'공격'+ic.atk+'방어'+ic.def+'순발'+ic.agi
+        +'|성장내구'+sg.hp+'공격'+sg.atk+'방어'+sg.def+'순발'+sg.agi
+        +'|'+(p.obtain||'');
+    });
+    PET_DATA = lines.join('\n');
+    console.log('펫 데이터 로드:', data.length, '마리');
+  })
+  .catch(() => {
+    console.warn('pet_info_data.json 로드 실패');
+  });
+
+function setQuery(text) {
+  document.getElementById('query').value = text;
+  document.getElementById('query').focus();
+}
+
+document.getElementById('query').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    ask();
+  }
+});
+
+async function ask() {
+  const q = document.getElementById('query').value.trim();
+  if (!q) return;
+  if (!PET_DATA) {
+    showError('펫 데이터 로드 중이에요. 잠시 후 다시 시도해주세요!');
+    return;
+  }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  showLoading();
+
+  const prompt = ;
+
+  try {
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        contents: [{parts: [{text: prompt}]}],
+        generationConfig: {maxOutputTokens: 1000, temperature: 0.7}
+      })
+    });
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '응답을 받지 못했어요.';
+    showResponse(text);
+    addHistory(q, text);
+    document.getElementById('query').value = '';
+  } catch(e) {
+    showError('오류가 발생했어요: ' + e.message);
+  }
+
+  btn.disabled = false;
+}
+
+function showLoading() {
+  document.getElementById('responseWrap').innerHTML =
+    '<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>펫 데이터 분석 중...</div>';
+}
+
+function showError(msg) {
+  document.getElementById('responseWrap').innerHTML =
+    '<div style="color:#f87171;font-size:14px;padding:.5rem 0">⚠️ ' + msg + '</div>';
+}
+
+function showResponse(text) {
+  // 마크다운 간단 파싱
+  const html = text
+    .replace(/\*\*([^*]+)\*\*/g, '<strong></strong>')
+    .replace(/\*([^*]+)\*/g, '<em></em>')
+    .replace(/^#{1,3}\s+(.+)$/gm, '<strong style="font-size:15px;display:block;margin:8px 0 4px"></strong>')
+    .replace(/\n/g, '<br>');
+  document.getElementById('responseWrap').innerHTML =
+    '<div class="response-text">' + html + '</div>';
+}
+
+function addHistory(q, a) {
+  historyList.unshift({q, a});
+  if (historyList.length > 5) historyList.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('history');
+  if (historyList.length === 0) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div style="font-size:12px;color:var(--text2);margin-bottom:6px">최근 질문</div>' +
+    historyList.map((h,i) =>
+      '<div class="hist-item" onclick="restoreHistory(' + i + ')">' +
+      '<div class="hist-q">Q. ' + h.q + '</div>' +
+      '<div class="hist-a">' + h.a.replace(/<[^>]+>/g,'') + '</div></div>'
+    ).join('');
+}
+
+function restoreHistory(i) {
+  showResponse(historyList[i].a);
+}
+
+window.ask = ask;
+window.setQuery = setQuery;
+window.restoreHistory = restoreHistory;
+</script>
+</body>
+</html>
