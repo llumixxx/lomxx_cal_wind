@@ -342,39 +342,61 @@ function showQuizResult() {
     var chartype = quizAnswers.chartype;
     var role = quizAnswers.role;
 
-    // 레이드 상성: 해당 레이드에 유리한 속성 8이상 필터
+    // 레이드 상성
     var counterAttr = {지:'풍', 수:'지', 화:'수', 풍:'화'}[attr];
-    var label_attr = counterAttr;
-    var attrFiltered = ALL_PETS.filter(function(p){ return (p.attr[counterAttr]||0) >= 8; });
+
+    // 펫의 실효 성장률: 환생펫이면 rebirth_sg 우선
+    function getSg(p) {
+      return (p.rebirth_sg && p.rebirth_sg.hp) ? p.rebirth_sg : (p.sg || {});
+    }
+    function getIc(p) {
+      return (p.rebirth_ic && p.rebirth_ic.hp) ? p.rebirth_ic : (p.ic || {});
+    }
+
+    // 속성 점수 (최대 10) → 가중치로 사용
+    function attrScore(p) {
+      return (p.attr[counterAttr] || 0); // 0~10
+    }
+
+    // 해당 속성 1이상 전체 (속성 점수로 정렬 우선)
+    var attrFiltered = ALL_PETS.filter(function(p){ return (p.attr[counterAttr]||0) >= 1; });
 
     if (chartype === '완캐') {
-      label = attr + '레이드 · 완캐용 (' + counterAttr + '속성 8이상)';
-      sortDesc = '내구성장 → 방어성장 → 공격성장 → 순발성장';
-      result = attrFiltered.slice().sort(function(a,b){
+      label = attr + '레이드 · 완캐용 (' + counterAttr + '속성)';
+      sortDesc = '속성점수 우선 → 내구성장(12이상) → 방어 → 공격 → 순발';
+      // 내구 성장 12이상 필터
+      var wanFiltered = attrFiltered.filter(function(p){ return getSg(p).hp >= 12; });
+      result = (wanFiltered.length > 0 ? wanFiltered : attrFiltered).slice().sort(function(a,b){
         function s(p){
-          return (p.sg.hp||0)*4 + (p.sg.def||0)*3 + (p.sg.atk||0)*2 + (p.sg.agi||0)*1;
+          var sg = getSg(p);
+          return attrScore(p)*1000
+            + (sg.hp||0)*4 + (sg.def||0)*3 + (sg.atk||0)*2 + (sg.agi||0)*1;
         }
         return s(b)-s(a);
       });
     } else if (role === '딜') {
-      label = attr + '레이드 · 순캐 딜펫 (' + counterAttr + '속성 8이상)';
-      sortDesc = '공성장 → 순성장(1.2이상) → 방성장 → 체성장';
-      // 순발 성장률 1.2 이상 필터
-      var dilFiltered = attrFiltered.filter(function(p){ return (p.sg.agi||0) >= 1.2; });
+      label = attr + '레이드 · 순캐 딜펫 (' + counterAttr + '속성)';
+      sortDesc = '속성점수 우선 → 공성장 → 순성장(1.2이상) → 방성장 → 체성장';
+      // 순발 성장 1.2이상 필터
+      var dilFiltered = attrFiltered.filter(function(p){ return getSg(p).agi >= 1.2; });
       result = (dilFiltered.length > 0 ? dilFiltered : attrFiltered).slice().sort(function(a,b){
         function s(p){
-          return (p.sg.atk||0)*4 + (p.sg.agi||0)*3 + (p.sg.def||0)*2 + (p.sg.hp||0)*1;
+          var sg = getSg(p);
+          return attrScore(p)*1000
+            + (sg.atk||0)*4 + (sg.agi||0)*3 + (sg.def||0)*2 + (sg.hp||0)*1;
         }
         return s(b)-s(a);
       });
     } else {
-      // 순캐 탑펫: 전체 펫 중 순발 높은 순, 해당 속성 있으면 보너스
+      // 순캐 탑펫: 탑승 가능 + 순발성장 1.65이상
       label = attr + '레이드 · 순캐 탑펫 (' + counterAttr + '속성 보너스)';
-      sortDesc = '순발력 우선 (해당 속성 보너스)';
-      result = ALL_PETS.filter(function(p){ return p.mount; }).slice().sort(function(a,b){
+      sortDesc = '속성점수 우선 → 순발성장(1.65이상) → 순발 초기치';
+      var tapBase = ALL_PETS.filter(function(p){ return p.mount; });
+      var tapFiltered = tapBase.filter(function(p){ return getSg(p).agi >= 1.65; });
+      result = (tapFiltered.length > 0 ? tapFiltered : tapBase).slice().sort(function(a,b){
         function s(p){
-          var bonus = (p.attr[counterAttr]||0) >= 8 ? 1000 : ((p.attr[counterAttr]||0) > 0 ? 300 : 0);
-          return (p.ic.agi||0) + (p.sg.agi||0)*10 + bonus;
+          var sg = getSg(p), ic = getIc(p);
+          return attrScore(p)*1000 + (sg.agi||0)*100 + (ic.agi||0);
         }
         return s(b)-s(a);
       });
