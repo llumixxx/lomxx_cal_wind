@@ -127,13 +127,21 @@ function doAsk(){
   })
   .then(function(r){ return r.json(); })
   .then(function(d){
+    // 응답 구조 디버그 출력
+    console.log('Gemini 응답:', JSON.stringify(d).substring(0, 300));
     var text = '';
-    try { text = d.candidates[0].content.parts[0].text; } catch(e) { text = '응답을 받지 못했어요.'; }
+    if (d.error) {
+      text = 'API 오류: ' + d.error.message;
+    } else if (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0]) {
+      text = d.candidates[0].content.parts[0].text;
+    } else {
+      text = '응답 구조 오류. Console에서 확인하세요.';
+    }
     showRes(text);
-    addHist(q, text);
+    if (!d.error) addHist(q, text);
     document.getElementById('query').value = '';
   })
-  .catch(function(e){ showErr('오류: ' + e.message); })
+  .catch(function(e){ showErr('네트워크 오류: ' + e.message); })
   ['finally'](function(){ document.getElementById('sendBtn').disabled = false; });
 }
 
