@@ -780,11 +780,17 @@ function _renderStats(tab) {
   ALL_PETS.forEach(function(p){ petMap[p.n] = p; });
 
   // 탭 버튼
-  var tabs = ['week','month','total'].map(function(t) {
-    var active = t === tab
+  var tabList = ['week','month','total'];
+  var tabs = tabList.map(function(t) {
+    var isActive = t === tab;
+    var btn = document.createElement('button');
+    btn.textContent = tabLabels[t];
+    btn.setAttribute('onclick', 'switchStatsTab("' + t + '")');
+    btn.style.cssText = (isActive
       ? 'background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border-color:transparent'
-      : 'background:#f3f0ff;color:#6c5ce7;border-color:#d4cbff';
-    return '<button onclick="switchStatsTab('' + t + '')" style="' + active + ';border:1.5px solid;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">' + tabLabels[t] + '</button>';
+      : 'background:#f3f0ff;color:#6c5ce7;border-color:#d4cbff') +
+      ';border:1.5px solid;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer';
+    return btn.outerHTML;
   }).join('');
 
   var content;
