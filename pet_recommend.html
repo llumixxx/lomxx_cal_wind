@@ -7,217 +7,270 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;color:#3d3560}
-.wrap{max-width:700px;margin:0 auto;padding:1.5rem 1.2rem 4rem}
-.header{text-align:center;margin-bottom:1.5rem;padding-top:.8rem}
+body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;color:#3d3560;
+  background-image:radial-gradient(circle at 15% 20%,rgba(155,135,245,.1) 0%,transparent 50%),
+  radial-gradient(circle at 85% 80%,rgba(245,135,184,.08) 0%,transparent 50%)}
+.wrap{max-width:760px;margin:0 auto;padding:1.5rem 1.2rem 4rem}
+.header{text-align:center;margin-bottom:1.5rem;padding-top:.5rem}
 .header h1{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;
   background:linear-gradient(135deg,#9b87f5,#f587b8);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
 .header p{font-size:13px;color:#7b72a8}
-.input-wrap{position:relative;margin-bottom:1rem}
-textarea{width:100%;background:#fff;border:1.5px solid #e8e3ff;border-radius:16px;
-  padding:14px 52px 14px 16px;font-size:14px;font-family:'Noto Sans KR',sans-serif;
-  color:#3d3560;resize:none;line-height:1.6;outline:none;transition:border-color .15s;min-height:76px}
-textarea:focus{border-color:#9b87f5}
-textarea::placeholder{color:#b0a8d4}
-.send-btn{position:absolute;right:10px;bottom:10px;width:36px;height:36px;
-  background:linear-gradient(135deg,#9b87f5,#f587b8);border:none;border-radius:10px;
-  cursor:pointer;font-size:16px;color:#fff;transition:opacity .15s}
-.send-btn:hover{opacity:.85}
-.send-btn:disabled{opacity:.35;cursor:not-allowed}
-.examples{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:1.4rem}
-.ex-btn{background:#fff;border:1.5px solid #e8e3ff;border-radius:20px;
-  padding:6px 13px;font-size:12px;color:#7b72a8;cursor:pointer;
-  font-family:'Noto Sans KR',sans-serif;transition:all .15s;white-space:nowrap}
-.ex-btn:hover{border-color:#9b87f5;color:#6c5ce7;background:#f3f0ff}
-.response-wrap{background:#fff;border:1.5px solid #e8e3ff;border-radius:18px;
-  padding:1.3rem;min-height:100px;box-shadow:0 2px 12px rgba(155,135,245,.07)}
-.placeholder{color:#b0a8d4;font-size:14px;text-align:center;padding:1.2rem 0;line-height:1.8}
-.loading{display:flex;align-items:center;gap:10px;color:#7b72a8;font-size:14px;padding:.3rem 0}
-.dots{display:flex;gap:4px}
-.dot{width:6px;height:6px;background:#9b87f5;border-radius:50%;animation:bounce .8s infinite}
-.dot:nth-child(2){animation-delay:.15s}
-.dot:nth-child(3){animation-delay:.3s;background:#f587b8}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.response-text{font-size:14px;line-height:1.9;color:#3d3560}
-.response-text strong{color:#6c5ce7;font-weight:700}
-.response-text em{color:#f587b8;font-style:normal}
-.filter-info{font-size:11px;color:#b0a8d4;margin-bottom:8px}
-.history{margin-top:1.2rem;display:flex;flex-direction:column;gap:8px}
-.hist-label{font-size:12px;color:#b0a8d4;margin-bottom:2px}
-.hist-item{background:#fff;border:1.5px solid #e8e3ff;border-radius:12px;
-  padding:10px 13px;font-size:13px;cursor:pointer;transition:border-color .15s}
-.hist-item:hover{border-color:#9b87f5}
-.hist-q{color:#9b87f5;font-size:11px;font-weight:700;margin-bottom:3px}
-.hist-a{color:#7b72a8;line-height:1.4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+
+/* 필터 섹션 */
+.filter-box{background:#fff;border:1.5px solid #e8e3ff;border-radius:18px;padding:1.3rem 1.4rem;
+  margin-bottom:1rem;box-shadow:0 2px 12px rgba(155,135,245,.07)}
+.filter-title{font-size:12px;font-weight:700;color:#9e97c8;letter-spacing:.8px;margin-bottom:.7rem}
+.filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:.8rem}
+.filter-row:last-child{margin-bottom:0}
+.ftag{padding:6px 14px;border-radius:20px;border:1.5px solid #e8e3ff;background:#faf9ff;
+  font-size:12px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;
+  transition:all .15s;user-select:none}
+.ftag:hover{border-color:#9b87f5;color:#6c5ce7}
+.ftag.on{background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border-color:transparent}
+.ftag.on-soft{background:#ede9ff;color:#6c5ce7;border-color:#c5beff}
+
+/* 정렬 */
+.sort-row{display:flex;gap:7px;flex-wrap:wrap}
+.sort-btn{padding:6px 14px;border-radius:20px;border:1.5px solid #e8e3ff;background:#faf9ff;
+  font-size:12px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.sort-btn.on{background:#ede9ff;color:#6c5ce7;border-color:#c5beff}
+
+/* 검색 버튼 */
+.search-btn{width:100%;padding:12px;border-radius:12px;
+  background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border:none;
+  font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+  margin-bottom:1.2rem;transition:opacity .15s}
+.search-btn:hover{opacity:.88}
+
+/* 결과 */
+.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.result-count{font-size:13px;color:#7b72a8;font-weight:600}
+.result-count span{color:#9b87f5;font-weight:700}
+
+.pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.pet-card{background:#fff;border:1.5px solid #e8e3ff;border-radius:16px;padding:1rem;
+  display:flex;flex-direction:column;gap:7px;box-shadow:0 2px 8px rgba(155,135,245,.06);
+  transition:transform .12s,box-shadow .12s}
+.pet-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(155,135,245,.14)}
+.card-top{display:flex;align-items:center;gap:10px}
+.pet-img{width:52px;height:52px;object-fit:contain;image-rendering:pixelated;
+  background:#f7f5ff;border-radius:10px;padding:3px;flex-shrink:0}
+.pet-name{font-size:15px;font-weight:700;color:#3d3560;line-height:1.2}
+.pet-grade{font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600;margin-top:2px;display:inline-block}
+.grade-일반{background:#f0eeff;color:#7b72a8}
+.grade-1등급{background:#fff8e1;color:#f59e0b}
+.grade-2등급{background:#fce7f3;color:#ec4899}
+
+.badges{display:flex;gap:4px;flex-wrap:wrap}
+.attr-badge{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:600}
+.attr-지{background:#e8f5e9;color:#2e7d32}
+.attr-수{background:#e3f2fd;color:#1565c0}
+.attr-화{background:#fce4ec;color:#c62828}
+.attr-풍{background:#e8eaf6;color:#283593}
+.mount-badge{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:600}
+.mount-yes{background:#e8f5e9;color:#2e7d32}
+.mount-no{background:#f5f5f5;color:#aaa;border:.5px solid #e0e0e0}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 6px}
+.stat-row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:.5px solid #f0eeff;font-size:11px}
+.stat-label{color:#b0a8d4}
+.stat-val{color:#6c5ce7;font-weight:700}
+.stat-val .sg{color:#f587b8}
+
+.obtain-row{font-size:10.5px;color:#9e97c8;background:#f7f5ff;border-radius:7px;padding:4px 7px;line-height:1.4}
+
+.no-result{text-align:center;padding:2.5rem;color:#b0a8d4;font-size:14px;
+  background:#fff;border:1.5px solid #e8e3ff;border-radius:16px}
 </style>
 </head>
 <body>
 <script src="nav.js"></script>
 <div class="wrap">
   <div class="header">
-    <h1>✨ AI 펫 추천</h1>
-    <p>원하는 조건을 자유롭게 말해주세요. AI가 데이터를 분석해서 추천해드려요!</p>
+    <h1>✨ 펫 추천</h1>
+    <p>조건을 선택하면 맞는 펫을 찾아드려요!</p>
   </div>
-  <div class="input-wrap">
-    <textarea id="query" placeholder="예: 탑승 가능하고 공격력 높은 펫 추천해줘"></textarea>
-    <button class="send-btn" id="sendBtn" onclick="doAsk()">&#9658;</button>
+
+  <div class="filter-box">
+    <div class="filter-title">탑승 여부</div>
+    <div class="filter-row" id="mountFilter">
+      <div class="ftag on" data-val="">전체</div>
+      <div class="ftag" data-val="yes">🐴 탑승 가능</div>
+      <div class="ftag" data-val="no">탑승 불가</div>
+    </div>
+
+    <div class="filter-title">등급</div>
+    <div class="filter-row" id="gradeFilter">
+      <div class="ftag on" data-val="">전체</div>
+      <div class="ftag" data-val="일반">일반</div>
+      <div class="ftag" data-val="1등급">1등급</div>
+      <div class="ftag" data-val="2등급">2등급</div>
+    </div>
+
+    <div class="filter-title">속성 (중복 선택 가능)</div>
+    <div class="filter-row" id="attrFilter">
+      <div class="ftag on" data-val="">전체</div>
+      <div class="ftag" data-val="지">🌿 지</div>
+      <div class="ftag" data-val="수">💧 수</div>
+      <div class="ftag" data-val="화">🔥 화</div>
+      <div class="ftag" data-val="풍">🌀 풍</div>
+    </div>
+
+    <div class="filter-title">정렬 기준</div>
+    <div class="sort-row" id="sortFilter">
+      <div class="sort-btn on" data-val="atk">⚔️ 공격력</div>
+      <div class="sort-btn" data-val="hp">❤️ 내구력</div>
+      <div class="sort-btn" data-val="def">🛡️ 방어력</div>
+      <div class="sort-btn" data-val="agi">⚡ 순발력</div>
+      <div class="sort-btn" data-val="total">⚖️ 균형</div>
+      <div class="sort-btn" data-val="sg_total">📈 성장률</div>
+    </div>
   </div>
-  <div class="examples">
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="탑승 가능한 펫 중 공격력이 가장 높은 펫 추천해줘">🐴 탑승+공격력 최강</button>
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="화속성이 강한 2등급 펫 추천해줘">🔥 화속성 2등급</button>
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="내구력과 방어력이 높은 탱커형 펫 추천해줘">🛡️ 탱커형</button>
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="성장률이 전체적으로 균형잡힌 펫 추천해줘">⚖️ 균형형</button>
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="포획으로 얻을 수 있는 펫 중 가장 강한 펫은">🌿 포획 가능</button>
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="순발력이 제일 높은 펫 알려줘">⚡ 순발력 최강</button>
-  </div>
-  <div class="response-wrap" id="responseWrap">
-    <div class="placeholder">👆 질문을 입력하거나 예시 버튼을 눌러보세요!</div>
-  </div>
-  <div class="history" id="historyWrap"></div>
+
+  <button class="search-btn" onclick="doSearch()">🔍 추천 펫 찾기</button>
+
+  <div id="results"></div>
 </div>
+
 <script>
-var GKEY = 'AQ.Ab8RN6JMTugo74saHMgkaWd4ZEbUexVlq5dDkEb0bzBNIJpK-A';
-var GURL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GKEY;
 var ALL_PETS = [];
-var HIST = [];
+var filterMount = '';
+var filterGrade = '';
+var filterAttrs = [];
+var sortKey = 'atk';
 
 fetch('pet_info_data.json')
   .then(function(r) { return r.json(); })
   .then(function(data) {
     ALL_PETS = data;
-    console.log('펫 데이터 로드:', data.length, '마리');
+    doSearch();
   })
-  .catch(function() { console.warn('pet_info_data.json 로드 실패'); });
+  .catch(function() {
+    document.getElementById('results').innerHTML = '<div class="no-result">펫 데이터를 불러오지 못했어요.</div>';
+  });
 
-document.getElementById('query').onkeydown = function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doAsk(); }
-};
-
-function setQ(t) {
-  document.getElementById('query').value = t;
-  document.getElementById('query').focus();
+// 단일 선택 필터
+function initSingle(id, onChange) {
+  var el = document.getElementById(id);
+  el.querySelectorAll('.ftag').forEach(function(btn) {
+    btn.onclick = function() {
+      el.querySelectorAll('.ftag').forEach(function(b) { b.classList.remove('on'); });
+      btn.classList.add('on');
+      onChange(btn.dataset.val);
+    };
+  });
 }
 
-// 질문에서 조건 파악 후 후보 필터링
-function filterPets(q) {
-  var lower = q.toLowerCase();
-  var result = ALL_PETS.slice();
+// 속성 다중 선택
+function initAttrFilter() {
+  var el = document.getElementById('attrFilter');
+  el.querySelectorAll('.ftag').forEach(function(btn) {
+    btn.onclick = function() {
+      if (btn.dataset.val === '') {
+        // 전체 선택
+        el.querySelectorAll('.ftag').forEach(function(b) { b.classList.remove('on'); });
+        btn.classList.add('on');
+        filterAttrs = [];
+      } else {
+        el.querySelector('[data-val=""]').classList.remove('on');
+        btn.classList.toggle('on');
+        filterAttrs = Array.from(el.querySelectorAll('.ftag.on')).map(function(b) { return b.dataset.val; }).filter(Boolean);
+        if (filterAttrs.length === 0) {
+          el.querySelector('[data-val=""]').classList.add('on');
+        }
+      }
+    };
+  });
+}
 
-  // 탑승 필터
-  if (lower.indexOf('탑승') !== -1) {
-    result = result.filter(function(p) { return p.mount === true; });
+// 정렬 선택
+function initSortFilter() {
+  var el = document.getElementById('sortFilter');
+  el.querySelectorAll('.sort-btn').forEach(function(btn) {
+    btn.onclick = function() {
+      el.querySelectorAll('.sort-btn').forEach(function(b) { b.classList.remove('on'); });
+      btn.classList.add('on');
+      sortKey = btn.dataset.val;
+    };
+  });
+}
+
+initSingle('mountFilter', function(v) { filterMount = v; });
+initSingle('gradeFilter', function(v) { filterGrade = v; });
+initAttrFilter();
+initSortFilter();
+
+function getSortScore(p) {
+  var ic = p.ic || {}, sg = p.sg || {};
+  if (sortKey === 'atk')      return (ic.atk || 0) + (sg.atk || 0) * 10;
+  if (sortKey === 'hp')       return (ic.hp  || 0) + (sg.hp  || 0) * 10;
+  if (sortKey === 'def')      return (ic.def || 0) + (sg.def || 0) * 10;
+  if (sortKey === 'agi')      return (ic.agi || 0) + (sg.agi || 0) * 10;
+  if (sortKey === 'sg_total') return (sg.hp || 0) + (sg.atk || 0) + (sg.def || 0) + (sg.agi || 0);
+  // total 균형: 모든 성장률 합산
+  return (ic.hp || 0) + (ic.atk || 0) + (ic.def || 0) + (ic.agi || 0)
+       + ((sg.hp || 0) + (sg.atk || 0) + (sg.def || 0) + (sg.agi || 0)) * 5;
+}
+
+function doSearch() {
+  if (!ALL_PETS.length) return;
+
+  var result = ALL_PETS.filter(function(p) {
+    if (filterMount === 'yes' && !p.mount) return false;
+    if (filterMount === 'no'  &&  p.mount) return false;
+    if (filterGrade && p.grade !== filterGrade) return false;
+    if (filterAttrs.length > 0) {
+      var hasAll = filterAttrs.every(function(a) { return (p.attr[a] || 0) > 0; });
+      if (!hasAll) return false;
+    }
+    return true;
+  });
+
+  result.sort(function(a, b) { return getSortScore(b) - getSortScore(a); });
+
+  var top = result.slice(0, 30);
+  var el = document.getElementById('results');
+
+  if (!top.length) {
+    el.innerHTML = '<div class="no-result">조건에 맞는 펫이 없어요 😢<br>조건을 바꿔보세요!</div>';
+    return;
   }
 
-  // 속성 필터
-  var attrs = ['지', '수', '화', '풍'];
-  for (var i = 0; i < attrs.length; i++) {
-    var k = attrs[i];
-    if (lower.indexOf(k + '속성') !== -1 || lower.indexOf(k + '속') !== -1) {
-      result = result.filter(function(p) { return (p.attr[k] || 0) > 0; });
-    }
-  }
-
-  // 등급 필터
-  if (lower.indexOf('2등급') !== -1) result = result.filter(function(p) { return p.grade === '2등급'; });
-  else if (lower.indexOf('1등급') !== -1) result = result.filter(function(p) { return p.grade === '1등급'; });
-  else if (lower.indexOf('일반급') !== -1 || lower.indexOf('일반 등급') !== -1) result = result.filter(function(p) { return p.grade === '일반'; });
-
-  // 획득경로 필터
-  if (lower.indexOf('포획') !== -1) result = result.filter(function(p) { return (p.obtain || '').indexOf('포획') !== -1; });
-
-  // 정렬 기준
-  var sortFn;
-  if (lower.indexOf('공격') !== -1)      sortFn = function(p) { return (p.ic.atk || 0) + (p.sg.atk || 0) * 10; };
-  else if (lower.indexOf('방어') !== -1)  sortFn = function(p) { return (p.ic.def || 0) + (p.sg.def || 0) * 10; };
-  else if (lower.indexOf('순발') !== -1 || lower.indexOf('속도') !== -1) sortFn = function(p) { return (p.ic.agi || 0) + (p.sg.agi || 0) * 10; };
-  else if (lower.indexOf('내구') !== -1 || lower.indexOf('체력') !== -1 || lower.indexOf('탱') !== -1) sortFn = function(p) { return (p.ic.hp || 0) + (p.sg.hp || 0) * 10; };
-  else if (lower.indexOf('균형') !== -1)  sortFn = function(p) { return (p.sg.hp || 0) + (p.sg.atk || 0) + (p.sg.def || 0) + (p.sg.agi || 0); };
-  else sortFn = function(p) { return (p.ic.atk || 0) + (p.ic.hp || 0) + (p.sg.atk || 0) * 5; };
-
-  result.sort(function(a, b) { return sortFn(b) - sortFn(a); });
-  return result.slice(0, 20);
+  var sortLabels = {atk:'공격력', hp:'내구력', def:'방어력', agi:'순발력', total:'균형', sg_total:'성장률'};
+  el.innerHTML = '<div class="result-header">'
+    + '<div class="result-count"><span>' + top.length + '</span>마리 (전체 ' + result.length + '마리 중) · ' + sortLabels[sortKey] + ' 순</div>'
+    + '</div>'
+    + '<div class="pet-grid">' + top.map(cardHtml).join('') + '</div>';
 }
 
-function doAsk() {
-  var q = document.getElementById('query').value.trim();
-  if (!q) return;
-  if (!ALL_PETS.length) { showErr('펫 데이터 로드 중이에요. 잠시 후 다시 시도!'); return; }
-
-  document.getElementById('sendBtn').disabled = true;
-  document.getElementById('responseWrap').innerHTML =
-    '<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>펫 데이터 분석 중...</div>';
-
-  // JS에서 먼저 필터링 → 후보 20마리만 AI에게 전달
-  var filtered = filterPets(q);
-
-  var petLines = filtered.map(function(p) {
-    var ic = p.ic, sg = p.sg;
-    var a = Object.entries(p.attr || {}).filter(function(e) { return e[1] > 0; }).map(function(e) { return e[0] + e[1]; }).join('');
-    return p.name + '|' + (p.grade || '일반') + '|' + (p.mount ? '탑승O' : '탑승X')
-      + '|' + (a || '무속성')
-      + '|내구' + ic.hp + ' 공격' + ic.atk + ' 방어' + ic.def + ' 순발' + ic.agi
-      + '|성장률 내구' + sg.hp + ' 공격' + sg.atk + ' 방어' + sg.def + ' 순발' + sg.agi
-      + '|' + (p.obtain || '');
-  }).join('\n');
-
-  var prompt = 'WIND 온라인 게임 펫 추천 전문가입니다.\n'
-    + '형식: 이름|등급|탑승|속성|초기치|성장률|획득경로\n\n'
-    + '후보 펫 목록:\n' + petLines + '\n\n'
-    + '질문: ' + q + '\n\n'
-    + '위 목록에서 최적 3~5개 추천. 각 펫마다 이름, 주요 수치, 추천 이유 간결히. 한국어로.';
-
-  fetch(GURL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 600, temperature: 0.7 }
-    })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    var text = '';
-    if (d.error) {
-      if (d.error.code === 429) text = '요청이 너무 많아요. 잠시 후 다시 시도해주세요! (1분 후)';
-      else text = 'API 오류 ' + d.error.code + ': ' + d.error.message.substring(0, 80);
-    } else if (d.candidates && d.candidates[0] && d.candidates[0].content) {
-      text = d.candidates[0].content.parts[0].text;
-    } else {
-      text = '응답을 받지 못했어요.';
-    }
-    showRes(text);
-    if (!d.error) addHist(q, text);
-    document.getElementById('query').value = '';
-  })
-  .catch(function(e) { showErr('네트워크 오류: ' + e.message); })
-  ['finally'](function() { document.getElementById('sendBtn').disabled = false; });
-}
-
-function showErr(msg) {
-  document.getElementById('responseWrap').innerHTML = '<div style="color:#c0392b;font-size:14px;padding:.3rem 0">⚠️ ' + msg + '</div>';
-}
-
-function showRes(text) {
-  var h = text
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-    .replace(/\n/g, '<br>');
-  document.getElementById('responseWrap').innerHTML = '<div class="response-text">' + h + '</div>';
-}
-
-function addHist(q, a) {
-  HIST.unshift({ q: q, a: a });
-  if (HIST.length > 5) HIST.pop();
-  var el = document.getElementById('historyWrap');
-  el.innerHTML = '<div class="hist-label">최근 질문</div>' + HIST.map(function(h, i) {
-    return '<div class="hist-item" onclick="loadHist(' + i + ')">'
-      + '<div class="hist-q">Q. ' + h.q + '</div>'
-      + '<div class="hist-a">' + h.a.replace(/<[^>]+>/g, '').substring(0, 80) + '</div></div>';
+function cardHtml(p) {
+  var ic = p.ic || {}, sg = p.sg || {};
+  var attrs = Object.entries(p.attr || {}).filter(function(e) { return e[1] > 0; });
+  var attrBadges = attrs.map(function(e) {
+    return '<span class="attr-badge attr-' + e[0] + '">' + e[0] + ' ' + e[1] + '</span>';
   }).join('');
-}
+  var mountBadge = p.mount
+    ? '<span class="mount-badge mount-yes">🐴 탑승O</span>'
+    : '<span class="mount-badge mount-no">탑승X</span>';
+  var img = p.image
+    ? '<img class="pet-img" src="' + p.image.replace('.png','.gif') + '" alt="' + p.name + '" onerror="this.style.opacity=0.3">'
+    : '<div class="pet-img" style="background:#f0eeff"></div>';
 
-function loadHist(i) { showRes(HIST[i].a); }
+  return '<div class="pet-card">'
+    + '<div class="card-top">' + img
+    + '<div><div class="pet-name">' + p.name + '</div>'
+    + '<span class="pet-grade grade-' + (p.grade||'일반') + '">' + (p.grade||'일반') + '</span></div></div>'
+    + '<div class="badges">' + attrBadges + mountBadge + '</div>'
+    + '<div class="stats-grid">'
+    + '<div class="stat-row"><span class="stat-label">내구력</span><span class="stat-val">' + ic.hp + ' / <span class="sg">' + sg.hp + '</span></span></div>'
+    + '<div class="stat-row"><span class="stat-label">공격력</span><span class="stat-val">' + ic.atk + ' / <span class="sg">' + sg.atk + '</span></span></div>'
+    + '<div class="stat-row"><span class="stat-label">방어력</span><span class="stat-val">' + ic.def + ' / <span class="sg">' + sg.def + '</span></span></div>'
+    + '<div class="stat-row"><span class="stat-label">순발력</span><span class="stat-val">' + ic.agi + ' / <span class="sg">' + sg.agi + '</span></span></div>'
+    + '</div>'
+    + '<div class="obtain-row">📍 ' + (p.obtain || '정보없음') + '</div>'
+    + '</div>';
+}
 </script>
 </body>
 </html>
