@@ -42,6 +42,7 @@ textarea::placeholder{color:#b0a8d4}
 .response-text{font-size:14px;line-height:1.9;color:#3d3560}
 .response-text strong{color:#6c5ce7;font-weight:700}
 .response-text em{color:#f587b8;font-style:normal}
+.filter-info{font-size:11px;color:#b0a8d4;margin-bottom:8px}
 .history{margin-top:1.2rem;display:flex;flex-direction:column;gap:8px}
 .hist-label{font-size:12px;color:#b0a8d4;margin-bottom:2px}
 .hist-item{background:#fff;border:1.5px solid #e8e3ff;border-radius:12px;
@@ -63,11 +64,11 @@ textarea::placeholder{color:#b0a8d4}
     <button class="send-btn" id="sendBtn" onclick="doAsk()">&#9658;</button>
   </div>
   <div class="examples">
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="탑승 가능한 펫 중 공격력이 가장 높은 펫 3개 추천해줘">🐴 탑승+공격력 최강</button>
+    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="탑승 가능한 펫 중 공격력이 가장 높은 펫 추천해줘">🐴 탑승+공격력 최강</button>
     <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="화속성이 강한 2등급 펫 추천해줘">🔥 화속성 2등급</button>
     <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="내구력과 방어력이 높은 탱커형 펫 추천해줘">🛡️ 탱커형</button>
     <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="성장률이 전체적으로 균형잡힌 펫 추천해줘">⚖️ 균형형</button>
-    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="포획으로 얻을 수 있는 펫 중 가장 강한 펫은?">🌿 포획 가능</button>
+    <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="포획으로 얻을 수 있는 펫 중 가장 강한 펫은">🌿 포획 가능</button>
     <button class="ex-btn" onclick="setQ(this.dataset.q)" data-q="순발력이 제일 높은 펫 알려줘">⚡ 순발력 최강</button>
   </div>
   <div class="response-wrap" id="responseWrap">
@@ -78,78 +79,126 @@ textarea::placeholder{color:#b0a8d4}
 <script>
 var GKEY = 'AQ.Ab8RN6JMTugo74saHMgkaWd4ZEbUexVlq5dDkEb0bzBNIJpK-A';
 var GURL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GKEY;
-var PET_DATA = '';
+var ALL_PETS = [];
 var HIST = [];
 
 fetch('pet_info_data.json')
-  .then(function(r){ return r.json(); })
-  .then(function(data){
-    var lines = data.map(function(p){
-      var ic = p.ic, sg = p.sg;
-      var a = Object.entries(p.attr || {}).filter(function(e){ return e[1] > 0; }).map(function(e){ return e[0]+e[1]; }).join('');
-      return p.name + '|' + (p.grade||'일반') + '|' + (p.mount ? '탑승O' : '탑승X') + '|' + (a||'무')
-        + '|' + ic.hp + '/' + ic.atk + '/' + ic.def + '/' + ic.agi
-        + '|' + sg.hp + '/' + sg.atk + '/' + sg.def + '/' + sg.agi
-        + '|' + (p.obtain||'');
-    });
-    PET_DATA = lines.join('\n');
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    ALL_PETS = data;
+    console.log('펫 데이터 로드:', data.length, '마리');
   })
-  .catch(function(){ console.warn('pet_info_data.json 로드 실패'); });
+  .catch(function() { console.warn('pet_info_data.json 로드 실패'); });
 
-document.getElementById('query').onkeydown = function(e){
+document.getElementById('query').onkeydown = function(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doAsk(); }
 };
 
-function setQ(t){ document.getElementById('query').value = t; document.getElementById('query').focus(); }
+function setQ(t) {
+  document.getElementById('query').value = t;
+  document.getElementById('query').focus();
+}
 
-function doAsk(){
+// 질문에서 조건 파악 후 후보 필터링
+function filterPets(q) {
+  var lower = q.toLowerCase();
+  var result = ALL_PETS.slice();
+
+  // 탑승 필터
+  if (lower.indexOf('탑승') !== -1) {
+    result = result.filter(function(p) { return p.mount === true; });
+  }
+
+  // 속성 필터
+  var attrs = ['지', '수', '화', '풍'];
+  for (var i = 0; i < attrs.length; i++) {
+    var k = attrs[i];
+    if (lower.indexOf(k + '속성') !== -1 || lower.indexOf(k + '속') !== -1) {
+      result = result.filter(function(p) { return (p.attr[k] || 0) > 0; });
+    }
+  }
+
+  // 등급 필터
+  if (lower.indexOf('2등급') !== -1) result = result.filter(function(p) { return p.grade === '2등급'; });
+  else if (lower.indexOf('1등급') !== -1) result = result.filter(function(p) { return p.grade === '1등급'; });
+  else if (lower.indexOf('일반급') !== -1 || lower.indexOf('일반 등급') !== -1) result = result.filter(function(p) { return p.grade === '일반'; });
+
+  // 획득경로 필터
+  if (lower.indexOf('포획') !== -1) result = result.filter(function(p) { return (p.obtain || '').indexOf('포획') !== -1; });
+
+  // 정렬 기준
+  var sortFn;
+  if (lower.indexOf('공격') !== -1)      sortFn = function(p) { return (p.ic.atk || 0) + (p.sg.atk || 0) * 10; };
+  else if (lower.indexOf('방어') !== -1)  sortFn = function(p) { return (p.ic.def || 0) + (p.sg.def || 0) * 10; };
+  else if (lower.indexOf('순발') !== -1 || lower.indexOf('속도') !== -1) sortFn = function(p) { return (p.ic.agi || 0) + (p.sg.agi || 0) * 10; };
+  else if (lower.indexOf('내구') !== -1 || lower.indexOf('체력') !== -1 || lower.indexOf('탱') !== -1) sortFn = function(p) { return (p.ic.hp || 0) + (p.sg.hp || 0) * 10; };
+  else if (lower.indexOf('균형') !== -1)  sortFn = function(p) { return (p.sg.hp || 0) + (p.sg.atk || 0) + (p.sg.def || 0) + (p.sg.agi || 0); };
+  else sortFn = function(p) { return (p.ic.atk || 0) + (p.ic.hp || 0) + (p.sg.atk || 0) * 5; };
+
+  result.sort(function(a, b) { return sortFn(b) - sortFn(a); });
+  return result.slice(0, 20);
+}
+
+function doAsk() {
   var q = document.getElementById('query').value.trim();
   if (!q) return;
-  if (!PET_DATA) { showErr('펫 데이터 로드 중이에요. 잠시 후 다시 시도!'); return; }
+  if (!ALL_PETS.length) { showErr('펫 데이터 로드 중이에요. 잠시 후 다시 시도!'); return; }
 
   document.getElementById('sendBtn').disabled = true;
   document.getElementById('responseWrap').innerHTML =
     '<div class="loading"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>펫 데이터 분석 중...</div>';
 
-  var prompt = '당신은 WIND 온라인 게임 펫 전문가입니다.\n'
-    + '펫 데이터 형식: 이름|등급|탑승|속성|초기치(내구/공격/방어/순발)|성장률(내구/공격/방어/순발)|획득경로\n\n'
-    + PET_DATA + '\n\n'
-    + '사용자 질문: ' + q + '\n\n'
-    + '데이터 기반으로 최대 5개 추천, 이름/수치/이유 간결히, 한국어, 600자 이내';
+  // JS에서 먼저 필터링 → 후보 20마리만 AI에게 전달
+  var filtered = filterPets(q);
+
+  var petLines = filtered.map(function(p) {
+    var ic = p.ic, sg = p.sg;
+    var a = Object.entries(p.attr || {}).filter(function(e) { return e[1] > 0; }).map(function(e) { return e[0] + e[1]; }).join('');
+    return p.name + '|' + (p.grade || '일반') + '|' + (p.mount ? '탑승O' : '탑승X')
+      + '|' + (a || '무속성')
+      + '|내구' + ic.hp + ' 공격' + ic.atk + ' 방어' + ic.def + ' 순발' + ic.agi
+      + '|성장률 내구' + sg.hp + ' 공격' + sg.atk + ' 방어' + sg.def + ' 순발' + sg.agi
+      + '|' + (p.obtain || '');
+  }).join('\n');
+
+  var prompt = 'WIND 온라인 게임 펫 추천 전문가입니다.\n'
+    + '형식: 이름|등급|탑승|속성|초기치|성장률|획득경로\n\n'
+    + '후보 펫 목록:\n' + petLines + '\n\n'
+    + '질문: ' + q + '\n\n'
+    + '위 목록에서 최적 3~5개 추천. 각 펫마다 이름, 주요 수치, 추천 이유 간결히. 한국어로.';
 
   fetch(GURL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 800, temperature: 0.7 }
+      generationConfig: { maxOutputTokens: 600, temperature: 0.7 }
     })
   })
-  .then(function(r){ return r.json(); })
-  .then(function(d){
-    // 응답 구조 디버그 출력
-    console.log('Gemini 응답:', JSON.stringify(d).substring(0, 300));
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
     var text = '';
     if (d.error) {
-      text = 'API 오류: ' + d.error.message;
-    } else if (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0]) {
+      if (d.error.code === 429) text = '요청이 너무 많아요. 잠시 후 다시 시도해주세요! (1분 후)';
+      else text = 'API 오류 ' + d.error.code + ': ' + d.error.message.substring(0, 80);
+    } else if (d.candidates && d.candidates[0] && d.candidates[0].content) {
       text = d.candidates[0].content.parts[0].text;
     } else {
-      text = '응답 구조 오류. Console에서 확인하세요.';
+      text = '응답을 받지 못했어요.';
     }
     showRes(text);
     if (!d.error) addHist(q, text);
     document.getElementById('query').value = '';
   })
-  .catch(function(e){ showErr('네트워크 오류: ' + e.message); })
-  ['finally'](function(){ document.getElementById('sendBtn').disabled = false; });
+  .catch(function(e) { showErr('네트워크 오류: ' + e.message); })
+  ['finally'](function() { document.getElementById('sendBtn').disabled = false; });
 }
 
-function showErr(msg){
-  document.getElementById('responseWrap').innerHTML = '<div style="color:#c0392b;font-size:14px">⚠️ ' + msg + '</div>';
+function showErr(msg) {
+  document.getElementById('responseWrap').innerHTML = '<div style="color:#c0392b;font-size:14px;padding:.3rem 0">⚠️ ' + msg + '</div>';
 }
 
-function showRes(text){
+function showRes(text) {
   var h = text
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
@@ -157,18 +206,18 @@ function showRes(text){
   document.getElementById('responseWrap').innerHTML = '<div class="response-text">' + h + '</div>';
 }
 
-function addHist(q, a){
+function addHist(q, a) {
   HIST.unshift({ q: q, a: a });
   if (HIST.length > 5) HIST.pop();
   var el = document.getElementById('historyWrap');
-  el.innerHTML = '<div class="hist-label">최근 질문</div>' + HIST.map(function(h, i){
+  el.innerHTML = '<div class="hist-label">최근 질문</div>' + HIST.map(function(h, i) {
     return '<div class="hist-item" onclick="loadHist(' + i + ')">'
       + '<div class="hist-q">Q. ' + h.q + '</div>'
       + '<div class="hist-a">' + h.a.replace(/<[^>]+>/g, '').substring(0, 80) + '</div></div>';
   }).join('');
 }
 
-function loadHist(i){ showRes(HIST[i].a); }
+function loadHist(i) { showRes(HIST[i].a); }
 </script>
 </body>
 </html>
