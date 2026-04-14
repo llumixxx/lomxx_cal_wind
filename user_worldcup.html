@@ -78,10 +78,26 @@ body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;c
 .toast-main{font-family:'Nunito',sans-serif;font-size:18px;font-weight:900;color:#fff}
 .toast-sub{font-size:11px;color:rgba(255,255,255,.8)}
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <div class="wrap" id="app"></div>
 <script>
+// Firebase 초기화
+const firebaseConfig = {
+  apiKey: "AIzaSyAs3aqh2N75_c24xdjDNf271L16-VYCmls",
+  authDomain: "lomxx-calculator.firebaseapp.com",
+  databaseURL: "https://lomxx-calculator-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "lomxx-calculator",
+  storageBucket: "lomxx-calculator.firebasestorage.app",
+  messagingSenderId: "667060899901",
+  appId: "1:667060899901:web:4ab1bd419526c682355a54"
+};
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+var statsData = {week:{}, month:{}, total:{}};
+
 var USERS = ['김인직','세종대왕','제갈공명','베루루(사망)','토니/언니','미친개','루믹스','미네르바','샤넬','저능아(사망)','궁수(전김봉준)','오이소박이','유피테르','카오루코','병아리에여','꼬막','선우','백미','식탐/만두','고죠','아레스','고루루','비연','흑풍','풍백','짤랑잘랑중새','미쯔','봉식','불카누스','산골총각','럭키봉봉/이만기','이다희','캔뉴','피피아','하비스트','싼타','타락천사','부평팔콘펀치','도이','vanila','눈아','뒹굴알피','뛰뛰/방방','스돈','맹구','강철','단종'];
 var EMOJIS = ['😎','🤩','😍','🥳','😏','🤪','😤','🫡','😈','🥸','🤓','😇','🤑','😜','🫠','🥹','🤭','😶','🫣','😬','🤯','😱','🥺','🤡','👻','💀','🤖','👽','🐸','🎭','🌟','💫','⚡','🔥','💎','🎯','🏆','🎪','🌈','✨','💥','🌊','🎃','🍀','🦋','🌸','🍭'];
 
@@ -144,6 +160,18 @@ function choose(idx) {
   st.winners.push(win);
   st.results.push({win:win,lose:lose});
   st.done++; st.pair++;
+  // Firebase 통계 저장
+  var _now = new Date();
+  var _yr = _now.getFullYear();
+  var _mo = String(_now.getMonth()+1).padStart(2,'0');
+  var _d = new Date(Date.UTC(_yr,_now.getMonth(),_now.getDate()));
+  var _day = _d.getUTCDay()||7; _d.setUTCDate(_d.getUTCDate()+4-_day);
+  var _wk = String(Math.ceil(((_d-new Date(Date.UTC(_d.getUTCFullYear(),0,1)))/86400000+1)/7)).padStart(2,'0');
+  var _wkey = _yr+'-W'+_wk, _mkey = _yr+'-'+_mo;
+  var _name = win.replace(/[.#$/\[\]]/g,'_');
+  db.ref('userWins/week/'+_wkey+'/'+_name).transaction(function(c){return(c||0)+1;});
+  db.ref('userWins/month/'+_mkey+'/'+_name).transaction(function(c){return(c||0)+1;});
+  db.ref('userWins/total/'+_name).transaction(function(c){return(c||0)+1;});
   if (st.pair*2 >= st.round.length) {
     if (st.winners.length===1) { st.screen='result'; render(); return; }
     var next = shuffle(st.winners);
@@ -220,10 +248,90 @@ function render() {
       +'<div class="champ-name">'+champ+'</div>'
       +'<div class="champ-sub">나의 최애 유저!</div>'
       +'<div class="result-list">'+list+'</div>'
+      +'<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">'
       +'<button class="restart-btn" id="restartBtn">🔄 다시 하기</button>'
+      +'<button class="restart-btn" style="background:#f0eeff;color:#6c5ce7;border-color:#d4cbff" id="statsBtn">📊 통계 보기</button>'
+      +'</div>'
       +'</div>';
     document.getElementById('restartBtn').onclick = restart;
+    document.getElementById('statsBtn').onclick = showStats;
   }
+}
+
+function showStats() {
+  var now = new Date();
+  var yr = now.getFullYear();
+  var mo = String(now.getMonth()+1).padStart(2,'0');
+  var d = new Date(Date.UTC(yr,now.getMonth(),now.getDate()));
+  var day = d.getUTCDay()||7; d.setUTCDate(d.getUTCDate()+4-day);
+  var wk = String(Math.ceil(((d-new Date(Date.UTC(d.getUTCFullYear(),0,1)))/86400000+1)/7)).padStart(2,'0');
+  var wkey = yr+'-W'+wk, mkey = yr+'-'+mo;
+
+  var app = document.getElementById('app');
+  app.innerHTML = '<div class="header"><button class="home-btn" id="backBtn">← 뒤로</button>'
+    +'<div class="title">📊 선택 통계</div></div>'
+    +'<div style="text-align:center;padding:2rem;color:#b0a8d4">데이터 불러오는 중...</div>';
+  document.getElementById('backBtn').onclick = function(){ st.screen='result'; render(); };
+
+  var loaded = 0;
+  function tryRender(){ if(++loaded===3) renderStats('week'); }
+  db.ref('userWins/week/'+wkey).once('value').then(function(s){ statsData.week=s.val()||{}; tryRender(); });
+  db.ref('userWins/month/'+mkey).once('value').then(function(s){ statsData.month=s.val()||{}; tryRender(); });
+  db.ref('userWins/total').once('value').then(function(s){ statsData.total=s.val()||{}; tryRender(); });
+}
+
+function renderStats(tab) {
+  tab = tab||'week';
+  var labels = {week:'이번 주', month:'이번 달', total:'전체'};
+  var data = statsData[tab]||{};
+  var entries = Object.entries(data).map(function(e){ return [e[0].replace(/_/g,' '), e[1]]; });
+
+  var app = document.getElementById('app');
+
+  var tabBtns = ['week','month','total'].map(function(t){
+    var btn = document.createElement('button');
+    btn.textContent = labels[t];
+    btn.setAttribute('onclick','renderStats("'+t+'")');
+    btn.style.cssText = (t===tab
+      ? 'background:linear-gradient(135deg,#f587b8,#9b87f5);color:#fff;border-color:transparent'
+      : 'background:#fce4ec;color:#e91e63;border-color:#f8bbd0')
+      +';border:1.5px solid;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:sans-serif';
+    return btn.outerHTML;
+  }).join('');
+
+  var content;
+  if (!entries.length) {
+    content = '<div style="text-align:center;padding:2rem;color:#b0a8d4;font-size:14px">아직 기록이 없어요 👥</div>';
+  } else {
+    entries.sort(function(a,b){ return b[1]-a[1]; });
+    var top = entries.slice(0,20);
+    var maxVal = top[0][1];
+    var total = entries.reduce(function(s,e){ return s+e[1]; },0);
+    content = '<div style="font-size:11px;color:#b0a8d4;margin-bottom:8px">총 '+total+'번 선택됨</div>';
+    content += top.map(function(e,i){
+      var barW = Math.round(e[1]/maxVal*100);
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid #fce4ec">'
+        +'<span style="font-size:13px;font-weight:700;width:20px;color:#f587b8">'+(i+1)+'</span>'
+        +'<span style="font-size:18px">'+emoji(e[0])+'</span>'
+        +'<span style="flex:1;font-size:13px;font-weight:500;color:#3d3560">'+e[0]+'</span>'
+        +'<div style="width:80px;height:6px;background:#fce4ec;border-radius:3px;overflow:hidden">'
+        +'<div style="width:'+barW+'%;height:100%;background:linear-gradient(90deg,#f587b8,#9b87f5);border-radius:3px"></div></div>'
+        +'<span style="font-size:12px;font-weight:700;color:#e91e63;width:28px;text-align:right">'+e[1]+'</span>'
+        +'</div>';
+    }).join('');
+  }
+
+  app.innerHTML = '<div class="header"><button class="home-btn" id="backBtn">← 뒤로</button>'
+    +'<div class="title">📊 선택 통계</div></div>'
+    +'<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1rem">'+tabBtns+'</div>'
+    +'<div style="background:#fff;border:1.5px solid #fce4ec;border-radius:16px;padding:1rem 1.2rem;box-shadow:0 2px 12px rgba(245,135,184,.07)">'
+    +'<div style="font-size:12px;font-weight:700;color:#e91e63;letter-spacing:.8px;margin-bottom:.8rem">'+labels[tab]+' 많이 선택된 유저 TOP 20</div>'
+    +content+'</div>'
+    +'<div style="display:flex;justify-content:center;margin-top:1rem">'
+    +'<button class="restart-btn" id="backBtn2">← 결과로 돌아가기</button></div>';
+
+  document.getElementById('backBtn').onclick = function(){ st.screen='result'; render(); };
+  document.getElementById('backBtn2').onclick = function(){ st.screen='result'; render(); };
 }
 
 render();
