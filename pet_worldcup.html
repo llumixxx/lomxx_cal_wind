@@ -481,15 +481,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var db = firebase.database();
 
-// 전역 통계: 펫 이름 → 선택 횟수 (로컬 캐시)
-let globalWins = JSON.parse(localStorage.getItem('petWins') || '{}');
-// Firebase에서 최신 통계 로드
-db.ref('petWins').once('value').then(function(snap) {
-  if (snap.val()) {
-    globalWins = snap.val();
-    localStorage.setItem('petWins', JSON.stringify(globalWins));
-  }
-});
+// 통계용 변수
+var statsData = { week: {}, month: {}, total: {} };
 // 히스토리 스택 (뒤로가기용)
 let history = [];
 
@@ -571,10 +564,21 @@ function choose(idx) {
 
   const a = state.round[state.pair*2], b = state.round[state.pair*2+1];
   const win = idx===0 ? a : b, lose = idx===0 ? b : a;
-  // 통계 저장 (로컬 + Firebase)
-  globalWins[win.n] = (globalWins[win.n] || 0) + 1;
-  localStorage.setItem('petWins', JSON.stringify(globalWins));
-  db.ref('petWins/' + win.n).transaction(function(cur) { return (cur || 0) + 1; });
+  // 통계 저장 (주별 / 월별 / 전체)
+  var _now = new Date();
+  var _yr  = _now.getFullYear();
+  var _mo  = String(_now.getMonth()+1).padStart(2,'0');
+  // ISO 주차 계산
+  var _d   = new Date(Date.UTC(_yr, _now.getMonth(), _now.getDate()));
+  var _day = _d.getUTCDay() || 7;
+  _d.setUTCDate(_d.getUTCDate() + 4 - _day);
+  var _wk  = String(Math.ceil(((_d - new Date(Date.UTC(_d.getUTCFullYear(),0,1)))/86400000+1)/7)).padStart(2,'0');
+  var _weekKey = _yr + '-W' + _wk;
+  var _monthKey = _yr + '-' + _mo;
+  var _petName = win.n;
+  db.ref('stats/week/' + _weekKey + '/' + _petName).transaction(function(c){ return (c||0)+1; });
+  db.ref('stats/month/' + _monthKey + '/' + _petName).transaction(function(c){ return (c||0)+1; });
+  db.ref('stats/total/' + _petName).transaction(function(c){ return (c||0)+1; });
   state.winners.push(win);
   state.results.push({win, lose});
   state.done++;
@@ -741,70 +745,87 @@ function render() {
 }
 
 function showStats() {
-  // Firebase 최신 데이터 로드 후 표시
-  db.ref('petWins').once('value').then(function(snap) {
-    if (snap.val()) {
-      globalWins = snap.val();
-      localStorage.setItem('petWins', JSON.stringify(globalWins));
-    }
-    _renderStats();
-  });
-}
-function _renderStats() {
-  var entries = Object.entries(globalWins);
-  if (entries.length === 0) {
-    app.innerHTML =
-      '<div class="header"><div class="title">📊 선택 통계</div>' +
-      '<div class="sub">아직 선택 기록이 없어요</div></div>' +
-      '<div class="config-box" style="text-align:center;padding:2rem;color:#b0a8d4;font-size:14px">월드컵을 플레이하면 통계가 쌓여요! 🐾</div>' +
-      '<div style="display:flex;gap:10px;justify-content:center;margin-top:1rem">' +
-      '<button class="restart-btn" onclick="restart()">🔄 다시 하기</button>' +
-      '</div>';
-    return;
+  // 로딩 표시
+  app.innerHTML =
+    '<div class="header"><div class="title">📊 선택 통계</div>' +
+    '<div class="sub">데이터 불러오는 중...</div></div>';
+
+  var now = new Date();
+  var yr  = now.getFullYear();
+  var mo  = String(now.getMonth()+1).padStart(2,'0');
+  var d   = new Date(Date.UTC(yr, now.getMonth(), now.getDate()));
+  var day = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - day);
+  var wk  = String(Math.ceil(((d - new Date(Date.UTC(d.getUTCFullYear(),0,1)))/86400000+1)/7)).padStart(2,'0');
+  var weekKey  = yr + '-W' + wk;
+  var monthKey = yr + '-' + mo;
+
+  var loaded = 0;
+  function tryRender() {
+    loaded++;
+    if (loaded === 3) _renderStats('week');
   }
-  entries.sort(function(a,b){ return b[1]-a[1]; });
-  var top = entries.slice(0, 20);
-  var maxVal = top[0][1];
+
+  db.ref('stats/week/'  + weekKey ).once('value').then(function(s){ statsData.week  = s.val() || {}; tryRender(); });
+  db.ref('stats/month/' + monthKey).once('value').then(function(s){ statsData.month = s.val() || {}; tryRender(); });
+  db.ref('stats/total'            ).once('value').then(function(s){ statsData.total = s.val() || {}; tryRender(); });
+}
+function _renderStats(tab) {
+  tab = tab || 'week';
+  var tabLabels = { week: '이번 주', month: '이번 달', total: '전체' };
+  var data = statsData[tab] || {};
+  var entries = Object.entries(data);
+
   var petMap = {};
   ALL_PETS.forEach(function(p){ petMap[p.n] = p; });
 
-  var rows = top.map(function(e, i) {
-    var p = petMap[e[0]];
-    var imgSrc = p ? p.i : '';
-    var img = p ? '<img src="' + imgSrc + '" style="width:28px;height:28px;object-fit:contain;image-rendering:pixelated;background:#f7f5ff;border-radius:6px;padding:2px;flex-shrink:0" onerror="this.style.opacity=0.3">' : '';
-    var barW = Math.round(e[1] / maxVal * 100);
-    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid #f0eeff">' +
-      '<span style="font-size:13px;font-weight:700;width:20px;color:#9b87f5">' + (i+1) + '</span>' +
-      img +
-      '<span style="flex:1;font-size:13px;font-weight:500;color:#3d3560">' + e[0] + '</span>' +
-      '<div style="width:80px;height:6px;background:#f0eeff;border-radius:3px;overflow:hidden">' +
-        '<div style="width:' + barW + '%;height:100%;background:linear-gradient(90deg,#9b87f5,#f587b8);border-radius:3px"></div>' +
-      '</div>' +
-      '<span style="font-size:12px;font-weight:700;color:#6c5ce7;width:28px;text-align:right">' + e[1] + '</span>' +
-      '</div>';
+  // 탭 버튼
+  var tabs = ['week','month','total'].map(function(t) {
+    var active = t === tab
+      ? 'background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border-color:transparent'
+      : 'background:#f3f0ff;color:#6c5ce7;border-color:#d4cbff';
+    return '<button onclick="switchStatsTab('' + t + '')" style="' + active + ';border:1.5px solid;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif">' + tabLabels[t] + '</button>';
   }).join('');
 
-  var total = entries.reduce(function(s,e){ return s+e[1]; }, 0);
+  var content;
+  if (entries.length === 0) {
+    content = '<div style="text-align:center;padding:2rem;color:#b0a8d4;font-size:14px">아직 기록이 없어요 🐾</div>';
+  } else {
+    entries.sort(function(a,b){ return b[1]-a[1]; });
+    var top = entries.slice(0, 20);
+    var maxVal = top[0][1];
+    var total = entries.reduce(function(s,e){ return s+e[1]; }, 0);
+    content = '<div style="font-size:11px;color:#b0a8d4;margin-bottom:8px">총 ' + total + '번 선택됨</div>';
+    content += top.map(function(e, i) {
+      var p = petMap[e[0]];
+      var img = p ? '<img src="' + p.i + '" style="width:28px;height:28px;object-fit:contain;image-rendering:pixelated;background:#f7f5ff;border-radius:6px;padding:2px;flex-shrink:0" onerror="this.style.opacity=0.3">' : '';
+      var barW = Math.round(e[1] / maxVal * 100);
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:.5px solid #f0eeff">' +
+        '<span style="font-size:13px;font-weight:700;width:20px;color:#9b87f5">' + (i+1) + '</span>' +
+        img +
+        '<span style="flex:1;font-size:13px;font-weight:500;color:#3d3560">' + e[0] + '</span>' +
+        '<div style="width:80px;height:6px;background:#f0eeff;border-radius:3px;overflow:hidden">' +
+          '<div style="width:' + barW + '%;height:100%;background:linear-gradient(90deg,#9b87f5,#f587b8);border-radius:3px"></div>' +
+        '</div>' +
+        '<span style="font-size:12px;font-weight:700;color:#6c5ce7;width:28px;text-align:right">' + e[1] + '</span>' +
+        '</div>';
+    }).join('');
+  }
 
   app.innerHTML =
-    '<div class="header"><div class="title">📊 선택 통계</div>' +
-    '<div class="sub">총 ' + total + '번의 선택 기록</div></div>' +
+    '<div class="header"><div class="title">📊 선택 통계</div></div>' +
+    '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:1rem">' + tabs + '</div>' +
     '<div class="config-box" style="padding:1rem 1.2rem">' +
-    '<div class="config-title">많이 선택된 펫 TOP 20</div>' +
-    rows +
+    '<div class="config-title">' + tabLabels[tab] + ' 많이 선택된 펫 TOP 20</div>' +
+    content +
     '</div>' +
-    '<div style="display:flex;gap:10px;justify-content:center;margin-top:1rem;flex-wrap:wrap">' +
+    '<div style="display:flex;gap:10px;justify-content:center;margin-top:1rem">' +
     '<button class="restart-btn" onclick="restart()">🔄 다시 하기</button>' +
-    '<button class="restart-btn" style="background:#fce4ec;color:#c62828;border-color:#f8bbd0" onclick="clearStats()">🗑️ 기록 초기화</button>' +
     '</div>';
 }
 
-function clearStats() {
-  if (!confirm('통계 기록을 모두 초기화할까요?')) return;
-  globalWins = {};
-  localStorage.removeItem('petWins');
-  db.ref('petWins').remove();
-  showStats();
+function switchStatsTab(tab) {
+  _renderStats(tab);
 }
 
 window.choose = choose;
@@ -813,7 +834,7 @@ window.startGame = startGame;
 window.restart = restart;
 window.goBack = goBack;
 window.showStats = showStats;
-window.clearStats = clearStats;
+window.switchStatsTab = switchStatsTab;
 render();
 </script>
 </body>
