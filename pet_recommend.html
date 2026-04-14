@@ -11,57 +11,60 @@ body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;c
   background-image:radial-gradient(circle at 15% 20%,rgba(155,135,245,.1) 0%,transparent 50%),
   radial-gradient(circle at 85% 80%,rgba(245,135,184,.08) 0%,transparent 50%)}
 .wrap{max-width:760px;margin:0 auto;padding:1.5rem 1.2rem 4rem}
-.header{text-align:center;margin-bottom:1.5rem;padding-top:.5rem}
+.header{text-align:center;margin-bottom:1.2rem;padding-top:.5rem}
 .header h1{font-family:'Nunito',sans-serif;font-size:26px;font-weight:900;
   background:linear-gradient(135deg,#9b87f5,#f587b8);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
 .header p{font-size:13px;color:#7b72a8}
 
-/* 필터 섹션 */
-.filter-box{background:#fff;border:1.5px solid #e8e3ff;border-radius:18px;padding:1.3rem 1.4rem;
-  margin-bottom:1rem;box-shadow:0 2px 12px rgba(155,135,245,.07)}
-.filter-title{font-size:12px;font-weight:700;color:#9e97c8;letter-spacing:.8px;margin-bottom:.7rem}
-.filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:.8rem}
-.filter-row:last-child{margin-bottom:0}
-.ftag{padding:6px 14px;border-radius:20px;border:1.5px solid #e8e3ff;background:#faf9ff;
-  font-size:12px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;
-  transition:all .15s;user-select:none}
-.ftag:hover{border-color:#9b87f5;color:#6c5ce7}
-.ftag.on{background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border-color:transparent}
-.ftag.on-soft{background:#ede9ff;color:#6c5ce7;border-color:#c5beff}
+/* 탭 */
+.tab-wrap{display:flex;gap:8px;justify-content:center;margin-bottom:1.3rem}
+.tab-btn{padding:8px 24px;border-radius:20px;border:1.5px solid #e8e3ff;background:#fff;
+  font-size:13px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.tab-btn.on{background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border-color:transparent}
 
-/* 정렬 */
-.sort-row{display:flex;gap:7px;flex-wrap:wrap}
-.sort-btn{padding:6px 14px;border-radius:20px;border:1.5px solid #e8e3ff;background:#faf9ff;
-  font-size:12px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
-.sort-btn.on{background:#ede9ff;color:#6c5ce7;border-color:#c5beff}
+/* ── 문답식 ── */
+.quiz-prog{display:flex;gap:6px;justify-content:center;margin-bottom:1.2rem}
+.prog-dot{width:8px;height:8px;border-radius:50%;background:#e8e3ff;transition:all .3s}
+.prog-dot.done{background:#9b87f5}
+.prog-dot.active{background:linear-gradient(135deg,#9b87f5,#f587b8);transform:scale(1.3)}
 
-/* 검색 버튼 */
-.search-btn{width:100%;padding:12px;border-radius:12px;
-  background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border:none;
-  font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;
-  margin-bottom:1.2rem;transition:opacity .15s}
-.search-btn:hover{opacity:.88}
+.quiz-card{background:#fff;border:1.5px solid #e8e3ff;border-radius:20px;
+  padding:1.8rem 1.5rem;box-shadow:0 2px 16px rgba(155,135,245,.09);margin-bottom:1rem;
+  animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.quiz-step{font-size:11px;font-weight:700;color:#b0a8d4;letter-spacing:1px;margin-bottom:.5rem}
+.quiz-q{font-size:18px;font-weight:700;color:#3d3560;margin-bottom:.3rem;line-height:1.4}
+.quiz-sub{font-size:13px;color:#9e97c8;margin-bottom:1.2rem}
+.quiz-opts{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{background:#faf9ff;border:1.5px solid #e8e3ff;border-radius:14px;
+  padding:13px 16px;cursor:pointer;font-size:14px;font-weight:500;color:#3d3560;
+  font-family:'Noto Sans KR',sans-serif;text-align:left;transition:all .15s;display:flex;align-items:center;gap:10px}
+.quiz-opt:hover{border-color:#9b87f5;background:#f3f0ff;color:#6c5ce7}
+.quiz-opt .opt-icon{font-size:22px;flex-shrink:0}
+.quiz-opt .opt-text{flex:1}
+.quiz-opt .opt-sub{font-size:11px;color:#b0a8d4;display:block;margin-top:1px}
+.quiz-back{background:none;border:none;font-size:12px;color:#b0a8d4;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;padding:4px 0;margin-top:.3rem}
+.quiz-back:hover{color:#9b87f5}
 
-/* 결과 */
-.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
-.result-count{font-size:13px;color:#7b72a8;font-weight:600}
-.result-count span{color:#9b87f5;font-weight:700}
-
-.pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-.pet-card{background:#fff;border:1.5px solid #e8e3ff;border-radius:16px;padding:1rem;
+/* ── 결과 카드 ── */
+.result-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
+.result-title{font-size:15px;font-weight:700;color:#3d3560}
+.result-count{font-size:12px;color:#9e97c8}
+.pet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.pet-card{background:#fff;border:1.5px solid #e8e3ff;border-radius:16px;padding:.9rem;
   display:flex;flex-direction:column;gap:7px;box-shadow:0 2px 8px rgba(155,135,245,.06);
   transition:transform .12s,box-shadow .12s}
 .pet-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(155,135,245,.14)}
-.card-top{display:flex;align-items:center;gap:10px}
-.pet-img{width:52px;height:52px;object-fit:contain;image-rendering:pixelated;
+.card-top{display:flex;align-items:center;gap:9px}
+.pet-img{width:50px;height:50px;object-fit:contain;image-rendering:pixelated;
   background:#f7f5ff;border-radius:10px;padding:3px;flex-shrink:0}
-.pet-name{font-size:15px;font-weight:700;color:#3d3560;line-height:1.2}
-.pet-grade{font-size:11px;padding:2px 7px;border-radius:6px;font-weight:600;margin-top:2px;display:inline-block}
+.pet-name{font-size:14px;font-weight:700;color:#3d3560;line-height:1.2}
+.pet-grade{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:600;margin-top:2px;display:inline-block}
 .grade-일반{background:#f0eeff;color:#7b72a8}
 .grade-1등급{background:#fff8e1;color:#f59e0b}
 .grade-2등급{background:#fce7f3;color:#ec4899}
-
 .badges{display:flex;gap:4px;flex-wrap:wrap}
 .attr-badge{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:600}
 .attr-지{background:#e8f5e9;color:#2e7d32}
@@ -71,17 +74,34 @@ body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;c
 .mount-badge{font-size:10px;padding:2px 6px;border-radius:5px;font-weight:600}
 .mount-yes{background:#e8f5e9;color:#2e7d32}
 .mount-no{background:#f5f5f5;color:#aaa;border:.5px solid #e0e0e0}
-
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 6px}
 .stat-row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:.5px solid #f0eeff;font-size:11px}
 .stat-label{color:#b0a8d4}
 .stat-val{color:#6c5ce7;font-weight:700}
 .stat-val .sg{color:#f587b8}
-
 .obtain-row{font-size:10.5px;color:#9e97c8;background:#f7f5ff;border-radius:7px;padding:4px 7px;line-height:1.4}
-
 .no-result{text-align:center;padding:2.5rem;color:#b0a8d4;font-size:14px;
   background:#fff;border:1.5px solid #e8e3ff;border-radius:16px}
+
+/* ── 선택형 필터 ── */
+.filter-box{background:#fff;border:1.5px solid #e8e3ff;border-radius:18px;padding:1.2rem 1.4rem;
+  margin-bottom:1rem;box-shadow:0 2px 12px rgba(155,135,245,.07)}
+.filter-title{font-size:11px;font-weight:700;color:#9e97c8;letter-spacing:.8px;margin-bottom:.6rem}
+.filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:.8rem}
+.filter-row:last-child{margin-bottom:0}
+.ftag{padding:6px 13px;border-radius:20px;border:1.5px solid #e8e3ff;background:#faf9ff;
+  font-size:12px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;
+  transition:all .15s;user-select:none}
+.ftag:hover{border-color:#9b87f5;color:#6c5ce7}
+.ftag.on{background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border-color:transparent}
+.sort-btn{padding:6px 13px;border-radius:20px;border:1.5px solid #e8e3ff;background:#faf9ff;
+  font-size:12px;font-weight:700;color:#7b72a8;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .15s}
+.sort-btn.on{background:#ede9ff;color:#6c5ce7;border-color:#c5beff}
+.search-btn{width:100%;padding:12px;border-radius:12px;
+  background:linear-gradient(135deg,#9b87f5,#f587b8);color:#fff;border:none;
+  font-size:14px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+  margin-bottom:1.2rem;transition:opacity .15s}
+.search-btn:hover{opacity:.88}
 </style>
 </head>
 <body>
@@ -89,188 +109,366 @@ body{font-family:'Noto Sans KR',sans-serif;background:#faf9ff;min-height:100vh;c
 <div class="wrap">
   <div class="header">
     <h1>✨ 펫 추천</h1>
-    <p>조건을 선택하면 맞는 펫을 찾아드려요!</p>
+    <p>나에게 맞는 펫을 찾아보세요!</p>
   </div>
 
-  <div class="filter-box">
-    <div class="filter-title">탑승 여부</div>
-    <div class="filter-row" id="mountFilter">
-      <div class="ftag on" data-val="">전체</div>
-      <div class="ftag" data-val="yes">🐴 탑승 가능</div>
-      <div class="ftag" data-val="no">탑승 불가</div>
-    </div>
-
-    <div class="filter-title">등급</div>
-    <div class="filter-row" id="gradeFilter">
-      <div class="ftag on" data-val="">전체</div>
-      <div class="ftag" data-val="일반">일반</div>
-      <div class="ftag" data-val="1등급">1등급</div>
-      <div class="ftag" data-val="2등급">2등급</div>
-    </div>
-
-    <div class="filter-title">속성 (중복 선택 가능)</div>
-    <div class="filter-row" id="attrFilter">
-      <div class="ftag on" data-val="">전체</div>
-      <div class="ftag" data-val="지">🌿 지</div>
-      <div class="ftag" data-val="수">💧 수</div>
-      <div class="ftag" data-val="화">🔥 화</div>
-      <div class="ftag" data-val="풍">🌀 풍</div>
-    </div>
-
-    <div class="filter-title">정렬 기준</div>
-    <div class="sort-row" id="sortFilter">
-      <div class="sort-btn on" data-val="atk">⚔️ 공격력</div>
-      <div class="sort-btn" data-val="hp">❤️ 내구력</div>
-      <div class="sort-btn" data-val="def">🛡️ 방어력</div>
-      <div class="sort-btn" data-val="agi">⚡ 순발력</div>
-      <div class="sort-btn" data-val="total">⚖️ 균형</div>
-      <div class="sort-btn" data-val="sg_total">📈 성장률</div>
-    </div>
+  <div class="tab-wrap">
+    <button class="tab-btn on" id="tabQuiz" onclick="switchTab('quiz')">💬 문답식</button>
+    <button class="tab-btn" id="tabFilter" onclick="switchTab('filter')">🔍 선택형</button>
   </div>
 
-  <button class="search-btn" onclick="doSearch()">🔍 추천 펫 찾기</button>
+  <!-- 문답식 -->
+  <div id="modeQuiz">
+    <div class="quiz-prog" id="quizProg"></div>
+    <div id="quizCard"></div>
+    <div id="quizResult" style="display:none"></div>
+  </div>
 
-  <div id="results"></div>
+  <!-- 선택형 -->
+  <div id="modeFilter" style="display:none">
+    <div class="filter-box">
+      <div class="filter-title">탑승 여부</div>
+      <div class="filter-row" id="mountFilter">
+        <div class="ftag on" data-val="">전체</div>
+        <div class="ftag" data-val="yes">🐴 탑승 가능</div>
+        <div class="ftag" data-val="no">탑승 불가</div>
+      </div>
+      <div class="filter-title">속성 (중복 선택 가능)</div>
+      <div class="filter-row" id="attrFilter">
+        <div class="ftag on" data-val="">전체</div>
+        <div class="ftag" data-val="지">🌿 지</div>
+        <div class="ftag" data-val="수">💧 수</div>
+        <div class="ftag" data-val="화">🔥 화</div>
+        <div class="ftag" data-val="풍">🌀 풍</div>
+      </div>
+      <div class="filter-title">정렬 기준</div>
+      <div class="filter-row" id="sortFilter">
+        <div class="sort-btn on" data-val="atk">⚔️ 공격력</div>
+        <div class="sort-btn" data-val="hp">❤️ 내구력</div>
+        <div class="sort-btn" data-val="def">🛡️ 방어력</div>
+        <div class="sort-btn" data-val="agi">⚡ 순발력</div>
+        <div class="sort-btn" data-val="total">⚖️ 균형</div>
+        <div class="sort-btn" data-val="sg_atk">📈 성장률(공격)</div>
+        <div class="sort-btn" data-val="sg_combat">📈 성장률(전투)</div>
+      </div>
+    </div>
+    <button class="search-btn" onclick="doSearch()">🔍 추천 펫 찾기</button>
+    <div id="filterResult"></div>
+  </div>
 </div>
 
 <script>
 var ALL_PETS = [];
-var filterMount = '';
-var filterGrade = '';
-var filterAttrs = [];
-var sortKey = 'atk';
+var filterMount = '', filterAttrs = [], sortKey = 'atk';
 
 fetch('pet_info_data.json')
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    ALL_PETS = data;
-    doSearch();
-  })
-  .catch(function() {
-    document.getElementById('results').innerHTML = '<div class="no-result">펫 데이터를 불러오지 못했어요.</div>';
+  .then(function(r){ return r.json(); })
+  .then(function(d){ ALL_PETS = d; })
+  .catch(function(){ console.warn('pet_info_data.json 로드 실패'); });
+
+// ── 탭 전환 ──────────────────────────────────────────────
+function switchTab(t) {
+  document.getElementById('modeQuiz').style.display = t==='quiz' ? '' : 'none';
+  document.getElementById('modeFilter').style.display = t==='filter' ? '' : 'none';
+  document.getElementById('tabQuiz').className = 'tab-btn' + (t==='quiz'?' on':'');
+  document.getElementById('tabFilter').className = 'tab-btn' + (t==='filter'?' on':'');
+}
+
+// ── 문답식 ───────────────────────────────────────────────
+var QUESTIONS = [
+  {
+    id: 'stat',
+    q: '어떤 능력이 가장 중요한가요?',
+    sub: '펫을 고를 때 제일 먼저 보는 스탯을 선택해주세요',
+    opts: [
+      {icon:'⚔️', text:'공격력이 제일 중요해', sub:'강한 딜이 최고!', val:'atk'},
+      {icon:'🛡️', text:'방어력이 튼튼해야 해', sub:'버티는 게 최고!', val:'def'},
+      {icon:'❤️', text:'내구력(HP)이 높아야 해', sub:'오래 살아남는 게 최고!', val:'hp'},
+      {icon:'⚡', text:'순발력이 빨라야 해', sub:'스피드가 최고!', val:'agi'},
+      {icon:'⚖️', text:'전체적으로 균형잡힌 펫', sub:'특화보단 올라운더!', val:'total'},
+    ]
+  },
+  {
+    id: 'mount',
+    q: '탑승 가능한 펫이 필요한가요?',
+    sub: '펫을 타고 이동할 수 있는 기능이에요',
+    opts: [
+      {icon:'🐴', text:'탑승 가능한 펫이 좋아', sub:'이동 편의성 중시', val:'yes'},
+      {icon:'🤷', text:'탑승 여부는 상관없어', sub:'능력치가 더 중요해', val:'any'},
+    ]
+  },
+  {
+    id: 'obtain',
+    q: '어떻게 얻을 수 있는 펫이 좋아요?',
+    sub: '획득 방법에 따라 난이도가 달라져요',
+    opts: [
+      {icon:'🌿', text:'필드에서 직접 포획하고 싶어', sub:'맵에서 잡을 수 있는 펫', val:'포획'},
+      {icon:'🎁', text:'이벤트나 퀘스트로 얻고 싶어', sub:'특별한 방법으로 획득', val:'이벤트'},
+      {icon:'🤷', text:'획득 방법은 상관없어', sub:'좋은 펫이면 뭐든 OK', val:'any'},
+    ]
+  },
+  {
+    id: 'attr',
+    q: '원하는 속성이 있나요?',
+    sub: '펫의 속성은 지/수/화/풍으로 나뉘어요',
+    opts: [
+      {icon:'🌿', text:'지(地) 속성', sub:'초록, 대지 계열', val:'지'},
+      {icon:'💧', text:'수(水) 속성', sub:'파랑, 물 계열', val:'수'},
+      {icon:'🔥', text:'화(火) 속성', sub:'빨강, 불 계열', val:'화'},
+      {icon:'🌀', text:'풍(風) 속성', sub:'보라, 바람 계열', val:'풍'},
+      {icon:'🤷', text:'속성은 상관없어', sub:'능력치가 더 중요해', val:'any'},
+    ]
+  },
+  {
+    id: 'sg',
+    q: '성장률도 중요한가요?',
+    sub: '성장률이 높을수록 레벨업 시 능력치 상승폭이 커요',
+    opts: [
+      {icon:'📈', text:'성장률 높은 펫이 좋아', sub:'장기적으로 강해지는 펫', val:'yes'},
+      {icon:'💪', text:'현재 초기치가 높은 펫이 좋아', sub:'지금 당장 강한 펫', val:'no'},
+      {icon:'🤷', text:'둘 다 고려해줘', sub:'초기치와 성장률 모두', val:'any'},
+    ]
+  },
+];
+
+var quizAnswers = {};
+var quizStep = 0;
+
+function startQuiz() {
+  quizAnswers = {};
+  quizStep = 0;
+  renderQuizStep();
+}
+
+function renderQuizProg() {
+  var el = document.getElementById('quizProg');
+  el.innerHTML = QUESTIONS.map(function(q, i) {
+    var cls = i < quizStep ? 'done' : (i === quizStep ? 'active' : '');
+    return '<div class="prog-dot ' + cls + '"></div>';
+  }).join('');
+}
+
+function renderQuizStep() {
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizCard').style.display = '';
+  renderQuizProg();
+
+  var q = QUESTIONS[quizStep];
+  var optsHtml = q.opts.map(function(opt) {
+    return '<button class="quiz-opt" onclick="answerQuiz(\'' + q.id + '\',\'' + opt.val + '\')">'
+      + '<span class="opt-icon">' + opt.icon + '</span>'
+      + '<span class="opt-text">' + opt.text + '<span class="opt-sub">' + opt.sub + '</span></span>'
+      + '</button>';
+  }).join('');
+
+  var backBtn = quizStep > 0
+    ? '<button class="quiz-back" onclick="quizBack()">← 이전 질문으로</button>'
+    : '<button class="quiz-back" onclick="resetQuiz()">← 처음으로</button>';
+
+  document.getElementById('quizCard').innerHTML =
+    '<div class="quiz-step">질문 ' + (quizStep+1) + ' / ' + QUESTIONS.length + '</div>'
+    + '<div class="quiz-q">' + q.q + '</div>'
+    + '<div class="quiz-sub">' + q.sub + '</div>'
+    + '<div class="quiz-opts">' + optsHtml + '</div>'
+    + backBtn;
+}
+
+function answerQuiz(id, val) {
+  quizAnswers[id] = val;
+  quizStep++;
+  if (quizStep >= QUESTIONS.length) {
+    showQuizResult();
+  } else {
+    renderQuizStep();
+  }
+}
+
+function quizBack() {
+  if (quizStep > 0) {
+    quizStep--;
+    var q = QUESTIONS[quizStep];
+    delete quizAnswers[q.id];
+    renderQuizStep();
+  }
+}
+
+function resetQuiz() {
+  quizAnswers = {};
+  quizStep = 0;
+  renderQuizStep();
+}
+
+function showQuizResult() {
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('quizProg').innerHTML = QUESTIONS.map(function() {
+    return '<div class="prog-dot done"></div>';
+  }).join('');
+
+  // 필터 적용
+  var result = ALL_PETS.filter(function(p) {
+    // 탑승
+    if (quizAnswers.mount === 'yes' && !p.mount) return false;
+    // 획득경로
+    if (quizAnswers.obtain !== 'any') {
+      if (quizAnswers.obtain === '포획' && (p.obtain||'').indexOf('포획') === -1) return false;
+      if (quizAnswers.obtain === '이벤트' && (p.obtain||'').indexOf('포획') !== -1) return false;
+    }
+    // 속성
+    if (quizAnswers.attr !== 'any' && (p.attr[quizAnswers.attr]||0) === 0) return false;
+    return true;
   });
 
-// 단일 선택 필터
+  // 정렬
+  var stat = quizAnswers.stat;
+  var useSg = quizAnswers.sg === 'yes';
+  result.sort(function(a, b) {
+    function score(p) {
+      var ic = p.ic||{}, sg = p.sg||{};
+      var sgWeight = useSg ? 15 : 1;
+      if (stat==='atk')  return (ic.atk||0) + (sg.atk||0)*sgWeight;
+      if (stat==='def')  return (ic.def||0) + (sg.def||0)*sgWeight;
+      if (stat==='hp')   return (ic.hp||0)  + (sg.hp||0)*sgWeight;
+      if (stat==='agi')  return (ic.agi||0) + (sg.agi||0)*sgWeight;
+      // total
+      return (ic.atk||0)+(ic.def||0)+(ic.hp||0)+(ic.agi||0)
+           + ((sg.atk||0)+(sg.def||0)+(sg.hp||0)+(sg.agi||0))*sgWeight;
+    }
+    return score(b) - score(a);
+  });
+
+  var top = result.slice(0, 10);
+  var el = document.getElementById('quizResult');
+  el.style.display = '';
+
+  if (!top.length) {
+    el.innerHTML = '<div class="no-result">조건에 맞는 펫이 없어요 😢<br>다시 해보세요!</div>'
+      + '<div style="text-align:center;margin-top:1rem"><button class="search-btn" style="width:auto;padding:10px 28px" onclick="resetQuiz()">🔄 다시 추천받기</button></div>';
+    return;
+  }
+
+  el.innerHTML = '<div class="result-header">'
+    + '<div class="result-title">🎯 추천 펫 TOP ' + top.length + '</div>'
+    + '<div class="result-count">전체 ' + result.length + '마리 중</div>'
+    + '</div>'
+    + '<div class="pet-grid">' + top.map(cardHtml).join('') + '</div>'
+    + '<div style="text-align:center;margin-top:1.2rem">'
+    + '<button class="search-btn" style="width:auto;padding:10px 28px" onclick="resetQuiz()">🔄 다시 추천받기</button>'
+    + '</div>';
+}
+
+// ── 선택형 ───────────────────────────────────────────────
 function initSingle(id, onChange) {
   var el = document.getElementById(id);
+  if (!el) return;
   el.querySelectorAll('.ftag').forEach(function(btn) {
     btn.onclick = function() {
-      el.querySelectorAll('.ftag').forEach(function(b) { b.classList.remove('on'); });
+      el.querySelectorAll('.ftag').forEach(function(b){ b.classList.remove('on'); });
       btn.classList.add('on');
       onChange(btn.dataset.val);
     };
   });
 }
 
-// 속성 다중 선택
 function initAttrFilter() {
   var el = document.getElementById('attrFilter');
   el.querySelectorAll('.ftag').forEach(function(btn) {
     btn.onclick = function() {
       if (btn.dataset.val === '') {
-        // 전체 선택
-        el.querySelectorAll('.ftag').forEach(function(b) { b.classList.remove('on'); });
+        el.querySelectorAll('.ftag').forEach(function(b){ b.classList.remove('on'); });
         btn.classList.add('on');
         filterAttrs = [];
       } else {
         el.querySelector('[data-val=""]').classList.remove('on');
         btn.classList.toggle('on');
-        filterAttrs = Array.from(el.querySelectorAll('.ftag.on')).map(function(b) { return b.dataset.val; }).filter(Boolean);
-        if (filterAttrs.length === 0) {
-          el.querySelector('[data-val=""]').classList.add('on');
-        }
+        filterAttrs = Array.from(el.querySelectorAll('.ftag.on')).map(function(b){ return b.dataset.val; }).filter(Boolean);
+        if (!filterAttrs.length) el.querySelector('[data-val=""]').classList.add('on');
       }
     };
   });
 }
 
-// 정렬 선택
 function initSortFilter() {
   var el = document.getElementById('sortFilter');
   el.querySelectorAll('.sort-btn').forEach(function(btn) {
     btn.onclick = function() {
-      el.querySelectorAll('.sort-btn').forEach(function(b) { b.classList.remove('on'); });
+      el.querySelectorAll('.sort-btn').forEach(function(b){ b.classList.remove('on'); });
       btn.classList.add('on');
       sortKey = btn.dataset.val;
     };
   });
 }
 
-initSingle('mountFilter', function(v) { filterMount = v; });
-initSingle('gradeFilter', function(v) { filterGrade = v; });
+initSingle('mountFilter', function(v){ filterMount = v; });
 initAttrFilter();
 initSortFilter();
 
 function getSortScore(p) {
-  var ic = p.ic || {}, sg = p.sg || {};
-  if (sortKey === 'atk')      return (ic.atk || 0) + (sg.atk || 0) * 10;
-  if (sortKey === 'hp')       return (ic.hp  || 0) + (sg.hp  || 0) * 10;
-  if (sortKey === 'def')      return (ic.def || 0) + (sg.def || 0) * 10;
-  if (sortKey === 'agi')      return (ic.agi || 0) + (sg.agi || 0) * 10;
-  if (sortKey === 'sg_total') return (sg.hp || 0) + (sg.atk || 0) + (sg.def || 0) + (sg.agi || 0);
-  // total 균형: 모든 성장률 합산
-  return (ic.hp || 0) + (ic.atk || 0) + (ic.def || 0) + (ic.agi || 0)
-       + ((sg.hp || 0) + (sg.atk || 0) + (sg.def || 0) + (sg.agi || 0)) * 5;
+  var ic = p.ic||{}, sg = p.sg||{};
+  if (sortKey==='atk')        return (ic.atk||0) + (sg.atk||0)*10;
+  if (sortKey==='hp')         return (ic.hp||0)  + (sg.hp||0)*10;
+  if (sortKey==='def')        return (ic.def||0) + (sg.def||0)*10;
+  if (sortKey==='agi')        return (ic.agi||0) + (sg.agi||0)*10;
+  if (sortKey==='sg_atk')     return (sg.atk||0);
+  if (sortKey==='sg_combat')  return (sg.atk||0)+(sg.def||0)+(sg.agi||0); // 내구 제외
+  // total
+  return (ic.hp||0)+(ic.atk||0)+(ic.def||0)+(ic.agi||0)+((sg.hp||0)+(sg.atk||0)+(sg.def||0)+(sg.agi||0))*5;
 }
 
 function doSearch() {
   if (!ALL_PETS.length) return;
-
   var result = ALL_PETS.filter(function(p) {
-    if (filterMount === 'yes' && !p.mount) return false;
-    if (filterMount === 'no'  &&  p.mount) return false;
-    if (filterGrade && p.grade !== filterGrade) return false;
+    if (filterMount==='yes' && !p.mount) return false;
+    if (filterMount==='no'  &&  p.mount) return false;
     if (filterAttrs.length > 0) {
-      var hasAll = filterAttrs.every(function(a) { return (p.attr[a] || 0) > 0; });
-      if (!hasAll) return false;
+      if (!filterAttrs.every(function(a){ return (p.attr[a]||0)>0; })) return false;
     }
     return true;
   });
-
-  result.sort(function(a, b) { return getSortScore(b) - getSortScore(a); });
-
-  var top = result.slice(0, 30);
-  var el = document.getElementById('results');
-
+  result.sort(function(a,b){ return getSortScore(b)-getSortScore(a); });
+  var top = result.slice(0,30);
+  var sortLabels = {atk:'공격력',hp:'내구력',def:'방어력',agi:'순발력',total:'균형',sg_atk:'공격 성장률',sg_combat:'전투 성장률(공+방+순)'};
+  var el = document.getElementById('filterResult');
   if (!top.length) {
-    el.innerHTML = '<div class="no-result">조건에 맞는 펫이 없어요 😢<br>조건을 바꿔보세요!</div>';
+    el.innerHTML = '<div class="no-result">조건에 맞는 펫이 없어요 😢</div>';
     return;
   }
-
-  var sortLabels = {atk:'공격력', hp:'내구력', def:'방어력', agi:'순발력', total:'균형', sg_total:'성장률'};
   el.innerHTML = '<div class="result-header">'
-    + '<div class="result-count"><span>' + top.length + '</span>마리 (전체 ' + result.length + '마리 중) · ' + sortLabels[sortKey] + ' 순</div>'
+    + '<div class="result-count"><span style="color:#9b87f5;font-weight:700">'+top.length+'</span>마리 (전체 '+result.length+'마리 중) · '+sortLabels[sortKey]+' 순</div>'
     + '</div>'
-    + '<div class="pet-grid">' + top.map(cardHtml).join('') + '</div>';
+    + '<div class="pet-grid">'+top.map(cardHtml).join('')+'</div>';
 }
 
+// ── 공통 카드 ────────────────────────────────────────────
 function cardHtml(p) {
-  var ic = p.ic || {}, sg = p.sg || {};
-  var attrs = Object.entries(p.attr || {}).filter(function(e) { return e[1] > 0; });
-  var attrBadges = attrs.map(function(e) {
-    return '<span class="attr-badge attr-' + e[0] + '">' + e[0] + ' ' + e[1] + '</span>';
+  var ic = p.ic||{}, sg = p.sg||{};
+  var attrs = Object.entries(p.attr||{}).filter(function(e){ return e[1]>0; });
+  var attrBadges = attrs.map(function(e){
+    return '<span class="attr-badge attr-'+e[0]+'">'+e[0]+' '+e[1]+'</span>';
   }).join('');
   var mountBadge = p.mount
     ? '<span class="mount-badge mount-yes">🐴 탑승O</span>'
     : '<span class="mount-badge mount-no">탑승X</span>';
-  var img = p.image
-    ? '<img class="pet-img" src="' + p.image.replace('.png','.gif') + '" alt="' + p.name + '" onerror="this.style.opacity=0.3">'
-    : '<div class="pet-img" style="background:#f0eeff"></div>';
-
+  var imgSrc = p.image ? p.image.replace('.png','.gif') : '';
+  var img = imgSrc
+    ? '<img class="pet-img" src="'+imgSrc+'" alt="'+p.name+'" onerror="this.style.opacity=0.3">'
+    : '<div class="pet-img"></div>';
   return '<div class="pet-card">'
-    + '<div class="card-top">' + img
-    + '<div><div class="pet-name">' + p.name + '</div>'
-    + '<span class="pet-grade grade-' + (p.grade||'일반') + '">' + (p.grade||'일반') + '</span></div></div>'
-    + '<div class="badges">' + attrBadges + mountBadge + '</div>'
-    + '<div class="stats-grid">'
-    + '<div class="stat-row"><span class="stat-label">내구력</span><span class="stat-val">' + ic.hp + ' / <span class="sg">' + sg.hp + '</span></span></div>'
-    + '<div class="stat-row"><span class="stat-label">공격력</span><span class="stat-val">' + ic.atk + ' / <span class="sg">' + sg.atk + '</span></span></div>'
-    + '<div class="stat-row"><span class="stat-label">방어력</span><span class="stat-val">' + ic.def + ' / <span class="sg">' + sg.def + '</span></span></div>'
-    + '<div class="stat-row"><span class="stat-label">순발력</span><span class="stat-val">' + ic.agi + ' / <span class="sg">' + sg.agi + '</span></span></div>'
-    + '</div>'
-    + '<div class="obtain-row">📍 ' + (p.obtain || '정보없음') + '</div>'
-    + '</div>';
+    +'<div class="card-top">'+img
+    +'<div><div class="pet-name">'+p.name+'</div>'
+    +'<span class="pet-grade grade-'+(p.grade||'일반')+'">'+(p.grade||'일반')+'</span></div></div>'
+    +'<div class="badges">'+attrBadges+mountBadge+'</div>'
+    +'<div class="stats-grid">'
+    +'<div class="stat-row"><span class="stat-label">내구력</span><span class="stat-val">'+ic.hp+' / <span class="sg">'+sg.hp+'</span></span></div>'
+    +'<div class="stat-row"><span class="stat-label">공격력</span><span class="stat-val">'+ic.atk+' / <span class="sg">'+sg.atk+'</span></span></div>'
+    +'<div class="stat-row"><span class="stat-label">방어력</span><span class="stat-val">'+ic.def+' / <span class="sg">'+sg.def+'</span></span></div>'
+    +'<div class="stat-row"><span class="stat-label">순발력</span><span class="stat-val">'+ic.agi+' / <span class="sg">'+sg.agi+'</span></span></div>'
+    +'</div>'
+    +'<div class="obtain-row">📍 '+(p.obtain||'정보없음')+'</div>'
+    +'</div>';
 }
+
+// 시작
+startQuiz();
 </script>
 </body>
 </html>
