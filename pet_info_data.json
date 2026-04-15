@@ -7019,7 +7019,7 @@
     "image": "https://wind01.net/info/img/102635.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": true,
+    "rebirth": false,
     "obtain": "크로아치의 방 전역 포획",
     "attr": {
       "지": 7,
@@ -7040,16 +7040,16 @@
       "agi": 1.211
     },
     "rebirth_ic": {
-      "hp": 40.5,
-      "atk": 7.685,
-      "def": 6.425,
-      "agi": 6.5
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "rebirth_sg": {
-      "hp": 10.428,
-      "atk": 1.978,
-      "def": 1.654,
-      "agi": 1.673
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "skins": []
   },
@@ -7673,7 +7673,7 @@
     "image": "https://wind01.net/info/img/103206.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": true,
+    "rebirth": false,
     "obtain": "호피도 (동244 남220)",
     "attr": {
       "지": 0,
@@ -7694,16 +7694,16 @@
       "agi": 1.416
     },
     "rebirth_ic": {
-      "hp": 57.33,
-      "atk": 13.305,
-      "def": 7.689,
-      "agi": 7.67
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "rebirth_sg": {
-      "hp": 10.473,
-      "atk": 2.43,
-      "def": 1.404,
-      "agi": 1.401
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "skins": []
   },
@@ -7712,7 +7712,7 @@
     "image": "https://wind01.net/info/img/201035.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": true,
+    "rebirth": false,
     "obtain": "호피도 (동181 남215)",
     "attr": {
       "지": 4,
@@ -7733,16 +7733,16 @@
       "agi": 1.261
     },
     "rebirth_ic": {
-      "hp": 57.33,
-      "atk": 13.305,
-      "def": 7.689,
-      "agi": 7.67
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "rebirth_sg": {
-      "hp": 10.473,
-      "atk": 2.43,
-      "def": 1.404,
-      "agi": 1.401
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "skins": []
   },
@@ -12208,7 +12208,7 @@
     "image": "https://wind01.net/info/img/160155.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": true,
+    "rebirth": false,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
       "지": 5,
@@ -12229,16 +12229,16 @@
       "agi": 1.401
     },
     "rebirth_ic": {
-      "hp": 54.839,
-      "atk": 11.406,
-      "def": 6.869,
-      "agi": 8.28
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "rebirth_sg": {
-      "hp": 10.853,
-      "atk": 2.257,
-      "def": 1.359,
-      "agi": 1.638
+      "hp": null,
+      "atk": null,
+      "def": null,
+      "agi": null
     },
     "skins": []
   },
