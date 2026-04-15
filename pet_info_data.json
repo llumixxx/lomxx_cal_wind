@@ -11944,7 +11944,7 @@
     "name": "화이트링",
     "image": "https://wind01.net/info/img/103237.gif",
     "grade": "일반",
-    "mount": true,
+    "mount": false,
     "rebirth": true,
     "obtain": "화이트데이 특별포획(쟈루 동420 남94)",
     "attr": {
