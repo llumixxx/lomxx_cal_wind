@@ -159,11 +159,10 @@ var Q = {
   stat: {
     q:'어떤 능력이 가장 중요한가요?', sub:'펫을 고를 때 제일 먼저 보는 스탯',
     opts:[
-      {icon:'⚔️', text:'공격력', sub:'강한 딜이 최고!', val:'atk'},
-      {icon:'🛡️', text:'방어력', sub:'버티는 게 최고!', val:'def'},
-      {icon:'❤️', text:'내구력(HP)', sub:'오래 살아남는 게 최고!', val:'hp'},
-      {icon:'⚡', text:'순발력', sub:'스피드가 최고!', val:'agi'},
-      {icon:'⚖️', text:'균형형', sub:'올라운더!', val:'total'},
+      {icon:'⚔️', text:'공격력', sub:'공격성장 2.2이상', val:'atk'},
+      {icon:'🛡️', text:'방어력', sub:'방어성장 1.8이상', val:'def'},
+      {icon:'❤️', text:'내구력(HP)', sub:'내구성장 1.2이상', val:'hp'},
+      {icon:'⚡', text:'순발력', sub:'순발성장 1.8이상', val:'agi'},
     ],
     next:function(){ return 'attrPref'; }
   },
@@ -298,8 +297,15 @@ function showQuizResult(){
     }
   } else {
     var stat=quizAnswers.stat, attrPref=quizAnswers.attrPref, mount=quizAnswers.mount;
+    // 성장률 최소값 필터
+    var sgMin = {atk:2.2, def:1.8, hp:1.2, agi:1.8};
+    var sgKey = {atk:'atk', def:'def', hp:'hp', agi:'agi'};
     result=ALL_PETS.filter(function(p){
       if(mount==='yes'&&!p.mount) return false;
+      // 성장률 필터
+      var sg=p.sg||{};
+      if(sgMin[stat] && (sg[sgKey[stat]]||0) < sgMin[stat]) return false;
+      // 속성 필터
       if(attrPref==='any') return true;
       var at=attrType(p);
       if(attrPref==='반반') return at==='half';
@@ -312,15 +318,15 @@ function showQuizResult(){
         if(stat==='def') return (ic.def||0)+(sg.def||0)*10;
         if(stat==='hp')  return (ic.hp||0)+(sg.hp||0)*10;
         if(stat==='agi') return (ic.agi||0)+(sg.agi||0)*10;
-        return (ic.atk||0)+(ic.def||0)+(ic.agi||0)+(ic.hp||0)*0.25
-             +((sg.atk||0)+(sg.def||0)+(sg.agi||0)+(sg.hp||0)*0.25)*5;
+        return 0;
       }
       return s(b)-s(a);
     });
-    var statNames={atk:'공격력',def:'방어력',hp:'내구력',agi:'순발력',total:'균형'};
+    var statNames={atk:'공격력',def:'방어력',hp:'내구력',agi:'순발력'};
     var attrNames={지:'지속성 8이상',수:'수속성 8이상',화:'화속성 8이상',풍:'풍속성 8이상',반반:'반반속성','7속성':'7/3속성',any:'전체속성'};
+    var sgCondNames={atk:'공격성장 2.2이상',def:'방어성장 1.8이상',hp:'내구성장 1.2이상',agi:'순발성장 1.8이상'};
     label=(mount==='yes'?'탑승가능 · ':'')+statNames[stat]+' 우선';
-    condDesc=attrNames[attrPref]||'전체';
+    condDesc=(attrNames[attrPref]||'전체')+' · '+(sgCondNames[stat]||'');
   }
 
   var el=document.getElementById('quizResult');
