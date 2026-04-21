@@ -287,6 +287,97 @@
     .stat-agi .modal-stat-val { color:#5acba8; }
     .stat-hp  .modal-stat-val { color:#d4943a; }
 
+    /* ===== 리뷰 섹션 ===== */
+    .review-write {
+      background: var(--s1);
+      border: 1.5px solid var(--border2);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .review-stars-input {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .review-stars-input .star {
+      font-size: 24px;
+      color: #d0d0d8;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .1s, color .15s;
+    }
+    .review-stars-input .star:hover { transform: scale(1.15); }
+    .review-stars-input .star.active,
+    .review-stars-input .star.hover { color: #ffb627; }
+    .review-score-label {
+      font-size: 11px;
+      color: var(--t3);
+      margin-left: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 700;
+    }
+    .review-input-row { display: flex; gap: 6px; }
+    .review-input {
+      flex: 1;
+      padding: 8px 10px;
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--t1);
+      outline: none;
+    }
+    .review-input:focus { border-color: var(--a1); }
+    .review-submit-btn {
+      padding: 8px 14px;
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color: #fff; border: none; border-radius: 8px;
+      font-weight: 800; font-family: 'Noto Sans KR', sans-serif;
+      font-size: 13px; cursor: pointer; transition: opacity .15s;
+    }
+    .review-submit-btn:hover { opacity: .85; }
+    .review-submit-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .review-err {
+      font-size: 11px; color: var(--err); margin-top: 6px; min-height: 14px;
+    }
+    .review-list {
+      display: flex; flex-direction: column; gap: 6px;
+      max-height: 280px; overflow-y: auto;
+    }
+    .review-empty {
+      text-align: center; color: var(--t3);
+      padding: 20px; font-size: 12px; font-style: italic;
+    }
+    .review-item {
+      background: var(--s1);
+      border: 1.5px solid var(--border2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+    .review-item-stars {
+      color: #ffb627; font-size: 13px; letter-spacing: 1px;
+      flex-shrink: 0; white-space: nowrap;
+    }
+    .review-item-body { flex: 1; min-width: 0; }
+    .review-item-text {
+      font-size: 13px; color: var(--t1);
+      word-break: break-all; line-height: 1.4;
+    }
+    .review-item-meta {
+      font-size: 10px; color: var(--t3); margin-top: 2px;
+    }
+    .review-avg-stars {
+      color: #ffb627; font-size: 12px; letter-spacing: 1px;
+    }
+    [data-theme="dark"] .review-write { background: var(--s2); }
+    [data-theme="dark"] .review-item { background: var(--s2); }
+    [data-theme="dark"] .review-input { background: var(--bg); color: var(--t1); }
+
+
     @media(max-width:600px) {
       th, td { padding:7px 8px; font-size:11px; }
       .td-name { font-size:12px; }
@@ -835,6 +926,8 @@
 
 
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <script src="nav.js"></script>
@@ -1484,9 +1577,198 @@ function openModal(name) {
     skinsSection.style.display = "none";
   }
 
+  // 리뷰 로드
+  currentReviewPet = name;
+  resetReviewForm();
+  loadReviews(name);
+
   document.getElementById("pet-modal").style.display = "flex";
   document.body.style.overflow = "hidden";
   document.documentElement.style.overflow = "hidden";
+}
+
+/* ========== 리뷰 시스템 ========== */
+let currentReviewPet = null;
+let reviewSelectedScore = 0;
+let pdxDb = null;
+
+(function initPdxFirebase() {
+  try {
+    const cfg = {
+      apiKey: "AIzaSyAs3aqh2N75_c24xdjDNf271L16-VYCmls",
+      authDomain: "lomxx-calculator.firebaseapp.com",
+      databaseURL: "https://lomxx-calculator-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "lomxx-calculator",
+      storageBucket: "lomxx-calculator.firebasestorage.app",
+      messagingSenderId: "667060899901",
+      appId: "1:667060899901:web:4ab1bd419526c682355a54"
+    };
+    if (typeof firebase !== 'undefined') {
+      if (!firebase.apps.length) firebase.initializeApp(cfg);
+      pdxDb = firebase.database();
+    }
+  } catch(e) { console.warn('Firebase 초기화 실패', e); }
+})();
+
+function sanitizeKey(name) {
+  return name.replace(/[.#$\[\]\/]/g, '_');
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// 별점 입력 UI 바인딩 (DOM 로드 후)
+function setupStarsInput() {
+  const starsEl = document.getElementById('review-stars-input');
+  if (!starsEl) return;
+  const stars = starsEl.querySelectorAll('.star');
+  const label = document.getElementById('review-score-label');
+  const labels = ['별점을 선택하세요', '별로예요', '아쉬움', '보통', '좋아요', '최고예요!'];
+  stars.forEach(star => {
+    star.addEventListener('mouseenter', () => {
+      const v = +star.dataset.v;
+      stars.forEach((s, i) => s.classList.toggle('hover', i < v));
+    });
+    star.addEventListener('mouseleave', () => {
+      stars.forEach(s => s.classList.remove('hover'));
+    });
+    star.addEventListener('click', () => {
+      reviewSelectedScore = +star.dataset.v;
+      stars.forEach((s, i) => s.classList.toggle('active', i < reviewSelectedScore));
+      if (label) label.textContent = labels[reviewSelectedScore] || labels[0];
+    });
+  });
+}
+
+function resetReviewForm() {
+  reviewSelectedScore = 0;
+  document.querySelectorAll('#review-stars-input .star').forEach(s => s.classList.remove('active', 'hover'));
+  const label = document.getElementById('review-score-label');
+  if (label) label.textContent = '별점을 선택하세요';
+  const input = document.getElementById('review-text-input');
+  if (input) input.value = '';
+  const err = document.getElementById('review-err');
+  if (err) err.textContent = '';
+  const btn = document.getElementById('review-submit-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '등록'; }
+}
+
+async function loadReviews(petName) {
+  const listEl = document.getElementById('review-list');
+  const avgEl = document.getElementById('modal-review-avg');
+  if (!listEl) return;
+  listEl.innerHTML = '<div class="review-empty">불러오는 중...</div>';
+  if (avgEl) avgEl.textContent = '—';
+
+  if (!pdxDb) {
+    listEl.innerHTML = '<div class="review-empty">리뷰 서버에 연결할 수 없습니다.</div>';
+    return;
+  }
+
+  try {
+    const key = sanitizeKey(petName);
+    const snap = await pdxDb.ref('pet_reviews/' + key).once('value');
+    const data = snap.val() || {};
+    const list = Object.entries(data).map(([id, r]) => ({ id, ...r }));
+    list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    // 다른 펫 열었으면 중단
+    if (currentReviewPet !== petName) return;
+
+    if (list.length === 0) {
+      listEl.innerHTML = '<div class="review-empty">아직 리뷰가 없습니다. 첫 리뷰를 남겨보세요!</div>';
+      if (avgEl) avgEl.textContent = '아직 리뷰 없음';
+      return;
+    }
+
+    const avg = list.reduce((s, r) => s + (r.score || 0), 0) / list.length;
+    if (avgEl) {
+      const filled = Math.round(avg);
+      const stars = '★'.repeat(filled) + '☆'.repeat(5 - filled);
+      avgEl.innerHTML = `<span class="review-avg-stars">${stars}</span> ${avg.toFixed(1)} (${list.length}개)`;
+    }
+
+    listEl.innerHTML = '';
+    list.forEach(r => {
+      const item = document.createElement('div');
+      item.className = 'review-item';
+      const score = r.score || 0;
+      const stars = '★'.repeat(score) + '☆'.repeat(5 - score);
+      const d = r.timestamp ? new Date(r.timestamp) : null;
+      const dateStr = d ? `${d.getMonth()+1}/${d.getDate()} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}` : '';
+      item.innerHTML = `
+        <div class="review-item-stars">${stars}</div>
+        <div class="review-item-body">
+          <div class="review-item-text">${escapeHtml(r.text || '')}</div>
+          <div class="review-item-meta">${dateStr}</div>
+        </div>
+      `;
+      listEl.appendChild(item);
+    });
+  } catch(e) {
+    console.warn('리뷰 로드 실패', e);
+    listEl.innerHTML = '<div class="review-empty">리뷰를 불러올 수 없습니다.</div>';
+  }
+}
+
+async function submitReview() {
+  const btn = document.getElementById('review-submit-btn');
+  const err = document.getElementById('review-err');
+  const input = document.getElementById('review-text-input');
+  const text = (input?.value || '').trim();
+
+  if (!reviewSelectedScore) { err.textContent = '별점을 선택해주세요'; return; }
+  if (text.length === 0) { err.textContent = '한줄평을 입력해주세요'; return; }
+  if (text.length > 80) { err.textContent = '80자 이내로 입력해주세요'; return; }
+  if (!pdxDb || !currentReviewPet) { err.textContent = '서버 연결 오류'; return; }
+
+  // 도배 방지 (10초)
+  const lastKey = 'review_last_' + sanitizeKey(currentReviewPet);
+  const last = parseInt(localStorage.getItem(lastKey) || '0');
+  if (Date.now() - last < 10000) {
+    err.textContent = '잠시 후 다시 시도해주세요';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '등록 중...';
+  err.textContent = '';
+
+  try {
+    const key = sanitizeKey(currentReviewPet);
+    await pdxDb.ref('pet_reviews/' + key).push({
+      score: reviewSelectedScore,
+      text: text,
+      timestamp: Date.now(),
+    });
+    localStorage.setItem(lastKey, String(Date.now()));
+    resetReviewForm();
+    await loadReviews(currentReviewPet);
+  } catch(e) {
+    console.warn('리뷰 등록 실패', e);
+    err.textContent = '등록에 실패했습니다';
+    btn.disabled = false;
+    btn.textContent = '등록';
+  }
+}
+
+// 초기 바인딩
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bindReviewUI);
+} else {
+  bindReviewUI();
+}
+function bindReviewUI() {
+  setupStarsInput();
+  const btn = document.getElementById('review-submit-btn');
+  if (btn) btn.addEventListener('click', submitReview);
+  const input = document.getElementById('review-text-input');
+  if (input) input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitReview(); }
+  });
 }
 
 function hideModal() {
@@ -1900,6 +2182,28 @@ document.addEventListener("keydown", e => {
       <div class="modal-section" id="modal-skins-section" style="display:none;">
         <div class="modal-section-title">🎨 외형 변경</div>
         <div id="modal-skins-grid" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;"></div>
+      </div>
+
+      <!-- 유저 리뷰 -->
+      <div class="modal-section" id="modal-review-section">
+        <div class="modal-section-title">
+          💬 유저 리뷰
+          <span id="modal-review-avg" style="font-size:11px;color:var(--t3);font-weight:400;margin-left:6px;">—</span>
+        </div>
+        <div class="review-write">
+          <div class="review-stars-input" id="review-stars-input">
+            <span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span>
+            <span class="review-score-label" id="review-score-label">별점을 선택하세요</span>
+          </div>
+          <div class="review-input-row">
+            <input type="text" id="review-text-input" class="review-input" maxlength="80" placeholder="한줄평 (최대 80자)">
+            <button class="review-submit-btn" id="review-submit-btn">등록</button>
+          </div>
+          <div class="review-err" id="review-err"></div>
+        </div>
+        <div class="review-list" id="review-list">
+          <div class="review-empty">불러오는 중...</div>
+        </div>
       </div>
     <!-- 환각 계산하기 버튼 -->
     <div style="padding:0 20px 16px;display:flex;gap:8px;">
