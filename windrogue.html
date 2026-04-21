@@ -491,6 +491,155 @@ body {
 }
 
 /* 유틸 */
+
+/* 상태 표시 (버프/충전 등) */
+.status-line {
+  background: rgba(255, 216, 102, 0.1);
+  border-left: 3px solid var(--accent);
+  padding: 4px 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--accent);
+  font-family: 'Pretendard';
+}
+
+.panel-title {
+  font-family: 'Jersey 15';
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+/* 데미지 팝업 miss */
+.dmg-popup.miss {
+  color: #8fa3cc !important;
+  font-size: 22px !important;
+  letter-spacing: 2px;
+}
+
+/* 상점 화면 */
+.shop-screen {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+.shop-title {
+  font-family: 'Jersey 15';
+  font-size: 32px;
+  color: var(--accent);
+  margin-bottom: 4px;
+  text-shadow: 2px 2px 0 #000;
+}
+.shop-sub {
+  font-size: 12px;
+  color: #8fa3cc;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 16px;
+}
+.shop-card {
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+  position: relative;
+}
+.shop-card:hover:not(.unaffordable) {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+}
+.shop-card.unaffordable {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.shop-icon { font-size: 36px; }
+.shop-name {
+  font-family: 'Jersey 15';
+  font-size: 16px;
+  color: var(--fg);
+  margin-top: 4px;
+}
+.shop-desc {
+  font-size: 11px;
+  color: #8fa3cc;
+  margin-top: 4px;
+  min-height: 28px;
+}
+.shop-price {
+  font-family: 'Jersey 15';
+  font-size: 16px;
+  color: var(--accent);
+  margin-top: 6px;
+}
+.shop-tag {
+  position: absolute;
+  top: 4px; right: 4px;
+  background: var(--ok);
+  color: var(--bg);
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-family: 'Pretendard';
+  font-weight: 700;
+}
+.shop-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #8fa3cc;
+  padding: 20px;
+  font-family: 'Jersey 15';
+}
+.shop-inv {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  width: 100%;
+  max-width: 600px;
+}
+.shop-inv-title {
+  font-family: 'Jersey 15';
+  font-size: 13px;
+  color: #8fa3cc;
+  margin-bottom: 4px;
+}
+.shop-inv-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.shop-inv-item {
+  font-size: 12px;
+  color: var(--fg);
+  background: var(--panel);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+.shop-inv-empty {
+  font-size: 12px;
+  color: #566;
+  font-style: italic;
+}
+
 .hidden { display: none !important; }
 
 /* 로그 스크롤바 */
@@ -601,13 +750,14 @@ const PET_DATA = [{"name":"우리","image":"https://wind01.net/info/img/100250.g
 const ATTRS = ['지','수','화','풍'];
 const ATTR_KEY = {'지':'earth','수':'water','화':'fire','풍':'wind'};
 
-// 속성 상성 (공격자 → 방어자): 1.5배 이점 / 0.67 약점
+// 속성 상성: 공격자 → 방어자. 공격자의 속성이 방어자의 이 속성에게 강함
 // 지 > 수 > 화 > 풍 > 지
 const ATTR_ADVANTAGE = {
-  '지': '수', // 지가 수에게 강함
-  '수': '화',
-  '화': '풍',
-  '풍': '지',
+  '지': '수', '수': '화', '화': '풍', '풍': '지',
+};
+// 반대로 지는 풍에게 약함: 방어자의 이 속성이 공격자에게 강함
+const ATTR_WEAKNESS = {
+  '지': '풍', '수': '지', '화': '수', '풍': '화',
 };
 
 // 바이옴 정의
@@ -628,18 +778,60 @@ const BIOMES = [
 
 /* ===== 게임 상태 ===== */
 const state = {
-  scene: 'title',     // title | starter | battle | reward | gameover | victory
+  scene: 'title',     // title | starter | battle | reward | shop | gameover | victory
   wave: 1,
   party: [],          // [{petData, level, hp, maxHp, atk, def, agi}, ...]
   activeIndex: 0,
   enemy: null,        // {petData, level, hp, maxHp, atk, def, agi, isBoss}
   log: [],
+  stones: 0,          // 현재 런에서 모은 화폐
+  inventory: {},      // { itemId: count }
   stats: {
     totalRuns: 0,
     bestWave: 0,
     totalCaptures: 0,
   },
   captured: new Set(), // 포획한 펫 이름
+};
+
+/* ===== 아이템 데이터 ===== */
+const ITEMS = {
+  meat_berga: { name: '베르가의 고기', desc: 'HP 30% 회복', price: 25, heal: 0.30, icon: '🍗' },
+  meat_manmo: { name: '만모의 고기', desc: 'HP 50% 회복', price: 45, heal: 0.50, icon: '🍖' },
+  meat_kaku:  { name: '카쿠의 고기', desc: 'HP 80% 회복', price: 75, heal: 0.80, icon: '🥩' },
+  elixir:     { name: '엘릭서',      desc: 'HP 완전 회복 + 소생', price: 150, heal: 1.0, revive: true, icon: '✨' },
+};
+
+/* ===== 스킬 데이터 ===== */
+const SKILLS = {
+  double_stance: {
+    name: '배수의진2',
+    desc: '공격력 2배, 방어력 50% 감소 (이번 전투)',
+    price: 80,
+    icon: '⚔️',
+    apply: (user) => {
+      user.buffs.atkBoost = 2.0;
+      user.buffs.defDebuff = 0.5;
+      pushLog(`${user.petData.name}: 배수의진! 공격 2배, 방어 50%↓`, 'heal');
+    },
+    cost: 0, // 턴 소모 안 하고 즉시 발동 후 평타
+    type: 'self_buff',
+  },
+  guard_break: {
+    name: '가드브레이크',
+    desc: '방어 무시하고 150% 데미지',
+    price: 100,
+    icon: '💥',
+    type: 'attack',
+    opts: { guardBreak: true },
+  },
+  charge_strike: {
+    name: '모아치기',
+    desc: '한 턴 쉬고 다음 턴 공격력 2배',
+    price: 60,
+    icon: '🔋',
+    type: 'charge',
+  },
 };
 
 /* ===== 헬퍼: 펫 능력치 계산 ===== */
@@ -675,10 +867,39 @@ function createUnit(petData, level, options = {}) {
     isBoss: options.isBoss || false,
     isCaptured: options.isCaptured || false,
     ownerName: options.ownerName || null,
+    // 전투 상태
+    isGuarding: false,  // 방어 중
+    charging: false,    // 모아치기 충전 중
+    buffs: {},          // { atkBoost, defDebuff, ... }
+    skills: options.skills || [], // 배운 기술 목록
   };
 }
 
-/* ===== 주 속성 추출 ===== */
+/* ===== 속성 상성 배수 =====
+   공격자의 속성 수치가 방어자의 약점 속성을 찌를 때 +10%/수치.
+   예: 지8인 펫이 수4인 적을 공격 → min(8,4)*0.1 = +40% = ×1.4
+   역방향은 수4인 적이 나를 공격할 차례에 자연스럽게 반영됨.
+*/
+function attrMultiplier(attacker, defender) {
+  const aAttr = attacker.petData.attr || {};
+  const dAttr = defender.petData.attr || {};
+  let bonus = 0;
+
+  for (const atk of ATTRS) {
+    const myVal = aAttr[atk] || 0;
+    if (myVal <= 0) continue;
+    const counter = ATTR_ADVANTAGE[atk]; // 내 atk가 강한 상대 속성
+    const defVal = dAttr[counter] || 0;
+    if (defVal <= 0) continue;
+    bonus += Math.min(myVal, defVal) * 0.1;
+  }
+
+  // 최종 배수 = 1 + bonus (최대 2.0배까지)
+  const multi = Math.min(2.0, 1 + bonus);
+  return multi;
+}
+
+/* (deprecated) 주속성 1개 추출 - UI 태그 표시용 */
 function getMainAttr(petData) {
   const a = petData.attr || {};
   let max = 0, best = '지';
@@ -688,23 +909,42 @@ function getMainAttr(petData) {
   return best;
 }
 
-/* ===== 속성 상성 배수 ===== */
-function attrMultiplier(atkAttr, defMainAttr) {
-  if (ATTR_ADVANTAGE[atkAttr] === defMainAttr) return 1.5;
-  if (ATTR_ADVANTAGE[defMainAttr] === atkAttr) return 0.67;
-  return 1.0;
+/* ===== 명중/회피 계산 =====
+   공격이 명중하는지 판정. AGI 차이에 따라 명중률 달라짐.
+   기본 명중률 95%, AGI 차이당 1% (최소 60%, 최대 99%) */
+function hitCheck(attacker, defender) {
+  const agiDiff = attacker.agi - defender.agi;
+  const hitRate = Math.max(0.60, Math.min(0.99, 0.95 + agiDiff * 0.01));
+  return Math.random() < hitRate;
 }
+function calcDamage(attacker, defender, opts = {}) {
+  const multi = attrMultiplier(attacker, defender);
 
-/* ===== 데미지 계산 ===== */
-function calcDamage(attacker, defender) {
-  const atkAttr = getMainAttr(attacker.petData);
-  const defAttr = getMainAttr(defender.petData);
-  const multi = attrMultiplier(atkAttr, defAttr);
+  // 공식: atk * (atk / (atk + def * 0.5))
+  let effectiveDef = defender.def;
+  // 방어자의 방어력 디버프 (배수의진2)
+  if (defender.buffs && defender.buffs.defDebuff) {
+    effectiveDef = Math.floor(effectiveDef * defender.buffs.defDebuff);
+  }
+  // 가드브레이크면 방어 무시
+  if (opts.guardBreak) effectiveDef = 0;
 
-  // 공식: atk * (atk / (atk + def * 0.5))  → 방어가 높을수록 감쇠하되 완전 차단 안됨
-  const ratio = attacker.atk / (attacker.atk + defender.def * 0.5);
+  const ratio = attacker.atk / (attacker.atk + effectiveDef * 0.5);
   let dmg = Math.max(1, Math.floor(attacker.atk * ratio * 1.3));
   dmg = Math.floor(dmg * multi);
+
+  // 공격자 버프 (배수의진2)
+  if (attacker.buffs && attacker.buffs.atkBoost) {
+    dmg = Math.floor(dmg * attacker.buffs.atkBoost);
+  }
+  // 모아치기 (대기 후 사용)
+  if (opts.charged) {
+    dmg = Math.floor(dmg * 2.0);
+  }
+  // 가드브레이크 (방어 무시 + 150%)
+  if (opts.guardBreak) {
+    dmg = Math.floor(dmg * 1.5);
+  }
 
   // 크리티컬 (10%)
   const isCrit = Math.random() < 0.1;
@@ -713,6 +953,11 @@ function calcDamage(attacker, defender) {
   // 랜덤 ±10%
   const rand = 0.9 + Math.random() * 0.2;
   dmg = Math.max(1, Math.floor(dmg * rand));
+
+  // 방어 중: 90% 감소 = 10%만 적용
+  if (defender.isGuarding && !opts.guardBreak) {
+    dmg = Math.max(1, Math.floor(dmg * 0.1));
+  }
 
   return { dmg, isCrit, multi };
 }
@@ -812,6 +1057,7 @@ function render() {
   app.innerHTML = '';
   if (state.scene === 'title') renderTitle();
   else if (state.scene === 'starter') renderStarter();
+  else if (state.scene === 'shop') renderShop();
   else if (state.scene === 'battle' || state.scene === 'reward') renderBattle();
   else if (state.scene === 'gameover' || state.scene === 'victory') renderGameOver();
 }
@@ -904,6 +1150,8 @@ function startRun() {
   state.activeIndex = 0;
   state.wave = 1;
   state.log = [];
+  state.stones = 0;
+  state.inventory = {};
   state.scene = 'battle';
   state.stats.totalRuns++;
   saveStats();
@@ -941,7 +1189,7 @@ function renderBattle() {
   // HUD
   const hud = el('div', { className: 'hud' });
   hud.innerHTML = `
-    <div>🎯 런 #${state.stats.totalRuns}</div>
+    <div>💎 ${state.stones}</div>
     <div class="wave">WAVE ${state.wave}</div>
     <div class="right biome">${biome.name} <button id="mute-btn" style="background:none;border:none;color:inherit;cursor:pointer;font-size:14px;margin-left:6px;vertical-align:middle;">${audio.muted?'🔇':'🔊'}</button></div>
   `;
@@ -1010,10 +1258,19 @@ function renderNextBox() {
 }
 
 function goToNextRound() {
-  state.scene = 'reward';
   state.wave++;
   state.stats.bestWave = Math.max(state.stats.bestWave, state.wave);
   saveStats();
+  // 5웨이브마다 상점 (5, 10, 15, 20, 25 진입 시 → 즉 방금 4, 9, 14... 를 클리어했을 때)
+  // state.wave는 막 +1 된 상태. 새 웨이브가 6,11,16,21,26이면 상점
+  // 보스 직전(10,20,30) 이전이 좋으니 5,10,15,20,25 웨이브 들어가기 직전에 열기
+  if ((state.wave - 1) % 5 === 0 && state.wave > 1) {
+    state.scene = 'shop';
+    state.shopStock = rollShop();
+    render();
+    return;
+  }
+  state.scene = 'reward';
   state.pendingRewards = rollRewards();
   state.mode = 'action';
   render();
@@ -1036,27 +1293,76 @@ function renderUnit(unit, side) {
 }
 
 function renderActionBox() {
-  const box = el('div', { className: 'box' });
-  const choices = el('div', { className: 'choices' });
-  const atkBtn = el('button', { className: 'btn ok' }, []);
-  atkBtn.innerHTML = `⚔️ 공격<small>속성 상성으로 데미지</small>`;
-  atkBtn.addEventListener('click', () => playerAttack());
-  choices.appendChild(atkBtn);
+  const box = el('div', { className: 'box action-box' });
+  const me = state.party[state.activeIndex];
 
-  const swapBtn = el('button', { className: 'btn' }, []);
+  // 버프/상태 표시
+  if (me.charging || me.buffs.atkBoost || me.buffs.defDebuff) {
+    const status = el('div', { className: 'status-line' });
+    const tags = [];
+    if (me.charging) tags.push('🔋 충전 중');
+    if (me.buffs.atkBoost) tags.push(`⚔️ 공격 ×${me.buffs.atkBoost}`);
+    if (me.buffs.defDebuff) tags.push(`🛡️ 방어 ×${me.buffs.defDebuff}`);
+    status.textContent = tags.join(' · ');
+    box.appendChild(status);
+  }
+
+  const choices = el('div', { className: 'choices' });
+
+  // 모아치기 충전 중이면 "공격"이 강화 공격
+  if (me.charging) {
+    const chargedBtn = el('button', { className: 'btn ok' });
+    chargedBtn.innerHTML = `💥 모아친 일격<small>공격력 2배!</small>`;
+    chargedBtn.addEventListener('click', () => playerAttack({ charged: true }));
+    choices.appendChild(chargedBtn);
+  } else {
+    const atkBtn = el('button', { className: 'btn ok' });
+    atkBtn.innerHTML = `⚔️ 공격<small>속성 상성으로 데미지</small>`;
+    atkBtn.addEventListener('click', () => playerAttack());
+    choices.appendChild(atkBtn);
+  }
+
+  // 방어
+  const defBtn = el('button', { className: 'btn' });
+  defBtn.innerHTML = `🛡️ 방어<small>받는 데미지 90% 감소</small>`;
+  defBtn.addEventListener('click', () => playerDefend());
+  choices.appendChild(defBtn);
+
+  // 기술 (배운 스킬이 있으면)
+  const skillBtn = el('button', { className: 'btn' });
+  const skillCount = me.skills ? me.skills.length : 0;
+  skillBtn.innerHTML = `✨ 기술<small>${skillCount ? skillCount + '개 사용 가능' : '배운 기술 없음'}</small>`;
+  if (skillCount > 0) skillBtn.addEventListener('click', () => showSkills());
+  else { skillBtn.disabled = true; skillBtn.style.opacity = '0.4'; }
+  choices.appendChild(skillBtn);
+
+  // 아이템
+  const itemBtn = el('button', { className: 'btn' });
+  const itemCount = Object.values(state.inventory).reduce((s, n) => s + n, 0);
+  itemBtn.innerHTML = `🎒 아이템<small>${itemCount ? itemCount + '개 보유' : '보유 없음'}</small>`;
+  if (itemCount > 0) itemBtn.addEventListener('click', () => showItems());
+  else { itemBtn.disabled = true; itemBtn.style.opacity = '0.4'; }
+  choices.appendChild(itemBtn);
+
+  // 교체
+  const swapBtn = el('button', { className: 'btn' });
   swapBtn.innerHTML = `🔄 교체<small>다른 펫으로 전환</small>`;
   swapBtn.addEventListener('click', () => showSwap());
   choices.appendChild(swapBtn);
 
-  const captureBtn = el('button', { className: 'btn' }, []);
+  // 포획
+  const captureBtn = el('button', { className: 'btn' });
   const canCapture = !state.enemy.isBoss;
-  captureBtn.innerHTML = `🎯 포획 시도<small>${canCapture ? '체력 낮을수록 성공률↑' : '보스는 불가'}</small>`;
+  captureBtn.innerHTML = `🎯 포획<small>${canCapture ? '체력 낮을수록 성공↑' : '보스는 불가'}</small>`;
   if (canCapture) captureBtn.addEventListener('click', () => tryCapture());
   else { captureBtn.disabled = true; captureBtn.style.opacity = '0.4'; }
   choices.appendChild(captureBtn);
 
-  const fleeBtn = el('button', { className: 'btn danger' }, []);
-  fleeBtn.innerHTML = `🏃 도망<small>${state.enemy.isBoss ? '보스전은 불가' : '50% 확률'}</small>`;
+  // 도망
+  const fleeBtn = el('button', { className: 'btn danger' });
+  const agiDiff = me.agi - state.enemy.agi;
+  const fleeRate = Math.max(0.2, Math.min(0.9, 0.3 + agiDiff * 0.02));
+  fleeBtn.innerHTML = `🏃 도망<small>${state.enemy.isBoss ? '보스전은 불가' : `성공률 ${Math.round(fleeRate*100)}%`}</small>`;
   if (!state.enemy.isBoss) fleeBtn.addEventListener('click', () => tryFlee());
   else { fleeBtn.disabled = true; fleeBtn.style.opacity = '0.4'; }
   choices.appendChild(fleeBtn);
@@ -1066,43 +1372,206 @@ function renderActionBox() {
 }
 
 /* ===== 전투 로직 ===== */
-async function playerAttack() {
+async function playerAttack(opts = {}) {
   const me = state.party[state.activeIndex];
   const enemy = state.enemy;
 
-  // 선공 결정
+  // 선공 결정: AGI 높은 쪽이 먼저
   const myFirst = me.agi >= enemy.agi;
 
-  // 공격 애니메이션/사운드와 함께 진행
+  // 이번 턴은 방어 안 하니까 isGuarding 해제
+  me.isGuarding = false;
+
+  // 모아치기 사용하면 충전 소모
+  if (opts.charged) me.charging = false;
+
   if (myFirst) {
-    await animateAttack(me, enemy, true);
-    if (enemy.hp > 0) await animateAttack(enemy, me, false);
+    await animateAttack(me, enemy, true, opts);
+    if (enemy.hp > 0 && me.hp > 0) await animateAttack(enemy, me, false);
   } else {
     await animateAttack(enemy, me, false);
-    if (me.hp > 0) await animateAttack(me, enemy, true);
+    if (me.hp > 0) await animateAttack(me, enemy, true, opts);
   }
 
-  // 결과 체크 (바로 다음 액션으로)
   checkBattleState();
 }
 
-function doAttack(attacker, defender, isMine) {
-  const { dmg, isCrit, multi } = calcDamage(attacker, defender);
-  defender.hp = Math.max(0, defender.hp - dmg);
+async function playerDefend() {
+  const me = state.party[state.activeIndex];
+  me.isGuarding = true;
+  pushLog(`${me.petData.name}이(가) 방어 자세를 취했다!`, 'info');
+  playSfx('swap');
+  // 방어 중에는 적이 공격
+  await sleep(200);
+  await animateAttack(state.enemy, me, false);
+  // 방어는 1턴 짜리 → 다음 action에서 해제됨
+  checkBattleState();
+}
 
-  const effText = multi > 1 ? ' (효과적!)' : multi < 1 ? ' (별로다...)' : '';
-  const critText = isCrit ? ' 🔥크리티컬!' : '';
+async function useCharge() {
+  const me = state.party[state.activeIndex];
+  me.charging = true;
+  pushLog(`${me.petData.name}이(가) 힘을 모으는 중...`, 'info');
+  playSfx('swap');
+  // 충전 중엔 적 1회 공격받음
+  await sleep(200);
+  await animateAttack(state.enemy, me, false);
+  checkBattleState();
+}
+
+async function useGuardBreak() {
+  const me = state.party[state.activeIndex];
+  const enemy = state.enemy;
+  const myFirst = me.agi >= enemy.agi;
+  me.isGuarding = false;
+
+  if (myFirst) {
+    await animateAttack(me, enemy, true, { guardBreak: true });
+    if (enemy.hp > 0 && me.hp > 0) await animateAttack(enemy, me, false);
+  } else {
+    await animateAttack(enemy, me, false);
+    if (me.hp > 0) await animateAttack(me, enemy, true, { guardBreak: true });
+  }
+  checkBattleState();
+}
+
+function useDoubleStance() {
+  const me = state.party[state.activeIndex];
+  // 즉시 발동 (턴 소모 X, 평타 이어서)
+  SKILLS.double_stance.apply(me);
+  playSfx('crit');
+  // 애니메이션만 살짝
+  const sprite = document.querySelector('.pet-sprite[data-sprite="mine"]');
+  if (sprite) {
+    sprite.classList.add('hit-flash');
+    setTimeout(() => sprite.classList.remove('hit-flash'), 350);
+  }
+  render();
+}
+
+/* 스킬 사용 메뉴 */
+function showSkills() {
+  const me = state.party[state.activeIndex];
+  state.mode = 'skill_menu';
+  const existingBox = document.querySelector('.box');
+  if (existingBox) existingBox.remove();
+  const box = el('div', { className: 'box' });
+  const h = el('div', { style: 'margin-bottom: 8px', className: 'panel-title' }, ['기술 선택']);
+  box.appendChild(h);
+  const grid = el('div', { className: 'choices' });
+  me.skills.forEach(skillId => {
+    const s = SKILLS[skillId];
+    if (!s) return;
+    const b = el('button', { className: 'btn' });
+    b.innerHTML = `${s.icon} ${s.name}<small>${s.desc}</small>`;
+    b.addEventListener('click', () => executeSkill(skillId));
+    grid.appendChild(b);
+  });
+  box.appendChild(grid);
+  const cancel = el('button', { className: 'btn full', style: 'margin-top: 6px' }, ['취소']);
+  cancel.addEventListener('click', () => { state.mode = 'action'; render(); });
+  box.appendChild(cancel);
+  app.appendChild(box);
+}
+
+function executeSkill(skillId) {
+  const s = SKILLS[skillId];
+  if (!s) return;
+  if (skillId === 'double_stance') {
+    useDoubleStance();
+    // 버프만 걸고 바로 액션으로 복귀 (턴 소모 X)
+    state.mode = 'action';
+    render();
+  } else if (skillId === 'guard_break') {
+    useGuardBreak();
+  } else if (skillId === 'charge_strike') {
+    useCharge();
+  }
+}
+
+/* 아이템 사용 메뉴 */
+function showItems() {
+  state.mode = 'item_menu';
+  const existingBox = document.querySelector('.box');
+  if (existingBox) existingBox.remove();
+  const box = el('div', { className: 'box' });
+  const h = el('div', { style: 'margin-bottom: 8px', className: 'panel-title' }, ['아이템 사용']);
+  box.appendChild(h);
+  const grid = el('div', { className: 'choices' });
+  Object.entries(state.inventory).forEach(([itemId, count]) => {
+    if (count <= 0) return;
+    const it = ITEMS[itemId];
+    if (!it) return;
+    const b = el('button', { className: 'btn' });
+    b.innerHTML = `${it.icon} ${it.name} ×${count}<small>${it.desc}</small>`;
+    b.addEventListener('click', () => useItem(itemId));
+    grid.appendChild(b);
+  });
+  box.appendChild(grid);
+  const cancel = el('button', { className: 'btn full', style: 'margin-top: 6px' }, ['취소']);
+  cancel.addEventListener('click', () => { state.mode = 'action'; render(); });
+  box.appendChild(cancel);
+  app.appendChild(box);
+}
+
+async function useItem(itemId) {
+  const it = ITEMS[itemId];
+  if (!it || !state.inventory[itemId]) return;
+  const me = state.party[state.activeIndex];
+
+  // 엘릭서는 기절자 우선 대상, 없으면 출전 펫
+  if (it.revive) {
+    const fainted = state.party.find(u => u.hp <= 0);
+    const target = fainted || me;
+    target.hp = target.maxHp;
+    pushLog(`${it.icon} ${it.name} 사용! ${target.petData.name} 완전 회복!`, 'heal');
+  } else {
+    // 고기는 현재 출전 펫 회복
+    const before = me.hp;
+    const healAmt = Math.floor(me.maxHp * it.heal);
+    me.hp = Math.min(me.maxHp, me.hp + healAmt);
+    pushLog(`${it.icon} ${it.name} 사용! +${me.hp - before} HP`, 'heal');
+  }
+  state.inventory[itemId]--;
+  if (state.inventory[itemId] <= 0) delete state.inventory[itemId];
+  playSfx('capture_success');
+  updateHpBars();
+  // 아이템 사용 후 적 공격 (턴 소모)
+  await sleep(400);
+  await animateAttack(state.enemy, me, false);
+  checkBattleState();
+}
+
+function doAttack(attacker, defender, isMine, opts = {}) {
+  // 명중 체크 (가드브레이크는 반드시 명중)
+  const hit = opts.guardBreak ? true : hitCheck(attacker, defender);
+  if (!hit) {
+    pushLog(`${attacker.petData.name}의 공격이 빗나갔다!`, 'info');
+    return { dmg: 0, isCrit: false, multi: 1, miss: true };
+  }
+
+  const result = calcDamage(attacker, defender, opts);
+  defender.hp = Math.max(0, defender.hp - result.dmg);
+
+  const effText = result.multi > 1.2 ? ' (효과적!)' : result.multi < 0.8 ? ' (별로다...)' : '';
+  const critText = result.isCrit ? ' 🔥크리티컬!' : '';
+  const brkText = opts.guardBreak ? ' (가드브레이크!)' : '';
+  const chgText = opts.charged ? ' (모아친 일격!)' : '';
   pushLog(
-    `${attacker.petData.name} → ${defender.petData.name}에게 ${dmg} 데미지${effText}${critText}`,
-    isCrit ? 'crit' : (multi > 1 ? 'hit' : '')
+    `${attacker.petData.name} → ${defender.petData.name} ${result.dmg} 데미지${effText}${critText}${brkText}${chgText}`,
+    result.isCrit ? 'crit' : (result.multi > 1.2 ? 'hit' : '')
   );
-  return { dmg, isCrit, multi };
+  return { ...result, miss: false };
 }
 
 /* 공격 애니메이션 + 사운드 + 데미지 팝업 */
-async function animateAttack(attacker, defender, isMine) {
-  const result = doAttack(attacker, defender, isMine);
-  playSfx(result.isCrit ? 'crit' : (result.multi > 1 ? 'hit_effective' : 'hit'));
+async function animateAttack(attacker, defender, isMine, opts = {}) {
+  const result = doAttack(attacker, defender, isMine, opts);
+  if (result.miss) {
+    playSfx('miss');
+  } else {
+    playSfx(result.isCrit ? 'crit' : (result.multi > 1.2 ? 'hit_effective' : 'hit'));
+  }
 
   // DOM에서 펫 스프라이트 찾기
   const attackerSide = (attacker === state.party[state.activeIndex]) ? 'mine' : 'enemy';
@@ -1115,11 +1584,18 @@ async function animateAttack(attacker, defender, isMine) {
   // 공격 모션
   if (attackerSprite) {
     attackerSprite.classList.remove('attack-mine', 'attack-enemy');
-    void attackerSprite.offsetWidth; // reflow
+    void attackerSprite.offsetWidth;
     attackerSprite.classList.add(attackerSide === 'mine' ? 'attack-mine' : 'attack-enemy');
   }
 
   await sleep(260);
+
+  if (result.miss) {
+    // miss 팝업만 띄우고 종료
+    if (defenderCard) showMissPopup(defenderCard);
+    await sleep(400);
+    return;
+  }
 
   // 피격 모션 + 데미지 팝업
   if (defenderSprite) {
@@ -1147,6 +1623,14 @@ async function animateAttack(attacker, defender, isMine) {
   } else {
     await sleep(120);
   }
+}
+
+function showMissPopup(cardEl) {
+  const pop = document.createElement('div');
+  pop.className = 'dmg-popup miss';
+  pop.textContent = 'MISS';
+  cardEl.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
@@ -1224,11 +1708,25 @@ function onEnemyDown() {
   alive.forEach(u => { u.level += levelGain; recalcUnit(u); });
   pushLog(`파티 +${levelGain} 레벨업!`, 'heal');
 
+  // 스톤 지급 (일반 10±3, 보스 40±10)
+  const stoneGain = state.enemy.isBoss
+    ? 40 + Math.floor(Math.random() * 21) - 10
+    : 10 + Math.floor(Math.random() * 7) - 3;
+  state.stones += stoneGain;
+  pushLog(`💎 스톤 +${stoneGain} (보유: ${state.stones})`, 'heal');
+
   // 보스 클리어 시 전체 회복
   if (state.enemy.isBoss) {
     state.party.forEach(u => { u.hp = u.maxHp; });
     pushLog(`보스 클리어! 파티 전체 회복!`, 'heal');
   }
+
+  // 전투 종료 시 버프/방어/충전 상태 초기화 (전투 간 유지 X)
+  state.party.forEach(u => {
+    u.isGuarding = false;
+    u.charging = false;
+    u.buffs = {};
+  });
 
   if (state.wave >= 30) {
     state.scene = 'victory';
@@ -1237,7 +1735,7 @@ function onEnemyDown() {
     return;
   }
 
-  // 다음 버튼 있는 중간 화면 → 다음 버튼 누르면 보상으로
+  // 다음 버튼 있는 중간 화면
   state.mode = 'next';
   render();
 }
@@ -1306,6 +1804,11 @@ function showSwap() {
 
 async function swapTo(i) {
   const old = state.party[state.activeIndex].petData.name;
+  // 나가는 펫은 버프/상태 해제
+  const outgoing = state.party[state.activeIndex];
+  outgoing.isGuarding = false;
+  outgoing.charging = false;
+  outgoing.buffs = {};
   state.activeIndex = i;
   pushLog(`${old} → ${state.party[i].petData.name} 교체!`, 'info');
   playSfx('swap');
@@ -1371,31 +1874,39 @@ async function showCaptureAnimation() {
 
 /* ===== 도망 ===== */
 async function tryFlee() {
-  if (Math.random() < 0.5) {
-    pushLog('무사히 도망쳤다!', 'info');
+  const me = state.party[state.activeIndex];
+  const enemy = state.enemy;
+  // 도망 성공률 = 0.3 + (내 AGI - 적 AGI) * 0.02, 최소 0.2, 최대 0.9
+  const agiDiff = me.agi - enemy.agi;
+  const fleeRate = Math.max(0.2, Math.min(0.9, 0.3 + agiDiff * 0.02));
+  if (Math.random() < fleeRate) {
+    pushLog(`무사히 도망쳤다! (순발력 차 ${agiDiff})`, 'info');
     playSfx('flee');
     state.mode = 'next';
     render();
     return;
   }
-  pushLog('도망에 실패했다!', 'crit');
-  const me = state.party[state.activeIndex];
+  pushLog(`도망에 실패했다! (성공률 ${Math.round(fleeRate*100)}%)`, 'crit');
   await animateAttack(state.enemy, me, false);
   checkBattleState();
 }
 
 /* ===== 보상 ===== */
 function rollRewards() {
+  const hasFainted = state.party.some(u => u.hp <= 0);
   const pool = [
     { id: 'heal-full', label: '🌿 전체 회복', desc: '파티 전원 HP 회복', apply: () => {
       state.party.forEach(u => { if (u.hp > 0) u.hp = u.maxHp; });
       pushLog('파티 전체 HP 회복!', 'heal');
     }},
-    { id: 'revive', label: '✨ 부활의 샘', desc: '기절한 펫 1마리 절반 회복', apply: () => {
+    // 부활의 샘은 기절자가 있을 때만 풀에 포함
+    ...(hasFainted ? [{ id: 'revive', label: '✨ 부활의 샘', desc: '기절한 펫 1마리 완전 회복', apply: () => {
       const fainted = state.party.find(u => u.hp <= 0);
-      if (fainted) { fainted.hp = Math.floor(fainted.maxHp / 2); pushLog(`${fainted.petData.name} 부활!`, 'heal'); }
-      else { state.party[state.activeIndex].hp = state.party[state.activeIndex].maxHp; pushLog('출전펫 완전 회복!', 'heal'); }
-    }},
+      if (fainted) {
+        fainted.hp = fainted.maxHp;
+        pushLog(`${fainted.petData.name} 부활!`, 'heal');
+      }
+    }}] : []),
     { id: 'atk-up', label: '⚔️ 공격 증폭', desc: '파티 공격력 +15%', apply: () => {
       state.party.forEach(u => u.atk = Math.floor(u.atk * 1.15));
       pushLog('파티 공격력 상승!', 'heal');
@@ -1414,6 +1925,14 @@ function rollRewards() {
     { id: 'level-up', label: '📈 레벨업의 정수', desc: '파티 전원 +3 레벨', apply: () => {
       state.party.forEach(u => { u.level += 3; recalcUnit(u); });
       pushLog('파티 +3 레벨업!', 'heal');
+    }},
+    { id: 'agi-up', label: '💨 순발력 강화', desc: '파티 순발력 +20%', apply: () => {
+      state.party.forEach(u => u.agi = Math.floor(u.agi * 1.20));
+      pushLog('파티 순발력 상승!', 'heal');
+    }},
+    { id: 'stones', label: '💎 스톤 주머니', desc: '스톤 +50 획득', apply: () => {
+      state.stones += 50;
+      pushLog(`💎 +50 스톤 (보유: ${state.stones})`, 'heal');
     }},
   ];
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
@@ -1449,6 +1968,162 @@ function renderRewardBox() {
   grid.appendChild(skip);
   box.appendChild(grid);
   app.appendChild(box);
+}
+
+/* ===== 상점 =====
+   고기 3종(랜덤 2~3개) + 스킬(배우지 않은 것 중 1~2개 랜덤) + 엘릭서(확률) */
+function rollShop() {
+  const meatKeys = ['meat_berga', 'meat_manmo', 'meat_kaku'];
+  const skillKeys = Object.keys(SKILLS);
+  const stock = [];
+
+  // 고기 2~3개
+  const meatShuf = [...meatKeys].sort(() => Math.random() - 0.5);
+  const meatCount = 2 + (Math.random() < 0.5 ? 1 : 0);
+  meatShuf.slice(0, meatCount).forEach(k => stock.push({ type: 'item', id: k }));
+
+  // 엘릭서 30% 확률
+  if (Math.random() < 0.3) stock.push({ type: 'item', id: 'elixir' });
+
+  // 스킬 1~2개 (현재 출전 펫이 안 배운 것 우선)
+  const me = state.party[state.activeIndex];
+  const learned = new Set(me.skills || []);
+  const unlearned = skillKeys.filter(k => !learned.has(k));
+  const skillShuf = unlearned.sort(() => Math.random() - 0.5);
+  const skillCount = Math.min(1 + (Math.random() < 0.5 ? 1 : 0), skillShuf.length);
+  skillShuf.slice(0, skillCount).forEach(k => stock.push({ type: 'skill', id: k }));
+
+  return stock;
+}
+
+function renderShop() {
+  // HUD
+  const hud = el('div', { className: 'hud' });
+  hud.innerHTML = `
+    <div>💎 ${state.stones}</div>
+    <div class="wave">SHOP</div>
+    <div class="right biome">웨이브 ${state.wave} 준비</div>
+  `;
+  app.appendChild(hud);
+
+  const wrap = el('div', { className: 'shop-screen' });
+  const title = el('div', { className: 'shop-title' }, ['🏪 상점']);
+  wrap.appendChild(title);
+  const sub = el('div', { className: 'shop-sub' }, ['아이템과 기술을 구매해서 다음 전투를 대비하자']);
+  wrap.appendChild(sub);
+
+  const grid = el('div', { className: 'shop-grid' });
+  state.shopStock.forEach((entry, idx) => {
+    const card = el('div', { className: 'shop-card' });
+    if (entry.type === 'item') {
+      const it = ITEMS[entry.id];
+      card.innerHTML = `
+        <div class="shop-icon">${it.icon}</div>
+        <div class="shop-name">${it.name}</div>
+        <div class="shop-desc">${it.desc}</div>
+        <div class="shop-price">💎 ${it.price}</div>
+      `;
+      const affordable = state.stones >= it.price;
+      if (affordable) {
+        card.addEventListener('click', () => buyItem(entry.id, idx));
+      } else {
+        card.classList.add('unaffordable');
+      }
+    } else if (entry.type === 'skill') {
+      const s = SKILLS[entry.id];
+      card.innerHTML = `
+        <div class="shop-icon">${s.icon}</div>
+        <div class="shop-name">${s.name}</div>
+        <div class="shop-desc">${s.desc}</div>
+        <div class="shop-price">💎 ${s.price}</div>
+        <div class="shop-tag">기술</div>
+      `;
+      const affordable = state.stones >= s.price;
+      if (affordable) {
+        card.addEventListener('click', () => buySkill(entry.id, idx));
+      } else {
+        card.classList.add('unaffordable');
+      }
+    }
+    grid.appendChild(card);
+  });
+  if (state.shopStock.length === 0) {
+    grid.appendChild(el('div', { className: 'shop-empty' }, ['매진! 상점을 나가세요.']));
+  }
+  wrap.appendChild(grid);
+
+  // 인벤토리 미리보기
+  const invWrap = el('div', { className: 'shop-inv' });
+  const invTitle = el('div', { className: 'shop-inv-title' }, ['🎒 보유 아이템']);
+  invWrap.appendChild(invTitle);
+  const invList = el('div', { className: 'shop-inv-list' });
+  const invEntries = Object.entries(state.inventory).filter(([,c]) => c > 0);
+  if (invEntries.length === 0) {
+    invList.appendChild(el('span', { className: 'shop-inv-empty' }, ['없음']));
+  } else {
+    invEntries.forEach(([id, count]) => {
+      const it = ITEMS[id];
+      invList.appendChild(el('span', { className: 'shop-inv-item' }, [`${it.icon} ${it.name} ×${count}`]));
+    });
+  }
+  invWrap.appendChild(invList);
+  wrap.appendChild(invWrap);
+
+  // 출전 펫이 배운 기술
+  const me = state.party[state.activeIndex];
+  if (me.skills && me.skills.length > 0) {
+    const sWrap = el('div', { className: 'shop-inv' });
+    sWrap.appendChild(el('div', { className: 'shop-inv-title' }, [`✨ ${me.petData.name}의 기술`]));
+    const sList = el('div', { className: 'shop-inv-list' });
+    me.skills.forEach(sId => {
+      const sk = SKILLS[sId];
+      sList.appendChild(el('span', { className: 'shop-inv-item' }, [`${sk.icon} ${sk.name}`]));
+    });
+    sWrap.appendChild(sList);
+    wrap.appendChild(sWrap);
+  }
+
+  const leave = el('button', {
+    className: 'btn ok',
+    style: 'margin-top: 16px; padding: 12px; font-size: 18px; max-width: 400px; width: 100%;'
+  }, ['▶ 다음 전투로']);
+  leave.addEventListener('click', leaveShop);
+  wrap.appendChild(leave);
+
+  app.appendChild(wrap);
+}
+
+function buyItem(itemId, stockIdx) {
+  const it = ITEMS[itemId];
+  if (!it) return;
+  if (state.stones < it.price) return;
+  state.stones -= it.price;
+  state.inventory[itemId] = (state.inventory[itemId] || 0) + 1;
+  state.shopStock.splice(stockIdx, 1);
+  playSfx('capture_success');
+  render();
+}
+
+function buySkill(skillId, stockIdx) {
+  const s = SKILLS[skillId];
+  if (!s) return;
+  if (state.stones < s.price) return;
+  const me = state.party[state.activeIndex];
+  if (!me.skills) me.skills = [];
+  if (!me.skills.includes(skillId)) {
+    me.skills.push(skillId);
+  }
+  state.stones -= s.price;
+  state.shopStock.splice(stockIdx, 1);
+  playSfx('crit');
+  render();
+}
+
+function leaveShop() {
+  state.scene = 'reward';
+  state.pendingRewards = rollRewards();
+  state.mode = 'action';
+  render();
 }
 
 /* ===== 게임오버 / 승리 ===== */
