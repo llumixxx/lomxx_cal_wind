@@ -492,6 +492,64 @@ body {
 
 /* 유틸 */
 
+/* 대기 중인 보스 (태그전) */
+.waiting-boss {
+  background: rgba(15, 21, 37, 0.7);
+  border: 2px dashed var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  min-width: 100px;
+  max-width: 110px;
+  text-align: center;
+  align-self: flex-start;
+  opacity: 0.75;
+  backdrop-filter: blur(3px);
+  position: relative;
+}
+.waiting-boss .wb-owner {
+  font-family: 'Jersey 15';
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 2px;
+  text-shadow: 1px 1px 0 #000;
+}
+.waiting-boss img {
+  width: 48px; height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.5)) grayscale(0.3);
+}
+.waiting-boss .wb-name {
+  font-family: 'Jersey 15';
+  font-size: 12px;
+  color: var(--fg);
+  margin-top: 2px;
+}
+.waiting-boss .wb-hpbar {
+  background: #1a2340;
+  border: 1px solid var(--border);
+  height: 5px;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 3px;
+}
+.waiting-boss .wb-hpfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ok), #4ca87a);
+  transition: width 0.4s;
+}
+.waiting-boss .wb-wait {
+  font-size: 9px;
+  color: #8fa3cc;
+  font-family: 'Jersey 15';
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+
+
 /* 보스 헤더 (랭커 이름 크게) */
 .boss-header {
   font-family: 'Jersey 15', sans-serif;
@@ -964,14 +1022,14 @@ const SKILLS = {
   },
   guard_break: {
     name: '가드브레이크',
-    desc: '방어 무시, 150% 데미지',
+    desc: '상대가 방어 중일 때만 적중! 150% 데미지',
     price: 100,
     icon: '💥',
     type: 'attack',
   },
   charge_strike: {
     name: '모아치기',
-    desc: '이번턴 방어→다음턴 2배 공격',
+    desc: '이번턴 무방비! 다음턴 2배 자동 공격',
     price: 60,
     icon: '🔋',
     type: 'charge',
@@ -1054,11 +1112,10 @@ function getMainAttr(petData) {
 }
 
 /* ===== 명중/회피 계산 =====
-   공격이 명중하는지 판정. AGI 차이에 따라 명중률 달라짐.
-   기본 명중률 95%, AGI 차이당 1% (최소 60%, 최대 99%) */
+   기본 명중률 85%, AGI 차이당 1.5% (최소 50%, 최대 95%) */
 function hitCheck(attacker, defender) {
   const agiDiff = attacker.agi - defender.agi;
-  const hitRate = Math.max(0.60, Math.min(0.99, 0.95 + agiDiff * 0.01));
+  const hitRate = Math.max(0.50, Math.min(0.95, 0.85 + agiDiff * 0.015));
   return Math.random() < hitRate;
 }
 function calcDamage(attacker, defender, opts = {}) {
@@ -1108,22 +1165,10 @@ function getCurrentBiome() {
 }
 
 /* ===== 바이옴에 맞는 야생 펫 후보 ===== */
-function getBiomePets(biome) {
-  const candidates = PET_DATA.filter(p => {
-    const obtain = p.obtain || '';
-    return biome.keywords.some(k => obtain.includes(k)) && p.grade === '일반';
-  });
-  // 후보 없으면 일반 등급 아무거나
-  if (candidates.length === 0) {
-    return PET_DATA.filter(p => p.grade === '일반');
-  }
-  return candidates;
-}
-
-/* ===== 야생 펫 생성 ===== */
+/* ===== 야생 펫 생성 (모든 펫 랜덤 등장) ===== */
 function spawnWild() {
-  const biome = getCurrentBiome();
-  const candidates = getBiomePets(biome);
+  // 일반/1등급/2등급 다 포함해서 342마리 전체 중 랜덤
+  const candidates = PET_DATA;
   const petData = candidates[Math.floor(Math.random() * candidates.length)];
   // 야생 레벨은 내 파티 평균 레벨 기준 ±2
   const partyAvg = state.party.reduce((s, u) => s + u.level, 0) / state.party.length;
@@ -1131,43 +1176,34 @@ function spawnWild() {
   return createUnit(petData, level);
 }
 
-/* ===== 보스 생성 (랭커 기반) ===== */
+/* ===== 보스 생성 (랭커 보유 펫 중 랜덤) ===== */
 function spawnBoss() {
-  // 현재 바이옴에 해당하는 펫 중 랭커가 있는 것 우선
-  const biome = getCurrentBiome();
-  let candidates = PET_DATA.filter(p => {
-    const obtain = p.obtain || '';
-    return biome.keywords.some(k => obtain.includes(k)) && p.topRanker;
-  });
-  if (candidates.length === 0) {
-    candidates = PET_DATA.filter(p => p.topRanker);
-  }
+  // 랭커 정보가 있는 모든 펫 중 랜덤
+  const candidates = PET_DATA.filter(p => p.topRanker);
   const petData = candidates[Math.floor(Math.random() * candidates.length)];
   const partyAvg = state.party.reduce((s, u) => s + u.level, 0) / state.party.length;
-  // 보스 레벨 = 파티 평균 +3 ~ +5 (너무 파괴적이지 않게)
-  const rankerLv = Math.min(petData.topRanker.level, Math.floor(partyAvg + 4));
+  // 보스 레벨 = 파티 평균 +5 (난이도 ↑)
+  const rankerLv = Math.min(petData.topRanker.level, Math.floor(partyAvg + 5));
   const boss = createUnit(petData, rankerLv, {
     isBoss: true,
-    iv: 0.15, // 최대 개체치
+    iv: 0.15,
     ownerName: petData.topRanker.owner,
   });
-  // 보스는 HP 20% / ATK 10% 추가 부스트 (너무 강하지 않게)
-  boss.maxHp = Math.floor(boss.maxHp * 1.2);
+  // 보스는 HP 30% / ATK 15% 부스트 (난이도 ↑)
+  boss.maxHp = Math.floor(boss.maxHp * 1.3);
   boss.hp = boss.maxHp;
-  boss.atk = Math.floor(boss.atk * 1.1);
+  boss.atk = Math.floor(boss.atk * 1.15);
+  // 보스는 기술 1~2개 장착
+  const skillKeys = Object.keys(SKILLS);
+  const shuf = [...skillKeys].sort(() => Math.random() - 0.5);
+  boss.skills = shuf.slice(0, 1 + Math.floor(Math.random() * 2));
   return boss;
 }
 
 /* ===== 스타터 후보 ===== */
 function rollStarters() {
-  // 초기 펫(마리너스 평원) + 일반 등급 중 랜덤 6마리
-  const pool = PET_DATA.filter(p => {
-    const obtain = p.obtain || '';
-    return p.grade === '일반' && (
-      obtain.includes('마리너스') || obtain.includes('카루타나') ||
-      obtain.includes('샴기르') || obtain.includes('쿠오') || obtain.includes('쟈쟈')
-    );
-  });
+  // 일반 등급 펫 중 랜덤 6마리 (초반 진입장벽 낮추려고 일반만, 2등급/1등급은 포획/상점 등 고급 루트로)
+  const pool = PET_DATA.filter(p => p.grade === '일반');
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, 6);
 }
@@ -1238,12 +1274,16 @@ function renderStarter() {
   const grid = el('div', { className: 'starter-grid' });
   for (const pet of state.starterPool) {
     const card = el('div', { className: 'starter-card', 'data-name': pet.name });
-    const main = getMainAttr(pet);
+    const attrs = pet.attr || {};
+    const attrTags = ATTRS
+      .filter(a => (attrs[a] || 0) > 0)
+      .map(a => `<span class="attr-tag attr-${ATTR_KEY[a]}">${a}${attrs[a]}</span>`)
+      .join('');
     card.innerHTML = `
       <img src="${pet.image}" alt="${pet.name}" onerror="this.style.visibility='hidden'">
       <div class="n">${pet.name}</div>
       <div class="stats">
-        <span class="attr-tag attr-${ATTR_KEY[main]}">${main}</span>
+        ${attrTags}<br>
         HP ${Math.round(pet.sg.hp*10)/10} · ATK ${Math.round(pet.sg.atk*10)/10}
       </div>
     `;
@@ -1302,6 +1342,7 @@ function beginBattle() {
   state.enemy = null;
   state.enemies = [];
   state.busy = false;
+  state.nextBossAnnounced = false;
 
   if (isBoss) {
     // 보스 2마리 (서로 다른 펫)
@@ -1353,13 +1394,20 @@ function renderBattle() {
   // 씬
   const scene = el('div', { className: 'scene', 'data-biome': biome.id });
 
-  // 적 영역 (보스전은 여러 마리 표시)
+  // 적 영역 (보스전은 여러 마리 태그전 - 활성 1마리만 싸움, 나머지는 옆에 대기)
   const enemyZone = el('div', { className: 'enemy-zone' });
   const enemies = state.enemies && state.enemies.length ? state.enemies : (state.enemy ? [state.enemy] : []);
+  const activeEnemy = getCurrentEnemy();
+  // 대기 중인 보스 (활성 아닌 것) 먼저 표시 (작게, 왼쪽)
   enemies.forEach((e, idx) => {
-    const isActive = e === getCurrentEnemy();
-    enemyZone.appendChild(renderUnit(e, 'enemy', { isActive, enemyIdx: idx }));
+    if (e === activeEnemy || e.hp <= 0) return;
+    enemyZone.appendChild(renderWaitingBoss(e, idx));
   });
+  // 활성 적
+  if (activeEnemy) {
+    const activeIdx = enemies.indexOf(activeEnemy);
+    enemyZone.appendChild(renderUnit(activeEnemy, 'enemy', { isActive: true, enemyIdx: activeIdx }));
+  }
   scene.appendChild(enemyZone);
 
   // 내 영역
@@ -1433,26 +1481,48 @@ function goToNextRound() {
   render();
 }
 
+function renderWaitingBoss(unit, idx) {
+  const card = el('div', {
+    className: 'waiting-boss',
+    'data-side': 'enemy',
+    'data-enemy-idx': String(idx),
+  });
+  const hpPct = Math.max(0, (unit.hp / unit.maxHp) * 100);
+  card.innerHTML = `
+    <div class="wb-owner">👑 ${unit.ownerName || '???'}</div>
+    <img class="pet-sprite" data-sprite="enemy" data-idx="${idx}" src="${unit.petData.image}" alt="${unit.petData.name}" onerror="this.style.visibility='hidden'">
+    <div class="wb-name">${unit.petData.name}</div>
+    <div class="wb-hpbar"><div class="wb-hpfill" style="width:${hpPct}%"></div></div>
+    <div class="wb-wait">대기중</div>
+  `;
+  return card;
+}
+
 function renderUnit(unit, side, opts = {}) {
   const card = el('div', {
     className: 'pet-card' + (opts.isActive === false ? ' inactive-enemy' : '') + (unit.hp <= 0 ? ' defeated' : ''),
     'data-side': side,
     'data-enemy-idx': opts.enemyIdx !== undefined ? String(opts.enemyIdx) : '',
   });
-  const main = getMainAttr(unit.petData);
+  const attrs = unit.petData.attr || {};
   const hpPct = Math.max(0, (unit.hp / unit.maxHp) * 100);
   const hpCls = hpPct < 25 ? 'crit' : hpPct < 50 ? 'low' : '';
   // 보스면 큰 랭커 이름 헤더
   const bossHeader = unit.isBoss && unit.ownerName
     ? `<div class="boss-header">👑 ${unit.ownerName}<span class="boss-of">의</span></div>`
     : '';
-  // 상태 태그 (방어중/충전중/배수의진 리스크)
+  // 상태 태그
   const statusTags = [];
   if (unit.isGuarding) statusTags.push('<span class="unit-status defend">🛡️ 방어</span>');
   if (unit.charging) statusTags.push('<span class="unit-status charge">🔋 충전</span>');
   if (unit.allInRisk) statusTags.push('<span class="unit-status risk">⚔️ 배수</span>');
 
-  // 적 여러 마리면 스프라이트 좀 작게, 카드 레이아웃 compact
+  // 속성 태그 (수치가 있는 것만 표시, 예: 지8 수2)
+  const attrTags = ATTRS
+    .filter(a => (attrs[a] || 0) > 0)
+    .map(a => `<span class="attr-tag attr-${ATTR_KEY[a]}">${a}${attrs[a]}</span>`)
+    .join('');
+
   const spriteSize = (opts.enemyIdx !== undefined && state.enemies && state.enemies.length > 1) ? 'small-sprite' : '';
 
   card.innerHTML = `
@@ -1462,7 +1532,7 @@ function renderUnit(unit, side, opts = {}) {
     <img class="pet-sprite ${spriteSize}" data-sprite="${side}" data-idx="${opts.enemyIdx !== undefined ? opts.enemyIdx : ''}" src="${unit.petData.image}" alt="${unit.petData.name}" onerror="this.style.visibility='hidden'">
     <div class="hpbar"><div class="hpfill ${hpCls}" style="width:${hpPct}%"></div></div>
     <div class="hptext">${Math.max(0, unit.hp)} / ${unit.maxHp}</div>
-    <div class="attrs"><span class="attr-tag attr-${ATTR_KEY[main]}">${main}</span><span class="attr-tag">ATK ${unit.atk}</span><span class="attr-tag">DEF ${unit.def}</span><span class="attr-tag">AGI ${unit.agi}</span></div>
+    <div class="attrs">${attrTags}<span class="attr-tag">ATK ${unit.atk}</span><span class="attr-tag">DEF ${unit.def}</span><span class="attr-tag">AGI ${unit.agi}</span></div>
     ${statusTags.length ? `<div class="status-tags">${statusTags.join('')}</div>` : ''}
   `;
   return card;
@@ -1485,13 +1555,9 @@ function renderActionBox() {
 
   const choices = el('div', { className: 'choices' });
 
-  // 공격 (충전 상태면 표기만 다르게, playerAttack 자동 처리)
+  // 공격
   const atkBtn = el('button', { className: 'btn ok' });
-  if (me.charging) {
-    atkBtn.innerHTML = `💥 모아친 일격<small>공격력 2배!</small>`;
-  } else {
-    atkBtn.innerHTML = `⚔️ 공격<small>속성 상성으로 데미지</small>`;
-  }
+  atkBtn.innerHTML = `⚔️ 공격<small>속성 상성으로 데미지</small>`;
   atkBtn.addEventListener('click', () => playerAttack());
   choices.appendChild(atkBtn);
 
@@ -1608,6 +1674,17 @@ function checkBattleEnd() {
     render();
     return true;
   }
+  // 보스전에서 일부만 쓰러뜨린 경우 로그
+  if (state.enemies && state.enemies.length > 1) {
+    const defeated = state.enemies.filter(e => e.hp <= 0);
+    const alive = state.enemies.filter(e => e.hp > 0);
+    // 방금 죽은 보스가 있고 다음 보스 아직 등장 안 했으면
+    if (defeated.length > 0 && alive.length > 0 && !state.nextBossAnnounced) {
+      const nextBoss = alive[0];
+      pushLog(`${nextBoss.ownerName}의 ${nextBoss.petData.name} 등장!`, 'boss');
+      state.nextBossAnnounced = true;
+    }
+  }
   return false;
 }
 
@@ -1646,10 +1723,7 @@ async function playerAttack() {
     const me = state.party[state.activeIndex];
     const enemy = getCurrentEnemy();
     if (!enemy) return { earlyExit: true };
-    // 모아치기 충전 상태면 2배 공격
-    const opts = {};
-    if (me.charging) { opts.charged = true; me.charging = false; }
-    await animateAttack(me, enemy, true, opts);
+    await animateAttack(me, enemy, true);
   });
 }
 
@@ -1664,7 +1738,7 @@ async function playerDefend() {
   });
 }
 
-/* 기술 즉시 발동 - 한 번 누르면 그 기술로 공격하고 상대 반격 */
+/* 기술 즉시 발동 */
 async function useSkillImmediate(skillId) {
   await turnRun(async () => {
     const me = state.party[state.activeIndex];
@@ -1672,7 +1746,6 @@ async function useSkillImmediate(skillId) {
     if (!enemy) return { earlyExit: true };
 
     if (skillId === 'all_in') {
-      // 이번 공격 2배, 이번 턴 받는 피해 1.5배
       me.allInRisk = true;
       pushLog(`${me.petData.name}: 배수의진! 이번 공격 2배, 피해 증가!`, 'heal');
       await animateAttack(me, enemy, true, { allIn: true });
@@ -1680,14 +1753,32 @@ async function useSkillImmediate(skillId) {
       pushLog(`${me.petData.name}: 가드브레이크!`, 'heal');
       await animateAttack(me, enemy, true, { guardBreak: true });
     } else if (skillId === 'charge_strike') {
-      // 이번 턴 방어 자세로 들어가고, 다음 턴 2배 공격 준비
-      me.isGuarding = true;
+      // 이번 턴 무방비 + 충전 (적에게 무방비로 공격 맞음)
       me.charging = true;
-      pushLog(`${me.petData.name}: 힘을 모은다... (다음 공격 2배)`, 'info');
+      // isGuarding 설정 안 함 (무방비)
+      pushLog(`${me.petData.name}: 힘을 모은다... (다음 공격 2배, 이번 턴 무방비!)`, 'info');
       playSfx('swap');
       updateHpBars();
       await sleep(400);
     }
+  });
+  // 모아치기 사용 직후, 다음 턴에 자동 발동
+  const me = state.party[state.activeIndex];
+  if (me && me.hp > 0 && me.charging && state.scene === 'battle' && state.mode === 'action') {
+    await sleep(400);
+    await autoChargedStrike();
+  }
+}
+
+/* 충전 후 자동 공격 (사용자 입력 없이) */
+async function autoChargedStrike() {
+  await turnRun(async () => {
+    const me = state.party[state.activeIndex];
+    const enemy = getCurrentEnemy();
+    if (!enemy || !me.charging) return { earlyExit: true };
+    pushLog(`${me.petData.name}: 모아친 일격!`, 'heal');
+    me.charging = false;
+    await animateAttack(me, enemy, true, { charged: true });
   });
 }
 
@@ -1697,53 +1788,45 @@ async function useSkillImmediate(skillId) {
    3순위: 방어 확률 (HP 40% 이하면 30%, HP 낮을수록 ↑)
    4순위: 평타 */
 async function enemyTurn() {
-  const enemies = getAliveEnemies();
-  for (const enemy of enemies) {
-    if (enemy.hp <= 0) continue;
-    // 타겟은 현재 내 출전 펫
-    const me = state.party[state.activeIndex];
-    if (!me || me.hp <= 0) {
-      // 내가 다 죽은 상태면 break
-      break;
-    }
+  // 태그전: 현재 활성 적 1마리만 행동
+  const enemy = getCurrentEnemy();
+  if (!enemy) return;
+  const me = state.party[state.activeIndex];
+  if (!me || me.hp <= 0) return;
 
-    // AI 판단
-    const action = pickEnemyAction(enemy);
+  // AI 판단
+  const action = pickEnemyAction(enemy);
 
-    if (action.type === 'defend') {
-      enemy.isGuarding = true;
-      pushLog(`${enemy.petData.name}이(가) 방어 자세!`, 'info');
-      playSfx('swap');
-      updateHpBars();
-      await sleep(350);
-    } else if (action.type === 'charge') {
-      enemy.isGuarding = true;
-      enemy.charging = true;
-      pushLog(`${enemy.petData.name}이(가) 힘을 모은다...`, 'info');
-      playSfx('swap');
-      updateHpBars();
-      await sleep(350);
-    } else if (action.type === 'skill') {
-      const opts = {};
-      if (action.skill === 'all_in') { enemy.allInRisk = true; opts.allIn = true; pushLog(`${enemy.petData.name}: 배수의진!`, 'boss'); }
-      else if (action.skill === 'guard_break') { opts.guardBreak = true; pushLog(`${enemy.petData.name}: 가드브레이크!`, 'boss'); }
-      await animateAttack(enemy, me, false, opts);
-      if (me.hp <= 0) break;
-    } else {
-      // 평타 (충전 중이었으면 2배)
-      const opts = {};
-      if (enemy.charging) { opts.charged = true; enemy.charging = false; }
-      await animateAttack(enemy, me, false, opts);
-      if (me.hp <= 0) break;
-    }
-
-    // 턴 종료: 이 적의 방어/리스크 해제 (충전은 유지)
-    endOfTurnCleanup(enemy);
+  if (action.type === 'defend') {
+    enemy.isGuarding = true;
+    pushLog(`${enemy.petData.name}이(가) 방어 자세!`, 'info');
+    playSfx('swap');
+    updateHpBars();
+    await sleep(350);
+  } else if (action.type === 'charge') {
+    enemy.isGuarding = true;
+    enemy.charging = true;
+    pushLog(`${enemy.petData.name}이(가) 힘을 모은다...`, 'info');
+    playSfx('swap');
+    updateHpBars();
+    await sleep(350);
+  } else if (action.type === 'skill') {
+    const opts = {};
+    if (action.skill === 'all_in') { enemy.allInRisk = true; opts.allIn = true; pushLog(`${enemy.petData.name}: 배수의진!`, 'boss'); }
+    else if (action.skill === 'guard_break') { opts.guardBreak = true; pushLog(`${enemy.petData.name}: 가드브레이크!`, 'boss'); }
+    await animateAttack(enemy, me, false, opts);
+  } else {
+    // 평타 (충전 중이었으면 2배)
+    const opts = {};
+    if (enemy.charging) { opts.charged = true; enemy.charging = false; pushLog(`${enemy.petData.name}: 모아친 일격!`, 'boss'); }
+    await animateAttack(enemy, me, false, opts);
   }
 
-  // 내 턴 종료 후 내 방어/리스크도 해제
-  const me = state.party[state.activeIndex];
-  endOfTurnCleanup(me);
+  // 턴 종료: 적의 방어/리스크 해제 (충전은 유지)
+  endOfTurnCleanup(enemy);
+  // 내 방어/리스크도 해제
+  const me2 = state.party[state.activeIndex];
+  endOfTurnCleanup(me2);
 }
 
 function pickEnemyAction(enemy) {
@@ -1753,22 +1836,21 @@ function pickEnemyAction(enemy) {
 
   // 기술 사용 시도
   if (skills.length > 0) {
-    const skillRate = isBoss ? 0.35 : 0.15;
+    const skillRate = isBoss ? 0.40 : 0.20;
     if (Math.random() < skillRate) {
       const skill = skills[Math.floor(Math.random() * skills.length)];
-      // 모아치기는 방어+충전 조합
       if (skill === 'charge_strike') return { type: 'charge' };
       return { type: 'skill', skill };
     }
   }
 
-  // 방어 확률 (HP 낮을수록 ↑, 보스도 쓰게)
+  // 방어 확률 (더 상향)
   let defendRate = 0;
-  if (hpPct < 0.4) defendRate = 0.30;
-  else if (hpPct < 0.7) defendRate = 0.15;
-  else defendRate = 0.05;
-  // 방어 직후 또 방어하지 않도록
-  if (enemy.justDefended) defendRate *= 0.3;
+  if (hpPct < 0.3) defendRate = 0.55;      // 위급
+  else if (hpPct < 0.6) defendRate = 0.35; // 중간
+  else defendRate = 0.22;                   // 건강
+  if (isBoss) defendRate += 0.08;           // 보스는 더 자주
+  if (enemy.justDefended) defendRate *= 0.3; // 직전에 방어했으면 감소
 
   if (Math.random() < defendRate) {
     enemy.justDefended = true;
@@ -1913,11 +1995,20 @@ async function useItem(itemId) {
 }
 
 function doAttack(attacker, defender, isMine, opts = {}) {
-  // 명중 체크 (가드브레이크는 반드시 명중)
-  const hit = opts.guardBreak ? true : hitCheck(attacker, defender);
-  if (!hit) {
-    pushLog(`${attacker.petData.name}의 공격이 빗나갔다!`, 'info');
-    return { dmg: 0, isCrit: false, multi: 1, miss: true };
+  // 가드브레이크: 상대가 방어 중일 때만 적중, 아니면 miss
+  if (opts.guardBreak) {
+    if (!defender.isGuarding) {
+      pushLog(`${attacker.petData.name}의 가드브레이크! 상대가 방어하지 않아 빗나갔다!`, 'info');
+      return { dmg: 0, isCrit: false, multi: 1, miss: true };
+    }
+    // 방어 중이면 무조건 적중 (hitCheck 스킵)
+  } else {
+    // 일반 공격은 명중 체크
+    const hit = hitCheck(attacker, defender);
+    if (!hit) {
+      pushLog(`${attacker.petData.name}의 공격이 빗나갔다!`, 'info');
+      return { dmg: 0, isCrit: false, multi: 1, miss: true };
+    }
   }
 
   const result = calcDamage(attacker, defender, opts);
@@ -1925,7 +2016,7 @@ function doAttack(attacker, defender, isMine, opts = {}) {
 
   const effText = result.multi > 1.2 ? ' (효과적!)' : result.multi < 0.8 ? ' (별로다...)' : '';
   const critText = result.isCrit ? ' 🔥크리티컬!' : '';
-  const brkText = opts.guardBreak ? ' (가드브레이크!)' : '';
+  const brkText = opts.guardBreak ? ' (가드 파괴!)' : '';
   const chgText = opts.charged ? ' (모아친 일격!)' : '';
   pushLog(
     `${attacker.petData.name} → ${defender.petData.name} ${result.dmg} 데미지${effText}${critText}${brkText}${chgText}`,
