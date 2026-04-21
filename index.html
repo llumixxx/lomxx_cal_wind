@@ -1355,6 +1355,23 @@ let PET_IMAGES = {};
 /* ──── pet data (pet_info_data.json에서 자동 로드) ──── */
 let DEFAULT_PETS = {};
 
+/* ──── 수동 추가 펫 (공홈 크롤링에 없는 펫들) ──── */
+const MANUAL_PETS = {
+  "야무리": {initialCoefficient:26,healthCoefficient:29,attackCoefficient:36,defenseCoefficient:26,agilityCoefficient:14,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":10.616,"atk":2.272,"def":1.844,"agi":0.879},obtain:"화산섬 에레보스 (동205 남129)",routeType:"필드페트",mount:false},
+  "피오": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:31,defenseCoefficient:41,agilityCoefficient:5,grade:"일반",attrs:["수", "화"],attr:{"지":0,"수":2,"화":8,"풍":0},sg:{"hp":10.284,"atk":2.075,"def":2.502,"agi":0.451},obtain:"미선의 편지B",routeType:"퀘스트페트",mount:false},
+  "티오": {initialCoefficient:22,healthCoefficient:27,attackCoefficient:27,defenseCoefficient:45,agilityCoefficient:5,grade:"일반",attrs:["지", "수"],attr:{"지":8,"수":2,"화":0,"풍":0},sg:{"hp":10.284,"atk":1.904,"def":2.673,"agi":0.451},obtain:"미선의 편지A",routeType:"퀘스트페트",mount:false},
+  "데블로스": {initialCoefficient:23,healthCoefficient:20,attackCoefficient:31,defenseCoefficient:11,agilityCoefficient:27,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":8,"풍":2},sg:{"hp":9.65675,"atk":2.1975125,"def":1.2345125,"agi":1.68525},obtain:"미선의 편지A",routeType:"퀘스트페트",mount:true},
+  "사이록스": {initialCoefficient:25,healthCoefficient:26,attackCoefficient:34,defenseCoefficient:14,agilityCoefficient:30,grade:"일반",attrs:["화", "풍"],attr:{"지":0,"수":0,"화":2,"풍":8},sg:{"hp":10.14125,"atk":2.1434375,"def":1.2884375,"agi":1.63875},obtain:"미선의 편지B",routeType:"퀘스트페트",mount:false},
+  "판그": {initialCoefficient:10,healthCoefficient:66,attackCoefficient:85,defenseCoefficient:54,agilityCoefficient:40,grade:"일반",attrs:["지","수"],attr:{"지":7,"수":3,"화":0,"풍":0},sg:{"hp":10.43,"atk":2.30,"def":1.62,"agi":1.07},obtain:"에덴사막(동327 남324) 포획",routeType:"포획",mount:false},
+  "주니": {initialCoefficient:10,healthCoefficient:61,attackCoefficient:75,defenseCoefficient:42,agilityCoefficient:80,grade:"일반",attrs:["지","풍"],attr:{"지":2,"수":0,"화":0,"풍":8},sg:{"hp":9.81,"atk":2.01,"def":1.41,"agi":1.69},obtain:"에덴사막(동108 남66) 포획",routeType:"포획",mount:false},
+};
+
+const MANUAL_IMAGES = {
+  "야무리": "https://pooyas.com/files/extravar_upload/109631/697/176/464f9a323bd85c3f64fce149b083e15a.gif",
+  "데블로스": "https://pooyas.com/files/extravar_upload/109631/965/175/b0ca0f4d0fd265d75e48e3e88b0613b1.gif",
+  "사이록스": "https://pooyas.com/files/extravar_upload/109631/103/176/bc48ca14d9de5ca13a242cd13fe248b7.gif",
+};
+
 /* ──── JSON → petData/PET_IMAGES 변환 ──── */
 // sg(성장률 실수값) 4개로 5개 계수 역산
 function _tryCoeff(fH, fA, fD, fG, tol) {
@@ -1459,22 +1476,24 @@ let petData = { ...DEFAULT_PETS };
 async function loadSharedPets() {
   // 1) pet_info_data.json에서 기본 데이터 로드
   const { pets: jsonPets, images: jsonImages } = await _loadPetInfoJson();
-  DEFAULT_PETS = jsonPets;
-  Object.assign(PET_IMAGES, jsonImages);
+
+  // 2) JSON + 수동 추가 펫 병합 (수동 펫이 JSON보다 우선)
+  DEFAULT_PETS = { ...jsonPets, ...MANUAL_PETS };
+  Object.assign(PET_IMAGES, jsonImages, MANUAL_IMAGES);
   petData = { ...DEFAULT_PETS };
 
-  // 2) Firebase에서 추가 펫만 병합 (JSON에 없는 펫만)
+  // 3) Firebase에서 추가 펫만 병합 (JSON에도 수동에도 없는 펫만)
   try {
     const shared = await window._fbGet("pets");
     if (shared && typeof shared === "object" && Object.keys(shared).length > 0) {
       const extra = {};
       for (const [k, v] of Object.entries(shared)) {
-        if (!DEFAULT_PETS[k]) extra[k] = v; // JSON에 없는 펫만 추가
+        if (!DEFAULT_PETS[k]) extra[k] = v;
       }
       petData = { ...DEFAULT_PETS, ...extra };
     }
   } catch(e) {
-    // 네트워크 오류 등 → JSON 데이터만 유지
+    // 네트워크 오류 등 → JSON+수동 데이터만 유지
   } finally {
     renderPetList();
     // URL 파라미터로 펫 자동 선택
