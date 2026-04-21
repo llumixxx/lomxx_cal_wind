@@ -286,34 +286,38 @@ body {
 
 /* 공격 모션: 적 방향으로 돌진 후 복귀 */
 .pet-sprite.attack-mine {
-  animation: attackMine 0.5s cubic-bezier(.5,.1,.3,1);
+  animation: attackMine 0.45s cubic-bezier(.3,.1,.2,1.5);
 }
 @keyframes attackMine {
-  0% { transform: translate(0, 0); }
-  40% { transform: translate(40px, -30px) scale(1.1); }
-  50% { transform: translate(50px, -35px) scale(1.15); filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(1.3); }
-  100% { transform: translate(0, 0); }
+  0% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(-10px, 10px) scale(0.9); filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(0.8); }
+  45% { transform: translate(60px, -45px) scale(1.25) rotate(-8deg); filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.5)) brightness(1.5); }
+  60% { transform: translate(55px, -40px) scale(1.2); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 .pet-sprite.attack-enemy {
-  animation: attackEnemy 0.5s cubic-bezier(.5,.1,.3,1);
+  animation: attackEnemy 0.45s cubic-bezier(.3,.1,.2,1.5);
 }
 @keyframes attackEnemy {
-  0% { transform: translate(0, 0); }
-  40% { transform: translate(-40px, 30px) scale(1.1); }
-  50% { transform: translate(-50px, 35px) scale(1.15); filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(1.3); }
-  100% { transform: translate(0, 0); }
+  0% { transform: translate(0, 0) scale(1); }
+  30% { transform: translate(10px, -10px) scale(0.9); filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(0.8); }
+  45% { transform: translate(-60px, 45px) scale(1.25) rotate(8deg); filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.5)) brightness(1.5); }
+  60% { transform: translate(-55px, 40px) scale(1.2); }
+  100% { transform: translate(0, 0) scale(1); }
 }
 
-/* 피격 모션: 흰색 플래시 */
+/* 피격 모션: 강한 플래시 + 흔들림 */
 .pet-sprite.hit-flash {
-  animation: hitFlash 0.35s;
+  animation: hitFlash 0.5s;
 }
 @keyframes hitFlash {
-  0% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)); }
-  15% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(3) saturate(0); transform: translateX(-4px); }
-  35% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(1.5); transform: translateX(3px); }
-  60% { transform: translateX(-2px); }
-  100% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)); transform: translateX(0); }
+  0% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)); transform: translate(0,0) scale(1); }
+  8% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(5) saturate(0) contrast(2); transform: translate(-8px, 0) scale(1.15); }
+  20% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(3) saturate(0); transform: translate(10px, -3px) scale(1.1); }
+  35% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(1.5); transform: translate(-6px, 2px); }
+  50% { transform: translate(5px, -1px); }
+  70% { transform: translate(-3px, 0); }
+  100% { filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)); transform: translate(0,0) scale(1); }
 }
 
 /* 기절 모션 */
@@ -321,8 +325,202 @@ body {
   animation: faint 0.9s forwards;
 }
 @keyframes faint {
-  0% { transform: translateY(0) rotate(0) scale(1); opacity: 1; }
-  100% { transform: translateY(50px) rotate(15deg) scale(0.7); opacity: 0; filter: grayscale(1) brightness(0.5); }
+  0% { transform: translateY(0) rotate(0) scale(1); opacity: 1; filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)); }
+  30% { transform: translateY(-10px) rotate(-8deg) scale(1.05); opacity: 1; filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.5)) brightness(2); }
+  100% { transform: translateY(60px) rotate(20deg) scale(0.7); opacity: 0; filter: grayscale(1) brightness(0.3); }
+}
+
+/* === 새로운 이펙트 === */
+
+/* 화면 임팩트 플래시 (타격 순간 번쩍) */
+.scene.impact-flash::before {
+  background:
+    repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 22px),
+    radial-gradient(ellipse at center, rgba(255,255,255,0.5) 0%, transparent 50%);
+  animation: impactFlash 0.2s;
+}
+@keyframes impactFlash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 크리티컬 임팩트 (강렬한 빨강 번쩍) */
+.scene.crit-flash::before {
+  background:
+    repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 22px),
+    radial-gradient(ellipse at center, rgba(255, 77, 109, 0.6) 0%, transparent 60%);
+  animation: critFlash 0.35s;
+}
+@keyframes critFlash {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+
+/* 씬 전체 흔들림 (카메라 셰이크) */
+.scene.shake-small { animation: sceneShakeSmall 0.3s; }
+.scene.shake-big { animation: sceneShakeBig 0.5s; }
+@keyframes sceneShakeSmall {
+  0%, 100% { transform: translate(0,0); }
+  20% { transform: translate(-3px, 2px); }
+  40% { transform: translate(3px, -2px); }
+  60% { transform: translate(-2px, 1px); }
+  80% { transform: translate(2px, -1px); }
+}
+@keyframes sceneShakeBig {
+  0%, 100% { transform: translate(0,0) rotate(0); }
+  10% { transform: translate(-8px, 4px) rotate(-0.5deg); }
+  20% { transform: translate(7px, -5px) rotate(0.5deg); }
+  30% { transform: translate(-6px, 3px) rotate(-0.3deg); }
+  40% { transform: translate(5px, -3px) rotate(0.3deg); }
+  50% { transform: translate(-4px, 2px); }
+  60% { transform: translate(3px, -2px); }
+  70% { transform: translate(-2px, 1px); }
+  80% { transform: translate(1px, 0); }
+}
+
+/* 슬래시 이펙트 (베기 라인) */
+.slash-effect {
+  position: absolute;
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+  box-shadow: 0 0 8px #fff, 0 0 16px rgba(255,255,255,0.5);
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  animation: slash 0.35s;
+}
+.slash-effect.slash-mine {
+  left: 35%;
+  top: 35%;
+  transform: rotate(-30deg);
+}
+.slash-effect.slash-enemy {
+  right: 35%;
+  top: 55%;
+  transform: rotate(150deg);
+}
+.slash-effect.crit {
+  height: 6px;
+  background: linear-gradient(90deg, transparent, #ffd866, #ff4d6d, transparent);
+  box-shadow: 0 0 12px #ffd866, 0 0 24px rgba(255,77,109,0.8);
+  width: 180px;
+}
+@keyframes slash {
+  0% { opacity: 0; transform: rotate(-30deg) scaleX(0.3); }
+  30% { opacity: 1; transform: rotate(-30deg) scaleX(1.1); }
+  100% { opacity: 0; transform: rotate(-30deg) scaleX(1.2); }
+}
+.slash-effect.slash-enemy { animation-name: slashEnemy; }
+@keyframes slashEnemy {
+  0% { opacity: 0; transform: rotate(150deg) scaleX(0.3); }
+  30% { opacity: 1; transform: rotate(150deg) scaleX(1.1); }
+  100% { opacity: 0; transform: rotate(150deg) scaleX(1.2); }
+}
+
+/* 충격파 (크리티컬/가드브레이크) */
+.impact-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  margin-top: -20px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 14;
+  opacity: 0;
+  animation: impactRing 0.55s cubic-bezier(.3,.7,.4,1) forwards;
+}
+.impact-ring.crit {
+  border-color: #ffd866;
+  border-width: 6px;
+  box-shadow: 0 0 20px #ffd866, inset 0 0 10px rgba(255,216,102,0.5);
+}
+@keyframes impactRing {
+  0% { opacity: 1; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(3.5); }
+}
+
+/* 방어 쉴드 이펙트 (방어 자세 시) */
+.shield-effect {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 140px;
+  height: 140px;
+  margin-left: -70px;
+  margin-top: -70px;
+  border: 4px solid rgba(74, 144, 226, 0.8);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 13;
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.15) 0%, rgba(74, 144, 226, 0.3) 70%, transparent 100%);
+  box-shadow: 0 0 20px rgba(74, 144, 226, 0.6), inset 0 0 20px rgba(74, 144, 226, 0.4);
+  animation: shieldPulse 0.7s;
+}
+@keyframes shieldPulse {
+  0% { opacity: 0; transform: scale(0.5); }
+  30% { opacity: 1; transform: scale(1.1); }
+  60% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+/* 방어 중 지속 오라 (페르시스트) */
+.pet-card.guarding-persist::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(74, 144, 226, 0.6);
+  border-radius: 6px;
+  pointer-events: none;
+  animation: guardAura 1.5s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(74, 144, 226, 0.5);
+}
+@keyframes guardAura {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+/* 방어 성공 블록 이펙트 (방어 중 공격 맞았을 때) */
+.block-effect {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -30px;
+  margin-top: -30px;
+  font-family: 'Jersey 15';
+  font-size: 40px;
+  color: #4a90e2;
+  text-shadow: 0 0 10px #fff, 2px 2px 0 #000;
+  pointer-events: none;
+  z-index: 15;
+  animation: blockPop 0.7s forwards;
+}
+@keyframes blockPop {
+  0% { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+  30% { opacity: 1; transform: scale(1.3) rotate(5deg); }
+  60% { transform: scale(1) rotate(-3deg); }
+  100% { opacity: 0; transform: scale(0.9) rotate(0); }
+}
+
+/* 스파크 파티클 (크리티컬 때) */
+.spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ffd866;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 14;
+  box-shadow: 0 0 6px #ffd866;
+  animation: sparkFly 0.6s forwards;
+}
+@keyframes sparkFly {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0.3); }
 }
 
 /* 하단 메시지/액션 박스 */
@@ -943,13 +1141,6 @@ body {
   margin-bottom: 6px;
 }
 
-/* 데미지 팝업 miss */
-.dmg-popup.miss {
-  color: #8fa3cc !important;
-  font-size: 22px !important;
-  letter-spacing: 2px;
-}
-
 /* 상점 화면 */
 .shop-screen {
   background: var(--panel);
@@ -1142,19 +1333,41 @@ body {
 .dmg-popup {
   position: absolute;
   font-family: 'Jersey 15';
-  font-size: 28px;
-  color: var(--danger);
+  font-size: 32px;
+  color: #ff4d6d;
   font-weight: 700;
-  text-shadow: 2px 2px 0 #000;
+  text-shadow: 3px 3px 0 #000, 0 0 8px rgba(255,77,109,0.6);
   pointer-events: none;
-  animation: dmgfloat 0.9s forwards;
-  z-index: 5;
+  animation: dmgfloat 0.9s cubic-bezier(.3,.7,.4,1) forwards;
+  z-index: 16;
+  left: 50%;
+  top: 40%;
+  transform: translateX(-50%);
 }
-.dmg-popup.crit { color: var(--accent); font-size: 34px; }
+.dmg-popup.crit {
+  color: #ffd866;
+  font-size: 44px;
+  text-shadow: 3px 3px 0 #000, 0 0 12px #ffd866, 0 0 24px rgba(255,216,102,0.8);
+  animation: dmgfloatCrit 1.1s cubic-bezier(.3,.7,.4,1) forwards;
+}
 .dmg-popup.heal { color: var(--ok); }
+.dmg-popup.miss {
+  color: #8fa3cc !important;
+  font-size: 26px !important;
+  letter-spacing: 3px;
+}
 @keyframes dmgfloat {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-40px); }
+  0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.3); }
+  20% { opacity: 1; transform: translateX(-50%) translateY(-15px) scale(1.3); }
+  40% { transform: translateX(-50%) translateY(-25px) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-55px) scale(0.9); }
+}
+@keyframes dmgfloatCrit {
+  0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.3) rotate(-10deg); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(-15px) scale(1.5) rotate(5deg); }
+  30% { transform: translateX(-50%) translateY(-25px) scale(1.1) rotate(-3deg); }
+  50% { transform: translateX(-50%) translateY(-30px) scale(1.2) rotate(0deg); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-60px) scale(1) rotate(0); }
 }
 </style>
 </head>
@@ -1739,6 +1952,7 @@ function beginBattle() {
   state.enemies = [];
   state.busy = false;
   state.nextBossAnnounced = false;
+  state.lastActiveEnemy = null;
 
   if (isBoss) {
     // 보스 2마리 (서로 다른 펫)
@@ -1750,10 +1964,12 @@ function beginBattle() {
     }
     state.enemies = [boss1, boss2];
     state.enemy = boss1;
+    state.lastActiveEnemy = boss1;
     pushLog(`⚠ 보스전! ${boss1.ownerName}의 ${boss1.petData.name} & ${boss2.ownerName}의 ${boss2.petData.name} 등장!`, 'boss');
   } else {
     state.enemy = spawnWild();
     state.enemies = [state.enemy];
+    state.lastActiveEnemy = state.enemy;
     pushLog(`야생 ${state.enemy.petData.name} Lv.${state.enemy.level} 출현!`, 'info');
   }
 
@@ -2063,8 +2279,15 @@ async function turnRun(playerActionFn) {
 /* 매 턴 종료 후: 방어 자세/배수의진 리스크 해제 (충전은 유지) */
 function endOfTurnCleanup(unit) {
   if (!unit) return;
+  const wasGuarding = unit.isGuarding;
   unit.isGuarding = false;
   unit.allInRisk = false;
+  // DOM에서 guarding-persist 제거
+  if (wasGuarding) {
+    document.querySelectorAll('.pet-card.guarding-persist').forEach(c => {
+      c.classList.remove('guarding-persist');
+    });
+  }
 }
 
 /* 전투 끝 상태 체크. 끝났으면 true 반환 */
@@ -2083,15 +2306,16 @@ function checkBattleEnd() {
     render();
     return true;
   }
-  // 보스전에서 일부만 쓰러뜨린 경우 로그
+  // 보스전에서 일부만 쓰러뜨린 경우 다음 보스 알림
   if (state.enemies && state.enemies.length > 1) {
-    const defeated = state.enemies.filter(e => e.hp <= 0);
     const alive = state.enemies.filter(e => e.hp > 0);
-    // 방금 죽은 보스가 있고 다음 보스 아직 등장 안 했으면
-    if (defeated.length > 0 && alive.length > 0 && !state.nextBossAnnounced) {
-      const nextBoss = alive[0];
-      pushLog(`${nextBoss.ownerName}의 ${nextBoss.petData.name} 등장!`, 'boss');
-      state.nextBossAnnounced = true;
+    if (alive.length > 0) {
+      const currentActive = alive[0];
+      if (state.lastActiveEnemy && state.lastActiveEnemy !== currentActive) {
+        pushLog(`${currentActive.ownerName}의 ${currentActive.petData.name} 등장!`, 'boss');
+        if (state.mode === 'action') render();
+      }
+      state.lastActiveEnemy = currentActive;
     }
   }
   return false;
@@ -2142,8 +2366,17 @@ async function playerDefend() {
     me.isGuarding = true;
     pushLog(`${me.petData.name}이(가) 방어 자세를 취했다!`, 'info');
     playSfx('swap');
+    // 쉴드 애니메이션
+    const myCard = document.querySelector('.pet-card[data-side="mine"]');
+    if (myCard) {
+      const shield = document.createElement('div');
+      shield.className = 'shield-effect';
+      myCard.appendChild(shield);
+      setTimeout(() => shield.remove(), 700);
+      myCard.classList.add('guarding-persist');
+    }
     updateHpBars();
-    await sleep(400);
+    await sleep(500);
   });
 }
 
@@ -2210,8 +2443,21 @@ async function enemyTurn() {
     enemy.isGuarding = true;
     pushLog(`${enemy.petData.name}이(가) 방어 자세!`, 'info');
     playSfx('swap');
+    // 적 쉴드 이펙트
+    const enemies = state.enemies || [state.enemy];
+    const idx = enemies.indexOf(enemy);
+    const card = (enemies.length > 1 && idx >= 0)
+      ? document.querySelector(`.pet-card[data-side="enemy"][data-enemy-idx="${idx}"]`)
+      : document.querySelector('.pet-card[data-side="enemy"]');
+    if (card) {
+      const shield = document.createElement('div');
+      shield.className = 'shield-effect';
+      card.appendChild(shield);
+      setTimeout(() => shield.remove(), 700);
+      card.classList.add('guarding-persist');
+    }
     updateHpBars();
-    await sleep(350);
+    await sleep(500);
   } else if (action.type === 'charge') {
     enemy.isGuarding = true;
     enemy.charging = true;
@@ -2448,7 +2694,6 @@ async function animateAttack(attacker, defender, isMine, opts = {}) {
   const attackerSide = attackerIsMine ? 'mine' : 'enemy';
   const defenderSide = state.party.includes(defender) ? 'mine' : 'enemy';
 
-  // 적 여러 마리일 때: defender가 몇 번째 enemy인지
   let defenderSelector = `.pet-card[data-side="${defenderSide}"]`;
   let defenderSpriteSelector = `.pet-sprite[data-sprite="${defenderSide}"]`;
   if (defenderSide === 'enemy' && state.enemies && state.enemies.length > 1) {
@@ -2467,6 +2712,7 @@ async function animateAttack(attacker, defender, isMine, opts = {}) {
   const attackerSprite = document.querySelector(attackerSpriteSelector);
   const defenderSprite = document.querySelector(defenderSpriteSelector);
   const defenderCard = document.querySelector(defenderSelector);
+  const scene = document.querySelector('.scene');
 
   // 공격 모션
   if (attackerSprite) {
@@ -2475,7 +2721,7 @@ async function animateAttack(attacker, defender, isMine, opts = {}) {
     attackerSprite.classList.add(attackerSide === 'mine' ? 'attack-mine' : 'attack-enemy');
   }
 
-  await sleep(260);
+  await sleep(240);
 
   if (result.miss) {
     if (defenderCard) showMissPopup(defenderCard);
@@ -2483,6 +2729,29 @@ async function animateAttack(attacker, defender, isMine, opts = {}) {
     return;
   }
 
+  // === 타격 순간 이펙트 ===
+  // 슬래시 라인
+  if (defenderCard) {
+    addSlashEffect(defenderCard, attackerSide, result.isCrit);
+  }
+
+  // 화면 플래시
+  if (scene) {
+    scene.classList.remove('impact-flash', 'crit-flash');
+    void scene.offsetWidth;
+    scene.classList.add(result.isCrit ? 'crit-flash' : 'impact-flash');
+    setTimeout(() => scene.classList.remove('impact-flash', 'crit-flash'), 400);
+  }
+
+  // 카메라 셰이크
+  if (scene) {
+    scene.classList.remove('shake-small', 'shake-big');
+    void scene.offsetWidth;
+    scene.classList.add(result.isCrit || opts.guardBreak || opts.charged || opts.allIn ? 'shake-big' : 'shake-small');
+    setTimeout(() => scene.classList.remove('shake-small', 'shake-big'), 500);
+  }
+
+  // 피격 모션
   if (defenderSprite) {
     defenderSprite.classList.remove('hit-flash');
     void defenderSprite.offsetWidth;
@@ -2492,7 +2761,19 @@ async function animateAttack(attacker, defender, isMine, opts = {}) {
     defenderCard.classList.remove('shake');
     void defenderCard.offsetWidth;
     defenderCard.classList.add('shake');
-    showDamagePopup(defenderCard, result.dmg, result.isCrit, result.multi);
+
+    // 방어 성공 시 BLOCK 텍스트
+    if (defender.isGuarding && !opts.guardBreak) {
+      addBlockEffect(defenderCard);
+    } else {
+      showDamagePopup(defenderCard, result.dmg, result.isCrit, result.multi);
+    }
+
+    // 크리티컬/강타는 충격파 + 스파크
+    if (result.isCrit || opts.guardBreak || opts.charged || opts.allIn) {
+      addImpactRing(defenderCard, result.isCrit);
+      if (result.isCrit) addSparks(defenderCard);
+    }
   }
 
   await sleep(320);
@@ -2502,9 +2783,59 @@ async function animateAttack(attacker, defender, isMine, opts = {}) {
     defenderSprite.classList.add('faint');
     playSfx('faint');
     await sleep(700);
+    // 보스 태그전 - 다음 보스로 전환
+    if (state.enemies && state.enemies.length > 1) {
+      const aliveEnemies = state.enemies.filter(e => e.hp > 0);
+      if (aliveEnemies.length > 0 && !state.party.includes(defender)) {
+        render();
+      }
+    }
   } else {
     await sleep(120);
   }
+}
+
+function addSlashEffect(cardEl, attackerSide, isCrit) {
+  const slash = document.createElement('div');
+  slash.className = 'slash-effect slash-' + attackerSide + (isCrit ? ' crit' : '');
+  cardEl.appendChild(slash);
+  setTimeout(() => slash.remove(), 400);
+}
+
+function addImpactRing(cardEl, isCrit) {
+  const ring = document.createElement('div');
+  ring.className = 'impact-ring' + (isCrit ? ' crit' : '');
+  cardEl.appendChild(ring);
+  setTimeout(() => ring.remove(), 600);
+}
+
+function addSparks(cardEl) {
+  for (let i = 0; i < 8; i++) {
+    const spark = document.createElement('div');
+    spark.className = 'spark';
+    const angle = (Math.PI * 2 * i) / 8 + Math.random() * 0.3;
+    const dist = 30 + Math.random() * 30;
+    spark.style.setProperty('--sx', Math.cos(angle) * dist + 'px');
+    spark.style.setProperty('--sy', Math.sin(angle) * dist + 'px');
+    spark.style.left = '50%';
+    spark.style.top = '50%';
+    cardEl.appendChild(spark);
+    setTimeout(() => spark.remove(), 650);
+  }
+}
+
+function addBlockEffect(cardEl) {
+  // 쉴드 번쩍
+  const shield = document.createElement('div');
+  shield.className = 'shield-effect';
+  cardEl.appendChild(shield);
+  setTimeout(() => shield.remove(), 750);
+  // BLOCK 텍스트
+  const block = document.createElement('div');
+  block.className = 'block-effect';
+  block.textContent = 'BLOCK!';
+  cardEl.appendChild(block);
+  setTimeout(() => block.remove(), 750);
 }
 
 function showMissPopup(cardEl) {
