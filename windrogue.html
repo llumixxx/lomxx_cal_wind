@@ -18,10 +18,10 @@
   --ok: #66ffb8;
   --border: #2a3550;
   --panel: #0f1525;
-  --earth: #8b6f47;
+  --earth: #5da854;
   --water: #4a90e2;
   --fire: #e74c3c;
-  --wind: #7fd67f;
+  --wind: #f5b840;
 }
 
 html, body {
@@ -467,8 +467,25 @@ body {
 }
 .starter-card .n { font-family: 'Jersey 15'; font-size: 16px; text-align: center; }
 .starter-card .stats {
-  font-size: 10px; color: #8fa3cc; text-align: center; margin-top: 3px;
+  font-size: 12px; color: #8fa3cc; text-align: center; margin-top: 4px;
   font-family: 'Jersey 15';
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.starter-card .stat-attrs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3px;
+}
+.starter-card .attr-tag {
+  font-size: 11px;
+  padding: 2px 6px;
+  font-family: 'Jersey 15';
+  font-weight: bold;
+  letter-spacing: 0.5px;
 }
 .starter-screen .confirm-btn {
   margin-top: 20px;
@@ -864,29 +881,47 @@ body {
   pointer-events: none;
   z-index: 20;
 }
-.capture-ball {
-  width: 60px; height: 60px;
-  background: radial-gradient(circle at 30% 30%, #fff, var(--danger) 40%, #8a1020);
-  border: 3px solid #000;
-  border-radius: 50%;
-  animation: shake 0.3s 3;
+.capture-rope {
+  width: 90px; height: 90px;
   position: relative;
+  animation: ropeSpin 0.6s linear infinite, ropeThrow 0.9s ease-out;
 }
-.capture-ball::before {
-  content: '';
-  position: absolute; left: 0; right: 0;
-  top: 50%; height: 6px;
-  background: #000;
-  transform: translateY(-50%);
+@keyframes ropeSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
-.capture-ball::after {
+@keyframes ropeThrow {
+  0% { transform: translate(-120px, -80px) scale(0.4) rotate(0deg); opacity: 0.5; }
+  40% { opacity: 1; }
+  100% { transform: translate(0, 0) scale(1) rotate(360deg); opacity: 1; }
+}
+.capture-rope::before {
   content: '';
-  position: absolute; left: 50%; top: 50%;
-  width: 14px; height: 14px;
-  background: #fff;
-  border: 2px solid #000;
+  position: absolute; inset: 0;
+  border: 6px solid #a0764a;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
+  box-shadow:
+    inset 0 0 0 2px #d4a373,
+    0 0 0 1px #6b4a2b,
+    0 4px 8px rgba(0,0,0,0.5);
+  /* 꼬인 밧줄 패턴 */
+  background: repeating-conic-gradient(
+    from 0deg,
+    transparent 0deg, transparent 15deg,
+    rgba(0,0,0,0.2) 15deg, rgba(0,0,0,0.2) 18deg
+  );
+}
+.capture-rope::after {
+  content: '';
+  position: absolute;
+  width: 30px; height: 30px;
+  left: 60%; top: -6px;
+  border: 4px solid #a0764a;
+  border-radius: 50%;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  transform: rotate(-30deg);
+  box-shadow: inset 0 0 0 1px #d4a373;
 }
 
 /* 데미지 숫자 팝업 */
@@ -1283,8 +1318,8 @@ function renderStarter() {
       <img src="${pet.image}" alt="${pet.name}" onerror="this.style.visibility='hidden'">
       <div class="n">${pet.name}</div>
       <div class="stats">
-        ${attrTags}<br>
-        HP ${Math.round(pet.sg.hp*10)/10} · ATK ${Math.round(pet.sg.atk*10)/10}
+        <div class="stat-attrs">${attrTags}</div>
+        <div>HP ${Math.round(pet.sg.hp*10)/10} · ATK ${Math.round(pet.sg.atk*10)/10}</div>
       </div>
     `;
     card.addEventListener('click', () => toggleStarterPick(pet.name, card));
@@ -2247,7 +2282,7 @@ async function showCaptureAnimation() {
   if (!scene) return;
   const overlay = document.createElement('div');
   overlay.className = 'capture-overlay';
-  overlay.innerHTML = '<div class="capture-ball"></div>';
+  overlay.innerHTML = '<div class="capture-rope"></div>';
   scene.appendChild(overlay);
   await sleep(900);
   overlay.remove();
