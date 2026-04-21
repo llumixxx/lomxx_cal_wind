@@ -1002,6 +1002,9 @@ const PET_INFO_INLINE = [{"name": "우리", "image": "https://wind01.net/info/im
 let PET_DATA = {};
 let PET_IMAGES = {};
 
+/* ──── 수동 추가 펫 (공홈 크롤링에 없는 펫들) ──── */
+const MANUAL_PETS_INFO = [{"name": "데블로스", "image": "https://pooyas.com/files/extravar_upload/109631/965/175/b0ca0f4d0fd265d75e48e3e88b0613b1.gif", "grade": "일반", "mount": true, "rebirth": false, "obtain": "미선의 편지A", "attr": {"지": 0, "수": 0, "화": 8, "풍": 2}, "ic": {"hp": 41.0, "atk": 9.0, "def": 5.0, "agi": 7.0}, "sg": {"hp": 9.65675, "atk": 2.1975125, "def": 1.2345125, "agi": 1.68525}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}, {"name": "사이록스", "image": "https://pooyas.com/files/extravar_upload/109631/103/176/bc48ca14d9de5ca13a242cd13fe248b7.gif", "grade": "일반", "mount": false, "rebirth": false, "obtain": "미선의 편지B", "attr": {"지": 0, "수": 0, "화": 2, "풍": 8}, "ic": {"hp": 53.0, "atk": 11.0, "def": 6.0, "agi": 8.0}, "sg": {"hp": 10.14125, "atk": 2.1434375, "def": 1.2884375, "agi": 1.63875}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}, {"name": "야무리", "image": "https://pooyas.com/files/extravar_upload/109631/697/176/464f9a323bd85c3f64fce149b083e15a.gif", "grade": "일반", "mount": false, "rebirth": false, "obtain": "화산섬 에레보스 (동205 남129)", "attr": {"지": 0, "수": 0, "화": 8, "풍": 2}, "ic": {"hp": 58.0, "atk": 12.0, "def": 10.0, "agi": 4.0}, "sg": {"hp": 10.616, "atk": 2.272, "def": 1.844, "agi": 0.879}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}, {"name": "주니", "image": null, "grade": "일반", "mount": false, "rebirth": false, "obtain": "에덴사막(동108 남66) 포획", "attr": {"지": 2, "수": 0, "화": 0, "풍": 8}, "ic": {"hp": 47.0, "atk": 9.0, "def": 6.0, "agi": 8.0}, "sg": {"hp": 9.81, "atk": 2.01, "def": 1.41, "agi": 1.69}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}, {"name": "티오", "image": null, "grade": "일반", "mount": false, "rebirth": false, "obtain": "미선의 편지A", "attr": {"지": 8, "수": 2, "화": 0, "풍": 0}, "ic": {"hp": 47.0, "atk": 8.0, "def": 12.0, "agi": 2.0}, "sg": {"hp": 10.284, "atk": 1.904, "def": 2.673, "agi": 0.451}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}, {"name": "판그", "image": null, "grade": "일반", "mount": false, "rebirth": false, "obtain": "에덴사막(동327 남324) 포획", "attr": {"지": 7, "수": 3, "화": 0, "풍": 0}, "ic": {"hp": 48.0, "atk": 10.0, "def": 7.0, "agi": 4.0}, "sg": {"hp": 10.43, "atk": 2.3, "def": 1.62, "agi": 1.07}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}, {"name": "피오", "image": null, "grade": "일반", "mount": false, "rebirth": false, "obtain": "미선의 편지B", "attr": {"지": 0, "수": 2, "화": 8, "풍": 0}, "ic": {"hp": 47.0, "atk": 9.0, "def": 11.0, "agi": 2.0}, "sg": {"hp": 10.284, "atk": 2.075, "def": 2.502, "agi": 0.451}, "rebirth_ic": {"hp": null, "atk": null, "def": null, "agi": null}, "rebirth_sg": {"hp": null, "atk": null, "def": null, "agi": null}, "skins": []}];
+
 async function loadPetData() {
   try {
     // pet_info_data.json이 같은 폴더에 있으면 fetch, 없으면 인라인 데이터 사용
@@ -1012,6 +1015,16 @@ async function loadPetData() {
     } catch(fetchErr) {
       arr = PET_INFO_INLINE;
     }
+
+    // 수동 추가 펫 병합 (JSON/INLINE에 없는 펫만 추가, 중복 시 수동 우선)
+    const existingNames = new Set(arr.map(p => p.name));
+    const manualToAdd = MANUAL_PETS_INFO.filter(p => !existingNames.has(p.name));
+    // 이름 충돌 시 수동이 우선하도록 덮어쓰기
+    const merged = arr.map(p => {
+      const manual = MANUAL_PETS_INFO.find(m => m.name === p.name);
+      return manual || p;
+    }).concat(manualToAdd);
+    arr = merged;
 
     arr.forEach(p => {
       // PET_IMAGES
@@ -1562,7 +1575,13 @@ const PET_FAMILIES = {
   "지라크계열": ["지라크", "타이판", "파이톤"],
   "레이론계열": ["레이론"],
   "디메트로돈계열": ["디메트로돈", "비트로돈"],
-  "드래곤계열": ["본드래곤", "나비드래곤", "블랙드래곤", "어스드래곤", "아이스드래곤"],
+  "드래곤계열": ["본드래곤", "나비드래곤", "블랙드래곤", "어스드래곤", "아이스드래곤", "골드드래곤"],
+  "킹라쿠계열": ["카라쿠", "파라쿠", "토라쿠", "차라쿠", "칼란라쿠", "차란라쿠", "킹라쿠"],
+  "금도니계열": ["금도니"],
+  "아스타로계열": ["아스타로"],
+  "라이비계열": ["라이비"],
+  "우마왕계열": ["우마왕"],
+  "메카르가계열": ["테라르가", "메카르가"],
   "피닉스계열": ["피닉스"],
   "리프톤계열": ["리프톤"],
   "언딘계열": ["언딘", "엘딘"],
