@@ -509,6 +509,220 @@ body {
 
 /* 유틸 */
 
+/* 닉네임 표시 (타이틀) */
+.current-nick {
+  font-family: 'Jersey 15';
+  font-size: 16px;
+  color: var(--accent);
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 0 #000;
+}
+.link-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: #8fa3cc;
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  margin-left: 6px;
+  font-family: inherit;
+}
+.link-btn:hover { color: var(--fg); border-color: var(--accent); }
+
+.title-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 300px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* 닉네임 입력 다이얼로그 */
+.nick-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  padding: 20px;
+}
+.nick-panel {
+  background: var(--panel);
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  padding: 24px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 0 40px rgba(255,216,102,0.4);
+}
+.nick-title {
+  font-family: 'Jersey 15';
+  font-size: 24px;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 6px;
+}
+.nick-sub {
+  font-size: 12px;
+  color: #8fa3cc;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.nick-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  color: var(--fg);
+  font-family: 'Jersey 15', 'Pretendard';
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.nick-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.nick-err {
+  font-size: 11px;
+  color: var(--danger);
+  text-align: center;
+  margin-top: 6px;
+  min-height: 14px;
+}
+.nick-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.nick-btns .btn { flex: 1; padding: 10px; }
+
+/* 랭킹 화면 */
+.ranking-screen {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+.ranking-title {
+  font-family: 'Jersey 15';
+  font-size: 32px;
+  color: var(--accent);
+  text-shadow: 2px 2px 0 #000, 4px 4px 0 var(--danger);
+  margin-bottom: 4px;
+}
+.ranking-sub {
+  font-size: 12px;
+  color: #8fa3cc;
+  margin-bottom: 16px;
+}
+.ranking-list {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ranking-loading, .ranking-empty {
+  text-align: center;
+  color: #8fa3cc;
+  padding: 40px 20px;
+  font-family: 'Jersey 15';
+}
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 14px;
+  transition: all 0.15s;
+}
+.ranking-row.mine {
+  border-color: var(--accent);
+  background: rgba(255, 216, 102, 0.08);
+}
+.rank-medal {
+  font-family: 'Jersey 15';
+  font-size: 24px;
+  color: var(--accent);
+  min-width: 40px;
+  text-align: center;
+}
+.rank-info { flex: 1; min-width: 0; }
+.rank-nick {
+  font-family: 'Jersey 15';
+  font-size: 18px;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rank-victory {
+  font-size: 10px;
+  background: var(--ok);
+  color: var(--bg);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: 'Pretendard';
+  font-weight: 700;
+}
+.rank-meta {
+  font-size: 11px;
+  color: #8fa3cc;
+  margin-top: 2px;
+}
+.rank-stats {
+  text-align: right;
+  font-family: 'Jersey 15';
+}
+.rank-wave {
+  font-size: 22px;
+  color: var(--accent);
+  text-shadow: 1px 1px 0 #000;
+}
+.rank-time {
+  font-size: 12px;
+  color: #8fa3cc;
+  margin-top: 2px;
+}
+
+/* 다음 라운드 행 (저장 버튼 포함) */
+.next-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.next-main { flex: 1; }
+.next-save {
+  flex: 0 0 auto;
+  padding: 12px 14px;
+  font-size: 14px;
+}
+
+/* 게임오버 랭킹 제출 알림 */
+.submit-info {
+  font-family: 'Jersey 15';
+  font-size: 13px;
+  color: var(--ok);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+
+
 /* 대기 중인 보스 (태그전) */
 .waiting-boss {
   background: rgba(15, 21, 37, 0.7);
@@ -948,6 +1162,8 @@ body {
 <div id="app">
   <!-- 콘텐츠가 JS로 렌더링됨 -->
 </div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <script src="nav.js"></script>
 <style>
 /* 윈드로그 전용 nav 다크 테마 오버라이드 */
@@ -1019,13 +1235,16 @@ const state = {
   wave: 1,
   party: [],
   activeIndex: 0,
-  enemy: null,        // 단일 적 (기본)
-  enemies: [],        // 보스전일 때 복수 적
-  enemyActive: 0,     // 보스전에서 현재 대응하는 적 index
+  enemy: null,
+  enemies: [],
+  enemyActive: 0,
   log: [],
   stones: 0,
   inventory: {},
-  busy: false,        // 전투 중 입력 잠금
+  busy: false,
+  nickname: '',       // 유저 닉네임
+  runStartTime: 0,    // 현재 런 시작 타임스탬프
+  runEndTime: 0,      // 끝난 시점
   stats: {
     totalRuns: 0,
     bestWave: 0,
@@ -1266,29 +1485,169 @@ function render() {
   if (state.scene === 'title') renderTitle();
   else if (state.scene === 'starter') renderStarter();
   else if (state.scene === 'shop') renderShop();
+  else if (state.scene === 'ranking') renderRanking();
   else if (state.scene === 'battle' || state.scene === 'reward') renderBattle();
   else if (state.scene === 'gameover' || state.scene === 'victory') renderGameOver();
 }
 
+async function renderRanking() {
+  const screen = el('div', { className: 'ranking-screen' });
+  screen.innerHTML = `
+    <div class="ranking-title">🏆 WINDROGUE 랭킹</div>
+    <div class="ranking-sub">도달 웨이브 ↓ · 동점 시 클리어타임 ↑</div>
+    <div id="ranking-list" class="ranking-list">
+      <div class="ranking-loading">불러오는 중...</div>
+    </div>
+    <button class="btn" id="ranking-refresh" style="margin-top: 12px;">🔄 새로고침</button>
+    <button class="btn full" id="ranking-back" style="margin-top: 8px; max-width: 400px; width: 100%;">타이틀로</button>
+  `;
+  app.appendChild(screen);
+  document.getElementById('ranking-back').addEventListener('click', () => {
+    state.scene = 'title';
+    render();
+  });
+  document.getElementById('ranking-refresh').addEventListener('click', () => renderRanking());
+
+  const list = await fetchRanking();
+  const container = document.getElementById('ranking-list');
+  if (!container) return;
+  if (list.length === 0) {
+    container.innerHTML = '<div class="ranking-empty">아직 기록이 없습니다. 첫 번째 랭커가 되어보세요!</div>';
+    return;
+  }
+  container.innerHTML = '';
+  list.forEach((r, i) => {
+    const row = el('div', { className: 'ranking-row' + (r.nickname === state.nickname ? ' mine' : '') });
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}`;
+    const timeStr = formatTime(r.timeMs || 0);
+    const victoryTag = r.victory ? '<span class="rank-victory">🏆 클리어</span>' : '';
+    row.innerHTML = `
+      <div class="rank-medal">${medal}</div>
+      <div class="rank-info">
+        <div class="rank-nick">${r.nickname}${victoryTag}</div>
+        <div class="rank-meta">포획 ${r.captures || 0}마리 · ${r.date || ''}</div>
+      </div>
+      <div class="rank-stats">
+        <div class="rank-wave">W${r.wave}</div>
+        <div class="rank-time">⏱ ${timeStr}</div>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
 function renderTitle() {
   const screen = el('div', { className: 'title-screen' });
+  const nickHtml = state.nickname
+    ? `<div class="current-nick">👤 ${state.nickname} <button id="change-nick-btn" class="link-btn">변경</button></div>`
+    : '';
   screen.innerHTML = `
     <h1>WIND<br>ROGUE</h1>
     <div class="subtitle">펫 로그라이트 모험</div>
-    <button class="btn full" style="max-width: 300px; padding: 14px; font-size: 20px;" id="start-btn">
-      모험 시작
-    </button>
+    ${nickHtml}
+    <div class="title-menu">
+      <button class="btn full ok" id="start-btn" style="padding: 14px; font-size: 20px;">모험 시작</button>
+      <button class="btn full" id="continue-btn" style="padding: 12px;">이어하기</button>
+      <button class="btn full" id="ranking-btn" style="padding: 12px;">🏆 랭킹</button>
+    </div>
     <div class="stats-line">
       전체 플레이: ${state.stats.totalRuns} · 최고 웨이브: ${state.stats.bestWave} · 포획: ${state.captured.size}종
     </div>
     <div style="margin-top: 30px; font-size: 11px; color: #566; text-align: center; line-height: 1.6;">
       ⬤ 3마리 파티로 30웨이브 클리어 도전<br>
-      ⬤ 속성 상성 (지→수→화→풍→지) · 포획 · 레벨업<br>
+      ⬤ 속성 상성 · 포획 · 레벨업 · 기술 · 상점<br>
       ⬤ 10웨이브마다 실제 랭커 펫이 보스로 등장
     </div>
   `;
   app.appendChild(screen);
-  document.getElementById('start-btn').addEventListener('click', startStarter);
+  document.getElementById('start-btn').addEventListener('click', onStartClick);
+  document.getElementById('continue-btn').addEventListener('click', onContinueClick);
+  document.getElementById('ranking-btn').addEventListener('click', onRankingClick);
+  const changeBtn = document.getElementById('change-nick-btn');
+  if (changeBtn) changeBtn.addEventListener('click', () => promptNickname(true));
+}
+
+async function onStartClick() {
+  if (!state.nickname) {
+    const ok = await promptNickname(false);
+    if (!ok) return;
+  }
+  startStarter();
+}
+
+async function onContinueClick() {
+  if (!state.nickname) {
+    const ok = await promptNickname(false);
+    if (!ok) return;
+  }
+  const save = await loadFromCloud(state.nickname);
+  if (!save || !save.party || save.party.length === 0) {
+    alert('저장된 기록이 없습니다.');
+    return;
+  }
+  const alive = save.party.filter(p => p.hp > 0).length;
+  if (alive === 0) {
+    alert('저장된 기록은 전멸 상태입니다.');
+    return;
+  }
+  if (confirm(`웨이브 ${save.wave}에서 저장된 기록 (파티 ${save.party.length}마리, 생존 ${alive})을 이어하시겠습니까?`)) {
+    initAudio();
+    restoreFromSave(save);
+  }
+}
+
+async function onRankingClick() {
+  state.scene = 'ranking';
+  render();
+}
+
+/* 닉네임 입력 다이얼로그 */
+function promptNickname(isChange) {
+  return new Promise(resolve => {
+    const overlay = el('div', { className: 'nick-overlay' });
+    const panel = el('div', { className: 'nick-panel' });
+    const current = state.nickname || '';
+    panel.innerHTML = `
+      <div class="nick-title">${isChange ? '닉네임 변경' : '닉네임을 입력해주세요'}</div>
+      <div class="nick-sub">랭킹에 표시될 이름 (2~10자)</div>
+      <input type="text" id="nick-input" class="nick-input" maxlength="10" value="${current}" placeholder="예: 유피테르">
+      <div class="nick-err" id="nick-err"></div>
+      <div class="nick-btns">
+        <button class="btn" id="nick-cancel">취소</button>
+        <button class="btn ok" id="nick-ok">확인</button>
+      </div>
+    `;
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+    const input = document.getElementById('nick-input');
+    input.focus();
+    input.select();
+
+    const close = (result) => {
+      overlay.remove();
+      resolve(result);
+    };
+    document.getElementById('nick-cancel').addEventListener('click', () => close(false));
+    document.getElementById('nick-ok').addEventListener('click', async () => {
+      const v = input.value.trim();
+      if (v.length < 2 || v.length > 10) {
+        document.getElementById('nick-err').textContent = '2~10자 사이로 입력해주세요';
+        return;
+      }
+      if (!/^[a-zA-Z0-9가-힣_-]+$/.test(v)) {
+        document.getElementById('nick-err').textContent = '한글, 영문, 숫자, _, - 만 사용 가능';
+        return;
+      }
+      state.nickname = v;
+      try { if (window.storage) await window.storage.set('windrogue:nick', v); } catch(e) {}
+      close(true);
+      render();
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('nick-ok').click();
+      else if (e.key === 'Escape') close(false);
+    });
+  });
 }
 
 function startStarter() {
@@ -1365,6 +1724,8 @@ function startRun() {
   state.stones = 0;
   state.inventory = {};
   state.scene = 'battle';
+  state.runStartTime = Date.now();
+  state.runEndTime = 0;
   state.stats.totalRuns++;
   saveStats();
   beginBattle();
@@ -1487,12 +1848,25 @@ function renderNextBox() {
     log.appendChild(p);
   });
   box.appendChild(log);
+  const row = el('div', { className: 'next-row' });
   const next = el('button', {
-    className: 'btn full ok',
-    style: 'margin-top: 8px; font-size: 18px; padding: 12px;'
+    className: 'btn ok next-main',
+    style: 'font-size: 18px; padding: 12px;'
   }, ['▶ 다음 라운드']);
   next.addEventListener('click', goToNextRound);
-  box.appendChild(next);
+  row.appendChild(next);
+  if (state.nickname && wrDb) {
+    const saveBtn = el('button', { className: 'btn next-save' }, ['💾 저장']);
+    saveBtn.addEventListener('click', async () => {
+      saveBtn.disabled = true;
+      saveBtn.textContent = '저장중...';
+      const ok = await saveToCloud();
+      saveBtn.textContent = ok ? '✓ 저장됨' : '⚠ 실패';
+      setTimeout(() => { saveBtn.textContent = '💾 저장'; saveBtn.disabled = false; }, 1500);
+    });
+    row.appendChild(saveBtn);
+  }
+  box.appendChild(row);
   app.appendChild(box);
   log.scrollTop = log.scrollHeight;
 }
@@ -2653,6 +3027,7 @@ function leaveShop() {
 
 /* ===== 게임오버 / 승리 ===== */
 function finalizeRun() {
+  state.runEndTime = Date.now();
   if (state.scene === 'victory') {
     state.stats.victories = (state.stats.victories || 0) + 1;
     playSfx('victory');
@@ -2661,20 +3036,28 @@ function finalizeRun() {
     stopBgm();
   }
   saveStats();
+  // Firebase에 랭킹 제출 (비동기)
+  submitRanking().catch(() => {});
 }
 
 function renderGameOver() {
   const screen = el('div', { className: 'gameover-screen' });
   const isVictory = state.scene === 'victory';
+  const runMs = (state.runEndTime || Date.now()) - (state.runStartTime || Date.now());
   screen.innerHTML = `
     <div class="title">${isVictory ? '🏆 VICTORY' : '💀 GAME OVER'}</div>
     <div class="result">
       도달 웨이브: <b>${state.wave}</b><br>
+      클리어 시간: <b>${formatTime(runMs)}</b><br>
       포획한 펫: <b>${state.party.filter(u=>u.isCaptured).length}마리</b><br>
       최고 기록: <b>${state.stats.bestWave}</b>
     </div>
+    ${state.nickname && state.wave >= 5 ? '<div class="submit-info">📤 랭킹에 자동 제출되었습니다</div>' : ''}
     <button class="btn ok" style="max-width: 300px; padding: 14px; font-size: 18px;" id="retry">
       다시 도전
+    </button>
+    <button class="btn" style="max-width: 300px; margin-top: 8px;" id="view-rank">
+      🏆 랭킹 보기
     </button>
     <button class="btn" style="max-width: 300px; margin-top: 8px;" id="to-title">
       타이틀로
@@ -2682,6 +3065,7 @@ function renderGameOver() {
   `;
   app.appendChild(screen);
   document.getElementById('retry').addEventListener('click', () => { stopBgm(); state.scene = 'starter'; state.starterPool = rollStarters(); state.starterPicks = []; startBgm('title'); render(); });
+  document.getElementById('view-rank').addEventListener('click', () => { stopBgm(); state.scene = 'ranking'; render(); });
   document.getElementById('to-title').addEventListener('click', () => { stopBgm(); state.scene = 'title'; render(); });
 }
 
@@ -2911,9 +3295,157 @@ function toggleMute() {
   if (btn) btn.textContent = audio.muted ? '🔇' : '🔊';
 }
 
+/* ===== Firebase 연동 ===== */
+let wrDb = null;
+try {
+  const firebaseConfig = {
+    apiKey: "AIzaSyAs3aqh2N75_c24xdjDNf271L16-VYCmls",
+    authDomain: "lomxx-calculator.firebaseapp.com",
+    databaseURL: "https://lomxx-calculator-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "lomxx-calculator",
+    storageBucket: "lomxx-calculator.firebasestorage.app",
+    messagingSenderId: "667060899901",
+    appId: "1:667060899901:web:4ab1bd419526c682355a54"
+  };
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    wrDb = firebase.database();
+  }
+} catch(e) { console.warn('Firebase 초기화 실패', e); }
+
+/* 런 종료 시 랭킹 제출 (웨이브 ≥ 5만) */
+async function submitRanking() {
+  if (!wrDb || !state.nickname) return;
+  if (state.wave < 5) return; // 너무 짧은 런은 제외
+  const record = {
+    nickname: state.nickname,
+    wave: state.wave,
+    victory: state.scene === 'victory',
+    timeMs: (state.runEndTime || Date.now()) - (state.runStartTime || Date.now()),
+    captures: state.party.filter(p => p.isCaptured && p.level > 5).length,
+    partySize: state.party.length,
+    timestamp: Date.now(),
+    date: new Date().toISOString().slice(0, 10),
+  };
+  try {
+    await wrDb.ref('windrogue_rankings').push(record);
+  } catch(e) { console.warn('랭킹 제출 실패', e); }
+}
+
+/* 랭킹 불러오기 - 도달 웨이브 내림차순, 같으면 클리어타임 오름차순 */
+async function fetchRanking() {
+  if (!wrDb) return [];
+  try {
+    const snap = await wrDb.ref('windrogue_rankings').once('value');
+    const data = snap.val() || {};
+    const list = Object.values(data);
+    // 정렬: wave ↓, 같으면 timeMs ↑
+    list.sort((a, b) => {
+      if (b.wave !== a.wave) return b.wave - a.wave;
+      return (a.timeMs || 0) - (b.timeMs || 0);
+    });
+    return list.slice(0, 10);
+  } catch(e) {
+    console.warn('랭킹 로드 실패', e);
+    return [];
+  }
+}
+
+/* 저장: 현재 진행 상황을 클라우드에 저장 (닉네임별 덮어쓰기) */
+async function saveToCloud() {
+  if (!wrDb || !state.nickname) {
+    pushLog('⚠ 저장 실패: 닉네임 또는 서버 연결 없음', 'crit');
+    return false;
+  }
+  const saveData = {
+    nickname: state.nickname,
+    scene: state.scene,
+    wave: state.wave,
+    party: state.party.map(u => ({
+      name: u.petData.name,
+      level: u.level,
+      iv: u.iv,
+      hp: u.hp,
+      maxHp: u.maxHp,
+      atk: u.atk,
+      def: u.def,
+      agi: u.agi,
+      isCaptured: u.isCaptured,
+      skills: u.skills || [],
+    })),
+    activeIndex: state.activeIndex,
+    stones: state.stones,
+    inventory: state.inventory,
+    runStartTime: state.runStartTime,
+    captured: [...state.captured],
+    savedAt: Date.now(),
+  };
+  try {
+    const key = state.nickname.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+    await wrDb.ref('windrogue_saves/' + key).set(saveData);
+    return true;
+  } catch(e) {
+    console.warn('저장 실패', e);
+    return false;
+  }
+}
+
+/* 불러오기: 닉네임으로 저장된 런 복원 */
+async function loadFromCloud(nickname) {
+  if (!wrDb || !nickname) return null;
+  try {
+    const key = nickname.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+    const snap = await wrDb.ref('windrogue_saves/' + key).once('value');
+    return snap.val();
+  } catch(e) {
+    console.warn('불러오기 실패', e);
+    return null;
+  }
+}
+
+/* 로드된 데이터로 state 복원 */
+function restoreFromSave(save) {
+  if (!save || !save.party) return false;
+  state.nickname = save.nickname;
+  state.scene = 'battle';
+  state.wave = save.wave;
+  state.stones = save.stones || 0;
+  state.inventory = save.inventory || {};
+  state.runStartTime = save.runStartTime || Date.now();
+  state.captured = new Set(save.captured || []);
+  state.party = save.party.map(p => {
+    const pd = PET_DATA.find(x => x.name === p.name);
+    if (!pd) return null;
+    const u = createUnit(pd, p.level, { isCaptured: p.isCaptured, iv: p.iv, skills: p.skills });
+    u.hp = p.hp; u.maxHp = p.maxHp; u.atk = p.atk; u.def = p.def; u.agi = p.agi;
+    return u;
+  }).filter(Boolean);
+  state.activeIndex = Math.min(save.activeIndex || 0, state.party.length - 1);
+  state.busy = false;
+  state.mode = 'action';
+  // 불러온 시점부터 웨이브 시작
+  beginBattle();
+  return true;
+}
+
+/* 시간 포맷 mm:ss */
+function formatTime(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
 /* ===== 시작 ===== */
 (async () => {
   await loadStats();
+  // 저장된 닉네임 있으면 불러오기
+  try {
+    if (window.storage) {
+      const r = await window.storage.get('windrogue:nick');
+      if (r && r.value) state.nickname = r.value;
+    }
+  } catch(e) {}
   render();
 })();
 
