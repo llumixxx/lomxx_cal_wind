@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마쥬의 미로 네비 - wind01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #0a0a14;
+    color: #eee;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 20px; }
+  .page-title { font-size: 22px; font-weight: 800; color: #a78bfa; text-align: center; margin: 10px 0; }
+  .page-sub { text-align: center; color: #8a82a0; font-size: 12px; margin-bottom: 20px; line-height: 1.6; }
+
+  .main-card {
+    background: #1a1a2a;
+    border: 1.5px solid #332d45;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+  }
+  .main-btn {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #8a75d8, #a78bfa);
+    color: #fff; border: none; border-radius: 30px;
+    font-weight: 800; font-size: 16px; cursor: pointer;
+    font-family: inherit; transition: all .15s; margin: 10px 4px;
+  }
+  .main-btn:hover { transform: scale(1.02); }
+  .main-btn.secondary { background: #2a2441; border: 1.5px solid #443a66; }
+
+  .info-box {
+    background: #15131f;
+    border: 1.5px solid #332d45;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 14px 0;
+    font-size: 12px;
+    color: #c0b8d5;
+    line-height: 1.7;
+    text-align: left;
+  }
+
+  /* 플로팅 미니맵 */
+  .floating-map {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    width: 420px;
+    background: rgba(15, 13, 23, 0.97);
+    border: 2px solid #a78bfa;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    user-select: none;
+    display: none;
+    flex-direction: column;
+  }
+  .floating-map.open { display: flex; }
+  .floating-map.minimized { width: 140px; }
+  .floating-map.minimized .map-body,
+  .floating-map.minimized .map-tabs,
+  .floating-map.minimized .map-footer { display: none; }
+
+  .map-header {
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #8a75d8, #a78bfa);
+    color: #fff;
+    border-radius: 10px 10px 0 0;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .map-header-btns { display: flex; gap: 4px; }
+  .map-header-btn {
+    background: rgba(255,255,255,0.2);
+    border: none; color: #fff;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    cursor: pointer; font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .map-header-btn:hover { background: rgba(255,255,255,0.35); }
+
+  .map-tabs {
+    display: flex;
+    background: #1a1a2a;
+    border-bottom: 1px solid #332d45;
+  }
+  .map-tab {
+    flex: 1; padding: 10px;
+    background: none; border: none;
+    color: #8a82a0; cursor: pointer;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+    border-bottom: 2px solid transparent;
+  }
+  .map-tab:hover { color: #eee; }
+  .map-tab.active {
+    color: #a78bfa;
+    border-bottom-color: #a78bfa;
+    background: #15131f;
+  }
+
+  .map-body {
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+  .map-floor { display: none; position: relative; }
+  .map-floor.active { display: block; }
+  .map-floor img {
+    width: 100%;
+    display: block;
+  }
+  .map-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .map-footer {
+    padding: 8px 12px;
+    background: #15131f;
+    border-radius: 0 0 10px 10px;
+    border-top: 1px solid #332d45;
+    font-size: 11px;
+    color: #8a82a0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .legend { display: flex; gap: 10px; align-items: center; }
+  .legend-item { display: flex; gap: 4px; align-items: center; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .legend-dot.start { background: #5acba8; }
+  .legend-dot.end { background: #ff6b6b; }
+  .legend-dot.treasure { background: #ffd866; }
+
+  .stream-container {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: none;
+    z-index: 50;
+  }
+  .stream-container.active { display: block; }
+  .stream-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .stream-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    gap: 6px;
+    background: rgba(20, 15, 30, 0.92);
+    padding: 10px 14px;
+    border-radius: 24px;
+    z-index: 60;
+    backdrop-filter: blur(8px);
+  }
+  .stream-controls.active { display: flex; }
+  .sc-btn {
+    background: #2a2441;
+    border: 1.5px solid #443a66;
+    color: #eee;
+    border-radius: 16px;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .sc-btn:hover { background: #3a3258; border-color: #a78bfa; }
+  .sc-btn.danger { background: #6b2540; border-color: #a8345a; }
+
+  @keyframes pulseMarker {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+  }
+  .marker-pulse { animation: pulseMarker 1.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -30; }
+  }
+  .flow-path {
+    fill: none;
+    stroke: #ff4da6;
+    stroke-width: 4;
+    stroke-dasharray: 10 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 6px rgba(255, 77, 166, 0.9)) drop-shadow(0 0 12px rgba(255, 77, 166, 0.5));
+    animation: dashFlow 1s linear infinite;
+  }
+
+  .route-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+  }
+  .route-card {
+    background: #15131f;
+    border: 1.5px solid #332d45;
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+  }
+  .route-card:hover {
+    border-color: #a78bfa;
+    transform: translateY(-2px);
+  }
+  .route-card .rc-title { font-size: 12px; font-weight: 800; color: #a78bfa; }
+  .route-card .rc-sub { font-size: 10px; color: #8a82a0; margin-top: 2px; }
+
+  @media (max-width: 640px) {
+    .floating-map { width: calc(100vw - 40px); }
+  }
+</style>
+<script src="nav.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="page-title">🗺 마쥬의 미로 네비</div>
+  <div class="page-sub">
+    플로팅 미니맵으로 경로를 확인하면서 인게임 플레이<br>
+    창 드래그 이동 / 최소화 / 층별 탭 지원
+  </div>
+
+  <div class="main-card">
+    <div style="font-size: 15px; font-weight: 800; margin-bottom: 10px;">🗺 미니맵 + 경로 보기</div>
+    <div style="font-size: 12px; color: #8a82a0; margin-bottom: 16px;">
+      뿌야 스톤에이지 지도 기반 · 층별 탭 · 흐르는 경로 애니메이션
+    </div>
+
+    <button class="main-btn" id="open-map-btn">🗺 미니맵 열기</button>
+    <button class="main-btn secondary" id="share-screen-btn">📺 게임 화면 공유</button>
+
+    <div class="info-box">
+      <b>🎯 사용법</b><br>
+      1. <b>미니맵 열기</b> 누르면 우측 상단에 지도가 뜹니다.<br>
+      2. 지도 헤더(보라색)를 <b>드래그</b>해서 원하는 위치로 이동할 수 있어요.<br>
+      3. <b>1층 / 2층 / 3층</b> 탭으로 각 층 경로를 전환.<br>
+      4. <b>분홍색 흐르는 선</b>이 경로를 안내합니다.<br>
+      5. <b>−</b> 버튼으로 최소화하고 <b>×</b>로 닫기.<br>
+      6. <b>게임 화면 공유</b>: 듀얼모니터 없어도 게임 창을 이 웹 안에서 볼 수 있음.
+    </div>
+
+    <div style="font-size: 13px; font-weight: 800; margin-top: 16px; color: #a78bfa;">📍 경로 요약</div>
+    <div class="route-preview">
+      <div class="route-card" onclick="openAndFocus(0)">
+        <div class="rc-title">1층</div>
+        <div class="rc-sub">시작점 → 2층 입구</div>
+      </div>
+      <div class="route-card" onclick="openAndFocus(1)">
+        <div class="rc-title">2층</div>
+        <div class="rc-sub">복잡한 미로 통과</div>
+      </div>
+      <div class="route-card" onclick="openAndFocus(2)">
+        <div class="rc-title">3층</div>
+        <div class="rc-sub">나선형 → 부르보 보스</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 플로팅 미니맵 -->
+<div class="floating-map" id="floating-map">
+  <div class="map-header" id="map-header">
+    <span>🗺 마쥬의 미로</span>
+    <div class="map-header-btns">
+      <button class="map-header-btn" id="minimize-btn" title="최소화">−</button>
+      <button class="map-header-btn" id="close-map-btn" title="닫기">×</button>
+    </div>
+  </div>
+
+  <div class="map-tabs">
+    <button class="map-tab active" data-floor="0">1층</button>
+    <button class="map-tab" data-floor="1">2층</button>
+    <button class="map-tab" data-floor="2">3층</button>
+  </div>
+
+  <div class="map-body">
+    <div class="map-floor active" data-floor="0">
+      <img src="maze_images/maze_1f.png" alt="미로 1층">
+      <svg class="map-overlay" id="overlay-0" preserveAspectRatio="none" viewBox="0 0 600 290"></svg>
+    </div>
+    <div class="map-floor" data-floor="1">
+      <img src="maze_images/maze_2f.png" alt="미로 2층">
+      <svg class="map-overlay" id="overlay-1" preserveAspectRatio="none" viewBox="0 0 600 360"></svg>
+    </div>
+    <div class="map-floor" data-floor="2">
+      <img src="maze_images/maze_3f.png" alt="미로 3층">
+      <svg class="map-overlay" id="overlay-2" preserveAspectRatio="none" viewBox="0 0 600 230"></svg>
+    </div>
+  </div>
+
+  <div class="map-footer">
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot start"></span>시작</div>
+      <div class="legend-item"><span class="legend-dot end"></span>도착</div>
+      <div class="legend-item"><span class="legend-dot treasure"></span>보물</div>
+    </div>
+    <div id="map-floor-label">1층</div>
+  </div>
+</div>
+
+<!-- 화면 공유 컨테이너 -->
+<div class="stream-container" id="stream-container">
+  <video class="stream-video" id="stream-video" autoplay playsinline muted></video>
+</div>
+<div class="stream-controls" id="stream-controls">
+  <button class="sc-btn" id="stream-map-toggle">🗺 미니맵 토글</button>
+  <button class="sc-btn danger" id="stream-stop">⏹ 공유 종료</button>
+</div>
+
+<script>
+/* 경로 좌표 - 이미지 viewBox 기준
+   1층: 600 x 290
+   2층: 600 x 360
+   3층: 600 x 230
+   뿌야 이미지의 노란 선을 대략 따라가게 그려놓음 */
+
+const FLOOR_PATHS = {
+  0: {
+    start: { x: 15, y: 245, label: '시작' },
+    end:   { x: 580, y: 180, label: '2층 입구' },
+    // 1층 뿌야 경로 (왼쪽 아래 → 꼬불꼬불 → 오른쪽 2층 입구)
+    d: 'M 15 245 Q 30 250 50 245 L 80 245 L 80 225 L 50 225 L 50 200 L 110 200 L 110 180 L 75 180 L 75 155 L 150 155 L 150 130 L 190 130 L 190 105 L 240 105 L 240 75 L 300 75 L 300 55 L 370 55 L 370 40 L 440 40 L 440 70 L 475 70 L 475 100 L 510 100 L 510 135 L 545 135 L 545 165 L 580 180',
+    treasures: [
+      { x: 50, y: 220 },
+      { x: 190, y: 115 },
+      { x: 380, y: 50 },
+      { x: 510, y: 105 },
+    ],
+  },
+  1: {
+    // 2층: 오른쪽 위에서 시작(1층에서 내려옴) → 미로 통과 → 왼쪽 아래(3층 입구)
+    start: { x: 560, y: 30, label: '2층 진입' },
+    end:   { x: 15, y: 205, label: '3층 입구' },
+    // 2층은 꽤 복잡. 대략적 진행
+    d: 'M 560 30 L 560 60 L 520 60 L 520 90 L 470 90 L 470 130 L 430 130 L 430 160 L 390 160 L 390 195 L 340 195 L 340 170 L 290 170 L 290 205 L 240 205 L 240 240 L 180 240 L 180 270 L 130 270 L 130 240 L 90 240 L 90 210 L 40 210 L 15 205',
+    treasures: [
+      { x: 520, y: 60 },
+      { x: 400, y: 190 },
+      { x: 240, y: 210 },
+      { x: 100, y: 230 },
+    ],
+  },
+  2: {
+    // 3층: 왼쪽 위(시작) → 나선형 → 중앙(부르보)
+    start: { x: 25, y: 25, label: '시작' },
+    end:   { x: 310, y: 100, label: '🔥 부르보' },
+    d: 'M 25 25 L 50 30 Q 100 35 180 40 Q 280 45 370 55 Q 440 70 480 100 Q 515 135 505 170 Q 480 195 430 200 Q 360 205 290 195 Q 230 180 220 155 Q 225 130 260 115 Q 290 105 310 100',
+    treasures: [],
+  },
+};
+
+function renderOverlay(floorIdx) {
+  const path = FLOOR_PATHS[floorIdx];
+  const overlay = document.getElementById('overlay-' + floorIdx);
+  if (!overlay || !path) return;
+
+  const treasuresSvg = (path.treasures || []).map(t => `
+    <circle cx="${t.x}" cy="${t.y}" r="5" fill="#ffd866" stroke="#fff" stroke-width="1.5" class="marker-pulse"/>
+  `).join('');
+
+  overlay.innerHTML = `
+    <path class="flow-path" d="${path.d}"/>
+    ${treasuresSvg}
+    <g>
+      <circle cx="${path.start.x}" cy="${path.start.y}" r="8" fill="#5acba8" stroke="#fff" stroke-width="2" class="marker-pulse"/>
+      <text x="${path.start.x + 12}" y="${path.start.y + 4}" fill="#5acba8" font-size="11" font-weight="800" style="paint-order: stroke; stroke: #000; stroke-width: 2;">${path.start.label}</text>
+    </g>
+    <g>
+      <circle cx="${path.end.x}" cy="${path.end.y}" r="8" fill="#ff6b6b" stroke="#fff" stroke-width="2" class="marker-pulse"/>
+      <text x="${path.end.x - 12}" y="${path.end.y - 12}" text-anchor="end" fill="#ff6b6b" font-size="11" font-weight="800" style="paint-order: stroke; stroke: #000; stroke-width: 2;">${path.end.label}</text>
+    </g>
+  `;
+}
+
+Object.keys(FLOOR_PATHS).forEach(renderOverlay);
+
+// 탭
+document.querySelectorAll('.map-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const floor = btn.dataset.floor;
+    document.querySelectorAll('.map-tab').forEach(t => t.classList.toggle('active', t === btn));
+    document.querySelectorAll('.map-floor').forEach(f => {
+      f.classList.toggle('active', f.dataset.floor === floor);
+    });
+    document.getElementById('map-floor-label').textContent = (+floor + 1) + '층';
+  });
+});
+
+// 드래그
+const floatingMap = document.getElementById('floating-map');
+const mapHeader = document.getElementById('map-header');
+let dragState = null;
+
+mapHeader.addEventListener('mousedown', e => {
+  if (e.target.closest('.map-header-btn')) return;
+  const rect = floatingMap.getBoundingClientRect();
+  dragState = { offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top };
+  e.preventDefault();
+});
+document.addEventListener('mousemove', e => {
+  if (!dragState) return;
+  const x = e.clientX - dragState.offsetX;
+  const y = e.clientY - dragState.offsetY;
+  const maxX = window.innerWidth - floatingMap.offsetWidth;
+  const maxY = window.innerHeight - floatingMap.offsetHeight;
+  floatingMap.style.left = Math.max(0, Math.min(maxX, x)) + 'px';
+  floatingMap.style.top = Math.max(0, Math.min(maxY, y)) + 'px';
+  floatingMap.style.right = 'auto';
+});
+document.addEventListener('mouseup', () => {
+  if (!dragState) return;
+  dragState = null;
+  const rect = floatingMap.getBoundingClientRect();
+  localStorage.setItem('maze_map_pos', JSON.stringify({
+    left: rect.left, top: rect.top,
+    minimized: floatingMap.classList.contains('minimized'),
+  }));
+});
+
+// 터치 드래그
+mapHeader.addEventListener('touchstart', e => {
+  if (e.target.closest('.map-header-btn')) return;
+  const t = e.touches[0];
+  const rect = floatingMap.getBoundingClientRect();
+  dragState = { offsetX: t.clientX - rect.left, offsetY: t.clientY - rect.top };
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (!dragState) return;
+  const t = e.touches[0];
+  const x = t.clientX - dragState.offsetX;
+  const y = t.clientY - dragState.offsetY;
+  const maxX = window.innerWidth - floatingMap.offsetWidth;
+  const maxY = window.innerHeight - floatingMap.offsetHeight;
+  floatingMap.style.left = Math.max(0, Math.min(maxX, x)) + 'px';
+  floatingMap.style.top = Math.max(0, Math.min(maxY, y)) + 'px';
+  floatingMap.style.right = 'auto';
+  e.preventDefault();
+}, { passive: false });
+document.addEventListener('touchend', () => { dragState = null; });
+
+// 열기/닫기/최소화
+function openMap() {
+  floatingMap.classList.add('open');
+  try {
+    const saved = JSON.parse(localStorage.getItem('maze_map_pos') || 'null');
+    if (saved) {
+      floatingMap.style.left = saved.left + 'px';
+      floatingMap.style.top = saved.top + 'px';
+      floatingMap.style.right = 'auto';
+      if (saved.minimized) floatingMap.classList.add('minimized');
+    }
+  } catch(e) {}
+}
+function closeMap() { floatingMap.classList.remove('open'); }
+
+document.getElementById('open-map-btn').addEventListener('click', openMap);
+document.getElementById('close-map-btn').addEventListener('click', closeMap);
+document.getElementById('minimize-btn').addEventListener('click', () => {
+  floatingMap.classList.toggle('minimized');
+});
+
+function openAndFocus(floorIdx) {
+  openMap();
+  document.querySelector(`.map-tab[data-floor="${floorIdx}"]`).click();
+}
+window.openAndFocus = openAndFocus;
+
+// 화면 공유
+let streamMedia = null;
+document.getElementById('share-screen-btn').addEventListener('click', async () => {
+  try {
+    streamMedia = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: 'always' }, audio: false,
+    });
+  } catch(e) {
+    alert('화면 공유가 취소되었거나 실패했습니다.\n' + e.message);
+    return;
+  }
+  document.getElementById('stream-video').srcObject = streamMedia;
+  document.getElementById('stream-container').classList.add('active');
+  document.getElementById('stream-controls').classList.add('active');
+  openMap();
+  streamMedia.getVideoTracks()[0].onended = stopStream;
+});
+
+function stopStream() {
+  if (streamMedia) {
+    streamMedia.getTracks().forEach(t => t.stop());
+    streamMedia = null;
+  }
+  document.getElementById('stream-video').srcObject = null;
+  document.getElementById('stream-container').classList.remove('active');
+  document.getElementById('stream-controls').classList.remove('active');
+}
+
+document.getElementById('stream-stop').addEventListener('click', stopStream);
+document.getElementById('stream-map-toggle').addEventListener('click', () => {
+  if (floatingMap.classList.contains('open')) closeMap();
+  else openMap();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && streamMedia) stopStream();
+});
+</script>
+
+</body>
+</html>
