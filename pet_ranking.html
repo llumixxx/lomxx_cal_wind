@@ -1018,7 +1018,7 @@ let lastTimestamp = null; // 렌더링 중복 방지용
 
 async function loadData() {
   try {
-    const r = await fetch('pet_ranking_data.json');
+    const r = await fetch('pet_ranking_data.json?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) {
       throw new Error(`HTTP ${r.status} ${r.statusText}`);
     }
