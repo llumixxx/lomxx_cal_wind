@@ -13,521 +13,609 @@
     background: #0a0a14;
     color: #eee;
     font-family: 'Noto Sans KR', sans-serif;
-    min-height: 100vh;
+    overflow: hidden;
   }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 20px; }
-  .page-title { font-size: 22px; font-weight: 800; color: #a78bfa; text-align: center; margin: 10px 0; }
-  .page-sub { text-align: center; color: #8a82a0; font-size: 12px; margin-bottom: 20px; line-height: 1.6; }
 
-  .main-card {
-    background: #1a1a2a;
-    border: 1.5px solid #332d45;
-    border-radius: 14px;
+  .start-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 20px;
-    text-align: center;
+    gap: 16px;
+    overflow-y: auto;
   }
-  .main-btn {
+  .start-screen.hidden { display: none; }
+
+  .title { font-size: 28px; font-weight: 800; color: #a78bfa; margin: 0; }
+  .subtitle { font-size: 13px; color: #8a82a0; text-align: center; max-width: 500px; line-height: 1.6; margin: 0; }
+
+  .btn {
     padding: 14px 32px;
     background: linear-gradient(135deg, #8a75d8, #a78bfa);
     color: #fff; border: none; border-radius: 30px;
     font-weight: 800; font-size: 16px; cursor: pointer;
-    font-family: inherit; transition: all .15s; margin: 10px 4px;
+    font-family: inherit;
   }
-  .main-btn:hover { transform: scale(1.02); }
-  .main-btn.secondary { background: #2a2441; border: 1.5px solid #443a66; }
+  .btn:hover { transform: scale(1.02); }
+  .btn.secondary { background: #2a2441; border: 1.5px solid #443a66; }
+  .btn.small { padding: 8px 14px; font-size: 13px; border-radius: 16px; }
+  .btn.danger { background: #6b2540; border-color: #a8345a; }
 
   .info-box {
     background: #15131f;
     border: 1.5px solid #332d45;
     border-radius: 10px;
-    padding: 14px;
-    margin: 14px 0;
+    padding: 14px 18px;
+    max-width: 560px;
     font-size: 12px;
     color: #c0b8d5;
     line-height: 1.7;
-    text-align: left;
   }
+  .info-box b { color: #a78bfa; }
+  .info-box .step { padding: 4px 0; }
 
-  /* 플로팅 미니맵 */
-  .floating-map {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    width: 420px;
-    background: rgba(15, 13, 23, 0.97);
-    border: 2px solid #a78bfa;
-    border-radius: 12px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    z-index: 100;
-    backdrop-filter: blur(8px);
-    user-select: none;
-    display: none;
-    flex-direction: column;
-  }
-  .floating-map.open { display: flex; }
-  .floating-map.minimized { width: 140px; }
-  .floating-map.minimized .map-body,
-  .floating-map.minimized .map-tabs,
-  .floating-map.minimized .map-footer { display: none; }
-
-  .map-header {
-    padding: 8px 12px;
-    background: linear-gradient(135deg, #8a75d8, #a78bfa);
-    color: #fff;
-    border-radius: 10px 10px 0 0;
-    cursor: move;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    font-weight: 800;
-  }
-  .map-header-btns { display: flex; gap: 4px; }
-  .map-header-btn {
-    background: rgba(255,255,255,0.2);
-    border: none; color: #fff;
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    cursor: pointer; font-size: 12px; font-weight: 800;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .map-header-btn:hover { background: rgba(255,255,255,0.35); }
-
-  .map-tabs {
-    display: flex;
-    background: #1a1a2a;
-    border-bottom: 1px solid #332d45;
-  }
-  .map-tab {
-    flex: 1; padding: 10px;
-    background: none; border: none;
-    color: #8a82a0; cursor: pointer;
-    font-family: inherit; font-weight: 800; font-size: 13px;
-    border-bottom: 2px solid transparent;
-  }
-  .map-tab:hover { color: #eee; }
-  .map-tab.active {
-    color: #a78bfa;
-    border-bottom-color: #a78bfa;
-    background: #15131f;
-  }
-
-  .map-body {
-    position: relative;
-    overflow: hidden;
-    background: #000;
-  }
-  .map-floor { display: none; position: relative; }
-  .map-floor.active { display: block; }
-  .map-floor img {
-    width: 100%;
-    display: block;
-  }
-  .map-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-
-  .map-footer {
-    padding: 8px 12px;
-    background: #15131f;
-    border-radius: 0 0 10px 10px;
-    border-top: 1px solid #332d45;
-    font-size: 11px;
-    color: #8a82a0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .legend { display: flex; gap: 10px; align-items: center; }
-  .legend-item { display: flex; gap: 4px; align-items: center; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-  .legend-dot.start { background: #5acba8; }
-  .legend-dot.end { background: #ff6b6b; }
-  .legend-dot.treasure { background: #ffd866; }
-
-  .stream-container {
+  .nav-screen {
     position: fixed;
     inset: 0;
-    background: #000;
     display: none;
-    z-index: 50;
+    background: #000;
   }
-  .stream-container.active { display: block; }
+  .nav-screen.active { display: block; }
+
   .stream-video {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    display: block;
   }
-  .stream-controls {
+
+  .ocr-canvas { display: none; }
+
+  .coord-display {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: rgba(15, 13, 23, 0.95);
+    color: #ffd866;
+    padding: 8px 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    font-weight: 800;
+    z-index: 10;
+    backdrop-filter: blur(6px);
+    border: 1.5px solid #443a66;
+    letter-spacing: 0.5px;
+  }
+  .coord-display .status {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #8a82a0;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .coord-display.active .status { background: #5acba8; box-shadow: 0 0 6px #5acba8; }
+  .coord-display.error .status { background: #ff6b6b; }
+
+  .calib-box {
+    position: absolute;
+    border: 2px dashed #ffd866;
+    pointer-events: none;
+    z-index: 6;
+    box-shadow: 0 0 8px rgba(255, 216, 102, 0.5);
+  }
+  .calib-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -20px;
+    left: 0;
+    color: #ffd866;
+    font-size: 11px;
+    font-weight: 800;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  .controls {
     position: fixed;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    display: none;
+    display: flex;
     gap: 6px;
     background: rgba(20, 15, 30, 0.92);
     padding: 10px 14px;
     border-radius: 24px;
-    z-index: 60;
+    z-index: 20;
     backdrop-filter: blur(8px);
   }
-  .stream-controls.active { display: flex; }
-  .sc-btn {
+
+  .calib-panel {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    width: 280px;
+    background: rgba(15, 13, 23, 0.97);
+    border: 2px solid #a78bfa;
+    border-radius: 12px;
+    padding: 14px;
+    z-index: 15;
+    backdrop-filter: blur(8px);
+    display: none;
+  }
+  .calib-panel.open { display: block; }
+  .calib-panel h4 {
+    margin: 0 0 8px;
+    font-size: 13px;
+    color: #a78bfa;
+  }
+  .calib-panel .muted {
+    font-size: 11px;
+    color: #8a82a0;
+    line-height: 1.5;
+    margin: 4px 0 10px;
+  }
+  .calib-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .calib-row label { width: 60px; color: #8a82a0; }
+  .calib-row input {
+    flex: 1;
+    padding: 4px 8px;
     background: #2a2441;
     border: 1.5px solid #443a66;
+    border-radius: 6px;
     color: #eee;
-    border-radius: 16px;
-    padding: 8px 14px;
     font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
+    font-size: 12px;
   }
-  .sc-btn:hover { background: #3a3258; border-color: #a78bfa; }
-  .sc-btn.danger { background: #6b2540; border-color: #a8345a; }
+  .calib-row input:focus { outline: none; border-color: #a78bfa; }
 
-  @keyframes pulseMarker {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.4); opacity: 0.7; }
-  }
-  .marker-pulse { animation: pulseMarker 1.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
-
-  @keyframes dashFlow {
-    to { stroke-dashoffset: -30; }
-  }
-  .flow-path {
-    fill: none;
-    stroke: #ff4da6;
-    stroke-width: 4;
-    stroke-dasharray: 10 6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    filter: drop-shadow(0 0 6px rgba(255, 77, 166, 0.9)) drop-shadow(0 0 12px rgba(255, 77, 166, 0.5));
-    animation: dashFlow 1s linear infinite;
-  }
-
-  .route-preview {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin: 14px 0;
-  }
-  .route-card {
-    background: #15131f;
+  .log-panel {
+    position: fixed;
+    top: 60px;
+    left: 12px;
+    width: 280px;
+    max-height: 180px;
+    overflow-y: auto;
+    background: rgba(15, 13, 23, 0.92);
     border: 1.5px solid #332d45;
     border-radius: 8px;
-    padding: 8px;
-    cursor: pointer;
-    transition: all .15s;
+    padding: 8px 10px;
+    z-index: 15;
+    font-size: 10px;
+    color: #8a82a0;
+    font-family: monospace;
+    display: none;
+  }
+  .log-panel.open { display: block; }
+  .log-panel .log-line { margin-bottom: 2px; line-height: 1.4; }
+  .log-panel .log-line.ok { color: #5acba8; }
+  .log-panel .log-line.err { color: #ff6b6b; }
+  .log-panel .log-line.info { color: #a78bfa; }
+
+  /* 미리보기 (OCR로 보내는 실제 영역 확인용) */
+  .preview {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ffd866;
+    border-radius: 4px;
+    padding: 4px;
+    z-index: 15;
+    display: none;
+  }
+  .preview.open { display: block; }
+  .preview canvas { display: block; max-width: 240px; }
+  .preview .preview-label {
+    font-size: 9px;
+    color: #ffd866;
+    margin-bottom: 2px;
     text-align: center;
   }
-  .route-card:hover {
-    border-color: #a78bfa;
-    transform: translateY(-2px);
-  }
-  .route-card .rc-title { font-size: 12px; font-weight: 800; color: #a78bfa; }
-  .route-card .rc-sub { font-size: 10px; color: #8a82a0; margin-top: 2px; }
-
-  @media (max-width: 640px) {
-    .floating-map { width: calc(100vw - 40px); }
-  }
 </style>
-<script src="nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="page-title">🗺 마쥬의 미로 네비</div>
-  <div class="page-sub">
-    플로팅 미니맵으로 경로를 확인하면서 인게임 플레이<br>
-    창 드래그 이동 / 최소화 / 층별 탭 지원
+<!-- 시작 화면 -->
+<div class="start-screen" id="start-screen">
+  <h1 class="title">🗺 마쥬의 미로 네비</h1>
+  <p class="subtitle">
+    화면 공유로 게임 좌표를 실시간 인식 (OCR)
+  </p>
+
+  <button class="btn" id="start-btn">🚀 시작하기</button>
+
+  <div class="info-box">
+    <b>📋 사용법</b>
+    <div class="step">1. <b>시작하기</b> 클릭 → 스톤에이지 창 선택</div>
+    <div class="step">2. 게임에서 <b>좌표 미니맵이 보이게</b> 유지 (동 XXX 남 XXX)</div>
+    <div class="step">3. 좌상단에 <b>실시간 좌표</b>가 표시됩니다</div>
+    <div class="step">4. 인식 안되면 우측 <b>영역 표시</b>로 영역 확인 후 <b>영역 조정</b></div>
   </div>
 
-  <div class="main-card">
-    <div style="font-size: 15px; font-weight: 800; margin-bottom: 10px;">🗺 미니맵 + 경로 보기</div>
-    <div style="font-size: 12px; color: #8a82a0; margin-bottom: 16px;">
-      뿌야 스톤에이지 지도 기반 · 층별 탭 · 흐르는 경로 애니메이션
-    </div>
-
-    <button class="main-btn" id="open-map-btn">🗺 미니맵 열기</button>
-    <button class="main-btn secondary" id="share-screen-btn">📺 게임 화면 공유</button>
-
-    <div class="info-box">
-      <b>🎯 사용법</b><br>
-      1. <b>미니맵 열기</b> 누르면 우측 상단에 지도가 뜹니다.<br>
-      2. 지도 헤더(보라색)를 <b>드래그</b>해서 원하는 위치로 이동할 수 있어요.<br>
-      3. <b>1층 / 2층 / 3층</b> 탭으로 각 층 경로를 전환.<br>
-      4. <b>분홍색 흐르는 선</b>이 경로를 안내합니다.<br>
-      5. <b>−</b> 버튼으로 최소화하고 <b>×</b>로 닫기.<br>
-      6. <b>게임 화면 공유</b>: 듀얼모니터 없어도 게임 창을 이 웹 안에서 볼 수 있음.
-    </div>
-
-    <div style="font-size: 13px; font-weight: 800; margin-top: 16px; color: #a78bfa;">📍 경로 요약</div>
-    <div class="route-preview">
-      <div class="route-card" onclick="openAndFocus(0)">
-        <div class="rc-title">1층</div>
-        <div class="rc-sub">시작점 → 2층 입구</div>
-      </div>
-      <div class="route-card" onclick="openAndFocus(1)">
-        <div class="rc-title">2층</div>
-        <div class="rc-sub">복잡한 미로 통과</div>
-      </div>
-      <div class="route-card" onclick="openAndFocus(2)">
-        <div class="rc-title">3층</div>
-        <div class="rc-sub">나선형 → 부르보 보스</div>
-      </div>
-    </div>
+  <div class="info-box" style="max-width: 500px; font-size: 11px;">
+    <b>💡 팁</b><br>
+    • 처음 OCR 엔진 로딩에 2~3초 걸립니다<br>
+    • 게임 창 크기가 달라지면 영역 재조정 필요<br>
+    • 영역 조정 후 <b>저장</b> 누르면 다음에도 유지됨
   </div>
 </div>
 
-<!-- 플로팅 미니맵 -->
-<div class="floating-map" id="floating-map">
-  <div class="map-header" id="map-header">
-    <span>🗺 마쥬의 미로</span>
-    <div class="map-header-btns">
-      <button class="map-header-btn" id="minimize-btn" title="최소화">−</button>
-      <button class="map-header-btn" id="close-map-btn" title="닫기">×</button>
-    </div>
-  </div>
-
-  <div class="map-tabs">
-    <button class="map-tab active" data-floor="0">1층</button>
-    <button class="map-tab" data-floor="1">2층</button>
-    <button class="map-tab" data-floor="2">3층</button>
-  </div>
-
-  <div class="map-body">
-    <div class="map-floor active" data-floor="0">
-      <img src="maze_images/maze_1f.png" alt="미로 1층">
-      <svg class="map-overlay" id="overlay-0" preserveAspectRatio="none" viewBox="0 0 600 290"></svg>
-    </div>
-    <div class="map-floor" data-floor="1">
-      <img src="maze_images/maze_2f.png" alt="미로 2층">
-      <svg class="map-overlay" id="overlay-1" preserveAspectRatio="none" viewBox="0 0 600 360"></svg>
-    </div>
-    <div class="map-floor" data-floor="2">
-      <img src="maze_images/maze_3f.png" alt="미로 3층">
-      <svg class="map-overlay" id="overlay-2" preserveAspectRatio="none" viewBox="0 0 600 230"></svg>
-    </div>
-  </div>
-
-  <div class="map-footer">
-    <div class="legend">
-      <div class="legend-item"><span class="legend-dot start"></span>시작</div>
-      <div class="legend-item"><span class="legend-dot end"></span>도착</div>
-      <div class="legend-item"><span class="legend-dot treasure"></span>보물</div>
-    </div>
-    <div id="map-floor-label">1층</div>
-  </div>
-</div>
-
-<!-- 화면 공유 컨테이너 -->
-<div class="stream-container" id="stream-container">
+<!-- 네비 화면 -->
+<div class="nav-screen" id="nav-screen">
   <video class="stream-video" id="stream-video" autoplay playsinline muted></video>
-</div>
-<div class="stream-controls" id="stream-controls">
-  <button class="sc-btn" id="stream-map-toggle">🗺 미니맵 토글</button>
-  <button class="sc-btn danger" id="stream-stop">⏹ 공유 종료</button>
+  <canvas class="ocr-canvas" id="ocr-canvas"></canvas>
+
+  <div class="calib-box" id="calib-box" data-label="좌표 영역" style="display:none;"></div>
+
+  <div class="coord-display" id="coord-display">
+    <span class="status"></span>
+    <span id="coord-text">준비 중...</span>
+  </div>
+
+  <!-- OCR에 실제로 보내지는 영역 미리보기 -->
+  <div class="preview" id="preview">
+    <div class="preview-label">OCR 입력 영역</div>
+    <canvas id="preview-canvas"></canvas>
+  </div>
+
+  <div class="log-panel" id="log-panel"></div>
+
+  <div class="calib-panel" id="calib-panel">
+    <h4>📐 좌표 영역 조정</h4>
+    <div class="muted">
+      게임 화면 기준 % 단위. 스샷 크기 898×702 기준 초기값:<br>
+      (x≈80.2, y≈26.4, w≈16.7, h≈3.6)
+    </div>
+    <div class="calib-row">
+      <label>X (%)</label>
+      <input type="number" id="calib-x" step="0.1" min="0" max="100">
+    </div>
+    <div class="calib-row">
+      <label>Y (%)</label>
+      <input type="number" id="calib-y" step="0.1" min="0" max="100">
+    </div>
+    <div class="calib-row">
+      <label>폭 (%)</label>
+      <input type="number" id="calib-w" step="0.1" min="1" max="50">
+    </div>
+    <div class="calib-row">
+      <label>높이 (%)</label>
+      <input type="number" id="calib-h" step="0.1" min="1" max="20">
+    </div>
+    <button class="btn small" id="calib-save" style="width: 100%; margin-top: 6px;">저장</button>
+    <button class="btn small secondary" id="calib-reset" style="width: 100%; margin-top: 4px;">기본값</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn small secondary" id="toggle-calib">📐 영역 조정</button>
+    <button class="btn small secondary" id="toggle-box">👁 영역 표시</button>
+    <button class="btn small secondary" id="toggle-preview">🔍 OCR 미리보기</button>
+    <button class="btn small secondary" id="toggle-log">📋 로그</button>
+    <button class="btn small danger" id="stop-btn">⏹ 종료</button>
+  </div>
 </div>
 
 <script>
-/* 경로 좌표 - 이미지 viewBox 기준
-   1층: 600 x 290
-   2층: 600 x 360
-   3층: 600 x 230
-   뿌야 이미지의 노란 선을 대략 따라가게 그려놓음 */
-
-const FLOOR_PATHS = {
-  0: {
-    start: { x: 15, y: 245, label: '시작' },
-    end:   { x: 580, y: 180, label: '2층 입구' },
-    // 1층 뿌야 경로 (왼쪽 아래 → 꼬불꼬불 → 오른쪽 2층 입구)
-    d: 'M 15 245 Q 30 250 50 245 L 80 245 L 80 225 L 50 225 L 50 200 L 110 200 L 110 180 L 75 180 L 75 155 L 150 155 L 150 130 L 190 130 L 190 105 L 240 105 L 240 75 L 300 75 L 300 55 L 370 55 L 370 40 L 440 40 L 440 70 L 475 70 L 475 100 L 510 100 L 510 135 L 545 135 L 545 165 L 580 180',
-    treasures: [
-      { x: 50, y: 220 },
-      { x: 190, y: 115 },
-      { x: 380, y: 50 },
-      { x: 510, y: 105 },
-    ],
-  },
-  1: {
-    // 2층: 오른쪽 위에서 시작(1층에서 내려옴) → 미로 통과 → 왼쪽 아래(3층 입구)
-    start: { x: 560, y: 30, label: '2층 진입' },
-    end:   { x: 15, y: 205, label: '3층 입구' },
-    // 2층은 꽤 복잡. 대략적 진행
-    d: 'M 560 30 L 560 60 L 520 60 L 520 90 L 470 90 L 470 130 L 430 130 L 430 160 L 390 160 L 390 195 L 340 195 L 340 170 L 290 170 L 290 205 L 240 205 L 240 240 L 180 240 L 180 270 L 130 270 L 130 240 L 90 240 L 90 210 L 40 210 L 15 205',
-    treasures: [
-      { x: 520, y: 60 },
-      { x: 400, y: 190 },
-      { x: 240, y: 210 },
-      { x: 100, y: 230 },
-    ],
-  },
-  2: {
-    // 3층: 왼쪽 위(시작) → 나선형 → 중앙(부르보)
-    start: { x: 25, y: 25, label: '시작' },
-    end:   { x: 310, y: 100, label: '🔥 부르보' },
-    d: 'M 25 25 L 50 30 Q 100 35 180 40 Q 280 45 370 55 Q 440 70 480 100 Q 515 135 505 170 Q 480 195 430 200 Q 360 205 290 195 Q 230 180 220 155 Q 225 130 260 115 Q 290 105 310 100',
-    treasures: [],
+const state = {
+  stream: null,
+  videoEl: null,
+  ocrWorker: null,
+  running: false,
+  lastCoord: null,
+  consecutiveFails: 0,
+  calib: {
+    x: 720 / 898 * 100,
+    y: 185 / 702 * 100,
+    w: (870 - 720) / 898 * 100,
+    h: (210 - 185) / 702 * 100,
   },
 };
 
-function renderOverlay(floorIdx) {
-  const path = FLOOR_PATHS[floorIdx];
-  const overlay = document.getElementById('overlay-' + floorIdx);
-  if (!overlay || !path) return;
+const $ = id => document.getElementById(id);
 
-  const treasuresSvg = (path.treasures || []).map(t => `
-    <circle cx="${t.x}" cy="${t.y}" r="5" fill="#ffd866" stroke="#fff" stroke-width="1.5" class="marker-pulse"/>
-  `).join('');
-
-  overlay.innerHTML = `
-    <path class="flow-path" d="${path.d}"/>
-    ${treasuresSvg}
-    <g>
-      <circle cx="${path.start.x}" cy="${path.start.y}" r="8" fill="#5acba8" stroke="#fff" stroke-width="2" class="marker-pulse"/>
-      <text x="${path.start.x + 12}" y="${path.start.y + 4}" fill="#5acba8" font-size="11" font-weight="800" style="paint-order: stroke; stroke: #000; stroke-width: 2;">${path.start.label}</text>
-    </g>
-    <g>
-      <circle cx="${path.end.x}" cy="${path.end.y}" r="8" fill="#ff6b6b" stroke="#fff" stroke-width="2" class="marker-pulse"/>
-      <text x="${path.end.x - 12}" y="${path.end.y - 12}" text-anchor="end" fill="#ff6b6b" font-size="11" font-weight="800" style="paint-order: stroke; stroke: #000; stroke-width: 2;">${path.end.label}</text>
-    </g>
-  `;
+function log(msg, type = '') {
+  const panel = $('log-panel');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + type;
+  const ts = new Date();
+  const t = `${ts.getMinutes().toString().padStart(2,'0')}:${ts.getSeconds().toString().padStart(2,'0')}`;
+  line.textContent = `[${t}] ${msg}`;
+  panel.appendChild(line);
+  while (panel.children.length > 50) panel.removeChild(panel.firstChild);
+  panel.scrollTop = panel.scrollHeight;
 }
 
-Object.keys(FLOOR_PATHS).forEach(renderOverlay);
+try {
+  const saved = JSON.parse(localStorage.getItem('maze_calib') || 'null');
+  if (saved && typeof saved === 'object') Object.assign(state.calib, saved);
+} catch(e) {}
 
-// 탭
-document.querySelectorAll('.map-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const floor = btn.dataset.floor;
-    document.querySelectorAll('.map-tab').forEach(t => t.classList.toggle('active', t === btn));
-    document.querySelectorAll('.map-floor').forEach(f => {
-      f.classList.toggle('active', f.dataset.floor === floor);
-    });
-    document.getElementById('map-floor-label').textContent = (+floor + 1) + '층';
-  });
-});
+function updateCalibInputs() {
+  $('calib-x').value = state.calib.x.toFixed(2);
+  $('calib-y').value = state.calib.y.toFixed(2);
+  $('calib-w').value = state.calib.w.toFixed(2);
+  $('calib-h').value = state.calib.h.toFixed(2);
+}
 
-// 드래그
-const floatingMap = document.getElementById('floating-map');
-const mapHeader = document.getElementById('map-header');
-let dragState = null;
-
-mapHeader.addEventListener('mousedown', e => {
-  if (e.target.closest('.map-header-btn')) return;
-  const rect = floatingMap.getBoundingClientRect();
-  dragState = { offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top };
-  e.preventDefault();
-});
-document.addEventListener('mousemove', e => {
-  if (!dragState) return;
-  const x = e.clientX - dragState.offsetX;
-  const y = e.clientY - dragState.offsetY;
-  const maxX = window.innerWidth - floatingMap.offsetWidth;
-  const maxY = window.innerHeight - floatingMap.offsetHeight;
-  floatingMap.style.left = Math.max(0, Math.min(maxX, x)) + 'px';
-  floatingMap.style.top = Math.max(0, Math.min(maxY, y)) + 'px';
-  floatingMap.style.right = 'auto';
-});
-document.addEventListener('mouseup', () => {
-  if (!dragState) return;
-  dragState = null;
-  const rect = floatingMap.getBoundingClientRect();
-  localStorage.setItem('maze_map_pos', JSON.stringify({
-    left: rect.left, top: rect.top,
-    minimized: floatingMap.classList.contains('minimized'),
-  }));
-});
-
-// 터치 드래그
-mapHeader.addEventListener('touchstart', e => {
-  if (e.target.closest('.map-header-btn')) return;
-  const t = e.touches[0];
-  const rect = floatingMap.getBoundingClientRect();
-  dragState = { offsetX: t.clientX - rect.left, offsetY: t.clientY - rect.top };
-}, { passive: true });
-document.addEventListener('touchmove', e => {
-  if (!dragState) return;
-  const t = e.touches[0];
-  const x = t.clientX - dragState.offsetX;
-  const y = t.clientY - dragState.offsetY;
-  const maxX = window.innerWidth - floatingMap.offsetWidth;
-  const maxY = window.innerHeight - floatingMap.offsetHeight;
-  floatingMap.style.left = Math.max(0, Math.min(maxX, x)) + 'px';
-  floatingMap.style.top = Math.max(0, Math.min(maxY, y)) + 'px';
-  floatingMap.style.right = 'auto';
-  e.preventDefault();
-}, { passive: false });
-document.addEventListener('touchend', () => { dragState = null; });
-
-// 열기/닫기/최소화
-function openMap() {
-  floatingMap.classList.add('open');
+async function start() {
   try {
-    const saved = JSON.parse(localStorage.getItem('maze_map_pos') || 'null');
-    if (saved) {
-      floatingMap.style.left = saved.left + 'px';
-      floatingMap.style.top = saved.top + 'px';
-      floatingMap.style.right = 'auto';
-      if (saved.minimized) floatingMap.classList.add('minimized');
-    }
-  } catch(e) {}
-}
-function closeMap() { floatingMap.classList.remove('open'); }
-
-document.getElementById('open-map-btn').addEventListener('click', openMap);
-document.getElementById('close-map-btn').addEventListener('click', closeMap);
-document.getElementById('minimize-btn').addEventListener('click', () => {
-  floatingMap.classList.toggle('minimized');
-});
-
-function openAndFocus(floorIdx) {
-  openMap();
-  document.querySelector(`.map-tab[data-floor="${floorIdx}"]`).click();
-}
-window.openAndFocus = openAndFocus;
-
-// 화면 공유
-let streamMedia = null;
-document.getElementById('share-screen-btn').addEventListener('click', async () => {
-  try {
-    streamMedia = await navigator.mediaDevices.getDisplayMedia({
-      video: { cursor: 'always' }, audio: false,
+    state.stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: 'always', frameRate: 30 },
+      audio: false,
     });
   } catch(e) {
-    alert('화면 공유가 취소되었거나 실패했습니다.\n' + e.message);
+    alert('화면 공유 취소/실패: ' + e.message);
     return;
   }
-  document.getElementById('stream-video').srcObject = streamMedia;
-  document.getElementById('stream-container').classList.add('active');
-  document.getElementById('stream-controls').classList.add('active');
-  openMap();
-  streamMedia.getVideoTracks()[0].onended = stopStream;
-});
 
-function stopStream() {
-  if (streamMedia) {
-    streamMedia.getTracks().forEach(t => t.stop());
-    streamMedia = null;
+  const video = $('stream-video');
+  video.srcObject = state.stream;
+  state.videoEl = video;
+
+  state.stream.getVideoTracks()[0].onended = stop;
+
+  $('start-screen').classList.add('hidden');
+  $('nav-screen').classList.add('active');
+
+  updateCalibInputs();
+  setCoordStatus('OCR 엔진 로딩...', '');
+
+  log('Tesseract 초기화 시작', 'info');
+  try {
+    state.ocrWorker = await Tesseract.createWorker('eng', 1, {
+      logger: m => {
+        if (m.status && m.progress !== undefined) {
+          setCoordStatus(`${m.status} ${Math.round(m.progress * 100)}%`, '');
+        }
+      },
+    });
+    await state.ocrWorker.setParameters({
+      tessedit_char_whitelist: '0123456789',
+      tessedit_pageseg_mode: '7', // SINGLE_LINE
+    });
+    log('Tesseract 준비 완료', 'ok');
+    setCoordStatus('인식 중...', 'active');
+  } catch(e) {
+    log('Tesseract 오류: ' + e.message, 'err');
+    setCoordStatus('OCR 오류', 'error');
+    return;
   }
-  document.getElementById('stream-video').srcObject = null;
-  document.getElementById('stream-container').classList.remove('active');
-  document.getElementById('stream-controls').classList.remove('active');
+
+  state.running = true;
+  video.addEventListener('loadedmetadata', () => {
+    log(`비디오 크기: ${video.videoWidth}x${video.videoHeight}`, 'info');
+    updateCalibBox();
+    setTimeout(() => ocrLoop(), 500);
+  });
+  // 이미 로드됐으면 바로
+  if (video.videoWidth) {
+    setTimeout(() => {
+      log(`비디오 크기: ${video.videoWidth}x${video.videoHeight}`, 'info');
+      updateCalibBox();
+      ocrLoop();
+    }, 500);
+  }
 }
 
-document.getElementById('stream-stop').addEventListener('click', stopStream);
-document.getElementById('stream-map-toggle').addEventListener('click', () => {
-  if (floatingMap.classList.contains('open')) closeMap();
-  else openMap();
+function stop() {
+  state.running = false;
+  if (state.stream) {
+    state.stream.getTracks().forEach(t => t.stop());
+    state.stream = null;
+  }
+  if (state.ocrWorker) {
+    state.ocrWorker.terminate().catch(() => {});
+    state.ocrWorker = null;
+  }
+  $('stream-video').srcObject = null;
+  $('nav-screen').classList.remove('active');
+  $('start-screen').classList.remove('hidden');
+}
+
+function updateCalibBox() {
+  const box = $('calib-box');
+  const video = $('stream-video');
+  if (!video || !video.videoWidth) return;
+
+  const rect = getVideoRect();
+  const x = rect.x + (state.calib.x / 100) * rect.width;
+  const y = rect.y + (state.calib.y / 100) * rect.height;
+  const w = (state.calib.w / 100) * rect.width;
+  const h = (state.calib.h / 100) * rect.height;
+
+  box.style.left = x + 'px';
+  box.style.top = y + 'px';
+  box.style.width = w + 'px';
+  box.style.height = h + 'px';
+}
+
+function getVideoRect() {
+  const video = $('stream-video');
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+  const cw = video.clientWidth;
+  const ch = video.clientHeight;
+  if (!vw || !vh) return { x: 0, y: 0, width: cw, height: ch };
+
+  const videoAspect = vw / vh;
+  const containerAspect = cw / ch;
+  let width, height, x, y;
+  if (videoAspect > containerAspect) {
+    width = cw;
+    height = cw / videoAspect;
+    x = 0;
+    y = (ch - height) / 2;
+  } else {
+    width = ch * videoAspect;
+    height = ch;
+    x = (cw - width) / 2;
+    y = 0;
+  }
+  return { x, y, width, height };
+}
+
+async function ocrLoop() {
+  if (!state.running) return;
+  const video = state.videoEl;
+  if (!video || !video.videoWidth) {
+    setTimeout(ocrLoop, 500);
+    return;
+  }
+
+  const canvas = $('ocr-canvas');
+  const ctx = canvas.getContext('2d');
+
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+  const cx = Math.floor((state.calib.x / 100) * vw);
+  const cy = Math.floor((state.calib.y / 100) * vh);
+  const cw = Math.floor((state.calib.w / 100) * vw);
+  const ch = Math.floor((state.calib.h / 100) * vh);
+
+  // 4배 확대 + 전처리 (흰 텍스트 강조)
+  const scale = 4;
+  canvas.width = cw * scale;
+  canvas.height = ch * scale;
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(video, cx, cy, cw, ch, 0, 0, cw * scale, ch * scale);
+
+  // 전처리: 밝기 기준 이진화 (숫자는 흰색 근처)
+  try {
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i+1], b = d[i+2];
+      // 흰 텍스트(R,G,B 모두 높음) → 검정
+      // 나머지 → 하양 (OCR은 검정 글씨/하양 배경 선호)
+      const bright = (r + g + b) / 3;
+      const isDigit = bright > 160;
+      const v = isDigit ? 0 : 255;
+      d[i] = d[i+1] = d[i+2] = v;
+    }
+    ctx.putImageData(imgData, 0, 0);
+  } catch(e) {
+    log('전처리 오류: ' + e.message, 'err');
+  }
+
+  // 미리보기에 복사
+  const preview = $('preview-canvas');
+  if ($('preview').classList.contains('open')) {
+    preview.width = canvas.width;
+    preview.height = canvas.height;
+    preview.getContext('2d').drawImage(canvas, 0, 0);
+  }
+
+  try {
+    const t0 = performance.now();
+    const { data } = await state.ocrWorker.recognize(canvas);
+    const ms = (performance.now() - t0).toFixed(0);
+    const text = (data.text || '').trim();
+    const parsed = parseCoord(text);
+
+    if (parsed) {
+      state.lastCoord = parsed;
+      state.consecutiveFails = 0;
+      setCoordStatus(`동 ${parsed.east} · 남 ${parsed.south}`, 'active');
+      log(`✓ "${text.replace(/\n/g, ' ')}" → 동${parsed.east} 남${parsed.south} (${ms}ms)`, 'ok');
+    } else {
+      state.consecutiveFails++;
+      if (state.consecutiveFails <= 3) {
+        setCoordStatus(`인식 중... (${text.replace(/\n/g, ' ') || '---'})`, '');
+      } else {
+        setCoordStatus('⚠ 인식 실패 - 영역 조정 필요', 'error');
+      }
+      log(`✗ "${text.replace(/\n/g, ' ')}" (${ms}ms)`, 'err');
+    }
+  } catch(e) {
+    log('OCR 오류: ' + e.message, 'err');
+  }
+
+  const delay = state.consecutiveFails > 3 ? 2000 : 700;
+  setTimeout(ocrLoop, delay);
+}
+
+function parseCoord(text) {
+  const cleaned = text.replace(/[^\d\s]/g, ' ').trim();
+  const parts = cleaned.split(/\s+/).filter(s => s.length > 0);
+  if (parts.length >= 2) {
+    const e = parseInt(parts[0]);
+    const s = parseInt(parts[1]);
+    if (!isNaN(e) && !isNaN(s) && e >= 0 && e < 10000 && s >= 0 && s < 10000) {
+      return { east: e, south: s };
+    }
+  }
+  return null;
+}
+
+function setCoordStatus(text, cls) {
+  const display = $('coord-display');
+  display.classList.remove('active', 'error');
+  if (cls) display.classList.add(cls);
+  $('coord-text').textContent = text;
+}
+
+// 이벤트
+$('start-btn').addEventListener('click', start);
+$('stop-btn').addEventListener('click', stop);
+$('toggle-calib').addEventListener('click', () => {
+  $('calib-panel').classList.toggle('open');
+  updateCalibInputs();
+});
+$('toggle-box').addEventListener('click', () => {
+  const box = $('calib-box');
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+  if (box.style.display === 'block') updateCalibBox();
+});
+$('toggle-preview').addEventListener('click', () => {
+  $('preview').classList.toggle('open');
+});
+$('toggle-log').addEventListener('click', () => {
+  $('log-panel').classList.toggle('open');
 });
 
+$('calib-save').addEventListener('click', () => {
+  const x = parseFloat($('calib-x').value);
+  const y = parseFloat($('calib-y').value);
+  const w = parseFloat($('calib-w').value);
+  const h = parseFloat($('calib-h').value);
+  if (isNaN(x) || isNaN(y) || isNaN(w) || isNaN(h)) {
+    alert('숫자를 정확히 입력해주세요');
+    return;
+  }
+  state.calib = { x, y, w, h };
+  localStorage.setItem('maze_calib', JSON.stringify(state.calib));
+  updateCalibBox();
+  log(`영역 저장: x=${x}% y=${y}% w=${w}% h=${h}%`, 'info');
+});
+
+$('calib-reset').addEventListener('click', () => {
+  state.calib = {
+    x: 720 / 898 * 100,
+    y: 185 / 702 * 100,
+    w: (870 - 720) / 898 * 100,
+    h: (210 - 185) / 702 * 100,
+  };
+  localStorage.removeItem('maze_calib');
+  updateCalibInputs();
+  updateCalibBox();
+  log('기본값으로 복원', 'info');
+});
+
+window.addEventListener('resize', updateCalibBox);
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && streamMedia) stopStream();
+  if (e.key === 'Escape' && state.running) stop();
 });
 </script>
 
