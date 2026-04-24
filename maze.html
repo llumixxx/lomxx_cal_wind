@@ -257,7 +257,12 @@
   <video class="stream-video" id="stream-video" autoplay playsinline muted></video>
   <canvas class="ocr-canvas" id="ocr-canvas"></canvas>
 
-  <div class="calib-box" id="calib-box" data-label="좌표 영역" style="display:none;"></div>
+  <div class="calib-box" id="calib-box-east" data-label="🟡 동" style="display:none;"></div>
+  <div class="calib-box" id="calib-box-south" data-label="🔵 남" style="display:none; border-color: #4da6ff; box-shadow: 0 0 8px rgba(77, 166, 255, 0.5);"></div>
+
+  <style>
+    #calib-box-south::before { color: #4da6ff !important; }
+  </style>
 
   <div class="coord-display" id="coord-display">
     <span class="status"></span>
@@ -266,8 +271,10 @@
 
   <!-- OCR에 실제로 보내지는 영역 미리보기 -->
   <div class="preview" id="preview">
-    <div class="preview-label">OCR 입력 영역</div>
-    <canvas id="preview-canvas"></canvas>
+    <div class="preview-label">동 (East)</div>
+    <canvas id="preview-canvas-east"></canvas>
+    <div class="preview-label" style="margin-top: 4px;">남 (South)</div>
+    <canvas id="preview-canvas-south"></canvas>
   </div>
 
   <div class="log-panel" id="log-panel"></div>
@@ -275,26 +282,51 @@
   <div class="calib-panel" id="calib-panel">
     <h4>📐 좌표 영역 조정</h4>
     <div class="muted">
-      게임 화면 기준 % 단위. 스샷 크기 898×702 기준 초기값:<br>
-      (x≈80.2, y≈26.4, w≈16.7, h≈3.6)
+      <b>동(East)</b>과 <b>남(South)</b> 숫자 영역을 각각 설정합니다.<br>
+      화면의 노란/파란 박스를 "숫자에만" 맞추세요.
     </div>
-    <div class="calib-row">
-      <label>X (%)</label>
-      <input type="number" id="calib-x" step="0.1" min="0" max="100">
+
+    <div style="margin-top: 10px; padding: 8px; background: #2a2441; border-radius: 6px;">
+      <div style="color: #ffd866; font-size: 12px; font-weight: 800; margin-bottom: 6px;">🟡 동(East) 영역</div>
+      <div class="calib-row">
+        <label>X (%)</label>
+        <input type="number" id="east-x" step="0.1" min="0" max="100">
+      </div>
+      <div class="calib-row">
+        <label>Y (%)</label>
+        <input type="number" id="east-y" step="0.1" min="0" max="100">
+      </div>
+      <div class="calib-row">
+        <label>폭 (%)</label>
+        <input type="number" id="east-w" step="0.1" min="1" max="50">
+      </div>
+      <div class="calib-row">
+        <label>높이 (%)</label>
+        <input type="number" id="east-h" step="0.1" min="1" max="20">
+      </div>
     </div>
-    <div class="calib-row">
-      <label>Y (%)</label>
-      <input type="number" id="calib-y" step="0.1" min="0" max="100">
+
+    <div style="margin-top: 8px; padding: 8px; background: #2a2441; border-radius: 6px;">
+      <div style="color: #4da6ff; font-size: 12px; font-weight: 800; margin-bottom: 6px;">🔵 남(South) 영역</div>
+      <div class="calib-row">
+        <label>X (%)</label>
+        <input type="number" id="south-x" step="0.1" min="0" max="100">
+      </div>
+      <div class="calib-row">
+        <label>Y (%)</label>
+        <input type="number" id="south-y" step="0.1" min="0" max="100">
+      </div>
+      <div class="calib-row">
+        <label>폭 (%)</label>
+        <input type="number" id="south-w" step="0.1" min="1" max="50">
+      </div>
+      <div class="calib-row">
+        <label>높이 (%)</label>
+        <input type="number" id="south-h" step="0.1" min="1" max="20">
+      </div>
     </div>
-    <div class="calib-row">
-      <label>폭 (%)</label>
-      <input type="number" id="calib-w" step="0.1" min="1" max="50">
-    </div>
-    <div class="calib-row">
-      <label>높이 (%)</label>
-      <input type="number" id="calib-h" step="0.1" min="1" max="20">
-    </div>
-    <button class="btn small" id="calib-save" style="width: 100%; margin-top: 6px;">저장</button>
+
+    <button class="btn small" id="calib-save" style="width: 100%; margin-top: 8px;">저장</button>
     <button class="btn small secondary" id="calib-reset" style="width: 100%; margin-top: 4px;">기본값</button>
   </div>
 
@@ -316,10 +348,16 @@ const state = {
   lastCoord: null,
   consecutiveFails: 0,
   calib: {
-    x: 720 / 898 * 100,
-    y: 185 / 702 * 100,
-    w: (870 - 720) / 898 * 100,
-    h: (210 - 185) / 702 * 100,
+    // 동(East) 영역: "동" 아이콘 뒤 숫자만
+    eastX: 758 / 898 * 100,    // 84.41%
+    eastY: 185 / 702 * 100,    // 26.35%
+    eastW: 38 / 898 * 100,     // 4.23%
+    eastH: 22 / 702 * 100,     // 3.13%
+    // 남(South) 영역: "남" 아이콘 뒤 숫자만
+    southX: 820 / 898 * 100,   // 91.31%
+    southY: 185 / 702 * 100,   // 26.35%
+    southW: 38 / 898 * 100,    // 4.23%
+    southH: 22 / 702 * 100,    // 3.13%
   },
 };
 
@@ -343,10 +381,14 @@ try {
 } catch(e) {}
 
 function updateCalibInputs() {
-  $('calib-x').value = state.calib.x.toFixed(2);
-  $('calib-y').value = state.calib.y.toFixed(2);
-  $('calib-w').value = state.calib.w.toFixed(2);
-  $('calib-h').value = state.calib.h.toFixed(2);
+  $('east-x').value = state.calib.eastX.toFixed(2);
+  $('east-y').value = state.calib.eastY.toFixed(2);
+  $('east-w').value = state.calib.eastW.toFixed(2);
+  $('east-h').value = state.calib.eastH.toFixed(2);
+  $('south-x').value = state.calib.southX.toFixed(2);
+  $('south-y').value = state.calib.southY.toFixed(2);
+  $('south-w').value = state.calib.southW.toFixed(2);
+  $('south-h').value = state.calib.southH.toFixed(2);
 }
 
 async function start() {
@@ -425,20 +467,22 @@ function stop() {
 }
 
 function updateCalibBox() {
-  const box = $('calib-box');
   const video = $('stream-video');
   if (!video || !video.videoWidth) return;
 
   const rect = getVideoRect();
-  const x = rect.x + (state.calib.x / 100) * rect.width;
-  const y = rect.y + (state.calib.y / 100) * rect.height;
-  const w = (state.calib.w / 100) * rect.width;
-  const h = (state.calib.h / 100) * rect.height;
 
-  box.style.left = x + 'px';
-  box.style.top = y + 'px';
-  box.style.width = w + 'px';
-  box.style.height = h + 'px';
+  const boxE = $('calib-box-east');
+  boxE.style.left = (rect.x + (state.calib.eastX / 100) * rect.width) + 'px';
+  boxE.style.top = (rect.y + (state.calib.eastY / 100) * rect.height) + 'px';
+  boxE.style.width = ((state.calib.eastW / 100) * rect.width) + 'px';
+  boxE.style.height = ((state.calib.eastH / 100) * rect.height) + 'px';
+
+  const boxS = $('calib-box-south');
+  boxS.style.left = (rect.x + (state.calib.southX / 100) * rect.width) + 'px';
+  boxS.style.top = (rect.y + (state.calib.southY / 100) * rect.height) + 'px';
+  boxS.style.width = ((state.calib.southW / 100) * rect.width) + 'px';
+  boxS.style.height = ((state.calib.southH / 100) * rect.height) + 'px';
 }
 
 function getVideoRect() {
@@ -474,69 +518,35 @@ async function ocrLoop() {
     return;
   }
 
-  const canvas = $('ocr-canvas');
-  const ctx = canvas.getContext('2d');
-
   const vw = video.videoWidth;
   const vh = video.videoHeight;
-  const cx = Math.floor((state.calib.x / 100) * vw);
-  const cy = Math.floor((state.calib.y / 100) * vh);
-  const cw = Math.floor((state.calib.w / 100) * vw);
-  const ch = Math.floor((state.calib.h / 100) * vh);
-
-  // 4배 확대 + 전처리 (흰 텍스트 강조)
-  const scale = 4;
-  canvas.width = cw * scale;
-  canvas.height = ch * scale;
-  ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(video, cx, cy, cw, ch, 0, 0, cw * scale, ch * scale);
-
-  // 전처리: 밝기 기준 이진화 (숫자는 흰색 근처)
-  try {
-    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const d = imgData.data;
-    for (let i = 0; i < d.length; i += 4) {
-      const r = d[i], g = d[i+1], b = d[i+2];
-      // 흰 텍스트(R,G,B 모두 높음) → 검정
-      // 나머지 → 하양 (OCR은 검정 글씨/하양 배경 선호)
-      const bright = (r + g + b) / 3;
-      const isDigit = bright > 160;
-      const v = isDigit ? 0 : 255;
-      d[i] = d[i+1] = d[i+2] = v;
-    }
-    ctx.putImageData(imgData, 0, 0);
-  } catch(e) {
-    log('전처리 오류: ' + e.message, 'err');
-  }
-
-  // 미리보기에 복사
-  const preview = $('preview-canvas');
-  if ($('preview').classList.contains('open')) {
-    preview.width = canvas.width;
-    preview.height = canvas.height;
-    preview.getContext('2d').drawImage(canvas, 0, 0);
-  }
 
   try {
     const t0 = performance.now();
-    const { data } = await state.ocrWorker.recognize(canvas);
+    // 동/남 각각 OCR (병렬로)
+    const [eastText, southText] = await Promise.all([
+      recognizeRegion(video, vw, vh, state.calib.eastX, state.calib.eastY, state.calib.eastW, state.calib.eastH, 'east'),
+      recognizeRegion(video, vw, vh, state.calib.southX, state.calib.southY, state.calib.southW, state.calib.southH, 'south'),
+    ]);
     const ms = (performance.now() - t0).toFixed(0);
-    const text = (data.text || '').trim();
-    const parsed = parseCoord(text);
 
-    if (parsed) {
-      state.lastCoord = parsed;
+    const east = parseNumber(eastText);
+    const south = parseNumber(southText);
+
+    if (east !== null && south !== null) {
+      state.lastCoord = { east, south };
       state.consecutiveFails = 0;
-      setCoordStatus(`동 ${parsed.east} · 남 ${parsed.south}`, 'active');
-      log(`✓ "${text.replace(/\n/g, ' ')}" → 동${parsed.east} 남${parsed.south} (${ms}ms)`, 'ok');
+      setCoordStatus(`동 ${east} · 남 ${south}`, 'active');
+      log(`✓ E:"${eastText}"=${east}, S:"${southText}"=${south} (${ms}ms)`, 'ok');
     } else {
       state.consecutiveFails++;
+      const failStr = `E:"${eastText}"${east===null?'✗':'✓'} S:"${southText}"${south===null?'✗':'✓'}`;
       if (state.consecutiveFails <= 3) {
-        setCoordStatus(`인식 중... (${text.replace(/\n/g, ' ') || '---'})`, '');
+        setCoordStatus(`인식 중... ${east ?? '?'} / ${south ?? '?'}`, '');
       } else {
-        setCoordStatus('⚠ 인식 실패 - 영역 조정 필요', 'error');
+        setCoordStatus('⚠ 인식 실패 - 영역 조정', 'error');
       }
-      log(`✗ "${text.replace(/\n/g, ' ')}" (${ms}ms)`, 'err');
+      log(`✗ ${failStr} (${ms}ms)`, 'err');
     }
   } catch(e) {
     log('OCR 오류: ' + e.message, 'err');
@@ -546,17 +556,51 @@ async function ocrLoop() {
   setTimeout(ocrLoop, delay);
 }
 
-function parseCoord(text) {
-  const cleaned = text.replace(/[^\d\s]/g, ' ').trim();
-  const parts = cleaned.split(/\s+/).filter(s => s.length > 0);
-  if (parts.length >= 2) {
-    const e = parseInt(parts[0]);
-    const s = parseInt(parts[1]);
-    if (!isNaN(e) && !isNaN(s) && e >= 0 && e < 10000 && s >= 0 && s < 10000) {
-      return { east: e, south: s };
+async function recognizeRegion(video, vw, vh, x, y, w, h, which) {
+  const canvas = document.createElement('canvas');
+  const cx = Math.floor((x / 100) * vw);
+  const cy = Math.floor((y / 100) * vh);
+  const cw = Math.floor((w / 100) * vw);
+  const ch = Math.floor((h / 100) * vh);
+
+  const scale = 5; // 좀 더 크게 확대
+  canvas.width = cw * scale;
+  canvas.height = ch * scale;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(video, cx, cy, cw, ch, 0, 0, cw * scale, ch * scale);
+
+  // 전처리
+  try {
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const bright = (d[i] + d[i+1] + d[i+2]) / 3;
+      const v = bright > 160 ? 0 : 255;
+      d[i] = d[i+1] = d[i+2] = v;
     }
+    ctx.putImageData(imgData, 0, 0);
+  } catch(e) {}
+
+  // 미리보기
+  const prevId = which === 'east' ? 'preview-canvas-east' : 'preview-canvas-south';
+  const preview = $(prevId);
+  if ($('preview').classList.contains('open') && preview) {
+    preview.width = canvas.width;
+    preview.height = canvas.height;
+    preview.getContext('2d').drawImage(canvas, 0, 0);
   }
-  return null;
+
+  const { data } = await state.ocrWorker.recognize(canvas);
+  return (data.text || '').trim();
+}
+
+function parseNumber(text) {
+  const cleaned = text.replace(/[^\d]/g, '');
+  if (cleaned.length === 0) return null;
+  const n = parseInt(cleaned);
+  if (isNaN(n) || n < 0 || n > 9999) return null;
+  return n;
 }
 
 function setCoordStatus(text, cls) {
@@ -574,9 +618,12 @@ $('toggle-calib').addEventListener('click', () => {
   updateCalibInputs();
 });
 $('toggle-box').addEventListener('click', () => {
-  const box = $('calib-box');
-  box.style.display = box.style.display === 'none' ? 'block' : 'none';
-  if (box.style.display === 'block') updateCalibBox();
+  const boxE = $('calib-box-east');
+  const boxS = $('calib-box-south');
+  const show = boxE.style.display === 'none';
+  boxE.style.display = show ? 'block' : 'none';
+  boxS.style.display = show ? 'block' : 'none';
+  if (show) updateCalibBox();
 });
 $('toggle-preview').addEventListener('click', () => {
   $('preview').classList.toggle('open');
@@ -586,26 +633,35 @@ $('toggle-log').addEventListener('click', () => {
 });
 
 $('calib-save').addEventListener('click', () => {
-  const x = parseFloat($('calib-x').value);
-  const y = parseFloat($('calib-y').value);
-  const w = parseFloat($('calib-w').value);
-  const h = parseFloat($('calib-h').value);
-  if (isNaN(x) || isNaN(y) || isNaN(w) || isNaN(h)) {
-    alert('숫자를 정확히 입력해주세요');
-    return;
+  const nums = {
+    eastX: parseFloat($('east-x').value),
+    eastY: parseFloat($('east-y').value),
+    eastW: parseFloat($('east-w').value),
+    eastH: parseFloat($('east-h').value),
+    southX: parseFloat($('south-x').value),
+    southY: parseFloat($('south-y').value),
+    southW: parseFloat($('south-w').value),
+    southH: parseFloat($('south-h').value),
+  };
+  for (const k in nums) {
+    if (isNaN(nums[k])) { alert('숫자를 정확히 입력'); return; }
   }
-  state.calib = { x, y, w, h };
+  state.calib = nums;
   localStorage.setItem('maze_calib', JSON.stringify(state.calib));
   updateCalibBox();
-  log(`영역 저장: x=${x}% y=${y}% w=${w}% h=${h}%`, 'info');
+  log(`저장됨`, 'info');
 });
 
 $('calib-reset').addEventListener('click', () => {
   state.calib = {
-    x: 720 / 898 * 100,
-    y: 185 / 702 * 100,
-    w: (870 - 720) / 898 * 100,
-    h: (210 - 185) / 702 * 100,
+    eastX: 758 / 898 * 100,
+    eastY: 185 / 702 * 100,
+    eastW: 38 / 898 * 100,
+    eastH: 22 / 702 * 100,
+    southX: 820 / 898 * 100,
+    southY: 185 / 702 * 100,
+    southW: 38 / 898 * 100,
+    southH: 22 / 702 * 100,
   };
   localStorage.removeItem('maze_calib');
   updateCalibInputs();
