@@ -85,9 +85,9 @@
   .title-bar h1 {
     font-family: 'Jua', sans-serif;
     font-size: 30px;
-    color: #fff;
+    color: var(--pink-deep);
     margin: 0;
-    text-shadow: 2px 2px 0 var(--pink-deep), 4px 4px 0 rgba(0,0,0,0.2);
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 rgba(212,71,122,0.3);
     letter-spacing: 2px;
   }
   .title-bar .sub { font-size: 13px; color: var(--text); margin-top: 4px; font-weight: 700; }
@@ -185,8 +185,8 @@
   .title-screen .big-title {
     font-family: 'Jua', sans-serif;
     font-size: 52px;
-    color: #fff;
-    text-shadow: 3px 3px 0 var(--pink-deep), 6px 6px 0 rgba(0,0,0,0.2);
+    color: var(--pink-deep);
+    text-shadow: 3px 3px 0 #fff, 6px 6px 0 rgba(212,71,122,0.4);
     letter-spacing: 3px;
     margin-bottom: 10px;
     line-height: 1.1;
@@ -602,7 +602,168 @@
   }
   .schedule-footer .btn { flex: 1; }
 
-  /* 액션 선택 팝업 */
+  /* ═════════════════════════════════════════════
+     새 스케줄 빌더: 활동 선택 후 요일 다중 선택
+  ═════════════════════════════════════════════ */
+  .sb-preset-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .sb-preset-row .btn {
+    padding: 7px 12px;
+    font-size: 12px;
+    border-radius: 16px;
+  }
+
+  .sb-hint {
+    text-align: center;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .sb-hint.active {
+    background: linear-gradient(180deg, var(--pink-light), #fff);
+    border: 2px solid var(--pink-deep);
+    padding: 6px 12px;
+    border-radius: 12px;
+    color: var(--pink-deep);
+    display: inline-block;
+    margin: 0 auto 8px;
+  }
+  .sb-hint-wrap { text-align: center; }
+
+  .sb-day-check {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--pink-deep);
+  }
+  .schedule-day.picking {
+    border-color: var(--mint-deep);
+    box-shadow: 0 0 0 2px var(--mint-deep), 0 4px 0 var(--mint-deep);
+    animation: pickingPulse 1s ease-in-out infinite;
+  }
+  @keyframes pickingPulse {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .schedule-day.picking .sb-day-check {
+    background: var(--mint-deep);
+    color: #fff;
+    border-color: var(--mint-deep);
+  }
+  .schedule-day.picking .sb-day-check::before {
+    content: '✓';
+  }
+
+  /* 활동 목록 패널 (좌측 액션 팔레트) */
+  .action-palette {
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--border-pink);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 5px 0 var(--pink), 0 10px 20px rgba(212,71,122,0.2);
+    margin-top: 14px;
+  }
+  .action-palette-title {
+    font-family: 'Jua';
+    font-size: 15px;
+    color: var(--pink-deep);
+    text-align: center;
+    margin: 0 0 8px;
+    font-weight: 800;
+  }
+  .ap-hint {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .ap-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 6px;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .ap-item {
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 2px solid var(--border-pink);
+    border-radius: 12px;
+    padding: 6px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 3px 0 var(--pink);
+    transition: all .15s;
+  }
+  .ap-item:hover:not(.disabled) {
+    border-color: var(--pink-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 var(--pink-deep);
+  }
+  .ap-item.disabled { opacity: 0.4; cursor: not-allowed; }
+  .ap-item.selected {
+    border-color: var(--mint-deep);
+    background: linear-gradient(180deg, #eaffef, #fff);
+    box-shadow: 0 3px 0 var(--mint-deep), 0 0 0 2px var(--mint-deep);
+  }
+  .ap-icon { width: 44px; height: 44px; margin: 0 auto; }
+  .ap-icon svg { width: 100%; height: 100%; }
+  .ap-name {
+    font-family: 'Jua';
+    font-size: 12px;
+    color: var(--pink-deep);
+    font-weight: 800;
+    margin-top: 2px;
+  }
+  .ap-cost {
+    font-size: 10px;
+    color: var(--gold-deep);
+    font-family: 'Jua';
+    font-weight: 800;
+  }
+  .ap-req {
+    font-size: 9px;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  /* 선택된 활동 표시 */
+  .selected-action-display {
+    display: none;
+    background: linear-gradient(180deg, #eaffef, #fff);
+    border: 2px solid var(--mint-deep);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-family: 'Jua';
+    font-size: 14px;
+    color: var(--mint-deep);
+    font-weight: 800;
+    text-align: center;
+    animation: fadeIn 0.3s;
+  }
+  .selected-action-display.active { display: flex; align-items: center; gap: 10px; justify-content: center; }
+  .selected-action-display .sa-icon { width: 36px; height: 36px; flex-shrink: 0; }
+  .selected-action-display .sa-icon svg { width: 100%; height: 100%; }
+
+
   .action-chooser-overlay {
     position: fixed;
     inset: 0;
@@ -1234,8 +1395,8 @@
   .ending-screen .ep-title {
     font-family: 'Jua';
     font-size: 48px;
-    color: #fff;
-    text-shadow: 2px 2px 0 var(--pink-deep), 4px 4px 0 rgba(0,0,0,0.25);
+    color: var(--pink-deep);
+    text-shadow: 3px 3px 0 #fff, 6px 6px 0 rgba(212,71,122,0.3);
     margin-bottom: 10px;
   }
   .ending-screen .ep-pet-img {
@@ -1339,26 +1500,9 @@
 <div class="wrap">
   <div class="title-bar">
     <h1>👑 PRINCESS PET MAKER</h1>
-    <div class="sub">주간 스케줄을 짜서 펫을 키우세요 💕</div>
+    <div class="sub">주간 스케줄을 짜서 펫을 21주간 키우세요 💕</div>
   </div>
   <div id="app"></div>
-</div>
-
-<!-- 액션 선택 오버레이 (클릭으로 스케줄 채우기) -->
-<div class="action-chooser-overlay" id="chooser-overlay">
-  <div class="action-chooser-panel" id="chooser-panel">
-    <div class="action-chooser-title" id="chooser-title">💖 활동 선택 - ?요일</div>
-    <div class="action-tabs">
-      <button class="action-tab active" data-tab="train">🏋️ 훈련</button>
-      <button class="action-tab" data-tab="job">💼 일</button>
-      <button class="action-tab" data-tab="rest">🛌 휴식</button>
-    </div>
-    <div class="action-items-grid" id="chooser-grid"></div>
-    <div class="action-chooser-footer">
-      <button class="btn lavender full" id="chooser-clear">🗑 비우기</button>
-      <button class="btn primary full" id="chooser-cancel">❌ 취소</button>
-    </div>
-  </div>
 </div>
 
 <!-- 주간 실행 애니메이션 풀스크린 -->
@@ -1609,10 +1753,10 @@ const EVENTS = [
 ];
 
 const TOURNAMENTS = [
-  { week: 13, name: '🌸 봄 사냥 축제', stat: 'str' },
-  { week: 26, name: '🌊 여름 수영 대회', stat: 'agi' },
-  { week: 39, name: '🍂 가을 풍요제', stat: 'cute' },
-  { week: 50, name: '❄️ 겨울 극한 챔피언', stat: 'overall' },
+  { week: 5, name: '🌸 봄 사냥 축제', stat: 'str' },
+  { week: 11, name: '🌊 여름 수영 대회', stat: 'agi' },
+  { week: 16, name: '🍂 가을 풍요제', stat: 'cute' },
+  { week: 20, name: '❄️ 겨울 극한 챔피언', stat: 'overall' },
 ];
 
 /* ═══════════════════════════════════════════════════════════
@@ -1734,15 +1878,15 @@ function decideEnding(p) {
   if (p.hp <= 0) return { id: 'death', emoji: '☠️', name: '요절', desc: `${p.name}은(는) 너무 지쳐 쓰러졌다.\n모든 것이 끝났다...`, color: '#888' };
   if (p.happy <= 10 && p.bond <= 20) return { id: 'runaway', emoji: '😱', name: '가출 엔딩', desc: `${p.name}은(는) 조용히 떠났다.\n돌아오지 않았다...`, color: '#886' };
   if (p.stress >= 90) return { id: 'broken', emoji: '💔', name: '지친 펫', desc: `${p.name}은(는) 마음을 닫았다.`, color: '#c66' };
-  if (p.bond >= 90 && p.happy >= 70) return { id: 'soulmate', emoji: '💕', name: '영혼의 동반자', desc: `${p.name}은(는) 너와 평생을 함께하기로 했다.\n부족에서 가장 행복한 펫!`, color: '#ff6b9f' };
-  if (p.wild >= 80 && p.bond < 30) return { id: 'wildbeast', emoji: '👹', name: '포악한 야수', desc: `${p.name}은(는) 야생에 완전히 지배됐다.`, color: '#d84040' };
-  if (p.elem >= 80) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.`, color: '#9a6fff' };
-  if (p.str >= 60 && p.agi >= 60 && p.hp >= 60 && p.cute >= 60) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 완벽한 펫이 되었다.\n전설이다!`, color: '#ffc640' };
-  if (p.cute >= 80) return { id: 'star', emoji: '🎪', name: '부족의 스타', desc: `${p.name}은(는) 부족의 연예인이 되었다.`, color: '#ff9ac0' };
-  if (p.int >= 70) return { id: 'sage', emoji: '📚', name: '현자의 펫', desc: `${p.name}은(는) 지혜로운 조언자가 되었다.`, color: '#7fd47f' };
-  if (p.str >= 70 && p.hp >= 70) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 수호자.`, color: '#d4943a' };
-  if (p.str >= 60 && p.agi >= 60) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 사냥 파트너.`, color: '#c4743a' };
-  if (p.bond >= 60) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족.`, color: '#a0d4a0' };
+  if (p.bond >= 75 && p.happy >= 60) return { id: 'soulmate', emoji: '💕', name: '영혼의 동반자', desc: `${p.name}은(는) 너와 평생을 함께하기로 했다.\n부족에서 가장 행복한 펫!`, color: '#ff6b9f' };
+  if (p.wild >= 70 && p.bond < 30) return { id: 'wildbeast', emoji: '👹', name: '포악한 야수', desc: `${p.name}은(는) 야생에 완전히 지배됐다.`, color: '#d84040' };
+  if (p.elem >= 65) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.`, color: '#9a6fff' };
+  if (p.str >= 50 && p.agi >= 50 && p.hp >= 50 && p.cute >= 50) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 완벽한 펫이 되었다.\n전설이다!`, color: '#ffc640' };
+  if (p.cute >= 65) return { id: 'star', emoji: '🎪', name: '부족의 스타', desc: `${p.name}은(는) 부족의 연예인이 되었다.`, color: '#ff9ac0' };
+  if (p.int >= 55) return { id: 'sage', emoji: '📚', name: '현자의 펫', desc: `${p.name}은(는) 지혜로운 조언자가 되었다.`, color: '#7fd47f' };
+  if (p.str >= 55 && p.hp >= 55) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 수호자.`, color: '#d4943a' };
+  if (p.str >= 50 && p.agi >= 50) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 사냥 파트너.`, color: '#c4743a' };
+  if (p.bond >= 50) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족.`, color: '#a0d4a0' };
   return { id: 'normal', emoji: '🏠', name: '평범한 부족펫', desc: `${p.name}은(는) 평범한 부족 일원.`, color: '#b0a080' };
 }
 
@@ -1776,13 +1920,16 @@ function pushLog(msg, cls = '') {
   state.log.push({ msg, cls });
   if (state.log.length > 40) state.log.shift();
 }
-function getMonth(week) { return Math.min(12, Math.ceil(week / 4.33)); }
+const TOTAL_WEEKS = 21;
+// 21주를 4계절로 쪼갬 (봄 5 / 여름 5 / 가을 5 / 겨울 6)
+function getMonth(week) {
+  // 간단하게 주수를 그대로 표시하되, "차수"로
+  return week;
+}
 function getSeason(week) {
-  const m = getMonth(week);
-  if (m <= 2) return 'winter';
-  if (m <= 5) return 'spring';
-  if (m <= 8) return 'summer';
-  if (m <= 11) return 'autumn';
+  if (week <= 5) return 'spring';
+  if (week <= 11) return 'summer';
+  if (week <= 16) return 'autumn';
   return 'winter';
 }
 function getAttrTags(pet) {
@@ -1870,7 +2017,7 @@ function renderTitle() {
     </div>
     <div class="tagline">
       원시 부족의 아이가 된 너.<br>
-      새끼 펫 한 마리를 <b style="color:var(--pink-deep);">1년간</b> 키워보자.<br>
+      새끼 펫 한 마리를 <b style="color:var(--pink-deep);">21주간</b> 키워보자.<br>
       주간 스케줄을 짜서 훈련/일/휴식을 배분해!
     </div>
     <div class="menu-btns">
@@ -1903,7 +2050,7 @@ function renderStarter() {
   screen.innerHTML = `
     <div class="panel-deco tl">💕</div><div class="panel-deco tr">🌟</div>
     <h2>🐣 새끼펫 선택 🐣</h2>
-    <div class="hint">부족의 전통에 따라 한 마리 새끼펫을 골라 돌보게 된다.<br>1년 후 이 펫은 어떤 존재가 될까?</div>
+    <div class="hint">부족의 전통에 따라 한 마리 새끼펫을 골라 돌보게 된다.<br>21주 후 이 펫은 어떤 존재가 될까?</div>
     <div class="starter-grid" id="starter-grid"></div>
     <div style="text-align:center;">
       <button class="btn lavender" id="btn-reroll">🎲 다시 뽑기</button>
@@ -1997,7 +2144,7 @@ function beginGame(petData, customName) {
   state.rival = chooseRival();
   updateRivalMsg(state.pet, state.rival);
   state.scene = 'playing';
-  pushLog(`${customName}과(와)의 1년이 시작되었다!`, 'info');
+  pushLog(`${customName}과(와)의 21주가 시작되었다!`, 'info');
   pushLog(`🎯 라이벌 ${state.rival.name}이(가) 등장했다!`, 'rival');
   render();
 }
@@ -2033,7 +2180,7 @@ function renderPetStatus(p) {
   const panel = document.createElement('div');
   panel.className = 'pet-status-panel';
   panel.innerHTML = `
-    <div class="month-badge">📅 ${month}월 · ${state.week}/52주</div>
+    <div class="month-badge">📅 ${state.week}/${TOTAL_WEEKS} 주차</div>
     <div class="pet-header">
       <div class="pet-big-sprite-wrap">
         <img src="${p.image}" class="${mood}" id="pet-sprite" onerror="this.style.visibility='hidden'">
@@ -2048,7 +2195,7 @@ function renderPetStatus(p) {
       <div class="stones-big">💎 ${p.stones}</div>
     </div>
     <div class="week-progress">
-      <div class="week-progress-fill" style="width:${(state.week/52)*100}%"></div>
+      <div class="week-progress-fill" style="width:${(state.week/TOTAL_WEEKS)*100}%"></div>
     </div>
     <div class="stats-grid">
       ${statBar('💪 근력', 'str', p.str, 100)}
@@ -2097,20 +2244,64 @@ function statBar(label, key, val, max, cls = '') {
   return `<div class="stat-row"><div class="stat-label">${label}</div><div class="stat-bar"><div class="stat-fill ${cls}" style="width:${pct}%"></div></div><div class="stat-value">${val}</div></div>`;
 }
 
-/* 스케줄 패널 */
+/* ────────────────────────────────────────────
+   스케줄 빌더 상태
+──────────────────────────────────────────── */
+let pickingAction = null; // { type, id } 선택된 활동
+
 function renderSchedulePanel() {
   const panel = document.createElement('div');
   panel.className = 'schedule-panel';
   const allFilled = state.schedule.every(s => s !== null);
+  const emptyCount = state.schedule.filter(s => s === null).length;
+
+  // 활동 선택 디스플레이
+  let selActionHtml = '';
+  if (pickingAction) {
+    const action = getActionById(pickingAction.type, pickingAction.id);
+    const svg = ACTION_SVG[pickingAction.id] || '';
+    selActionHtml = `
+      <div class="selected-action-display active">
+        <div class="sa-icon">${svg}</div>
+        <span>🎯 <b>${action.name}</b> 선택됨 - 적용할 요일을 클릭하세요!</span>
+      </div>
+    `;
+  }
+
   panel.innerHTML = `
     <div class="panel-deco tl">📅</div>
     <h3 class="schedule-title">💖 이번 주 스케줄 짜기 💖</h3>
+
+    <div class="sb-preset-row">
+      <button class="btn mint small" id="btn-preset-train">🏋️ 훈련위주</button>
+      <button class="btn gold small" id="btn-preset-job">💼 알바위주</button>
+      <button class="btn lavender small" id="btn-preset-rest">🛌 휴식주</button>
+      <button class="btn small" id="btn-preset-random">🎲 랜덤</button>
+    </div>
+
+    ${selActionHtml}
+
     <div class="schedule-grid" id="schedule-grid"></div>
+
     <div class="schedule-footer">
       <button class="btn lavender" id="btn-clear-all">🗑 전체 비우기</button>
-      <button class="btn primary" id="btn-run-week" ${allFilled ? '' : 'disabled'}>▶ 일주일 실행!</button>
+      <button class="btn primary" id="btn-run-week" ${allFilled ? '' : 'disabled'}>
+        ${allFilled ? '▶ 일주일 실행!' : `⚠ ${emptyCount}칸 더 채우기`}
+      </button>
+    </div>
+
+    <div class="action-palette">
+      <div class="action-palette-title">📋 활동 팔레트</div>
+      <div class="ap-hint">🎯 활동을 먼저 선택한 다음, 위에서 원하는 요일을 클릭하세요!</div>
+      <div class="action-tabs">
+        <button class="action-tab ${chooserTab==='train'?'active':''}" data-tab="train">🏋️ 훈련</button>
+        <button class="action-tab ${chooserTab==='job'?'active':''}" data-tab="job">💼 일</button>
+        <button class="action-tab ${chooserTab==='rest'?'active':''}" data-tab="rest">🛌 휴식</button>
+      </div>
+      <div class="ap-items" id="ap-items"></div>
     </div>
   `;
+
   setTimeout(() => {
     const grid = document.getElementById('schedule-grid');
     if (!grid) return;
@@ -2125,23 +2316,148 @@ function renderSchedulePanel() {
           <div class="day-icon-svg">${svg}</div>
           <div class="day-action">${action ? action.name : '?'}</div>
         `;
+        // filled 상태에서 클릭 = 비우기 또는 덮어쓰기
+        day.addEventListener('click', () => {
+          playSfx('click');
+          if (pickingAction) {
+            // 활동 선택된 상태면 덮어씀
+            state.schedule[i] = { type: pickingAction.type, id: pickingAction.id };
+            render();
+          } else {
+            // 그냥 비우기
+            state.schedule[i] = null;
+            render();
+          }
+        });
       } else {
         day.className = 'schedule-day empty';
+        if (pickingAction) day.classList.add('picking');
+        const check = pickingAction ? '<div class="sb-day-check"></div>' : '';
         day.innerHTML = `
+          ${check}
           <div class="day-label">${DAYS[i]}</div>
-          <div class="day-icon-svg" style="font-size:30px; color:var(--text-muted);">+</div>
-          <div class="day-action">비어있음</div>
+          <div class="day-icon-svg" style="font-size:30px; color:var(--text-muted); font-weight:900;">+</div>
+          <div class="day-action">${pickingAction ? '클릭!' : '비어있음'}</div>
         `;
+        day.addEventListener('click', () => {
+          playSfx('heart');
+          if (pickingAction) {
+            state.schedule[i] = { type: pickingAction.type, id: pickingAction.id };
+          }
+          render();
+        });
       }
-      day.addEventListener('click', () => { playSfx('click'); openChooser(i); });
       grid.appendChild(day);
     });
+
+    // 프리셋 버튼
+    document.getElementById('btn-preset-train').addEventListener('click', () => { playSfx('click'); presetFill('train'); });
+    document.getElementById('btn-preset-job').addEventListener('click', () => { playSfx('click'); presetFill('job'); });
+    document.getElementById('btn-preset-rest').addEventListener('click', () => { playSfx('click'); presetFill('rest'); });
+    document.getElementById('btn-preset-random').addEventListener('click', () => { playSfx('click'); presetFill('random'); });
+
     const clearBtn = document.getElementById('btn-clear-all');
     const runBtn = document.getElementById('btn-run-week');
-    clearBtn.addEventListener('click', () => { playSfx('click'); state.schedule = Array(7).fill(null); render(); });
-    runBtn.addEventListener('click', () => { playSfx('success'); runWeek(); });
+    clearBtn.addEventListener('click', () => { playSfx('click'); state.schedule = Array(7).fill(null); pickingAction = null; render(); });
+    runBtn.addEventListener('click', () => { if (!runBtn.disabled) { playSfx('success'); pickingAction = null; runWeek(); } });
+
+    // 활동 팔레트
+    renderActionPalette();
+
+    // 탭
+    panel.querySelectorAll('.action-tab').forEach(tab => {
+      tab.addEventListener('click', () => { playSfx('click'); chooserTab = tab.dataset.tab; render(); });
+    });
   }, 0);
   return panel;
+}
+
+function renderActionPalette() {
+  const container = document.getElementById('ap-items');
+  if (!container) return;
+  container.innerHTML = '';
+  const actions = chooserTab === 'train' ? TRAININGS : chooserTab === 'job' ? JOBS : RESTS;
+  const p = state.pet;
+  actions.forEach(a => {
+    const item = document.createElement('div');
+    item.className = 'ap-item';
+    if (pickingAction && pickingAction.id === a.id) item.classList.add('selected');
+    let reqFail = null;
+    if (a.req) {
+      for (const [k, v] of Object.entries(a.req)) {
+        if (k === 'stones') { if (p.stones < v) { reqFail = `💎${v}`; break; } }
+        else if (k === 'wildMax') { if (p.wild > v) { reqFail = `🎭${v}↓`; break; } }
+        else { if ((p[k]||0) < v) { reqFail = `${statLabel(k)}${v}+`; break; } }
+      }
+    }
+    if (a.cost && p.stones < a.cost) { if (!reqFail) reqFail = `💎${a.cost}부족`; }
+    const costLine = a.cost ? `<div class="ap-cost">💎 ${a.cost}</div>`
+                    : a.gain ? `<div class="ap-cost">💎 +${a.gain[0]}~${a.gain[1]}</div>`
+                    : '<div class="ap-cost">&nbsp;</div>';
+    const svg = ACTION_SVG[a.id] || '';
+    item.innerHTML = `
+      <div class="ap-icon">${svg}</div>
+      <div class="ap-name">${a.name}</div>
+      ${costLine}
+      ${reqFail ? `<div class="ap-req">${reqFail}</div>` : ''}
+    `;
+    if (reqFail) item.classList.add('disabled');
+    else item.addEventListener('click', () => {
+      playSfx('heart');
+      pickingAction = { type: chooserTab, id: a.id };
+      render();
+    });
+    container.appendChild(item);
+  });
+}
+
+/* 프리셋 자동 채우기 */
+function presetFill(mode) {
+  pickingAction = null;
+  const p = state.pet;
+  const pick = (arr) => {
+    const valid = arr.filter(a => {
+      if (a.cost && p.stones < a.cost) return false;
+      if (a.req) {
+        for (const [k, v] of Object.entries(a.req)) {
+          if (k === 'stones' && p.stones < v) return false;
+          else if (k === 'wildMax' && p.wild > v) return false;
+          else if (k !== 'stones' && k !== 'wildMax' && (p[k]||0) < v) return false;
+        }
+      }
+      return true;
+    });
+    return valid.length > 0 ? valid[Math.floor(Math.random() * valid.length)] : null;
+  };
+
+  const newSchedule = [];
+  for (let i = 0; i < 7; i++) {
+    let action = null, type = 'train';
+    if (mode === 'train') {
+      // 주 5일 훈련 + 1일 휴식 + 1일 알바
+      if (i < 5) { type = 'train'; action = pick(TRAININGS); }
+      else if (i === 5) { type = 'rest'; action = RESTS.find(a => a.id === 'sleep'); }
+      else { type = 'job'; action = pick(JOBS); }
+    } else if (mode === 'job') {
+      if (i < 4) { type = 'job'; action = pick(JOBS); }
+      else if (i < 6) { type = 'train'; action = pick(TRAININGS); }
+      else { type = 'rest'; action = RESTS.find(a => a.id === 'sleep'); }
+    } else if (mode === 'rest') {
+      const restPool = ['sleep','play','feed','walk'];
+      if (i < 4) { type = 'rest'; action = RESTS.find(a => restPool.includes(a.id) && a.id === restPool[i % restPool.length]); }
+      else if (i < 6) { type = 'train'; action = pick(TRAININGS); }
+      else { type = 'job'; action = pick(JOBS); }
+    } else if (mode === 'random') {
+      const r = Math.random();
+      if (r < 0.5) { type = 'train'; action = pick(TRAININGS); }
+      else if (r < 0.85) { type = 'job'; action = pick(JOBS); }
+      else { type = 'rest'; action = pick(RESTS); }
+    }
+    if (action) newSchedule.push({ type, id: action.id });
+    else newSchedule.push(null);
+  }
+  state.schedule = newSchedule;
+  render();
 }
 
 /* 라이벌 패널 */
@@ -2175,70 +2491,17 @@ function renderRivalPanel() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   액션 선택 팝업
+   액션 탭
 ═══════════════════════════════════════════════════════════ */
 let chooserTab = 'train';
 
-function openChooser(slotIdx) {
-  state.currentSlot = slotIdx;
-  chooserTab = 'train';
-  document.getElementById('chooser-title').textContent = `💖 ${DAYS[slotIdx]}요일 활동 선택 💖`;
-  renderChooserItems();
-  document.getElementById('chooser-overlay').classList.add('open');
-}
+/* 기존 chooser 오버레이 호환을 위한 더미 (안 씀) */
+function openChooser() {}
 function closeChooser() {
-  document.getElementById('chooser-overlay').classList.remove('open');
+  const ov = document.getElementById('chooser-overlay');
+  if (ov) ov.classList.remove('open');
 }
-function renderChooserItems() {
-  document.querySelectorAll('.action-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === chooserTab));
-  const grid = document.getElementById('chooser-grid');
-  grid.innerHTML = '';
-  const actions = chooserTab === 'train' ? TRAININGS : chooserTab === 'job' ? JOBS : RESTS;
-  const p = state.pet;
-  actions.forEach(a => {
-    const item = document.createElement('div');
-    item.className = 'action-item';
-    let reqFail = null;
-    if (a.req) {
-      for (const [k, v] of Object.entries(a.req)) {
-        if (k === 'stones') { if (p.stones < v) { reqFail = `💎 ${v} 필요`; break; } }
-        else if (k === 'wildMax') { if (p.wild > v) { reqFail = `🎭 ${v}↓ 필요`; break; } }
-        else { if ((p[k]||0) < v) { reqFail = `${statLabel(k)} ${v}+`; break; } }
-      }
-    }
-    if (a.cost && p.stones < a.cost) { if (!reqFail) reqFail = `💎 ${a.cost} 부족`; }
-    const costLine = a.cost ? `<div class="ai-cost">💎 ${a.cost}</div>`
-                    : a.gain ? `<div class="ai-cost">💎 +${a.gain[0]}~${a.gain[1]}</div>`
-                    : '<div class="ai-cost">&nbsp;</div>';
-    const svg = ACTION_SVG[a.id] || '';
-    item.innerHTML = `
-      <div class="ai-icon">${svg}</div>
-      <div class="ai-name">${a.name}</div>
-      <div class="ai-desc">${a.desc}</div>
-      ${costLine}
-      ${reqFail ? `<div class="ai-req">${reqFail}</div>` : ''}
-    `;
-    if (reqFail) item.classList.add('disabled');
-    else item.addEventListener('click', () => {
-      playSfx('heart');
-      state.schedule[state.currentSlot] = { type: chooserTab, id: a.id };
-      closeChooser();
-      render();
-    });
-    grid.appendChild(item);
-  });
-}
-
-document.querySelectorAll('.action-tab').forEach(tab => {
-  tab.addEventListener('click', () => { playSfx('click'); chooserTab = tab.dataset.tab; renderChooserItems(); });
-});
-document.getElementById('chooser-cancel').addEventListener('click', () => { playSfx('click'); closeChooser(); });
-document.getElementById('chooser-clear').addEventListener('click', () => {
-  playSfx('click');
-  state.schedule[state.currentSlot] = null;
-  closeChooser();
-  render();
-});
+function renderChooserItems() {}
 
 /* 액션 타입 → 애니메이션 클래스 매핑 */
 function getActAnimClass(action) {
@@ -2667,7 +2930,7 @@ function afterWeek() {
   updateRivalMsg(p, state.rival);
 
   state.week++;
-  if (state.week > 52) {
+  if (state.week > TOTAL_WEEKS) {
     state.scene = 'ending';
     state.stats.playCount++;
     const ending = decideEnding(p);
@@ -2824,7 +3087,7 @@ function renderEnding() {
     <div class="ep-emoji" style="color: ${ending.color};">${ending.emoji}</div>
     <div class="ep-title" style="color: ${ending.color};">${escapeHtml(ending.name)}</div>
     <img class="ep-pet-img" src="${p.image}" onerror="this.style.visibility='hidden'">
-    <div class="ep-pet"><b>${escapeHtml(p.name)}</b> (${escapeHtml(p.species)}) · 1년 후</div>
+    <div class="ep-pet"><b>${escapeHtml(p.name)}</b> (${escapeHtml(p.species)}) · 21주 후</div>
     <div class="ep-desc">${ending.desc.split('\n').map(s=>escapeHtml(s)).join('<br>')}</div>
     <div class="ep-stats">
       💪 근력 <b>${p.str}</b> · 🏃 민첩 <b>${p.agi}</b> · ❤️ 체력 <b>${p.hp}</b><br>
