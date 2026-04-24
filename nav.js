@@ -7,7 +7,9 @@
     { href: 'pet_ranking.html',  label: '🏆 펫 랭킹' },
     { href: 'pet_worldcup.html', label: '🐾 이상형 월드컵' },
     { href: 'pet_recommend.html',label: '✨ 펫 추천' },
+    { href: 'quest.html',        label: '📜 퀘스트 공략' },
     { href: 'windrogue.html',    label: '⚔️ 윈드로그' },
+    { href: 'raise.html',        label: '👑 프린세스 펫 메이커' },
   ];
 
   // 현재 페이지 파악
