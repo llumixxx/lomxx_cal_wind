@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>👑 프린세스 펫 메이커 - wind01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&family=Jersey+15&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a0f08;
+    --bg2: #2a1810;
+    --panel: #3a2418;
+    --panel2: #4a2e1f;
+    --border: #5a3b28;
+    --border-hi: #8b5a3c;
+    --fg: #f5e6d3;
+    --fg2: #c9b4a0;
+    --muted: #8b7868;
+    --accent: #ffd866;
+    --accent2: #ff9a50;
+    --danger: #e74c3c;
+    --ok: #5acba8;
+    --water: #4ad9ff;
+    --fire: #ff5a5a;
+    --earth: #8cd462;
+    --wind: #ffca55;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(ellipse at top, #3a1f12 0%, var(--bg) 70%);
+    background-attachment: fixed;
+    color: var(--fg);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 960px; margin: 0 auto; padding: 14px; }
+
+  /* 제목 */
+  .title-bar {
+    text-align: center;
+    padding: 10px 0;
+    margin-bottom: 10px;
+  }
+  .title-bar h1 {
+    font-family: 'Jersey 15', sans-serif;
+    font-size: 32px;
+    color: var(--accent);
+    margin: 0;
+    text-shadow: 2px 2px 0 #000, 4px 4px 0 var(--danger);
+    letter-spacing: 2px;
+  }
+  .title-bar .sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* 공통 패널 */
+  .panel {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 4px 0 #000;
+  }
+  .panel-title {
+    font-family: 'Jersey 15';
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* 버튼 */
+  .btn {
+    background: var(--panel2);
+    border: 2px solid var(--border-hi);
+    color: var(--fg);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all .1s;
+    font-family: 'Jersey 15', 'Noto Sans KR';
+    letter-spacing: 0.5px;
+  }
+  .btn:hover:not(:disabled) {
+    background: var(--border-hi);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000;
+    border-color: #000;
+  }
+  .btn.primary:hover:not(:disabled) { filter: brightness(1.15); }
+  .btn.danger {
+    background: var(--danger);
+    border-color: #000;
+    color: #fff;
+  }
+  .btn.ok {
+    background: var(--ok);
+    border-color: #000;
+    color: #000;
+  }
+  .btn.full { width: 100%; }
+
+  /* 타이틀 화면 */
+  .title-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .title-screen .big-title {
+    font-family: 'Jersey 15';
+    font-size: 56px;
+    color: var(--accent);
+    text-shadow: 4px 4px 0 #000, 8px 8px 0 var(--danger);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    line-height: 1;
+  }
+  @media (max-width: 500px) {
+    .title-screen .big-title { font-size: 38px; letter-spacing: 2px; }
+  }
+  .title-screen .tagline {
+    font-size: 14px;
+    color: var(--fg2);
+    margin-bottom: 30px;
+    line-height: 1.8;
+  }
+  .title-screen .menu-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .title-screen .menu-btns .btn {
+    padding: 14px;
+    font-size: 18px;
+  }
+  .title-screen .stats-row {
+    margin-top: 30px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* 스타터 선택 */
+  .starter-screen h2 {
+    font-family: 'Jersey 15';
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .starter-screen .hint {
+    text-align: center;
+    color: var(--fg2);
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  .starter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .starter-card {
+    background: var(--panel2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all .15s;
+  }
+  .starter-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 0 #000;
+  }
+  .starter-card.selected {
+    border-color: var(--accent);
+    background: #5a3824;
+    box-shadow: 0 0 16px var(--accent), 0 4px 0 #000;
+  }
+  .starter-card img {
+    width: 80px; height: 80px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    display: block;
+    margin: 0 auto 4px;
+  }
+  .starter-card .name {
+    font-family: 'Jersey 15';
+    font-size: 16px;
+    color: var(--accent);
+  }
+  .starter-card .attrs {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .attr-tag {
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Jersey 15';
+  }
+  .attr-tag.earth { background: var(--earth); color: #000; }
+  .attr-tag.water { background: var(--water); color: #000; }
+  .attr-tag.fire { background: var(--fire); }
+  .attr-tag.wind { background: var(--wind); color: #000; }
+  .attr-tag.neutral { background: var(--muted); }
+  .starter-card .stats-mini {
+    font-size: 10px;
+    color: var(--fg2);
+    margin-top: 4px;
+  }
+
+  .name-input-wrap {
+    text-align: center;
+    padding: 20px;
+  }
+  .name-input {
+    padding: 10px 14px;
+    background: var(--bg2);
+    border: 2px solid var(--border-hi);
+    color: var(--fg);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    width: 240px;
+    max-width: 80%;
+  }
+  .name-input:focus { outline: none; border-color: var(--accent); }
+
+  /* === 메인 게임 UI === */
+  .game-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 12px;
+  }
+
+  @media (max-width: 720px) {
+    .game-grid { grid-template-columns: 1fr; }
+  }
+
+  /* 좌측: 펫 상태 + 로그 */
+  .pet-panel {
+    background: linear-gradient(180deg, #4a2e1f 0%, #2a1810 100%);
+    border: 2px solid var(--border-hi);
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 4px 0 #000;
+  }
+  .pet-header {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .pet-sprite-box {
+    width: 100px;
+    height: 100px;
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pet-sprite-box img {
+    width: 86px;
+    height: 86px;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .pet-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .pet-info .pname {
+    font-family: 'Jersey 15';
+    font-size: 22px;
+    color: var(--accent);
+    margin-bottom: 2px;
+    word-break: break-all;
+  }
+  .pet-info .pspecies {
+    font-size: 11px;
+    color: var(--fg2);
+    margin-bottom: 4px;
+  }
+  .pet-info .date {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .stones {
+    font-family: 'Jersey 15';
+    font-size: 18px;
+    color: var(--accent);
+    margin-top: 4px;
+  }
+
+  /* 스탯 바 */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: 14px;
+  }
+  @media (max-width: 500px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .stat-label {
+    width: 50px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .stat-bar {
+    flex: 1;
+    height: 10px;
+    background: var(--bg2);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .stat-fill {
+    height: 100%;
+    transition: width .5s, background .3s;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+  .stat-fill.positive { background: linear-gradient(90deg, #5acba8, #4ad9ff); }
+  .stat-fill.negative { background: linear-gradient(90deg, var(--danger), #ff9090); }
+  .stat-value {
+    width: 36px;
+    text-align: right;
+    font-family: 'Jersey 15';
+    font-size: 14px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* 로그 */
+  .log-box {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 12px;
+    max-height: 140px;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .log-box p { margin: 0 0 2px; color: var(--fg2); }
+  .log-box p.heal { color: #5acba8; }
+  .log-box p.hurt { color: #ff9090; }
+  .log-box p.info { color: var(--accent); }
+  .log-box p.event { color: var(--wind); font-weight: 700; }
+
+  /* 우측: 액션 패널 */
+  .action-panel {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 4px 0 #000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .action-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  .action-tab {
+    flex: 1;
+    padding: 6px;
+    background: var(--bg2);
+    border: 2px solid var(--border);
+    color: var(--fg2);
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .action-tab.active {
+    background: var(--accent);
+    color: #000;
+    border-color: #000;
+  }
+  .action-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .action-btn {
+    background: var(--panel2);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--fg);
+    font-family: inherit;
+    font-size: 12px;
+    transition: all .1s;
+  }
+  .action-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: #5a3824;
+  }
+  .action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .action-btn .ab-name {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+  .action-btn .ab-desc {
+    font-size: 10px;
+    color: var(--fg2);
+    margin-bottom: 2px;
+  }
+  .action-btn .ab-cost {
+    font-size: 10px;
+    color: var(--wind);
+    font-family: 'Jersey 15';
+  }
+  .action-btn .ab-req {
+    font-size: 10px;
+    color: var(--danger);
+  }
+
+  /* 이벤트 모달 */
+  .event-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .event-overlay.open { display: flex; }
+  .event-panel {
+    background: linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
+    border: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 0 40px rgba(255, 216, 102, 0.5);
+  }
+  .event-panel .ev-title {
+    font-family: 'Jersey 15';
+    font-size: 22px;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .event-panel .ev-desc {
+    font-size: 13px;
+    color: var(--fg);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+  }
+  .event-panel .ev-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .event-panel .ev-choice {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    color: var(--fg);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    text-align: left;
+    transition: all .15s;
+  }
+  .event-panel .ev-choice:hover {
+    border-color: var(--accent);
+    background: #5a3824;
+  }
+  .event-panel .ev-choice .hint {
+    font-size: 10px;
+    color: var(--fg2);
+    margin-top: 2px;
+  }
+
+  /* 엔딩 화면 */
+  .ending-screen {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .ending-screen .ep-title {
+    font-family: 'Jersey 15';
+    font-size: 48px;
+    color: var(--accent);
+    text-shadow: 3px 3px 0 #000;
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+  }
+  .ending-screen .ep-pet {
+    font-size: 14px;
+    color: var(--fg2);
+    margin-bottom: 20px;
+  }
+  .ending-screen .ep-desc {
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto 20px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--fg);
+  }
+  .ending-screen .ep-stats {
+    max-width: 400px;
+    margin: 0 auto 20px;
+    text-align: left;
+    font-size: 12px;
+    color: var(--fg2);
+    font-family: monospace;
+  }
+
+  /* 주간 요약 */
+  .week-result {
+    padding: 10px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .stat-delta {
+    display: inline-block;
+    margin-right: 8px;
+    font-family: 'Jersey 15';
+  }
+  .stat-delta.up { color: #5acba8; }
+  .stat-delta.down { color: #ff9090; }
+
+  /* 유틸 */
+  .flex { display: flex; gap: 6px; }
+  .flex-col { display: flex; flex-direction: column; gap: 6px; }
+  .small { font-size: 11px; color: var(--fg2); }
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-12 { margin-top: 12px; }
+  .hidden { display: none !important; }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+  ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="nav.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="title-bar">
+    <h1>👑 프린세스 펫 메이커</h1>
+    <div class="sub">스톤에이지 부족에서 1년간 새끼펫 키우기 · 52주 후 엔딩</div>
+  </div>
+  <div id="app"></div>
+</div>
+
+<script>
+/* ============================================================
+   펫 데이터 로드 (스톤에이지 342마리)
+============================================================ */
+let PET_DATA = [];
+
+async function loadPetData() {
+  try {
+    const r = await fetch('pet_info_data.json?t=' + Date.now(), { cache: 'no-store' });
+    if (r.ok) {
+      const data = await r.json();
+      if (Array.isArray(data)) {
+        PET_DATA = data;
+        return;
+      }
+    }
+  } catch(e) {}
+  // 폴백: game_pets.json
+  try {
+    const r = await fetch('game_pets.json?t=' + Date.now(), { cache: 'no-store' });
+    if (r.ok) PET_DATA = await r.json();
+  } catch(e) {}
+}
+
+/* ============================================================
+   Firebase
+============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAs3aqh2N75_c24xdjDNf271L16-VYCmls",
+  authDomain: "lomxx-calculator.firebaseapp.com",
+  databaseURL: "https://lomxx-calculator-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "lomxx-calculator",
+  storageBucket: "lomxx-calculator.firebasestorage.app",
+  messagingSenderId: "667060899901",
+  appId: "1:667060899901:web:4ab1bd419526c682355a54"
+};
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ============================================================
+   훈련 데이터
+============================================================ */
+const TRAININGS = [
+  { id: 'rock',    name: '🗿 바위 들기', desc: '근력 강화', cost: 8,  effects: { str: [3,6], hp: [-2,-1], fatigue: [5,10] } },
+  { id: 'run',     name: '🏃 달리기',     desc: '민첩 훈련', cost: 6,  effects: { agi: [3,6], hp: [-1,0], fatigue: [3,7] } },
+  { id: 'swim',    name: '🏊 수영',       desc: '체력+민첩', cost: 10, effects: { hp: [2,5], agi: [1,3], fatigue: [5,10] } },
+  { id: 'spirit',  name: '🔥 정령 수행',  desc: '속성력 ↑', cost: 15, effects: { elem: [3,7], stress: [2,5] } },
+  { id: 'study',   name: '📖 인간 언어',  desc: '지능+애교', cost: 12, effects: { int: [3,6], cute: [1,3], fatigue: [2,5] } },
+  { id: 'wild',    name: '🐾 야성 훈련',  desc: '야생성+근력', cost: 10, effects: { wild: [3,6], str: [1,3], cute: [-2,-1] } },
+  { id: 'trick',   name: '🎪 재주 연습',  desc: '애교 ↑', cost: 8,  effects: { cute: [3,6], wild: [-2,-1], fatigue: [2,4] } },
+  { id: 'dance',   name: '💃 춤 연습',   desc: '민첩+애교', cost: 10, effects: { agi: [2,4], cute: [2,4], fatigue: [3,6] } },
+];
+
+const JOBS = [
+  { id: 'miner',   name: '⛏ 광산 짐꾼', desc: '스톤 쏠쏠', gain: [15, 25], effects: { str: [2,4], hp: [-3,-1], fatigue: [10,15] }, req: { str: 20 } },
+  { id: 'fisher',  name: '🐟 어장 도우미', desc: '민첩 키움', gain: [12, 18], effects: { agi: [2,4], happy: [2,4], fatigue: [5,10] }, req: { agi: 15 } },
+  { id: 'hunter',  name: '🍖 사냥 동반', desc: '위험하지만', gain: [20, 30], effects: { str: [2,4], agi: [2,4], stress: [5,10], hp: [-3,-1] }, req: { str: 20, agi: 20 } },
+  { id: 'guard',   name: '🏕 부족 경비', desc: '체력 훈련', gain: [18, 25], effects: { hp: [2,4], wild: [1,3], fatigue: [8,12] }, req: { hp: 20 } },
+  { id: 'perform', name: '🎪 광장 공연', desc: '인기몰이', gain: [15, 22], effects: { cute: [2,4], bond: [2,4], fatigue: [3,7] }, req: { cute: 30 } },
+  { id: 'courier', name: '💌 편지 배달', desc: '빠른 발 필요', gain: [10, 14], effects: { agi: [2,4], fatigue: [3,6] }, req: { agi: 10 } },
+  { id: 'shop',    name: '🛒 가게 도우미', desc: '친근해야', gain: [12, 16], effects: { cute: [2,3], bond: [1,3], fatigue: [4,7] }, req: { cute: 15 } },
+  { id: 'herb',    name: '🌿 약초 채집', desc: '지혜로운 일', gain: [14, 18], effects: { int: [2,4], hp: [1,2], fatigue: [5,8] }, req: { int: 15 } },
+  { id: 'nanny',   name: '👶 아기 돌보미', desc: '친절한 펫만', gain: [8, 12], effects: { cute: [2,4], bond: [3,5], wild: [-3,-1] }, req: { cute: 20, wildMax: 40 } },
+  { id: 'shaman',  name: '🔮 무당 조수', desc: '정령 능력 활용', gain: [25, 35], effects: { elem: [2,4], int: [2,4], stress: [3,6] }, req: { elem: 20, int: 20 } },
+  { id: 'star',    name: '🎭 부족 스타', desc: '애교꾼만', gain: [30, 40], effects: { cute: [3,5], bond: [2,4], stress: [2,5] }, req: { cute: 50 } },
+  { id: 'escort',  name: '🏪 상인 호위', desc: '능력자만', gain: [25, 32], effects: { str: [2,4], agi: [2,4], fatigue: [8,12] }, req: { str: 25, agi: 25 } },
+];
+
+const RESTS = [
+  { id: 'sleep',   name: '💤 휴식', desc: '피로/스트레스 ↓', cost: 0,  effects: { fatigue: [-20,-15], stress: [-8,-4], hp: [3,6] } },
+  { id: 'play',    name: '🎮 놀아주기', desc: '유대+행복', cost: 5,  effects: { bond: [3,6], happy: [3,6], stress: [-5,-2] } },
+  { id: 'feed',    name: '🍖 먹이주기', desc: '평범한 고기', cost: 10, effects: { hp: [3,6], bond: [1,3], happy: [1,3] } },
+  { id: 'luxury',  name: '🥩 고급 고기', desc: '대박 효과', cost: 25, effects: { hp: [6,12], bond: [3,6], happy: [3,6], str: [1,2] } },
+  { id: 'walk',    name: '🏞 산책', desc: '랜덤 이벤트 가능', cost: 0,  effects: { bond: [1,3], happy: [2,4] }, event: true },
+  { id: 'stone',   name: '🪨 정령석 주기', desc: '속성력 급상승', cost: 50, effects: { elem: [8,15], stress: [3,6] } },
+];
+
+/* ============================================================
+   이벤트 풀
+============================================================ */
+const EVENTS = [
+  {
+    id: 'bear', title: '🐻 야생 곰 출현!',
+    desc: '산책 중 거대한 곰을 만났다! 너의 펫이 긴장한 표정으로 쳐다본다...',
+    choices: [
+      { text: '⚔️ 싸우게 한다', effect: { str: 4, wild: 3, stress: 5, hp: -5 }, msg: '치열한 싸움 끝에 곰을 물리쳤다!' },
+      { text: '🏃 도망간다', effect: { agi: 2, stress: 3, fatigue: 8 }, msg: '간신히 도망쳤다. 펫이 많이 달렸다.' },
+      { text: '🍖 고기를 던진다 (💎30)', effect: { stones: -30, wild: -2, cute: 2 }, msg: '곰이 고기를 물고 떠났다.', req: { stones: 30 } },
+    ],
+  },
+  {
+    id: 'elder', title: '👴 부족 장로의 방문',
+    desc: '부족 장로가 너의 펫을 보더니 감탄한다. "좋은 펫이로다..."',
+    choices: [
+      { text: '🙇 정중히 인사', effect: { int: 3, cute: 3, bond: 2 }, msg: '장로가 기뻐하며 가르침을 주었다.' },
+      { text: '😐 그냥 지나친다', effect: { wild: 2, cute: -2 }, msg: '장로가 실망한 표정으로 돌아섰다.' },
+    ],
+  },
+  {
+    id: 'volcano', title: '🌋 화산 폭발!',
+    desc: '멀리서 화산이 폭발했다! 땅이 흔들리고 연기가 하늘을 덮는다...',
+    choices: [
+      { text: '🏃 피난', effect: { agi: 2, stress: 5, fatigue: 5 }, msg: '간신히 피했다.' },
+      { text: '🔮 정령에게 기도', effect: { elem: 5, stress: -3 }, msg: '정령이 응답했는가, 마음이 편안해졌다.', req: { elem: 15 } },
+    ],
+  },
+  {
+    id: 'treasure', title: '🎁 보물 발견!',
+    desc: '산책 중 낡은 상자를 발견했다. 안에 뭔가 들어있는 것 같다...',
+    choices: [
+      { text: '📦 연다', effect: { stones: 50, happy: 3 }, msg: '💎 50이 들어있었다!' },
+      { text: '🙅 위험해 보여 놔둔다', effect: { int: 1 }, msg: '신중한 판단이었다.' },
+    ],
+  },
+  {
+    id: 'rival', title: '🐾 다른 펫과 조우',
+    desc: '건방진 야생 펫이 길을 막고 으르렁거린다!',
+    choices: [
+      { text: '⚔️ 대결', effect: { str: 3, wild: 2, stress: 3 }, msg: '우리 펫이 승리했다!' },
+      { text: '🤝 친해진다', effect: { cute: 2, bond: 2, happy: 3 }, msg: '친구가 되었다!' },
+      { text: '🏃 피한다', effect: { agi: 1, cute: -1 }, msg: '무난하게 피했다.' },
+    ],
+  },
+  {
+    id: 'sick', title: '🤒 병에 걸렸어요',
+    desc: '펫이 기침을 한다. 눈에 생기가 없다...',
+    choices: [
+      { text: '🌿 약초 달이기 (💎20)', effect: { stones: -20, hp: 8, stress: -3 }, msg: '약초 덕에 금방 나았다.', req: { stones: 20 } },
+      { text: '💤 그냥 쉬게 한다', effect: { hp: 2, fatigue: -10, stress: 3 }, msg: '시간이 지나자 좀 나아졌다.' },
+      { text: '🔮 무당에게 (💎40)', effect: { stones: -40, hp: 12, elem: 3, bond: 2 }, msg: '신비로운 의식 후 완쾌!', req: { stones: 40 } },
+    ],
+  },
+  {
+    id: 'meteor', title: '🌟 하늘의 빛',
+    desc: '밤하늘에서 이상한 빛이 떨어졌다. 펫이 그 방향을 바라본다...',
+    choices: [
+      { text: '🔍 조사한다', effect: { elem: 8, int: 2, stress: 2 }, msg: '신비한 돌조각을 주웠다. 정령력이 크게 늘었다.' },
+      { text: '😨 무서워 피한다', effect: { stress: 3, cute: 1 }, msg: '펫이 네 품에 파고들었다.' },
+    ],
+  },
+  {
+    id: 'festival', title: '🎪 유랑 서커스',
+    desc: '유랑 서커스단이 마을에 왔다! 펫이 호기심에 다가간다.',
+    choices: [
+      { text: '🎭 공연 참여 (💎20)', effect: { stones: -20+40, cute: 4, bond: 2 }, msg: '공연으로 💎40을 받았다!', req: { stones: 20 } },
+      { text: '👀 관람만', effect: { happy: 3, cute: 1 }, msg: '즐거운 시간을 보냈다.' },
+    ],
+  },
+  {
+    id: 'dream', title: '👻 이상한 꿈',
+    desc: '펫이 꿈꾸며 으르렁거린다. 아침에 기운이 빠진 모습이다...',
+    choices: [
+      { text: '🔮 꿈을 해석', effect: { int: 3, elem: 3 }, msg: '영적 능력이 각성되는 것 같다.' },
+      { text: '🤗 토닥여준다', effect: { bond: 3, stress: -3 }, msg: '마음의 안정을 찾았다.' },
+      { text: '😐 무시', effect: { stress: 2, wild: 1 }, msg: '별일 아니겠지.' },
+    ],
+  },
+  {
+    id: 'merchant', title: '🏪 수상한 상인',
+    desc: '후드를 쓴 상인이 "희귀한 물건"을 판다고 한다...',
+    choices: [
+      { text: '💎 비싼 물약 (💎60)', effect: { stones: -60, hp: 8, str: 4, agi: 4 }, msg: '진짜 효험이 있었다!', req: { stones: 60 } },
+      { text: '💎 싸구려 약 (💎15)', effect: { stones: -15 }, msg: '아무 효과도 없는 물이었다...', req: { stones: 15 } },
+      { text: '🚶 지나친다', effect: { int: 1 }, msg: '수상함을 눈치챘다.' },
+    ],
+  },
+  {
+    id: 'child', title: '👶 꼬마가 놀아달래요',
+    desc: '부족 꼬마가 너의 펫과 놀고 싶다며 다가온다.',
+    choices: [
+      { text: '😊 놀게 해준다', effect: { cute: 3, bond: 2, happy: 2, wild: -2 }, msg: '꼬마와 신나게 놀았다!' },
+      { text: '😠 거절', effect: { wild: 2, cute: -2 }, msg: '꼬마가 울었다... 동네에서 소문이 날지도.' },
+    ],
+  },
+  {
+    id: 'spar', title: '⚔️ 대결 도전',
+    desc: '옆집 전사가 "네 펫 VS 내 펫!"을 외친다.',
+    choices: [
+      { text: '⚔️ 수락 (내기 💎30)', effect: { stones: 50, str: 3, wild: 3, stress: 3 }, msg: '간신히 승리! 💎50 획득!', req: { str: 25 } },
+      { text: '🙅 거절', effect: { stress: -1 }, msg: '조용히 지나갔다.' },
+    ],
+  },
+];
+
+/* 분기별 대회 */
+const TOURNAMENTS = [
+  { week: 13, name: '🌸 봄 사냥 축제', stat: 'str',  msg: '힘자랑 축제' },
+  { week: 26, name: '🌊 여름 수영 대회', stat: 'agi', msg: '물개처럼 빠르게' },
+  { week: 39, name: '🍂 가을 풍요제', stat: 'cute', msg: '부족의 인기스타' },
+  { week: 50, name: '❄️ 겨울 극한 챔피언', stat: 'overall', msg: '올라운더 대결' },
+];
+
+/* 엔딩 결정 */
+function decideEnding(p) {
+  const total = p.str + p.agi + p.hp + p.int + p.elem + p.cute;
+  const avg = total / 6;
+
+  if (p.hp <= 0) return { id: 'death', emoji: '☠️', name: '요절', desc: `${p.name}은(는) 너무 지쳐 쓰러졌다.\n모든 것이 끝났다... 다음엔 더 잘 돌보자.`, color: '#555' };
+  if (p.happy <= 10 && p.bond <= 20) return { id: 'runaway', emoji: '😱', name: '가출 엔딩', desc: `${p.name}은(는) 어느 날 조용히 떠났다.\n돌아오지 않았다. 부디 잘 지내길...`, color: '#886' };
+  if (p.stress >= 90) return { id: 'broken', emoji: '💔', name: '지친 펫', desc: `${p.name}은(는) 극도의 스트레스로 마음을 닫았다.\n이제 더 이상 예전의 그 펫이 아니다.`, color: '#a66' };
+
+  // 특수 엔딩 (최고 스탯)
+  if (p.bond >= 90 && p.happy >= 70) return { id: 'soulmate', emoji: '💕', name: '영혼의 동반자', desc: `${p.name}은(는) 너와 평생을 함께하기로 했다.\n최고의 유대! 부족에서 가장 행복한 펫으로 기록될 것이다.`, color: '#ff6b9f' };
+  if (p.wild >= 80 && p.bond < 30) return { id: 'wildbeast', emoji: '👹', name: '포악한 야수', desc: `${p.name}은(는) 야생의 본능에 완전히 지배됐다.\n숲으로 사라졌다... 때때로 부족 근처에 나타난다는 소문이 돈다.`, color: '#d84040' };
+  if (p.elem >= 80) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.\n부족의 무당마저 고개를 숙이는 신비로운 존재가 되었다.`, color: '#9a6fff' };
+  // 챔피언(만능형)을 전문직보다 먼저
+  if (p.str >= 60 && p.agi >= 60 && p.hp >= 60 && p.cute >= 60) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 모든 면에서 완벽한 펫이 되었다.\n부족 역사에 길이 남을 전설이다!`, color: '#ffd866' };
+  if (p.cute >= 80) return { id: 'star', emoji: '🎪', name: '부족의 스타', desc: `${p.name}은(는) 부족의 연예인이 되었다.\n공연마다 관중이 몰려들고 모두가 사랑한다.`, color: '#ffca55' };
+  if (p.int >= 70) return { id: 'sage', emoji: '📚', name: '현자의 펫', desc: `${p.name}은(는) 부족의 지혜로운 조언자가 되었다.\n어려운 결정 앞에서 너를 돕는다.`, color: '#7fd47f' };
+  if (p.str >= 70 && p.hp >= 70) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 전설적인 수호자가 되었다.\n아이들은 그 용맹을 이야기로 들려준다.`, color: '#d4943a' };
+  if (p.str >= 60 && p.agi >= 60) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 최고의 사냥 파트너가 되었다.\n어떤 먹잇감도 놓치지 않는다.`, color: '#c4743a' };
+  if (p.bond >= 60) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족이 되었다.\n평범하지만 따뜻한 일상이 이어진다.`, color: '#a0d4a0' };
+
+  return { id: 'normal', emoji: '🏠', name: '평범한 부족펫', desc: `${p.name}은(는) 평범한 부족의 일원으로 살아간다.\n특별하진 않지만, 누구보다 네 곁에 있다.`, color: '#b0a080' };
+}
+
+/* ============================================================
+   게임 상태
+============================================================ */
+const state = {
+  scene: 'title',       // title, starter, name, playing, event, ending
+  week: 1,
+  pet: null,
+  log: [],
+  lastEventMsg: null,
+  starterPool: [],
+  starterPick: null,
+  currentEvent: null,
+  stats: {
+    playCount: 0,
+    bestRun: null,
+  },
+};
+
+/* ============================================================
+   유틸
+============================================================ */
+const app = document.getElementById('app');
+
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function pushLog(msg, cls = '') {
+  state.log.push({ msg, cls });
+  if (state.log.length > 40) state.log.shift();
+}
+
+function getMonth(week) {
+  return Math.ceil(week / 4.33);
+}
+
+function getAttrTags(pet) {
+  if (!pet || !pet.attr) return '';
+  const tagMap = { '지': 'earth', '수': 'water', '화': 'fire', '풍': 'wind' };
+  const tags = Object.entries(pet.attr)
+    .filter(([k, v]) => v > 0)
+    .map(([k, v]) => `<span class="attr-tag ${tagMap[k]||'neutral'}">${k}${v}</span>`);
+  return tags.join('');
+}
+
+function loadLocalStats() {
+  try {
+    const s = localStorage.getItem('raise_stats');
+    if (s) state.stats = { ...state.stats, ...JSON.parse(s) };
+  } catch(e) {}
+}
+function saveLocalStats() {
+  localStorage.setItem('raise_stats', JSON.stringify(state.stats));
+}
+
+/* ============================================================
+   씬 라우팅
+============================================================ */
+function render() {
+  app.innerHTML = '';
+  if (state.scene === 'title') renderTitle();
+  else if (state.scene === 'starter') renderStarter();
+  else if (state.scene === 'name') renderNaming();
+  else if (state.scene === 'playing') renderPlaying();
+  else if (state.scene === 'ending') renderEnding();
+}
+
+/* ============================================================
+   타이틀
+============================================================ */
+function renderTitle() {
+  const screen = document.createElement('div');
+  screen.className = 'title-screen';
+  screen.innerHTML = `
+    <div class="big-title">PRINCESS<br>PET MAKER</div>
+    <div class="tagline">
+      원시 부족의 아이가 된 너.<br>
+      새끼 펫 한 마리를 선택해 <b>1년간</b> 키워보자.<br>
+      너의 선택에 따라 펫의 운명이 결정된다.
+    </div>
+    <div class="menu-btns">
+      <button class="btn primary" id="btn-start">🎬 새 게임 시작</button>
+      <button class="btn" id="btn-load">📂 이어하기</button>
+    </div>
+    <div class="stats-row">
+      플레이 횟수: ${state.stats.playCount} · 최고 엔딩: ${state.stats.bestRun?.ending || '없음'}
+    </div>
+  `;
+  app.appendChild(screen);
+
+  document.getElementById('btn-start').addEventListener('click', startNewRun);
+  document.getElementById('btn-load').addEventListener('click', loadGame);
+}
+
+async function startNewRun() {
+  if (PET_DATA.length === 0) {
+    alert('펫 데이터 로딩 중... 잠시만 기다려주세요.');
+    return;
+  }
+  // 일반 등급 중 6마리 랜덤
+  const pool = PET_DATA.filter(p => p.grade === '일반');
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  state.starterPool = shuffled.slice(0, 6);
+  state.starterPick = null;
+  state.scene = 'starter';
+  render();
+}
+
+/* ============================================================
+   스타터 선택
+============================================================ */
+function renderStarter() {
+  const screen = document.createElement('div');
+  screen.className = 'panel starter-screen';
+  screen.innerHTML = `
+    <h2>🐣 새끼펫 선택</h2>
+    <div class="hint">부족의 전통에 따라, 너는 한 마리 새끼펫을 골라 돌보게 된다.<br>1년 후 이 펫은 어떤 존재가 될까?</div>
+    <div class="starter-grid" id="starter-grid"></div>
+    <div style="text-align:center; margin-top:10px;">
+      <button class="btn primary" id="btn-reroll">🎲 다시 뽑기</button>
+      <button class="btn ok" id="btn-confirm" disabled>✓ 이 펫을 선택</button>
+    </div>
+  `;
+  app.appendChild(screen);
+
+  const grid = document.getElementById('starter-grid');
+  state.starterPool.forEach(pet => {
+    const card = document.createElement('div');
+    card.className = 'starter-card' + (state.starterPick === pet.name ? ' selected' : '');
+    card.innerHTML = `
+      <img src="${pet.image}" alt="${pet.name}" onerror="this.style.visibility='hidden'">
+      <div class="name">${escapeHtml(pet.name)}</div>
+      <div class="attrs">${getAttrTags(pet)}</div>
+      <div class="stats-mini">
+        HP ${Math.round(pet.ic.hp)} / ATK ${Math.round(pet.ic.atk)}<br>
+        성장 ${Math.round((pet.sg.hp + pet.sg.atk + pet.sg.def + pet.sg.agi) * 10)/10}
+      </div>
+    `;
+    card.addEventListener('click', () => {
+      state.starterPick = pet.name;
+      render();
+    });
+    grid.appendChild(card);
+  });
+
+  document.getElementById('btn-reroll').addEventListener('click', () => {
+    const pool = PET_DATA.filter(p => p.grade === '일반');
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    state.starterPool = shuffled.slice(0, 6);
+    state.starterPick = null;
+    render();
+  });
+  const confirmBtn = document.getElementById('btn-confirm');
+  confirmBtn.disabled = !state.starterPick;
+  confirmBtn.addEventListener('click', () => {
+    state.scene = 'name';
+    render();
+  });
+}
+
+/* ============================================================
+   이름 정하기
+============================================================ */
+function renderNaming() {
+  const pet = state.starterPool.find(p => p.name === state.starterPick);
+  const screen = document.createElement('div');
+  screen.className = 'panel';
+  screen.innerHTML = `
+    <div class="name-input-wrap">
+      <img src="${pet.image}" alt="${pet.name}" style="width:100px; height:100px; image-rendering:pixelated;" onerror="this.style.visibility='hidden'">
+      <div style="margin: 10px 0; font-size: 16px;">선택한 펫: <b style="color: var(--accent);">${escapeHtml(pet.name)}</b></div>
+      <div style="color: var(--fg2); font-size: 12px; margin-bottom: 16px;">너의 펫에게 이름을 지어주자.</div>
+      <input type="text" id="pet-name-input" class="name-input" maxlength="12" placeholder="펫의 이름 (2~12자)" value="${escapeHtml(pet.name)}">
+      <div style="margin-top: 16px;">
+        <button class="btn" id="btn-back">← 다시 선택</button>
+        <button class="btn primary" id="btn-begin">🎬 모험 시작!</button>
+      </div>
+    </div>
+  `;
+  app.appendChild(screen);
+  const input = document.getElementById('pet-name-input');
+  input.focus();
+  input.select();
+  document.getElementById('btn-back').addEventListener('click', () => {
+    state.scene = 'starter';
+    render();
+  });
+  document.getElementById('btn-begin').addEventListener('click', () => {
+    const name = input.value.trim();
+    if (name.length < 1) { alert('이름을 입력해주세요'); return; }
+    beginGame(pet, name);
+  });
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-begin').click();
+  });
+}
+
+function beginGame(petData, customName) {
+  state.pet = {
+    data: petData,
+    name: customName,
+    species: petData.name,
+    image: petData.image,
+    attr: petData.attr,
+    // 초기 능력치 (새끼 펫)
+    str:  Math.round(petData.ic.atk * 1.5),
+    agi:  Math.round(petData.ic.agi * 1.8),
+    hp:   Math.round(petData.ic.hp * 0.8),
+    int:  10 + rand(0, 5),
+    elem: Object.values(petData.attr).reduce((s,v)=>s+v, 0) + rand(0, 5),
+    cute: 20 + rand(0, 10),
+    wild: 30 + rand(0, 15),
+    bond: 30,
+    happy: 50,
+    stress: 0,
+    fatigue: 0,
+    stones: 50,
+    achievements: [],
+  };
+  state.week = 1;
+  state.log = [];
+  state.lastEventMsg = null;
+  state.scene = 'playing';
+  pushLog(`${customName}과(와)의 1년이 시작되었다!`, 'info');
+  render();
+}
+
+/* ============================================================
+   메인 플레이 UI
+============================================================ */
+let currentActionTab = 'train';
+
+function renderPlaying() {
+  const p = state.pet;
+  const month = getMonth(state.week);
+  const day = (((state.week - 1) % 4.33) * 7 + 1) | 0;
+
+  const grid = document.createElement('div');
+  grid.className = 'game-grid';
+
+  // ─── 좌측: 펫 상태 ───
+  const left = document.createElement('div');
+  left.className = 'pet-panel';
+  left.innerHTML = `
+    <div class="pet-header">
+      <div class="pet-sprite-box">
+        <img src="${p.image}" alt="${escapeHtml(p.name)}" onerror="this.style.visibility='hidden'">
+      </div>
+      <div class="pet-info">
+        <div class="pname">${escapeHtml(p.name)}</div>
+        <div class="pspecies">종족: ${escapeHtml(p.species)}</div>
+        <div style="display:flex; gap:4px; margin-top:4px;">${getAttrTags(p.data)}</div>
+        <div class="date">📅 ${month}월 · ${state.week}/52주차</div>
+        <div class="stones">💎 ${p.stones}</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      ${statBar('💪 근력', p.str, 100)}
+      ${statBar('🏃 민첩', p.agi, 100)}
+      ${statBar('❤️ 체력', p.hp, 100)}
+      ${statBar('🧠 지능', p.int, 100)}
+      ${statBar('🔥 속성', p.elem, 100)}
+      ${statBar('😊 애교', p.cute, 100)}
+      ${statBar('🎭 야생', p.wild, 100)}
+      ${statBar('💕 친밀', p.bond, 100)}
+      ${statBar('😰 스트레스', p.stress, 100, 'negative')}
+      ${statBar('😫 피로', p.fatigue, 100, 'negative')}
+      ${statBar('🌈 행복', p.happy, 100, 'positive')}
+    </div>
+
+    <div class="log-box" id="log-box">
+      ${state.log.slice(-15).map(l => `<p class="${l.cls||''}">${escapeHtml(l.msg)}</p>`).join('')}
+    </div>
+  `;
+
+  // ─── 우측: 액션 ───
+  const right = document.createElement('div');
+  right.className = 'action-panel';
+  right.innerHTML = `
+    <div class="action-tabs">
+      <button class="action-tab ${currentActionTab==='train'?'active':''}" data-tab="train">🏋️ 훈련</button>
+      <button class="action-tab ${currentActionTab==='job'?'active':''}" data-tab="job">💼 일</button>
+      <button class="action-tab ${currentActionTab==='rest'?'active':''}" data-tab="rest">🛌 기타</button>
+    </div>
+    <div class="action-list" id="action-list"></div>
+    <div style="display:flex; gap:4px; margin-top:6px;">
+      <button class="btn danger" id="btn-quit" style="flex:1;">종료</button>
+      <button class="btn" id="btn-save" style="flex:1;">💾 저장</button>
+    </div>
+  `;
+
+  grid.appendChild(left);
+  grid.appendChild(right);
+  app.appendChild(grid);
+
+  // 액션 탭 이벤트
+  right.querySelectorAll('.action-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      currentActionTab = tab.dataset.tab;
+      renderActionList();
+    });
+  });
+  renderActionList();
+
+  document.getElementById('btn-quit').addEventListener('click', () => {
+    if (confirm('진행 중인 런을 포기하시겠습니까?')) {
+      state.scene = 'title';
+      render();
+    }
+  });
+  document.getElementById('btn-save').addEventListener('click', saveGame);
+
+  // 로그 스크롤
+  const logBox = document.getElementById('log-box');
+  if (logBox) logBox.scrollTop = logBox.scrollHeight;
+}
+
+function statBar(label, val, max, cls = '') {
+  val = clamp(Math.round(val), 0, 999);
+  const pct = Math.min(100, (val / max) * 100);
+  return `
+    <div class="stat-row">
+      <div class="stat-label">${label}</div>
+      <div class="stat-bar"><div class="stat-fill ${cls}" style="width:${pct}%"></div></div>
+      <div class="stat-value">${val}</div>
+    </div>
+  `;
+}
+
+function renderActionList() {
+  const list = document.getElementById('action-list');
+  if (!list) return;
+  list.innerHTML = '';
+  let actions;
+  if (currentActionTab === 'train') actions = TRAININGS;
+  else if (currentActionTab === 'job') actions = JOBS;
+  else actions = RESTS;
+
+  actions.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'action-btn';
+
+    const p = state.pet;
+    // 조건 체크
+    let reqFail = null;
+    if (a.req) {
+      for (const [k, v] of Object.entries(a.req)) {
+        if (k === 'stones') {
+          if (p.stones < v) { reqFail = `💎 ${v} 필요 (현재 ${p.stones})`; break; }
+        } else if (k === 'wildMax') {
+          if (p.wild > v) { reqFail = `야생성 ${v} 이하 필요`; break; }
+        } else {
+          if ((p[k] || 0) < v) { reqFail = `${statLabel(k)} ${v} 필요`; break; }
+        }
+      }
+    }
+    // 비용 체크 (훈련/기타)
+    if (a.cost && p.stones < a.cost) {
+      if (!reqFail) reqFail = `💎 ${a.cost} 부족`;
+    }
+    // 피로 과다 체크
+    if (p.fatigue >= 80 && a.id !== 'sleep') {
+      if (!reqFail) reqFail = `⚠ 너무 피곤함 (휴식 필요)`;
+    }
+
+    const costLine = a.cost ? `<div class="ab-cost">💎 ${a.cost}</div>`
+                    : a.gain ? `<div class="ab-cost">💎 +${a.gain[0]}~${a.gain[1]}</div>`
+                    : '';
+
+    btn.innerHTML = `
+      <div class="ab-name">${a.name}</div>
+      <div class="ab-desc">${a.desc}</div>
+      ${costLine}
+      ${reqFail ? `<div class="ab-req">${reqFail}</div>` : ''}
+    `;
+    if (reqFail) btn.disabled = true;
+    btn.addEventListener('click', () => doAction(a));
+    list.appendChild(btn);
+  });
+}
+
+function statLabel(k) {
+  return { str:'💪근력', agi:'🏃민첩', hp:'❤️체력', int:'🧠지능', elem:'🔥속성', cute:'😊애교', wild:'🎭야생' }[k] || k;
+}
+
+/* ============================================================
+   행동 실행
+============================================================ */
+function doAction(action) {
+  const p = state.pet;
+  // 비용
+  if (action.cost) p.stones -= action.cost;
+  // 수입
+  let gained = 0;
+  if (action.gain) {
+    gained = rand(action.gain[0], action.gain[1]);
+    p.stones += gained;
+  }
+
+  // 효과 적용
+  const deltas = {};
+  const eff = action.effects || {};
+  for (const [k, range] of Object.entries(eff)) {
+    const d = rand(range[0], range[1]);
+    deltas[k] = d;
+    applyDelta(p, k, d);
+  }
+
+  // 로그
+  let msg = `${action.name}`;
+  if (gained > 0) msg += ` (💎+${gained})`;
+  const deltaStr = Object.entries(deltas)
+    .filter(([k, v]) => v !== 0)
+    .map(([k, v]) => `${statEmoji(k)}${v>0?'+':''}${v}`)
+    .join(' ');
+  if (deltaStr) msg += ` → ${deltaStr}`;
+  pushLog(msg, 'info');
+
+  // 랜덤 이벤트 (산책이면 높은 확률)
+  let eventChance = 0.15;
+  if (action.event) eventChance = 0.6;
+  if (Math.random() < eventChance) {
+    triggerEvent();
+    return;
+  }
+
+  // 주간 대회 체크
+  const tourney = TOURNAMENTS.find(t => t.week === state.week);
+  if (tourney) {
+    applyTournament(tourney);
+  }
+
+  // 다음 주
+  advanceWeek();
+}
+
+function statEmoji(k) {
+  return { str:'💪', agi:'🏃', hp:'❤️', int:'🧠', elem:'🔥', cute:'😊', wild:'🎭', bond:'💕', happy:'🌈', stress:'😰', fatigue:'😫' }[k] || k;
+}
+
+function applyDelta(p, k, d) {
+  if (k === 'stones') {
+    p.stones = Math.max(0, p.stones + d);
+    return;
+  }
+  p[k] = clamp((p[k] || 0) + d, 0, 100);
+}
+
+function advanceWeek() {
+  const p = state.pet;
+  // 주간 자연 감쇠
+  p.fatigue = Math.max(0, p.fatigue - 2);
+  p.happy = Math.max(0, p.happy - 1);
+  // 피로/스트레스 누적 효과
+  if (p.fatigue >= 70) {
+    p.hp = Math.max(0, p.hp - 2);
+    pushLog(`😫 너무 피곤해 체력이 떨어진다!`, 'hurt');
+  }
+  if (p.stress >= 70) {
+    p.bond = Math.max(0, p.bond - 2);
+    pushLog(`😰 스트레스로 친밀도 감소`, 'hurt');
+  }
+  if (p.happy >= 70) {
+    p.stress = Math.max(0, p.stress - 1);
+  }
+
+  state.week++;
+  if (state.week > 52) {
+    // 엔딩
+    state.scene = 'ending';
+    state.stats.playCount++;
+    const ending = decideEnding(p);
+    if (!state.stats.bestRun || ending.id === 'champion' || ending.id === 'soulmate') {
+      state.stats.bestRun = { ending: ending.name, pet: p.name };
+    }
+    saveLocalStats();
+    render();
+    return;
+  }
+  render();
+}
+
+/* ============================================================
+   이벤트
+============================================================ */
+function triggerEvent() {
+  // 조건 맞는 이벤트 중 랜덤
+  const pool = EVENTS.filter(e => true);
+  const ev = randChoice(pool);
+  state.currentEvent = ev;
+  renderEventModal(ev);
+}
+
+function renderEventModal(ev) {
+  const overlay = document.createElement('div');
+  overlay.className = 'event-overlay open';
+  const choicesHtml = ev.choices.map((c, i) => {
+    let disabled = false;
+    let hint = '';
+    if (c.req) {
+      for (const [k, v] of Object.entries(c.req)) {
+        if (k === 'stones' && state.pet.stones < v) { disabled = true; hint = `💎 ${v} 필요`; break; }
+        else if (k !== 'stones' && (state.pet[k] || 0) < v) { disabled = true; hint = `${statLabel(k)} ${v} 필요`; break; }
+      }
+    }
+    return `
+      <button class="ev-choice" data-idx="${i}" ${disabled?'disabled':''}>
+        ${escapeHtml(c.text)}
+        ${hint ? `<div class="hint" style="color:#e74c3c;">${hint}</div>` : ''}
+      </button>
+    `;
+  }).join('');
+
+  overlay.innerHTML = `
+    <div class="event-panel">
+      <div class="ev-title">${ev.title}</div>
+      <div class="ev-desc">${escapeHtml(ev.desc)}</div>
+      <div class="ev-choices">${choicesHtml}</div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  overlay.querySelectorAll('.ev-choice').forEach(btn => {
+    if (btn.disabled) return;
+    btn.addEventListener('click', () => {
+      const idx = +btn.dataset.idx;
+      resolveEvent(ev, idx);
+      overlay.remove();
+    });
+  });
+}
+
+function resolveEvent(ev, choiceIdx) {
+  const choice = ev.choices[choiceIdx];
+  const p = state.pet;
+  for (const [k, v] of Object.entries(choice.effect || {})) {
+    applyDelta(p, k, v);
+  }
+  pushLog(`📜 ${ev.title}: ${choice.msg}`, 'event');
+
+  // 분기 대회 체크
+  const tourney = TOURNAMENTS.find(t => t.week === state.week);
+  if (tourney) applyTournament(tourney);
+
+  advanceWeek();
+}
+
+/* ============================================================
+   분기별 대회
+============================================================ */
+function applyTournament(t) {
+  const p = state.pet;
+  let score;
+  if (t.stat === 'overall') {
+    score = p.str + p.agi + p.hp + p.cute + p.int + p.elem;
+    var threshold1 = 240, threshold2 = 180, threshold3 = 120;
+  } else {
+    score = p[t.stat];
+    var threshold1 = 60, threshold2 = 40, threshold3 = 25;
+  }
+  let rank, prize, bondDelta;
+  if (score >= threshold1) { rank = '🥇 1등!'; prize = 100; bondDelta = 8; }
+  else if (score >= threshold2) { rank = '🥈 2등'; prize = 50; bondDelta = 4; }
+  else if (score >= threshold3) { rank = '🥉 3등'; prize = 20; bondDelta = 2; }
+  else { rank = '참가상'; prize = 5; bondDelta = -1; }
+
+  p.stones += prize;
+  applyDelta(p, 'bond', bondDelta);
+  applyDelta(p, 'happy', bondDelta > 0 ? 5 : -3);
+  pushLog(`🎪 ${t.name} ${rank} (💎+${prize}, 💕${bondDelta>0?'+':''}${bondDelta})`, 'event');
+}
+
+/* ============================================================
+   엔딩
+============================================================ */
+function renderEnding() {
+  const p = state.pet;
+  const ending = decideEnding(p);
+  const screen = document.createElement('div');
+  screen.className = 'ending-screen';
+  screen.innerHTML = `
+    <div style="font-size: 80px; margin-bottom: 10px;">${ending.emoji}</div>
+    <div class="ep-title" style="color: ${ending.color};">${ending.name}</div>
+    <div class="ep-pet">${escapeHtml(p.name)} (${escapeHtml(p.species)}) · 1년 후</div>
+    <div class="ep-desc">${ending.desc.split('\n').map(s => escapeHtml(s)).join('<br>')}</div>
+    <div class="ep-stats">
+      💪근력 ${p.str} · 🏃민첩 ${p.agi} · ❤️체력 ${p.hp}<br>
+      🧠지능 ${p.int} · 🔥속성 ${p.elem} · 😊애교 ${p.cute}<br>
+      🎭야생 ${p.wild} · 💕친밀 ${p.bond} · 🌈행복 ${p.happy}<br>
+      💎 최종 스톤 ${p.stones}
+    </div>
+    <button class="btn primary" id="btn-submit-ranking" style="margin-right: 6px;">🏆 랭킹 등록</button>
+    <button class="btn" id="btn-restart">↻ 새 게임</button>
+  `;
+  app.appendChild(screen);
+
+  document.getElementById('btn-restart').addEventListener('click', () => {
+    state.scene = 'title';
+    render();
+  });
+  document.getElementById('btn-submit-ranking').addEventListener('click', () => submitRanking(ending));
+}
+
+async function submitRanking(ending) {
+  const nick = prompt('랭킹에 등록할 닉네임을 입력하세요 (2~10자)');
+  if (!nick || nick.length < 2 || nick.length > 10) return;
+  const p = state.pet;
+  try {
+    await db.ref('raise_rankings').push({
+      nickname: nick,
+      pet: p.name,
+      species: p.species,
+      ending: ending.name,
+      endingId: ending.id,
+      stones: p.stones,
+      stats: {
+        str: p.str, agi: p.agi, hp: p.hp, int: p.int, elem: p.elem,
+        cute: p.cute, wild: p.wild, bond: p.bond, happy: p.happy,
+      },
+      timestamp: Date.now(),
+    });
+    alert('랭킹 등록 완료!');
+  } catch(e) {
+    alert('등록 실패: ' + e.message);
+  }
+}
+
+/* ============================================================
+   저장/불러오기
+============================================================ */
+function saveGame() {
+  const nick = prompt('저장할 닉네임을 입력하세요 (2~10자)', localStorage.getItem('raise_nick') || '');
+  if (!nick || nick.length < 2) return;
+  localStorage.setItem('raise_nick', nick);
+  const key = nick.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+  const saveData = {
+    pet: state.pet,
+    week: state.week,
+    log: state.log.slice(-20),
+    timestamp: Date.now(),
+  };
+  db.ref('raise_saves/' + key).set(saveData)
+    .then(() => alert('저장 완료!'))
+    .catch(e => alert('저장 실패: ' + e.message));
+}
+
+async function loadGame() {
+  const nick = prompt('불러올 닉네임을 입력하세요', localStorage.getItem('raise_nick') || '');
+  if (!nick) return;
+  localStorage.setItem('raise_nick', nick);
+  const key = nick.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
+  try {
+    const snap = await db.ref('raise_saves/' + key).once('value');
+    const data = snap.val();
+    if (!data) { alert('저장된 데이터가 없습니다.'); return; }
+    state.pet = data.pet;
+    state.week = data.week;
+    state.log = data.log || [];
+    state.scene = 'playing';
+    render();
+  } catch(e) {
+    alert('불러오기 실패: ' + e.message);
+  }
+}
+
+/* ============================================================
+   초기화
+============================================================ */
+loadLocalStats();
+(async () => {
+  await loadPetData();
+  render();
+})();
+</script>
+
+</body>
+</html>
