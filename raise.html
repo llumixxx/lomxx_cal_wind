@@ -5,87 +5,102 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>👑 프린세스 펫 메이커 - wind01</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&family=Jersey+15&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&family=Gaegu:wght@400;700&family=Jua&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #1a0f08;
-    --bg2: #2a1810;
-    --panel: #3a2418;
-    --panel2: #4a2e1f;
-    --border: #5a3b28;
-    --border-hi: #8b5a3c;
-    --fg: #f5e6d3;
-    --fg2: #c9b4a0;
-    --muted: #8b7868;
-    --accent: #ffd866;
-    --accent2: #ff9a50;
-    --danger: #e74c3c;
-    --ok: #5acba8;
-    --water: #4ad9ff;
-    --fire: #ff5a5a;
-    --earth: #8cd462;
-    --wind: #ffca55;
-    --pink: #ff6b9f;
-    --purple: #9a6fff;
+    --bg-pink: #ffe0ec;
+    --bg-mint: #e4fff5;
+    --bg-cream: #fff5e4;
+    --pink-light: #ffd4e5;
+    --pink: #ff9ec7;
+    --pink-deep: #ff6b9f;
+    --lavender: #c9a6ff;
+    --lavender-deep: #9a6fff;
+    --mint: #a0e8d0;
+    --mint-deep: #5acba8;
+    --cream: #ffe8b8;
+    --gold: #ffc640;
+    --gold-deep: #ff9a30;
+    --red: #ff7070;
+    --text: #5a3a4a;
+    --text-muted: #8e6a7c;
+    --white: #fff5fa;
+    --panel-bg: rgba(255, 245, 250, 0.92);
+    --border-pink: #ffb8d4;
+    --shadow-pink: rgba(255, 107, 159, 0.3);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    color: var(--fg);
-    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--text);
+    font-family: 'Jua', 'Gaegu', 'Noto Sans KR', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    background: #1a0f08;
+    background: linear-gradient(180deg, #ffe0ec 0%, #ffd4e5 100%);
     transition: background 1.5s;
   }
 
-  /* ═══════════════════════════════════════════════════
-     계절별 배경 (body에 class 추가하여 전환)
-  ═══════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════
+     계절별 배경
+  ═══════════════════════════════════════════════ */
   body.season-spring {
-    background: linear-gradient(180deg, #ffc4e0 0%, #ffe6d9 40%, #ffd4c0 100%);
+    background: linear-gradient(180deg, #ffd4e5 0%, #ffe8f0 50%, #ffc4d8 100%);
   }
   body.season-summer {
-    background: linear-gradient(180deg, #9ae0ff 0%, #c8f0a8 60%, #ffe4a0 100%);
+    background: linear-gradient(180deg, #b8e8ff 0%, #d4f4ff 50%, #ffe8a0 100%);
   }
   body.season-autumn {
-    background: linear-gradient(180deg, #ffa070 0%, #ffcc66 50%, #d49050 100%);
+    background: linear-gradient(180deg, #ffb894 0%, #ffd4a0 50%, #ffc48c 100%);
   }
   body.season-winter {
-    background: linear-gradient(180deg, #a8c8f0 0%, #dce8ff 50%, #e8f0ff 100%);
+    background: linear-gradient(180deg, #c4d4ff 0%, #e0e8ff 50%, #f0f4ff 100%);
   }
 
-  /* 계절 파티클 (꽃잎, 잎, 눈) */
+  /* 반짝이는 배경 장식 */
+  .bg-sparkles {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .bg-sparkle {
+    position: absolute;
+    opacity: 0.5;
+    animation: sparkleFloat infinite ease-in-out;
+    font-size: 24px;
+  }
+  @keyframes sparkleFloat {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { transform: translateY(-20px) scale(1.2); opacity: 0.7; }
+  }
+
+  /* 계절 파티클 */
   .season-particles {
     position: fixed;
     inset: 0;
     pointer-events: none;
     overflow: hidden;
-    z-index: 1;
+    z-index: 2;
   }
   .particle {
     position: absolute;
-    top: -20px;
-    font-size: 20px;
+    top: -30px;
     animation-name: fall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-    opacity: 0.7;
     user-select: none;
+    filter: drop-shadow(0 2px 4px rgba(255,107,159,0.3));
   }
   @keyframes fall {
-    0% {
-      transform: translateY(-20px) translateX(0) rotate(0deg);
-      opacity: 0;
-    }
-    10% { opacity: 0.8; }
-    90% { opacity: 0.8; }
-    100% {
-      transform: translateY(110vh) translateX(var(--drift)) rotate(720deg);
-      opacity: 0;
-    }
+    0% { transform: translateY(-30px) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.9; }
+    90% { opacity: 0.9; }
+    100% { transform: translateY(110vh) translateX(var(--drift)) rotate(720deg); opacity: 0; }
   }
 
+  /* ═══════════════════════════════════════════════
+     레이아웃
+  ═══════════════════════════════════════════════ */
   .wrap {
     max-width: 960px;
     margin: 0 auto;
@@ -94,70 +109,88 @@
     z-index: 10;
   }
 
-  /* ═══════════════════════════════════════════════════
-     타이틀 바
-  ═══════════════════════════════════════════════════ */
   .title-bar {
     text-align: center;
-    padding: 10px 0;
-    margin-bottom: 10px;
+    padding: 14px 0 8px;
   }
   .title-bar h1 {
-    font-family: 'Cinzel', serif;
-    font-size: 28px;
-    color: var(--accent);
+    font-family: 'Jua', sans-serif;
+    font-size: 32px;
+    color: var(--pink-deep);
     margin: 0;
     text-shadow:
-      2px 2px 0 #000,
-      3px 3px 8px rgba(0,0,0,0.5);
+      2px 2px 0 #fff,
+      3px 3px 0 var(--lavender),
+      4px 4px 10px rgba(154, 111, 255, 0.4);
     letter-spacing: 2px;
     font-weight: 900;
   }
   .title-bar .sub {
-    font-size: 12px;
-    color: #fff;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    margin-top: 4px;
-  }
-
-  /* ═══════════════════════════════════════════════════
-     공통 패널
-  ═══════════════════════════════════════════════════ */
-  .panel {
-    background: rgba(58, 36, 24, 0.92);
-    backdrop-filter: blur(8px);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow:
-      0 6px 0 rgba(0,0,0,0.4),
-      0 10px 20px rgba(0,0,0,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.1);
-  }
-  .panel-title {
-    font-family: 'Jersey 15';
-    font-size: 18px;
-    color: var(--accent);
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-  }
-
-  /* ═══════════════════════════════════════════════════
-     버튼 스타일
-  ═══════════════════════════════════════════════════ */
-  .btn {
-    background: linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
-    border: 2px solid var(--border-hi);
-    color: var(--fg);
-    padding: 10px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: inherit;
     font-size: 13px;
+    color: var(--text);
+    margin-top: 4px;
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════════════════════════════
+     패널
+  ═══════════════════════════════════════════════ */
+  .panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--border-pink);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow:
+      0 6px 0 var(--pink),
+      0 12px 30px rgba(255,107,159,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    position: relative;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 30px;
+    width: 40px;
+    height: 16px;
+    background: var(--pink);
+    border-radius: 50%;
+    opacity: 0.6;
+    filter: blur(8px);
+  }
+
+  /* 하트 장식 코너 */
+  .panel-deco {
+    position: absolute;
+    font-size: 20px;
+    animation: decoSpin 8s linear infinite;
+  }
+  .panel-deco.tl { top: -12px; left: -12px; }
+  .panel-deco.tr { top: -12px; right: -12px; animation-direction: reverse; }
+  .panel-deco.bl { bottom: -12px; left: -12px; animation-direction: reverse; }
+  .panel-deco.br { bottom: -12px; right: -12px; }
+  @keyframes decoSpin {
+    0%, 100% { transform: rotate(-15deg) scale(1); }
+    50% { transform: rotate(15deg) scale(1.1); }
+  }
+
+  /* ═══════════════════════════════════════════════
+     버튼
+  ═══════════════════════════════════════════════ */
+  .btn {
+    background: linear-gradient(180deg, #fff 0%, var(--pink-light) 100%);
+    border: 3px solid var(--pink);
+    color: var(--pink-deep);
+    padding: 12px 20px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-family: 'Jua', sans-serif;
+    font-size: 14px;
     font-weight: 700;
     transition: all .15s;
     letter-spacing: 0.5px;
-    box-shadow: 0 3px 0 rgba(0,0,0,0.4);
+    box-shadow: 0 4px 0 var(--pink), 0 6px 10px rgba(255,107,159,0.2);
     position: relative;
     overflow: hidden;
   }
@@ -168,81 +201,87 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    transition: left .4s;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+    transition: left .5s;
   }
   .btn:hover:not(:disabled)::before { left: 100%; }
   .btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 0 rgba(0,0,0,0.4);
-    border-color: var(--accent);
-    color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 0 var(--pink), 0 10px 16px rgba(255,107,159,0.3);
   }
   .btn:active:not(:disabled) {
     transform: translateY(1px);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+    box-shadow: 0 2px 0 var(--pink), 0 3px 6px rgba(255,107,159,0.2);
   }
-  .btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
   .btn.primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #3a1a0a;
-    border-color: #000;
-    box-shadow: 0 3px 0 #000, 0 0 12px rgba(255, 216, 102, 0.4);
+    background: linear-gradient(180deg, var(--pink) 0%, var(--pink-deep) 100%);
+    color: #fff;
+    border-color: var(--pink-deep);
+    box-shadow: 0 4px 0 #c04870, 0 6px 16px rgba(255,107,159,0.5);
   }
   .btn.primary:hover:not(:disabled) {
-    filter: brightness(1.1);
-    box-shadow: 0 5px 0 #000, 0 0 20px rgba(255, 216, 102, 0.6);
-    color: #3a1a0a;
+    box-shadow: 0 7px 0 #c04870, 0 10px 20px rgba(255,107,159,0.6);
+  }
+  .btn.lavender {
+    background: linear-gradient(180deg, #d9bdff 0%, var(--lavender-deep) 100%);
+    color: #fff;
+    border-color: var(--lavender-deep);
+    box-shadow: 0 4px 0 #6a4aaa;
+  }
+  .btn.mint {
+    background: linear-gradient(180deg, var(--mint) 0%, var(--mint-deep) 100%);
+    color: #fff;
+    border-color: var(--mint-deep);
+    box-shadow: 0 4px 0 #3a9a78;
+  }
+  .btn.gold {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--gold) 100%);
+    color: #8a5a10;
+    border-color: var(--gold-deep);
+    box-shadow: 0 4px 0 #c07020;
   }
   .btn.danger {
-    background: linear-gradient(135deg, var(--danger), #b33a30);
-    border-color: #000;
+    background: linear-gradient(180deg, #ffb0b0 0%, var(--red) 100%);
     color: #fff;
-  }
-  .btn.ok {
-    background: linear-gradient(135deg, var(--ok), #3a9a78);
-    border-color: #000;
-    color: #fff;
+    border-color: #c04040;
+    box-shadow: 0 4px 0 #803030;
   }
   .btn.full { width: 100%; }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════
      타이틀 화면
-  ═══════════════════════════════════════════════════ */
+  ═══════════════════════════════════════════════ */
   .title-screen {
     text-align: center;
-    padding: 40px 20px;
+    padding: 20px;
     position: relative;
   }
   .title-screen .big-title {
-    font-family: 'Cinzel', serif;
-    font-size: 52px;
-    color: var(--accent);
+    font-family: 'Jua', sans-serif;
+    font-size: 56px;
+    color: var(--pink-deep);
     text-shadow:
-      3px 3px 0 #8b4513,
-      6px 6px 0 #000,
-      9px 9px 15px rgba(0,0,0,0.5);
+      3px 3px 0 #fff,
+      6px 6px 0 var(--lavender),
+      9px 9px 20px rgba(154,111,255,0.5);
     letter-spacing: 3px;
     margin-bottom: 10px;
     line-height: 1.1;
-    font-weight: 900;
-    animation: titleGlow 3s ease-in-out infinite;
+    animation: titleBounce 2s ease-in-out infinite;
   }
-  @keyframes titleGlow {
-    0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 216, 102, 0.4)); }
-    50% { filter: drop-shadow(0 0 20px rgba(255, 216, 102, 0.8)); }
+  @keyframes titleBounce {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-8px) rotate(1deg); }
   }
   @media (max-width: 500px) {
-    .title-screen .big-title { font-size: 32px; letter-spacing: 2px; }
+    .title-screen .big-title { font-size: 38px; letter-spacing: 2px; }
   }
   .title-screen .tagline {
-    font-size: 14px;
-    color: #fff;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-    margin-bottom: 30px;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 25px;
     line-height: 1.8;
     font-weight: 700;
   }
@@ -253,87 +292,103 @@
     max-width: 300px;
     margin: 0 auto;
   }
-  .title-screen .menu-btns .btn {
-    padding: 14px;
-    font-size: 18px;
-  }
-  .title-screen .stats-row {
-    margin-top: 30px;
-    font-size: 11px;
-    color: #fff;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-  }
+  .title-screen .menu-btns .btn { padding: 14px; font-size: 18px; }
 
-  /* 큰 로고 아래 펫 장식 (ornament) */
   .title-decorations {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin: 20px 0;
-    font-size: 40px;
+    gap: 20px;
+    margin: 24px 0;
   }
-  .title-decorations span {
-    animation: float 3s ease-in-out infinite;
+  .title-decorations .char {
+    font-size: 50px;
+    animation: floatChar 3s ease-in-out infinite;
     display: inline-block;
+    filter: drop-shadow(3px 5px 8px rgba(255,107,159,0.4));
   }
-  .title-decorations span:nth-child(2) { animation-delay: 0.5s; }
-  .title-decorations span:nth-child(3) { animation-delay: 1s; }
-  @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-10px) rotate(5deg); }
+  .title-decorations .char:nth-child(2) { animation-delay: 0.5s; }
+  .title-decorations .char:nth-child(3) { animation-delay: 1s; }
+  @keyframes floatChar {
+    0%, 100% { transform: translateY(0) rotate(-8deg) scale(1); }
+    50% { transform: translateY(-15px) rotate(8deg) scale(1.1); }
   }
 
-  /* ═══════════════════════════════════════════════════
-     스타터 선택 화면
-  ═══════════════════════════════════════════════════ */
+  .title-screen .stats-row {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  /* ═══════════════════════════════════════════════
+     스타터 선택
+  ═══════════════════════════════════════════════ */
   .starter-screen h2 {
-    font-family: 'Cinzel', serif;
-    color: var(--accent);
+    font-family: 'Jua', sans-serif;
+    color: var(--pink-deep);
     text-align: center;
-    margin-bottom: 6px;
+    margin: 0 0 6px;
     letter-spacing: 1px;
-    text-shadow: 2px 2px 0 #000;
+    font-size: 28px;
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
   }
   .starter-screen .hint {
     text-align: center;
-    color: var(--fg2);
-    font-size: 12px;
+    color: var(--text);
+    font-size: 13px;
     margin-bottom: 16px;
     line-height: 1.6;
+    font-weight: 700;
   }
   .starter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 20px;
   }
   .starter-card {
-    background: linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 3px solid var(--border-pink);
+    border-radius: 18px;
+    padding: 14px 10px;
     cursor: pointer;
     text-align: center;
-    transition: all .2s cubic-bezier(.3,.7,.4,1);
+    transition: all .25s cubic-bezier(.3,.7,.4,1.3);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 0 var(--pink), 0 8px 16px rgba(255,107,159,0.2);
+  }
+  .starter-card::before {
+    content: '💖';
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .starter-card:hover::before { opacity: 0.6; animation: heartPop 1s infinite; }
+  @keyframes heartPop {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
   }
   .starter-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    border-color: var(--pink-deep);
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 10px 0 var(--pink), 0 14px 28px rgba(255,107,159,0.35);
   }
   .starter-card.selected {
-    border-color: var(--accent);
-    background: linear-gradient(180deg, #6a4230 0%, #5a3824 100%);
+    border-color: var(--pink-deep);
+    background: linear-gradient(180deg, #fff 0%, var(--pink-light) 100%);
     box-shadow:
-      0 0 20px var(--accent),
-      0 4px 0 #000;
-    animation: selectedPulse 1.5s ease-in-out infinite;
+      0 0 0 4px var(--pink),
+      0 0 25px var(--pink-deep),
+      0 8px 0 var(--pink-deep);
+    animation: selectedPulse 1.2s ease-in-out infinite;
   }
   @keyframes selectedPulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 216, 102, 0.6), 0 4px 0 #000; }
-    50% { box-shadow: 0 0 30px rgba(255, 216, 102, 1), 0 4px 0 #000; }
+    0%, 100% { box-shadow: 0 0 0 4px var(--pink), 0 0 25px var(--pink-deep), 0 8px 0 var(--pink-deep); }
+    50% { box-shadow: 0 0 0 4px var(--pink), 0 0 40px var(--pink-deep), 0 8px 0 var(--pink-deep); }
   }
   .starter-card img {
     width: 80px; height: 80px;
@@ -341,23 +396,19 @@
     image-rendering: pixelated;
     display: block;
     margin: 0 auto 4px;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+    filter: drop-shadow(2px 4px 6px rgba(255,107,159,0.3));
     transition: transform .2s;
   }
-  .starter-card:hover img {
-    transform: scale(1.1) rotate(-5deg);
-  }
-  .starter-card.selected img {
-    animation: bounce 1s ease-in-out infinite;
-  }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+  .starter-card:hover img { transform: scale(1.15) rotate(-5deg); }
+  .starter-card.selected img { animation: bouncePet 1s ease-in-out infinite; }
+  @keyframes bouncePet {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.08); }
   }
   .starter-card .name {
-    font-family: 'Jersey 15';
+    font-family: 'Jua', sans-serif;
     font-size: 18px;
-    color: var(--accent);
+    color: var(--pink-deep);
     margin-top: 4px;
   }
   .starter-card .attrs {
@@ -368,165 +419,177 @@
     margin-top: 4px;
   }
   .attr-tag {
-    padding: 1px 6px;
-    border-radius: 3px;
+    padding: 2px 7px;
+    border-radius: 10px;
     font-size: 10px;
     font-weight: 700;
     color: #fff;
-    font-family: 'Jersey 15';
+    font-family: 'Jua';
+    border: 1.5px solid rgba(0,0,0,0.2);
   }
-  .attr-tag.earth { background: var(--earth); color: #000; }
-  .attr-tag.water { background: var(--water); color: #000; }
-  .attr-tag.fire { background: var(--fire); }
-  .attr-tag.wind { background: var(--wind); color: #000; }
-  .attr-tag.neutral { background: var(--muted); }
+  .attr-tag.earth  { background: var(--mint-deep); }
+  .attr-tag.water  { background: #5ac4ff; }
+  .attr-tag.fire   { background: #ff7070; }
+  .attr-tag.wind   { background: #ffbd55; color: #5a3a00; }
+  .attr-tag.neutral{ background: #b0a0a8; }
   .starter-card .stats-mini {
-    font-size: 10px;
-    color: var(--fg2);
+    font-size: 11px;
+    color: var(--text-muted);
     margin-top: 4px;
+    font-weight: 700;
   }
 
   .name-input-wrap {
     text-align: center;
-    padding: 20px;
+    padding: 24px 20px;
   }
   .name-input-wrap img {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
     image-rendering: pixelated;
     object-fit: contain;
     animation: nameFloat 3s ease-in-out infinite;
-    filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.4));
+    filter: drop-shadow(4px 6px 12px rgba(255,107,159,0.4));
   }
   @keyframes nameFloat {
-    0%, 100% { transform: translateY(0) rotate(-3deg); }
-    50% { transform: translateY(-10px) rotate(3deg); }
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-12px) rotate(5deg); }
   }
   .name-input {
-    padding: 10px 14px;
-    background: var(--bg2);
-    border: 2px solid var(--border-hi);
-    color: var(--fg);
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 16px;
+    padding: 12px 18px;
+    background: #fff;
+    border: 3px solid var(--pink);
+    color: var(--pink-deep);
+    border-radius: 16px;
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
     font-weight: 700;
     text-align: center;
     width: 240px;
     max-width: 80%;
+    box-shadow: 0 3px 0 var(--pink-deep), inset 0 2px 4px rgba(255,107,159,0.1);
   }
-  .name-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 216, 102, 0.4); }
+  .name-input:focus {
+    outline: none;
+    border-color: var(--pink-deep);
+    box-shadow: 0 3px 0 var(--pink-deep), 0 0 15px var(--pink), inset 0 2px 4px rgba(255,107,159,0.1);
+  }
 
-  /* ═══════════════════════════════════════════════════
-     메인 게임 UI
-  ═══════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════
+     메인 플레이
+  ═══════════════════════════════════════════════ */
   .game-grid {
     display: grid;
     grid-template-columns: 1fr 320px;
-    gap: 12px;
+    gap: 14px;
   }
   @media (max-width: 720px) {
     .game-grid { grid-template-columns: 1fr; }
   }
 
-  /* 펫 패널 */
   .pet-panel {
-    background: linear-gradient(180deg,
-      rgba(74, 46, 31, 0.92) 0%,
-      rgba(42, 24, 16, 0.92) 100%);
-    backdrop-filter: blur(8px);
-    border: 2px solid var(--border-hi);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow:
-      0 6px 0 rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.1);
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--border-pink);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 0 6px 0 var(--pink), 0 12px 30px rgba(255,107,159,0.25);
     position: relative;
-    overflow: hidden;
   }
 
-  /* 패널 상단 장식 (월 표시) */
   .pet-panel .month-badge {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    background: var(--accent);
-    color: #3a1a0a;
-    padding: 4px 10px;
+    top: -12px;
+    right: 20px;
+    background: linear-gradient(180deg, var(--cream), var(--gold));
+    color: #8a5a10;
+    padding: 6px 16px;
     border-radius: 20px;
-    font-family: 'Jersey 15';
-    font-size: 13px;
+    font-family: 'Jua';
+    font-size: 14px;
     font-weight: 800;
     letter-spacing: 0.5px;
-    box-shadow: 0 2px 0 #000;
-    z-index: 2;
+    box-shadow: 0 3px 0 var(--gold-deep);
+    z-index: 5;
+    border: 2px solid #fff;
   }
 
-  /* 주 진행 바 */
   .week-progress {
     margin-top: 10px;
-    background: rgba(0,0,0,0.4);
-    border-radius: 10px;
-    height: 6px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    height: 10px;
     overflow: hidden;
-    border: 1px solid var(--border);
+    border: 2px solid var(--pink);
+    box-shadow: inset 0 1px 3px rgba(255,107,159,0.2);
   }
   .week-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    background: linear-gradient(90deg, var(--pink), var(--lavender-deep));
     transition: width .5s;
-    box-shadow: 0 0 8px rgba(255, 216, 102, 0.5);
+    box-shadow: 0 0 10px var(--pink);
   }
 
-  /* 펫 중앙 스프라이트 (크고 멋지게) */
+  /* 펫 스테이지 - 무대! */
   .pet-stage {
     width: 100%;
-    height: 200px;
+    height: 220px;
     background:
-      radial-gradient(ellipse at center bottom, rgba(0,0,0,0.3) 0%, transparent 70%),
-      linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.2) 100%);
-    border: 2px solid var(--border);
-    border-radius: 10px;
+      radial-gradient(ellipse at center bottom, rgba(255,182,193,0.5) 0%, transparent 70%),
+      linear-gradient(180deg, var(--bg-pink) 0%, var(--bg-cream) 100%);
+    border: 3px solid var(--pink);
+    border-radius: 18px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+    box-shadow: inset 0 2px 8px rgba(255,107,159,0.15);
   }
 
-  /* 스테이지 바닥 (그림자 효과) */
+  /* 스테이지 배경 SVG (무지개 언덕) */
+  .stage-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 스테이지 바닥 그림자 */
   .pet-stage::before {
     content: '';
     position: absolute;
-    bottom: 20px;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
-    width: 140px;
-    height: 14px;
-    background: radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%);
+    width: 150px;
+    height: 18px;
+    background: radial-gradient(ellipse, rgba(255,107,159,0.5) 0%, transparent 70%);
     border-radius: 50%;
     z-index: 1;
+    filter: blur(2px);
   }
 
   .pet-big-sprite {
-    width: 160px;
-    height: 160px;
+    width: 170px;
+    height: 170px;
     object-fit: contain;
     image-rendering: pixelated;
-    filter: drop-shadow(4px 6px 10px rgba(0,0,0,0.6));
+    filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4));
     position: relative;
-    z-index: 2;
-    transition: filter .3s;
-    /* 기본: 가벼운 숨쉬기 */
+    z-index: 3;
     animation: breathe 3s ease-in-out infinite;
   }
   @keyframes breathe {
     0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-2px) scale(1.02); }
+    50% { transform: translateY(-3px) scale(1.02); }
   }
 
-  /* 감정 상태별 스프라이트 애니메이션 */
+  /* 감정 애니메이션 */
   .pet-big-sprite.mood-happy {
     animation: moodHappy 0.8s ease-in-out infinite;
   }
@@ -537,36 +600,38 @@
   }
   .pet-big-sprite.mood-tired {
     animation: moodTired 4s ease-in-out infinite;
-    filter: drop-shadow(4px 6px 10px rgba(0,0,0,0.6)) saturate(0.7);
+    filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4)) saturate(0.6);
   }
   @keyframes moodTired {
-    0%, 100% { transform: rotate(-8deg) translateY(6px); }
-    50% { transform: rotate(-10deg) translateY(8px); }
+    0%, 100% { transform: rotate(-8deg) translateY(8px); }
+    50% { transform: rotate(-10deg) translateY(10px); }
   }
   .pet-big-sprite.mood-stress {
     animation: moodStress 0.2s linear infinite;
-    filter: drop-shadow(4px 6px 10px rgba(0,0,0,0.6)) hue-rotate(-20deg);
+    filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4)) hue-rotate(-20deg);
   }
   @keyframes moodStress {
     0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-2px); }
-    75% { transform: translateX(2px); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
   }
+
+  /* 액션 애니메이션 */
   .pet-big-sprite.action-train {
-    animation: actionTrain 0.5s ease-in-out;
+    animation: actionTrain 0.6s ease-in-out;
   }
   @keyframes actionTrain {
     0% { transform: translateY(0) scale(1); }
-    30% { transform: translateY(-30px) scale(1.1); }
-    60% { transform: translateY(5px) scale(0.95); }
+    30% { transform: translateY(-40px) scale(1.15); }
+    60% { transform: translateY(8px) scale(0.92); }
     100% { transform: translateY(0) scale(1); }
   }
   .pet-big-sprite.action-run {
     animation: actionRun 0.6s ease-in-out;
   }
   @keyframes actionRun {
-    0% { transform: translateX(-30px); }
-    50% { transform: translateX(30px); }
+    0% { transform: translateX(-40px) scaleX(-1); }
+    50% { transform: translateX(40px) scaleX(1); }
     100% { transform: translateX(0); }
   }
   .pet-big-sprite.action-eat {
@@ -574,19 +639,18 @@
   }
   @keyframes actionEat {
     0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.15) rotate(-3deg); }
-    50% { transform: scale(1.1) rotate(3deg); }
-    75% { transform: scale(1.15) rotate(-3deg); }
+    25% { transform: scale(1.15) rotate(-5deg); }
+    50% { transform: scale(1.12) rotate(5deg); }
+    75% { transform: scale(1.15) rotate(-5deg); }
   }
   .pet-big-sprite.action-spirit {
     animation: actionSpirit 1s ease-in-out;
   }
   @keyframes actionSpirit {
-    0%, 100% { transform: scale(1); filter: drop-shadow(4px 6px 10px rgba(0,0,0,0.6)); }
-    50% { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--purple)) drop-shadow(4px 6px 10px rgba(0,0,0,0.6)); }
+    0%, 100% { transform: scale(1); filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4)); }
+    50% { transform: scale(1.12); filter: drop-shadow(0 0 25px var(--lavender-deep)) drop-shadow(4px 6px 10px rgba(255,107,159,0.4)); }
   }
 
-  /* 파티클 영역 (스프라이트 주변에서 튀는 이펙트) */
   .effect-layer {
     position: absolute;
     inset: 0;
@@ -595,56 +659,36 @@
   }
   .effect {
     position: absolute;
-    font-size: 24px;
+    font-size: 28px;
     pointer-events: none;
-    animation: effectPop 1.2s ease-out forwards;
+    animation: effectPop 1.4s ease-out forwards;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
   }
   @keyframes effectPop {
-    0% {
-      opacity: 0;
-      transform: translate(var(--startX, 0), var(--startY, 0)) scale(0.3);
-    }
-    20% {
-      opacity: 1;
-      transform: translate(var(--startX, 0), var(--startY, 0)) scale(1.3);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(var(--endX, 0), var(--endY, -60px)) scale(0.8);
-    }
+    0% { opacity: 0; transform: translate(var(--startX, 0), var(--startY, 0)) scale(0.3) rotate(0); }
+    20% { opacity: 1; transform: translate(var(--startX, 0), var(--startY, 0)) scale(1.4) rotate(30deg); }
+    100% { opacity: 0; transform: translate(var(--endX, 0), var(--endY, -60px)) scale(0.9) rotate(180deg); }
   }
 
-  /* 스탯 상승 팝업 */
   .stat-popup {
     position: absolute;
-    font-family: 'Jersey 15';
-    font-size: 20px;
+    font-family: 'Jua';
+    font-size: 22px;
     font-weight: 800;
     pointer-events: none;
     z-index: 10;
-    text-shadow: 2px 2px 0 #000, 0 0 8px currentColor;
-    animation: statPopup 1.5s ease-out forwards;
+    text-shadow: 2px 2px 0 #fff, 0 0 8px currentColor;
+    animation: statPopup 1.6s ease-out forwards;
   }
   @keyframes statPopup {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, 0) scale(0.5);
-    }
-    15% {
-      opacity: 1;
-      transform: translate(-50%, -10px) scale(1.2);
-    }
-    40% {
-      transform: translate(-50%, -20px) scale(1);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, -70px) scale(0.9);
-    }
+    0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
+    15% { opacity: 1; transform: translate(-50%, -10px) scale(1.3); }
+    40% { transform: translate(-50%, -25px) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -80px) scale(0.9); }
   }
-  .stat-popup.up { color: #5acba8; }
-  .stat-popup.down { color: #ff7070; }
-  .stat-popup.gold { color: var(--accent); }
+  .stat-popup.up { color: var(--mint-deep); }
+  .stat-popup.down { color: var(--red); }
+  .stat-popup.gold { color: var(--gold-deep); }
 
   /* 펫 정보 상단 */
   .pet-info-top {
@@ -652,25 +696,23 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    padding-right: 90px;
   }
-  .pet-name-box {
-    flex: 1;
-    min-width: 0;
-  }
+  .pet-name-box { flex: 1; min-width: 0; }
   .pet-name-box .pname {
-    font-family: 'Cinzel', serif;
-    font-size: 24px;
-    color: var(--accent);
-    font-weight: 900;
-    text-shadow: 2px 2px 0 #000;
+    font-family: 'Jua', sans-serif;
+    font-size: 26px;
+    color: var(--pink-deep);
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
     letter-spacing: 1px;
     word-break: break-all;
   }
   .pet-name-box .pspecies {
     font-size: 11px;
-    color: var(--fg2);
+    color: var(--text-muted);
     margin-top: -2px;
+    font-weight: 700;
   }
   .pet-name-box .pattrs {
     display: flex;
@@ -678,27 +720,28 @@
     margin-top: 4px;
   }
   .stones-big {
-    font-family: 'Jersey 15';
+    font-family: 'Jua';
     font-size: 22px;
-    color: var(--accent);
-    background: rgba(0,0,0,0.4);
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border-hi);
+    color: #8a5a10;
+    background: linear-gradient(180deg, var(--cream), var(--gold));
+    padding: 8px 14px;
+    border-radius: 24px;
+    border: 2px solid var(--gold-deep);
     white-space: nowrap;
+    box-shadow: 0 3px 0 var(--gold-deep);
     animation: stonesShine 2s ease-in-out infinite;
   }
   @keyframes stonesShine {
-    0%, 100% { box-shadow: 0 0 0 rgba(255, 216, 102, 0); }
-    50% { box-shadow: 0 0 12px rgba(255, 216, 102, 0.5); }
+    0%, 100% { box-shadow: 0 3px 0 var(--gold-deep), 0 0 0 transparent; }
+    50% { box-shadow: 0 3px 0 var(--gold-deep), 0 0 15px var(--gold); }
   }
 
-  /* 스탯 그리드 */
+  /* 스탯 */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 4px 10px;
-    margin-top: 12px;
+    gap: 5px 12px;
+    margin-top: 10px;
   }
   @media (max-width: 500px) {
     .stats-grid { grid-template-columns: 1fr; }
@@ -708,73 +751,70 @@
     align-items: center;
     gap: 6px;
     font-size: 12px;
+    font-weight: 700;
   }
   .stat-label {
-    width: 54px;
+    width: 56px;
     flex-shrink: 0;
-    font-weight: 700;
+    color: var(--text);
   }
   .stat-bar {
     flex: 1;
     height: 10px;
-    background: rgba(0,0,0,0.5);
-    border-radius: 5px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 6px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(0,0,0,0.6);
+    border: 1.5px solid var(--border-pink);
+    box-shadow: inset 0 1px 2px rgba(255,107,159,0.15);
   }
   .stat-fill {
     height: 100%;
     transition: width .5s cubic-bezier(.3,.7,.4,1);
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+    background: linear-gradient(90deg, var(--pink), var(--pink-deep));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
   }
-  .stat-fill.positive { background: linear-gradient(90deg, #5acba8, #4ad9ff); }
-  .stat-fill.negative { background: linear-gradient(90deg, var(--danger), #ff9090); }
+  .stat-fill.positive { background: linear-gradient(90deg, var(--mint), var(--mint-deep)); }
+  .stat-fill.negative { background: linear-gradient(90deg, #ffb0b0, var(--red)); }
   .stat-value {
-    width: 32px;
+    width: 34px;
     text-align: right;
-    font-family: 'Jersey 15';
-    font-size: 14px;
-    color: var(--accent);
+    font-family: 'Jua';
+    font-size: 15px;
+    color: var(--pink-deep);
     flex-shrink: 0;
-    transition: color .3s;
-  }
-  .stat-value.flash {
-    color: #5acba8;
-    text-shadow: 0 0 8px #5acba8;
   }
 
   /* 로그 */
   .log-box {
-    background: rgba(0,0,0,0.5);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 12px;
+    background: rgba(255,255,255,0.7);
+    border: 2px solid var(--border-pink);
+    border-radius: 14px;
+    padding: 8px 14px;
     margin-top: 12px;
-    max-height: 120px;
+    max-height: 110px;
     overflow-y: auto;
     font-size: 12px;
     line-height: 1.7;
+    font-family: 'Gaegu', sans-serif;
+    font-weight: 700;
   }
-  .log-box p { margin: 0 0 2px; color: var(--fg2); }
-  .log-box p.heal { color: #5acba8; }
-  .log-box p.hurt { color: #ff9090; }
-  .log-box p.info { color: var(--accent); }
-  .log-box p.event { color: var(--wind); font-weight: 700; }
+  .log-box p { margin: 0 0 2px; color: var(--text); }
+  .log-box p.heal { color: var(--mint-deep); }
+  .log-box p.hurt { color: var(--red); }
+  .log-box p.info { color: var(--lavender-deep); }
+  .log-box p.event { color: var(--gold-deep); font-weight: 700; }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════
      액션 패널
-  ═══════════════════════════════════════════════════ */
+  ═══════════════════════════════════════════════ */
   .action-panel {
-    background: rgba(58, 36, 24, 0.92);
-    backdrop-filter: blur(8px);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow:
-      0 6px 0 rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.1);
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--border-pink);
+    border-radius: 24px;
+    padding: 14px;
+    box-shadow: 0 6px 0 var(--pink), 0 12px 30px rgba(255,107,159,0.25);
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -787,91 +827,92 @@
   .action-tab {
     flex: 1;
     padding: 8px 4px;
-    background: rgba(0,0,0,0.3);
-    border: 2px solid var(--border);
-    color: var(--fg2);
-    border-radius: 6px;
+    background: rgba(255,255,255,0.6);
+    border: 2px solid var(--border-pink);
+    color: var(--text-muted);
+    border-radius: 12px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 11px;
+    font-family: 'Jua';
+    font-size: 12px;
     font-weight: 700;
     transition: all .15s;
   }
   .action-tab:hover {
-    color: var(--fg);
-    border-color: var(--border-hi);
+    color: var(--pink-deep);
+    border-color: var(--pink);
   }
   .action-tab.active {
-    background: var(--accent);
-    color: #3a1a0a;
-    border-color: #000;
-    box-shadow: 0 2px 0 #000;
-    transform: translateY(-1px);
+    background: linear-gradient(180deg, var(--pink), var(--pink-deep));
+    color: #fff;
+    border-color: var(--pink-deep);
+    box-shadow: 0 3px 0 #c04870;
+    transform: translateY(-2px);
   }
   .action-list {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
     max-height: 450px;
     overflow-y: auto;
     padding-right: 2px;
   }
   .action-btn {
-    background: linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
-    border: 2px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 2px solid var(--border-pink);
+    border-radius: 14px;
+    padding: 9px 12px;
     text-align: left;
     cursor: pointer;
-    color: var(--fg);
-    font-family: inherit;
+    color: var(--text);
+    font-family: 'Jua', 'Noto Sans KR';
     font-size: 12px;
     transition: all .15s;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 3px 0 var(--pink);
   }
   .action-btn:hover:not(:disabled) {
-    border-color: var(--accent);
-    transform: translateX(2px) translateY(-1px);
-    box-shadow: 0 3px 0 rgba(0,0,0,0.3), 0 0 10px rgba(255,216,102,0.15);
+    border-color: var(--pink-deep);
+    transform: translateX(3px) translateY(-1px);
+    box-shadow: 0 4px 0 var(--pink), 0 0 10px rgba(255,107,159,0.25);
   }
   .action-btn:disabled {
-    opacity: 0.45;
+    opacity: 0.5;
     cursor: not-allowed;
   }
   .action-btn .ab-name {
     font-weight: 700;
-    color: var(--accent);
-    font-size: 13px;
+    color: var(--pink-deep);
+    font-size: 14px;
     margin-bottom: 2px;
   }
   .action-btn .ab-desc {
-    font-size: 10.5px;
-    color: var(--fg2);
+    font-size: 11px;
+    color: var(--text-muted);
     margin-bottom: 2px;
   }
   .action-btn .ab-cost {
-    font-size: 10.5px;
-    color: var(--wind);
-    font-family: 'Jersey 15';
+    font-size: 11px;
+    color: var(--gold-deep);
+    font-family: 'Jua';
+    font-weight: 700;
   }
   .action-btn .ab-req {
     font-size: 10px;
-    color: var(--danger);
+    color: var(--red);
   }
 
-  /* ═══════════════════════════════════════════════════
+  /* ═══════════════════════════════════════════════
      이벤트 모달
-  ═══════════════════════════════════════════════════ */
+  ═══════════════════════════════════════════════ */
   .event-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(255, 182, 193, 0.5);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 100;
     padding: 20px;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
     animation: fadeIn .3s;
   }
   @keyframes fadeIn {
@@ -880,72 +921,77 @@
   }
   .event-overlay.open { display: flex; }
   .event-panel {
-    background: linear-gradient(180deg, var(--panel2) 0%, var(--panel) 100%);
-    border: 3px solid var(--accent);
-    border-radius: 14px;
-    padding: 22px;
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 4px solid var(--pink-deep);
+    border-radius: 24px;
+    padding: 24px;
     max-width: 440px;
     width: 100%;
     box-shadow:
-      0 0 50px rgba(255, 216, 102, 0.5),
-      0 10px 30px rgba(0,0,0,0.6);
-    animation: panelSlideIn .4s cubic-bezier(.3,.7,.4,1);
+      0 0 0 6px #fff,
+      0 0 50px var(--pink),
+      0 12px 30px rgba(255,107,159,0.5);
+    animation: panelSlideIn .4s cubic-bezier(.3,.7,.4,1.3);
+    position: relative;
   }
   @keyframes panelSlideIn {
-    from { opacity: 0; transform: scale(0.7) translateY(30px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
+    from { opacity: 0; transform: scale(0.6) rotate(-10deg); }
+    to { opacity: 1; transform: scale(1) rotate(0); }
   }
   .event-panel .ev-icon {
-    font-size: 60px;
+    font-size: 64px;
     text-align: center;
     margin-bottom: 6px;
     animation: iconFloat 2s ease-in-out infinite;
+    filter: drop-shadow(3px 5px 8px rgba(255,107,159,0.4));
   }
   @keyframes iconFloat {
     0%, 100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-8px) rotate(5deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
   }
   .event-panel .ev-title {
-    font-family: 'Cinzel', serif;
-    font-size: 22px;
-    color: var(--accent);
+    font-family: 'Jua';
+    font-size: 24px;
+    color: var(--pink-deep);
     text-align: center;
     margin-bottom: 10px;
     letter-spacing: 1px;
-    font-weight: 900;
-    text-shadow: 2px 2px 0 #000;
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
   }
   .event-panel .ev-desc {
-    font-size: 13px;
-    color: var(--fg);
+    font-size: 14px;
+    color: var(--text);
     line-height: 1.7;
     margin-bottom: 16px;
-    padding: 12px;
-    background: rgba(0,0,0,0.4);
-    border-radius: 8px;
-    border-left: 3px solid var(--accent);
+    padding: 14px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 14px;
+    border-left: 4px solid var(--pink);
+    font-weight: 700;
   }
   .event-panel .ev-choices {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
   .event-panel .ev-choice {
-    background: linear-gradient(180deg, var(--panel) 0%, #2a1810 100%);
-    border: 2px solid var(--border);
-    color: var(--fg);
-    padding: 12px 14px;
-    border-radius: 8px;
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 2.5px solid var(--border-pink);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 14px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 13px;
+    font-family: 'Jua', 'Noto Sans KR';
+    font-size: 14px;
+    font-weight: 700;
     text-align: left;
     transition: all .15s;
+    box-shadow: 0 3px 0 var(--pink);
   }
   .event-panel .ev-choice:hover:not(:disabled) {
-    border-color: var(--accent);
-    background: linear-gradient(180deg, #5a3824 0%, #3a2418 100%);
+    border-color: var(--pink-deep);
     transform: translateX(3px);
+    box-shadow: 0 4px 0 var(--pink-deep);
   }
   .event-panel .ev-choice:disabled {
     opacity: 0.5;
@@ -953,74 +999,68 @@
   }
   .event-panel .ev-choice .hint {
     font-size: 10px;
-    color: var(--fg2);
+    color: var(--text-muted);
     margin-top: 2px;
+    font-weight: 400;
   }
 
-  /* 이벤트 결과 모달 */
-  .event-result {
-    animation: fadeIn .3s;
-  }
-  .event-result .ev-msg {
-    background: rgba(90, 203, 168, 0.15);
-    border: 2px solid var(--ok);
-    border-radius: 8px;
+  /* 이벤트 결과 */
+  .ev-msg {
+    background: linear-gradient(180deg, rgba(160,232,208,0.4), rgba(90,203,168,0.3));
+    border: 3px solid var(--mint-deep);
+    border-radius: 14px;
     padding: 14px;
-    font-size: 14px;
+    font-size: 15px;
     text-align: center;
     line-height: 1.8;
-    color: var(--fg);
+    color: var(--text);
+    font-weight: 700;
   }
-  .event-result .ev-deltas {
+  .ev-deltas {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     justify-content: center;
     margin: 14px 0;
-    font-family: 'Jersey 15';
+    font-family: 'Jua';
     font-size: 18px;
   }
   .ev-delta {
-    background: rgba(0,0,0,0.4);
-    padding: 4px 10px;
-    border-radius: 16px;
-    border: 1.5px solid var(--border);
+    background: #fff;
+    padding: 5px 12px;
+    border-radius: 18px;
+    border: 2.5px solid var(--pink);
+    box-shadow: 0 2px 0 var(--pink);
   }
-  .ev-delta.up { color: #5acba8; border-color: #5acba8; }
-  .ev-delta.down { color: #ff7070; border-color: #ff7070; }
-  .ev-delta.gold { color: var(--accent); border-color: var(--accent); }
+  .ev-delta.up { color: var(--mint-deep); border-color: var(--mint-deep); box-shadow: 0 2px 0 var(--mint-deep); }
+  .ev-delta.down { color: var(--red); border-color: var(--red); box-shadow: 0 2px 0 var(--red); }
+  .ev-delta.gold { color: var(--gold-deep); border-color: var(--gold-deep); box-shadow: 0 2px 0 var(--gold-deep); }
 
-  /* ═══════════════════════════════════════════════════
-     엔딩 화면
-  ═══════════════════════════════════════════════════ */
+  /* ═══════════════════════════════════════════════
+     엔딩
+  ═══════════════════════════════════════════════ */
   .ending-screen {
     text-align: center;
     padding: 30px 20px;
     position: relative;
   }
   .ending-screen .ep-emoji {
-    font-size: 100px;
+    font-size: 110px;
     margin-bottom: 10px;
     animation: endingEmoji 2s ease-in-out infinite;
     filter: drop-shadow(0 0 30px currentColor);
   }
   @keyframes endingEmoji {
     0%, 100% { transform: scale(1) rotate(0); }
-    50% { transform: scale(1.15) rotate(5deg); }
+    50% { transform: scale(1.15) rotate(8deg); }
   }
   .ending-screen .ep-title {
-    font-family: 'Cinzel', serif;
-    font-size: 44px;
-    font-weight: 900;
-    color: var(--accent);
-    text-shadow: 3px 3px 0 #000, 6px 6px 15px rgba(0,0,0,0.5);
+    font-family: 'Jua';
+    font-size: 48px;
+    color: var(--pink-deep);
+    text-shadow: 3px 3px 0 #fff, 6px 6px 0 var(--lavender), 9px 9px 20px rgba(154,111,255,0.5);
     margin-bottom: 10px;
     letter-spacing: 2px;
-    animation: endingTitleGlow 2s ease-in-out infinite;
-  }
-  @keyframes endingTitleGlow {
-    0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 216, 102, 0.5)); }
-    50% { filter: drop-shadow(0 0 30px rgba(255, 216, 102, 1)); }
   }
   .ending-screen .ep-pet-img {
     width: 200px;
@@ -1029,40 +1069,44 @@
     object-fit: contain;
     margin: 20px auto;
     display: block;
-    filter: drop-shadow(4px 8px 16px rgba(0,0,0,0.6));
+    filter: drop-shadow(4px 8px 16px rgba(255,107,159,0.5));
     animation: endingFloat 3s ease-in-out infinite;
   }
   @keyframes endingFloat {
-    0%, 100% { transform: translateY(0) rotate(-3deg); }
-    50% { transform: translateY(-12px) rotate(3deg); }
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-14px) rotate(5deg); }
   }
   .ending-screen .ep-pet {
-    font-size: 14px;
-    color: var(--fg2);
+    font-size: 15px;
+    color: var(--text);
     margin-bottom: 20px;
+    font-weight: 700;
   }
   .ending-screen .ep-desc {
-    background: rgba(58, 36, 24, 0.95);
-    border: 2px solid var(--accent);
-    border-radius: 12px;
-    padding: 20px;
+    background: var(--panel-bg);
+    border: 3px solid var(--pink);
+    border-radius: 20px;
+    padding: 22px;
     max-width: 500px;
     margin: 0 auto 20px;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.9;
-    color: var(--fg);
-    box-shadow: 0 0 30px rgba(255, 216, 102, 0.3);
+    color: var(--text);
+    box-shadow: 0 6px 0 var(--pink), 0 10px 30px rgba(255,107,159,0.4);
+    font-weight: 700;
   }
   .ending-screen .ep-stats {
     max-width: 400px;
     margin: 0 auto 20px;
     text-align: left;
-    font-size: 13px;
-    color: var(--fg);
-    background: rgba(0,0,0,0.4);
-    padding: 14px 20px;
-    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text);
+    background: rgba(255,255,255,0.7);
+    padding: 16px 24px;
+    border-radius: 16px;
     line-height: 2;
+    border: 2.5px solid var(--pink);
+    font-weight: 700;
   }
   .ending-screen .ep-buttons {
     display: flex;
@@ -1071,7 +1115,6 @@
     flex-wrap: wrap;
   }
 
-  /* 엔딩 파티클 */
   .ending-particles {
     position: fixed;
     inset: 0;
@@ -1079,25 +1122,40 @@
     z-index: 5;
   }
 
-  /* ═══════════════════════════════════════════════════
-     유틸
-  ═══════════════════════════════════════════════════ */
-  .flex { display: flex; gap: 6px; }
-  .flex-col { display: flex; flex-direction: column; gap: 6px; }
-  .small { font-size: 11px; color: var(--fg2); }
-  .hidden { display: none !important; }
+  /* ═══════════════════════════════════════════════
+     오디오 컨트롤
+  ═══════════════════════════════════════════════ */
+  .audio-control {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 200;
+    display: flex;
+    gap: 6px;
+  }
+  .audio-btn {
+    background: #fff;
+    border: 3px solid var(--pink);
+    color: var(--pink-deep);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 3px 0 var(--pink-deep);
+    transition: all .15s;
+  }
+  .audio-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 var(--pink-deep);
+  }
+  .audio-btn.muted { opacity: 0.5; }
 
-  /* 스크롤바 */
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
-  ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-  /* 플래시 배경 (이벤트/대회 시 짧게 번쩍) */
+  /* 유틸 */
   .flash-overlay {
     position: fixed;
     inset: 0;
-    background: var(--accent);
+    background: var(--pink);
     opacity: 0;
     pointer-events: none;
     z-index: 50;
@@ -1105,9 +1163,15 @@
   }
   @keyframes flashOnce {
     0% { opacity: 0; }
-    20% { opacity: 0.4; }
+    20% { opacity: 0.35; }
     100% { opacity: 0; }
   }
+
+  /* 스크롤바 */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.3); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--pink-deep); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -1115,8 +1179,22 @@
 </head>
 <body class="season-spring">
 
-<!-- 계절 파티클 레이어 -->
+<!-- 배경 반짝이 -->
+<div class="bg-sparkles" id="bg-sparkles"></div>
+
+<!-- 계절 파티클 -->
 <div class="season-particles" id="season-particles"></div>
+
+<!-- 오디오 컨트롤 -->
+<div class="audio-control">
+  <button class="audio-btn" id="btn-bgm" title="배경음악">🎵</button>
+  <button class="audio-btn" id="btn-sfx" title="효과음">🔔</button>
+</div>
+
+<!-- BGM 오디오 -->
+<audio id="bgm-audio" loop preload="auto">
+  <source src="raise_bgm/palace_garden.mp3" type="audio/mpeg">
+</audio>
 
 <div class="wrap">
   <div class="title-bar">
@@ -1127,9 +1205,201 @@
 </div>
 
 <script>
-/* ============================================================
-   데이터
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   오디오 시스템 (Web Audio API로 효과음 생성)
+═══════════════════════════════════════════════════════════ */
+const audio = {
+  ctx: null,
+  bgm: document.getElementById('bgm-audio'),
+  bgmEnabled: true,
+  sfxEnabled: true,
+  bgmStarted: false,
+};
+
+// localStorage에서 설정 로드
+try {
+  const savedBgm = localStorage.getItem('raise_bgm');
+  const savedSfx = localStorage.getItem('raise_sfx');
+  if (savedBgm !== null) audio.bgmEnabled = savedBgm === '1';
+  if (savedSfx !== null) audio.sfxEnabled = savedSfx === '1';
+} catch(e) {}
+
+audio.bgm.volume = 0.25;
+
+function ensureAudioCtx() {
+  if (!audio.ctx) {
+    try { audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  return audio.ctx;
+}
+
+function playBgm() {
+  if (!audio.bgmEnabled) return;
+  audio.bgm.play().catch(() => {});
+  audio.bgmStarted = true;
+}
+function pauseBgm() {
+  audio.bgm.pause();
+}
+
+function toggleBgm() {
+  audio.bgmEnabled = !audio.bgmEnabled;
+  localStorage.setItem('raise_bgm', audio.bgmEnabled ? '1' : '0');
+  if (audio.bgmEnabled) playBgm();
+  else pauseBgm();
+  updateAudioBtns();
+}
+function toggleSfx() {
+  audio.sfxEnabled = !audio.sfxEnabled;
+  localStorage.setItem('raise_sfx', audio.sfxEnabled ? '1' : '0');
+  updateAudioBtns();
+}
+function updateAudioBtns() {
+  document.getElementById('btn-bgm').classList.toggle('muted', !audio.bgmEnabled);
+  document.getElementById('btn-bgm').textContent = audio.bgmEnabled ? '🎵' : '🔇';
+  document.getElementById('btn-sfx').classList.toggle('muted', !audio.sfxEnabled);
+  document.getElementById('btn-sfx').textContent = audio.sfxEnabled ? '🔔' : '🔕';
+}
+
+// 효과음 생성기 (Web Audio API)
+function playSfx(type) {
+  if (!audio.sfxEnabled) return;
+  const ctx = ensureAudioCtx();
+  if (!ctx) return;
+
+  const now = ctx.currentTime;
+
+  if (type === 'click') {
+    // 짧은 팝 소리
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.1);
+  }
+  else if (type === 'success') {
+    // 경쾌한 도-미-솔
+    const notes = [523.25, 659.25, 783.99];
+    notes.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f, now + i * 0.08);
+      gain.gain.setValueAtTime(0, now + i * 0.08);
+      gain.gain.linearRampToValueAtTime(0.2, now + i * 0.08 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.3);
+    });
+  }
+  else if (type === 'level_up') {
+    // 상승하는 아르페지오 (스탯 상승)
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(f, now + i * 0.06);
+      gain.gain.setValueAtTime(0, now + i * 0.06);
+      gain.gain.linearRampToValueAtTime(0.15, now + i * 0.06 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.2);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.2);
+    });
+  }
+  else if (type === 'coin') {
+    // 동전 소리
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(988, now);
+    osc.frequency.setValueAtTime(1319, now + 0.05);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.2);
+  }
+  else if (type === 'fail') {
+    // 하강음
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.3);
+  }
+  else if (type === 'event') {
+    // 신비로운 반짝 소리
+    [1047, 1319, 1568].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f, now + i * 0.03);
+      gain.gain.setValueAtTime(0, now + i * 0.03);
+      gain.gain.linearRampToValueAtTime(0.12, now + i * 0.03 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.03 + 0.5);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i * 0.03); osc.stop(now + i * 0.03 + 0.5);
+    });
+  }
+  else if (type === 'heart') {
+    // 뿅- 하트 소리
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, now);
+    osc.frequency.exponentialRampToValueAtTime(900, now + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(700, now + 0.2);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.3);
+  }
+  else if (type === 'hurt') {
+    // 삐 낮은음
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(200, now);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(now); osc.stop(now + 0.15);
+  }
+  else if (type === 'win') {
+    // 팡파레
+    const notes = [523, 523, 523, 659, 784, 1047];
+    const times =  [0, 0.1, 0.2, 0.3, 0.4, 0.55];
+    notes.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(f, now + times[i]);
+      gain.gain.setValueAtTime(0, now + times[i]);
+      gain.gain.linearRampToValueAtTime(0.2, now + times[i] + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + times[i] + 0.4);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + times[i]); osc.stop(now + times[i] + 0.4);
+    });
+  }
+}
+
+// 첫 유저 인터랙션 후 BGM 시작
+function tryStartBgm() {
+  if (!audio.bgmStarted && audio.bgmEnabled) playBgm();
+}
+document.addEventListener('click', tryStartBgm, { once: false });
+
+/* ═══════════════════════════════════════════════════════════
+   데이터 로드
+═══════════════════════════════════════════════════════════ */
 let PET_DATA = [];
 
 async function loadPetData() {
@@ -1146,7 +1416,6 @@ async function loadPetData() {
   } catch(e) {}
 }
 
-/* Firebase */
 const firebaseConfig = {
   apiKey: "AIzaSyAs3aqh2N75_c24xdjDNf271L16-VYCmls",
   authDomain: "lomxx-calculator.firebaseapp.com",
@@ -1159,47 +1428,47 @@ const firebaseConfig = {
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* ============================================================
-   훈련/직업/휴식 데이터 (이펙트 포함)
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   훈련/일/휴식 데이터
+═══════════════════════════════════════════════════════════ */
 const TRAININGS = [
-  { id: 'rock',    name: '🗿 바위 들기', desc: '근력 강화', cost: 8,  effects: { str:[3,6], hp:[-2,-1], fatigue:[5,10] }, anim: 'action-train', particles: ['💪', '🗿', '✨'] },
-  { id: 'run',     name: '🏃 달리기',     desc: '민첩 훈련', cost: 6,  effects: { agi:[3,6], hp:[-1,0], fatigue:[3,7] }, anim: 'action-run', particles: ['🏃', '💨', '⚡'] },
-  { id: 'swim',    name: '🏊 수영',       desc: '체력+민첩', cost: 10, effects: { hp:[2,5], agi:[1,3], fatigue:[5,10] }, anim: 'action-train', particles: ['💧', '🌊', '🐟'] },
-  { id: 'spirit',  name: '🔥 정령 수행',  desc: '속성력 ↑', cost: 15, effects: { elem:[3,7], stress:[2,5] }, anim: 'action-spirit', particles: ['🔥', '💫', '✨', '🌟'] },
-  { id: 'study',   name: '📖 인간 언어',  desc: '지능+애교', cost: 12, effects: { int:[3,6], cute:[1,3], fatigue:[2,5] }, anim: 'action-train', particles: ['📖', '💡', '✨'] },
-  { id: 'wild',    name: '🐾 야성 훈련',  desc: '야생성+근력', cost: 10, effects: { wild:[3,6], str:[1,3], cute:[-2,-1] }, anim: 'action-train', particles: ['🐾', '🔥', '💢'] },
-  { id: 'trick',   name: '🎪 재주 연습',  desc: '애교 ↑', cost: 8,  effects: { cute:[3,6], wild:[-2,-1], fatigue:[2,4] }, anim: 'action-train', particles: ['🎪', '🎉', '⭐'] },
-  { id: 'dance',   name: '💃 춤 연습',   desc: '민첩+애교', cost: 10, effects: { agi:[2,4], cute:[2,4], fatigue:[3,6] }, anim: 'action-run', particles: ['💃', '🎵', '✨'] },
+  { id: 'rock',    name: '🗿 바위 들기', desc: '근력 강화', cost: 8,  effects: { str:[3,6], hp:[-2,-1], fatigue:[5,10] }, anim: 'action-train', particles: ['💪', '🗿', '✨'], sfx: 'level_up' },
+  { id: 'run',     name: '🏃 달리기',     desc: '민첩 훈련', cost: 6,  effects: { agi:[3,6], hp:[-1,0], fatigue:[3,7] }, anim: 'action-run', particles: ['🏃', '💨', '⚡'], sfx: 'level_up' },
+  { id: 'swim',    name: '🏊 수영',       desc: '체력+민첩', cost: 10, effects: { hp:[2,5], agi:[1,3], fatigue:[5,10] }, anim: 'action-train', particles: ['💧', '🌊', '🐟'], sfx: 'level_up' },
+  { id: 'spirit',  name: '🔥 정령 수행',  desc: '속성력 ↑', cost: 15, effects: { elem:[3,7], stress:[2,5] }, anim: 'action-spirit', particles: ['🔥', '💫', '✨', '🌟'], sfx: 'event' },
+  { id: 'study',   name: '📖 인간 언어',  desc: '지능+애교', cost: 12, effects: { int:[3,6], cute:[1,3], fatigue:[2,5] }, anim: 'action-train', particles: ['📖', '💡', '✨'], sfx: 'level_up' },
+  { id: 'wild',    name: '🐾 야성 훈련',  desc: '야생성+근력', cost: 10, effects: { wild:[3,6], str:[1,3], cute:[-2,-1] }, anim: 'action-train', particles: ['🐾', '🔥', '💢'], sfx: 'level_up' },
+  { id: 'trick',   name: '🎪 재주 연습',  desc: '애교 ↑', cost: 8,  effects: { cute:[3,6], wild:[-2,-1], fatigue:[2,4] }, anim: 'action-train', particles: ['🎪', '🎉', '⭐'], sfx: 'heart' },
+  { id: 'dance',   name: '💃 춤 연습',   desc: '민첩+애교', cost: 10, effects: { agi:[2,4], cute:[2,4], fatigue:[3,6] }, anim: 'action-run', particles: ['💃', '🎵', '✨'], sfx: 'heart' },
 ];
 
 const JOBS = [
-  { id: 'miner',   name: '⛏ 광산 짐꾼', desc: '스톤 쏠쏠', gain: [15,25], effects: { str:[2,4], hp:[-3,-1], fatigue:[10,15] }, req: { str:20 }, particles: ['⛏', '💎', '🗿'] },
-  { id: 'fisher',  name: '🐟 어장 도우미', desc: '민첩 키움', gain: [12,18], effects: { agi:[2,4], happy:[2,4], fatigue:[5,10] }, req: { agi:15 }, particles: ['🐟', '🌊', '💎'] },
-  { id: 'hunter',  name: '🍖 사냥 동반', desc: '위험하지만', gain: [20,30], effects: { str:[2,4], agi:[2,4], stress:[5,10], hp:[-3,-1] }, req: { str:20, agi:20 }, particles: ['🍖', '🏹', '💪'] },
-  { id: 'guard',   name: '🏕 부족 경비', desc: '체력 훈련', gain: [18,25], effects: { hp:[2,4], wild:[1,3], fatigue:[8,12] }, req: { hp:20 }, particles: ['🛡', '🏕', '⚔️'] },
-  { id: 'perform', name: '🎪 광장 공연', desc: '인기몰이', gain: [15,22], effects: { cute:[2,4], bond:[2,4], fatigue:[3,7] }, req: { cute:30 }, particles: ['🎪', '⭐', '🎉', '💕'] },
-  { id: 'courier', name: '💌 편지 배달', desc: '빠른 발 필요', gain: [10,14], effects: { agi:[2,4], fatigue:[3,6] }, req: { agi:10 }, particles: ['💌', '💨', '✨'] },
-  { id: 'shop',    name: '🛒 가게 도우미', desc: '친근해야', gain: [12,16], effects: { cute:[2,3], bond:[1,3], fatigue:[4,7] }, req: { cute:15 }, particles: ['🛒', '💰', '✨'] },
-  { id: 'herb',    name: '🌿 약초 채집', desc: '지혜로운 일', gain: [14,18], effects: { int:[2,4], hp:[1,2], fatigue:[5,8] }, req: { int:15 }, particles: ['🌿', '🌱', '💚'] },
-  { id: 'nanny',   name: '👶 아기 돌보미', desc: '친절한 펫만', gain: [8,12], effects: { cute:[2,4], bond:[3,5], wild:[-3,-1] }, req: { cute:20, wildMax:40 }, particles: ['👶', '💕', '✨'] },
-  { id: 'shaman',  name: '🔮 무당 조수', desc: '정령 능력', gain: [25,35], effects: { elem:[2,4], int:[2,4], stress:[3,6] }, req: { elem:20, int:20 }, particles: ['🔮', '💫', '✨', '🌟'] },
-  { id: 'star',    name: '🎭 부족 스타', desc: '애교꾼만', gain: [30,40], effects: { cute:[3,5], bond:[2,4], stress:[2,5] }, req: { cute:50 }, particles: ['🎭', '⭐', '💫', '💕'] },
-  { id: 'escort',  name: '🏪 상인 호위', desc: '능력자만', gain: [25,32], effects: { str:[2,4], agi:[2,4], fatigue:[8,12] }, req: { str:25, agi:25 }, particles: ['🛡', '💎', '⚔️'] },
+  { id: 'miner',   name: '⛏ 광산 짐꾼', desc: '스톤 쏠쏠', gain: [15,25], effects: { str:[2,4], hp:[-3,-1], fatigue:[10,15] }, req: { str:20 }, particles: ['⛏', '💎', '🗿'], sfx: 'coin' },
+  { id: 'fisher',  name: '🐟 어장 도우미', desc: '민첩 키움', gain: [12,18], effects: { agi:[2,4], happy:[2,4], fatigue:[5,10] }, req: { agi:15 }, particles: ['🐟', '🌊', '💎'], sfx: 'coin' },
+  { id: 'hunter',  name: '🍖 사냥 동반', desc: '위험하지만', gain: [20,30], effects: { str:[2,4], agi:[2,4], stress:[5,10], hp:[-3,-1] }, req: { str:20, agi:20 }, particles: ['🍖', '🏹', '💪'], sfx: 'coin' },
+  { id: 'guard',   name: '🏕 부족 경비', desc: '체력 훈련', gain: [18,25], effects: { hp:[2,4], wild:[1,3], fatigue:[8,12] }, req: { hp:20 }, particles: ['🛡', '🏕', '⚔️'], sfx: 'coin' },
+  { id: 'perform', name: '🎪 광장 공연', desc: '인기몰이', gain: [15,22], effects: { cute:[2,4], bond:[2,4], fatigue:[3,7] }, req: { cute:30 }, particles: ['🎪', '⭐', '🎉', '💕'], sfx: 'heart' },
+  { id: 'courier', name: '💌 편지 배달', desc: '빠른 발 필요', gain: [10,14], effects: { agi:[2,4], fatigue:[3,6] }, req: { agi:10 }, particles: ['💌', '💨', '✨'], sfx: 'coin' },
+  { id: 'shop',    name: '🛒 가게 도우미', desc: '친근해야', gain: [12,16], effects: { cute:[2,3], bond:[1,3], fatigue:[4,7] }, req: { cute:15 }, particles: ['🛒', '💰', '✨'], sfx: 'coin' },
+  { id: 'herb',    name: '🌿 약초 채집', desc: '지혜로운 일', gain: [14,18], effects: { int:[2,4], hp:[1,2], fatigue:[5,8] }, req: { int:15 }, particles: ['🌿', '🌱', '💚'], sfx: 'coin' },
+  { id: 'nanny',   name: '👶 아기 돌보미', desc: '친절한 펫만', gain: [8,12], effects: { cute:[2,4], bond:[3,5], wild:[-3,-1] }, req: { cute:20, wildMax:40 }, particles: ['👶', '💕', '✨'], sfx: 'heart' },
+  { id: 'shaman',  name: '🔮 무당 조수', desc: '정령 능력', gain: [25,35], effects: { elem:[2,4], int:[2,4], stress:[3,6] }, req: { elem:20, int:20 }, particles: ['🔮', '💫', '✨', '🌟'], sfx: 'event' },
+  { id: 'star',    name: '🎭 부족 스타', desc: '애교꾼만', gain: [30,40], effects: { cute:[3,5], bond:[2,4], stress:[2,5] }, req: { cute:50 }, particles: ['🎭', '⭐', '💫', '💕'], sfx: 'heart' },
+  { id: 'escort',  name: '🏪 상인 호위', desc: '능력자만', gain: [25,32], effects: { str:[2,4], agi:[2,4], fatigue:[8,12] }, req: { str:25, agi:25 }, particles: ['🛡', '💎', '⚔️'], sfx: 'coin' },
 ];
 
 const RESTS = [
-  { id: 'sleep',   name: '💤 휴식', desc: '피로/스트레스 ↓', cost: 0,  effects: { fatigue:[-20,-15], stress:[-8,-4], hp:[3,6] }, anim: 'action-eat', particles: ['💤', '✨'] },
-  { id: 'play',    name: '🎮 놀아주기', desc: '유대+행복', cost: 5,  effects: { bond:[3,6], happy:[3,6], stress:[-5,-2] }, anim: 'action-run', particles: ['💕', '🎮', '🎉', '❤️'] },
-  { id: 'feed',    name: '🍖 먹이주기', desc: '평범한 고기', cost: 10, effects: { hp:[3,6], bond:[1,3], happy:[1,3] }, anim: 'action-eat', particles: ['🍖', '😋', '💕'] },
-  { id: 'luxury',  name: '🥩 고급 고기', desc: '대박 효과', cost: 25, effects: { hp:[6,12], bond:[3,6], happy:[3,6], str:[1,2] }, anim: 'action-eat', particles: ['🥩', '😍', '💕', '✨'] },
-  { id: 'walk',    name: '🏞 산책', desc: '랜덤 이벤트 가능', cost: 0, effects: { bond:[1,3], happy:[2,4] }, event: true, anim: 'action-run', particles: ['🏞', '🌿', '✨'] },
-  { id: 'stone',   name: '🪨 정령석', desc: '속성력 급상승', cost: 50, effects: { elem:[8,15], stress:[3,6] }, anim: 'action-spirit', particles: ['🪨', '💫', '⚡', '🌟'] },
+  { id: 'sleep',   name: '💤 휴식', desc: '피로/스트레스 ↓', cost: 0,  effects: { fatigue:[-20,-15], stress:[-8,-4], hp:[3,6] }, anim: 'action-eat', particles: ['💤', '✨'], sfx: 'heart' },
+  { id: 'play',    name: '🎮 놀아주기', desc: '유대+행복', cost: 5,  effects: { bond:[3,6], happy:[3,6], stress:[-5,-2] }, anim: 'action-run', particles: ['💕', '🎮', '🎉', '❤️'], sfx: 'heart' },
+  { id: 'feed',    name: '🍖 먹이주기', desc: '평범한 고기', cost: 10, effects: { hp:[3,6], bond:[1,3], happy:[1,3] }, anim: 'action-eat', particles: ['🍖', '😋', '💕'], sfx: 'heart' },
+  { id: 'luxury',  name: '🥩 고급 고기', desc: '대박 효과', cost: 25, effects: { hp:[6,12], bond:[3,6], happy:[3,6], str:[1,2] }, anim: 'action-eat', particles: ['🥩', '😍', '💕', '✨'], sfx: 'success' },
+  { id: 'walk',    name: '🏞 산책', desc: '랜덤 이벤트 가능', cost: 0, effects: { bond:[1,3], happy:[2,4] }, event: true, anim: 'action-run', particles: ['🏞', '🌿', '✨'], sfx: 'click' },
+  { id: 'stone',   name: '🪨 정령석', desc: '속성력 급상승', cost: 50, effects: { elem:[8,15], stress:[3,6] }, anim: 'action-spirit', particles: ['🪨', '💫', '⚡', '🌟'], sfx: 'event' },
 ];
 
-/* ============================================================
-   이벤트 풀
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   이벤트
+═══════════════════════════════════════════════════════════ */
 const EVENTS = [
   { id: 'bear', icon: '🐻', title: '야생 곰 출현!',
     desc: '산책 중 거대한 곰을 만났다! 너의 펫이 긴장한 표정으로 쳐다본다...',
@@ -1249,7 +1518,7 @@ const EVENTS = [
   { id: 'meteor', icon: '🌟', title: '하늘의 빛',
     desc: '밤하늘에서 이상한 빛이 떨어졌다. 펫이 그 방향을 바라본다...',
     choices: [
-      { text: '🔍 조사한다', effect: { elem:8, int:2, stress:2 }, msg: '신비한 돌조각을 주웠다. 정령력이 크게 늘었다.' },
+      { text: '🔍 조사한다', effect: { elem:8, int:2, stress:2 }, msg: '신비한 돌조각! 정령력이 크게 늘었다.' },
       { text: '😨 무서워 피한다', effect: { stress:3, cute:1 }, msg: '펫이 네 품에 파고들었다.' },
     ],
   },
@@ -1307,35 +1576,35 @@ const EVENTS = [
 ];
 
 const TOURNAMENTS = [
-  { week: 13, name: '🌸 봄 사냥 축제', stat: 'str',  msg: '힘자랑 축제' },
+  { week: 13, name: '🌸 봄 사냥 축제', stat: 'str', msg: '힘자랑 축제' },
   { week: 26, name: '🌊 여름 수영 대회', stat: 'agi', msg: '물개처럼 빠르게' },
   { week: 39, name: '🍂 가을 풍요제', stat: 'cute', msg: '부족의 인기스타' },
   { week: 50, name: '❄️ 겨울 극한 챔피언', stat: 'overall', msg: '올라운더 대결' },
 ];
 
-/* ============================================================
-   엔딩 판정
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   엔딩
+═══════════════════════════════════════════════════════════ */
 function decideEnding(p) {
-  if (p.hp <= 0) return { id: 'death', emoji: '☠️', name: '요절', desc: `${p.name}은(는) 너무 지쳐 쓰러졌다.\n모든 것이 끝났다... 다음엔 더 잘 돌보자.`, color: '#666' };
+  if (p.hp <= 0) return { id: 'death', emoji: '☠️', name: '요절', desc: `${p.name}은(는) 너무 지쳐 쓰러졌다.\n모든 것이 끝났다...`, color: '#888' };
   if (p.happy <= 10 && p.bond <= 20) return { id: 'runaway', emoji: '😱', name: '가출 엔딩', desc: `${p.name}은(는) 어느 날 조용히 떠났다.\n돌아오지 않았다. 부디 잘 지내길...`, color: '#886' };
-  if (p.stress >= 90) return { id: 'broken', emoji: '💔', name: '지친 펫', desc: `${p.name}은(는) 극도의 스트레스로 마음을 닫았다.\n이제 더 이상 예전의 그 펫이 아니다.`, color: '#a66' };
+  if (p.stress >= 90) return { id: 'broken', emoji: '💔', name: '지친 펫', desc: `${p.name}은(는) 극도의 스트레스로 마음을 닫았다.`, color: '#c66' };
 
   if (p.bond >= 90 && p.happy >= 70) return { id: 'soulmate', emoji: '💕', name: '영혼의 동반자', desc: `${p.name}은(는) 너와 평생을 함께하기로 했다.\n최고의 유대! 부족에서 가장 행복한 펫으로 기록될 것이다.`, color: '#ff6b9f' };
-  if (p.wild >= 80 && p.bond < 30) return { id: 'wildbeast', emoji: '👹', name: '포악한 야수', desc: `${p.name}은(는) 야생의 본능에 완전히 지배됐다.\n숲으로 사라졌다... 때때로 부족 근처에 나타난다는 소문이 돈다.`, color: '#d84040' };
-  if (p.elem >= 80) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.\n부족의 무당마저 고개를 숙이는 신비로운 존재가 되었다.`, color: '#9a6fff' };
-  if (p.str >= 60 && p.agi >= 60 && p.hp >= 60 && p.cute >= 60) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 모든 면에서 완벽한 펫이 되었다.\n부족 역사에 길이 남을 전설이다!`, color: '#ffd866' };
-  if (p.cute >= 80) return { id: 'star', emoji: '🎪', name: '부족의 스타', desc: `${p.name}은(는) 부족의 연예인이 되었다.\n공연마다 관중이 몰려들고 모두가 사랑한다.`, color: '#ffca55' };
-  if (p.int >= 70) return { id: 'sage', emoji: '📚', name: '현자의 펫', desc: `${p.name}은(는) 부족의 지혜로운 조언자가 되었다.\n어려운 결정 앞에서 너를 돕는다.`, color: '#7fd47f' };
-  if (p.str >= 70 && p.hp >= 70) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 전설적인 수호자가 되었다.\n아이들은 그 용맹을 이야기로 들려준다.`, color: '#d4943a' };
-  if (p.str >= 60 && p.agi >= 60) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 최고의 사냥 파트너가 되었다.\n어떤 먹잇감도 놓치지 않는다.`, color: '#c4743a' };
-  if (p.bond >= 60) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족이 되었다.\n평범하지만 따뜻한 일상이 이어진다.`, color: '#a0d4a0' };
-  return { id: 'normal', emoji: '🏠', name: '평범한 부족펫', desc: `${p.name}은(는) 평범한 부족의 일원으로 살아간다.\n특별하진 않지만, 누구보다 네 곁에 있다.`, color: '#b0a080' };
+  if (p.wild >= 80 && p.bond < 30) return { id: 'wildbeast', emoji: '👹', name: '포악한 야수', desc: `${p.name}은(는) 야생에 완전히 지배됐다.`, color: '#d84040' };
+  if (p.elem >= 80) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.\n부족의 무당마저 고개를 숙이는 신비로운 존재.`, color: '#9a6fff' };
+  if (p.str >= 60 && p.agi >= 60 && p.hp >= 60 && p.cute >= 60) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 모든 면에서 완벽한 펫이 되었다.\n부족 역사에 길이 남을 전설이다!`, color: '#ffc640' };
+  if (p.cute >= 80) return { id: 'star', emoji: '🎪', name: '부족의 스타', desc: `${p.name}은(는) 부족의 연예인이 되었다.`, color: '#ff9ac0' };
+  if (p.int >= 70) return { id: 'sage', emoji: '📚', name: '현자의 펫', desc: `${p.name}은(는) 지혜로운 조언자가 되었다.`, color: '#7fd47f' };
+  if (p.str >= 70 && p.hp >= 70) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 전설적인 수호자가 되었다.`, color: '#d4943a' };
+  if (p.str >= 60 && p.agi >= 60) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 최고의 사냥 파트너가 되었다.`, color: '#c4743a' };
+  if (p.bond >= 60) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족이 되었다.`, color: '#a0d4a0' };
+  return { id: 'normal', emoji: '🏠', name: '평범한 부족펫', desc: `${p.name}은(는) 평범한 부족의 일원으로 살아간다.`, color: '#b0a080' };
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════
    상태
-============================================================ */
+═══════════════════════════════════════════════════════════ */
 const state = {
   scene: 'title',
   week: 1,
@@ -1343,15 +1612,10 @@ const state = {
   log: [],
   starterPool: [],
   starterPick: null,
-  currentEvent: null,
   stats: { playCount: 0, bestRun: null },
 };
-
 let currentActionTab = 'train';
 
-/* ============================================================
-   유틸
-============================================================ */
 const app = document.getElementById('app');
 
 function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -1361,12 +1625,10 @@ function escapeHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-
 function pushLog(msg, cls = '') {
   state.log.push({ msg, cls });
   if (state.log.length > 40) state.log.shift();
 }
-
 function getMonth(week) { return Math.min(12, Math.ceil(week / 4.33)); }
 function getSeason(week) {
   const m = getMonth(week);
@@ -1376,7 +1638,6 @@ function getSeason(week) {
   if (m <= 11) return 'autumn';
   return 'winter';
 }
-
 function getAttrTags(pet) {
   if (!pet || !pet.attr) return '';
   const tagMap = { '지':'earth', '수':'water', '화':'fire', '풍':'wind' };
@@ -1385,12 +1646,10 @@ function getAttrTags(pet) {
     .map(([k, v]) => `<span class="attr-tag ${tagMap[k]||'neutral'}">${k}${v}</span>`)
     .join('');
 }
-
 function loadLocalStats() {
   try { const s = localStorage.getItem('raise_stats'); if (s) state.stats = { ...state.stats, ...JSON.parse(s) }; } catch(e) {}
 }
 function saveLocalStats() { localStorage.setItem('raise_stats', JSON.stringify(state.stats)); }
-
 function statLabel(k) {
   return { str:'💪근력', agi:'🏃민첩', hp:'❤️체력', int:'🧠지능', elem:'🔥속성', cute:'😊애교', wild:'🎭야생', bond:'💕친밀', happy:'🌈행복' }[k] || k;
 }
@@ -1398,9 +1657,29 @@ function statEmoji(k) {
   return { str:'💪', agi:'🏃', hp:'❤️', int:'🧠', elem:'🔥', cute:'😊', wild:'🎭', bond:'💕', happy:'🌈', stress:'😰', fatigue:'😫' }[k] || k;
 }
 
-/* ============================================================
-   계절 파티클
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   배경 반짝이
+═══════════════════════════════════════════════════════════ */
+function generateBgSparkles() {
+  const layer = document.getElementById('bg-sparkles');
+  layer.innerHTML = '';
+  const emojis = ['✨', '💫', '⭐', '🌟'];
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('span');
+    s.className = 'bg-sparkle';
+    s.textContent = randChoice(emojis);
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDuration = rand(3, 6) + 's';
+    s.style.animationDelay = (Math.random() * -5) + 's';
+    s.style.fontSize = rand(14, 22) + 'px';
+    layer.appendChild(s);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   계절
+═══════════════════════════════════════════════════════════ */
 function updateSeasonBackground(season) {
   document.body.className = 'season-' + season;
   generateSeasonParticles(season);
@@ -1410,30 +1689,88 @@ function generateSeasonParticles(season) {
   const layer = document.getElementById('season-particles');
   layer.innerHTML = '';
   const emoji = {
-    spring: ['🌸', '🌺', '💮', '🌷'],
-    summer: ['☀️', '🌿', '💧', '🍃'],
-    autumn: ['🍂', '🍁', '🌰', '🍄'],
-    winter: ['❄️', '❄', '✨', '⛄'],
+    spring: ['🌸', '🌺', '💮', '🌷', '💕'],
+    summer: ['☀️', '🌿', '💧', '🍃', '🌻'],
+    autumn: ['🍂', '🍁', '🌰', '🍄', '🌾'],
+    winter: ['❄️', '❄', '✨', '⛄', '🎀'],
   }[season] || ['✨'];
 
-  const count = 20;
+  const count = 18;
   for (let i = 0; i < count; i++) {
     const p = document.createElement('span');
     p.className = 'particle';
     p.textContent = randChoice(emoji);
     p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (rand(8, 20)) + 's';
+    p.style.animationDuration = (rand(9, 22)) + 's';
     p.style.animationDelay = (Math.random() * -20) + 's';
-    p.style.setProperty('--drift', (rand(-80, 80)) + 'px');
-    p.style.fontSize = rand(16, 28) + 'px';
-    p.style.opacity = (0.4 + Math.random() * 0.4);
+    p.style.setProperty('--drift', (rand(-100, 100)) + 'px');
+    p.style.fontSize = rand(18, 30) + 'px';
+    p.style.opacity = (0.5 + Math.random() * 0.4);
     layer.appendChild(p);
   }
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════
+   SVG 스테이지 배경 생성
+═══════════════════════════════════════════════════════════ */
+function getStageBgSvg(season) {
+  const themes = {
+    spring: { sky: '#ffe4ec', hill1: '#ffc4d8', hill2: '#ffa0c0', tree: '#ff89b0', trunk: '#a06050', decor: '#ff6b9f' },
+    summer: { sky: '#d0f0ff', hill1: '#a8e8c0', hill2: '#70d090', tree: '#60b070', trunk: '#7a5040', decor: '#ffc440' },
+    autumn: { sky: '#ffd8b0', hill1: '#ffb080', hill2: '#ff8050', tree: '#ff6040', trunk: '#6a4030', decor: '#ffa020' },
+    winter: { sky: '#e0e8ff', hill1: '#d0d8f0', hill2: '#c0cce8', tree: '#e8f0ff', trunk: '#6a6a80', decor: '#fff' },
+  };
+  const t = themes[season] || themes.spring;
+  return `
+    <svg class="stage-bg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="skyGrad${season}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${t.sky}"/>
+          <stop offset="100%" stop-color="${t.hill1}" stop-opacity="0.6"/>
+        </linearGradient>
+      </defs>
+      <!-- 하늘 -->
+      <rect width="400" height="220" fill="url(#skyGrad${season})"/>
+      <!-- 먼 산 -->
+      <path d="M 0 160 Q 80 120 160 150 Q 240 170 320 130 Q 380 110 400 140 L 400 220 L 0 220 Z" fill="${t.hill1}" opacity="0.7"/>
+      <!-- 가까운 언덕 -->
+      <path d="M 0 190 Q 100 160 200 180 Q 300 200 400 170 L 400 220 L 0 220 Z" fill="${t.hill2}" opacity="0.8"/>
+      <!-- 왼쪽 나무 -->
+      <rect x="38" y="140" width="10" height="30" fill="${t.trunk}"/>
+      <circle cx="43" cy="135" r="22" fill="${t.tree}" opacity="0.85"/>
+      <circle cx="35" cy="125" r="15" fill="${t.tree}" opacity="0.85"/>
+      <circle cx="52" cy="128" r="14" fill="${t.tree}" opacity="0.85"/>
+      <!-- 오른쪽 나무 -->
+      <rect x="350" y="145" width="8" height="26" fill="${t.trunk}"/>
+      <circle cx="354" cy="140" r="18" fill="${t.tree}" opacity="0.85"/>
+      <circle cx="346" cy="133" r="12" fill="${t.tree}" opacity="0.85"/>
+      <!-- 구름 or 눈 -->
+      <circle cx="80" cy="40" r="12" fill="#fff" opacity="0.8"/>
+      <circle cx="95" cy="36" r="16" fill="#fff" opacity="0.8"/>
+      <circle cx="110" cy="42" r="13" fill="#fff" opacity="0.8"/>
+      <circle cx="300" cy="30" r="10" fill="#fff" opacity="0.7"/>
+      <circle cx="315" cy="28" r="14" fill="#fff" opacity="0.7"/>
+      <!-- 귀여운 꽃/장식 -->
+      <g opacity="0.8">
+        <circle cx="20" cy="200" r="3" fill="${t.decor}"/>
+        <circle cx="75" cy="205" r="3" fill="${t.decor}"/>
+        <circle cx="120" cy="202" r="3" fill="${t.decor}"/>
+        <circle cx="280" cy="205" r="3" fill="${t.decor}"/>
+        <circle cx="340" cy="201" r="3" fill="${t.decor}"/>
+      </g>
+      <!-- 하트 장식 (봄/소울메이트 느낌) -->
+      ${season === 'spring' ? `
+        <text x="190" y="50" font-size="18" opacity="0.4">💕</text>
+        <text x="60" y="80" font-size="14" opacity="0.3">✨</text>
+        <text x="330" y="70" font-size="14" opacity="0.3">✨</text>
+      ` : ''}
+    </svg>
+  `;
+}
+
+/* ═══════════════════════════════════════════════════════════
    씬 라우팅
-============================================================ */
+═══════════════════════════════════════════════════════════ */
 function render() {
   app.innerHTML = '';
   if (state.scene === 'title') renderTitle();
@@ -1443,34 +1780,38 @@ function render() {
   else if (state.scene === 'ending') renderEnding();
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════
    타이틀
-============================================================ */
+═══════════════════════════════════════════════════════════ */
 function renderTitle() {
   updateSeasonBackground('spring');
   const screen = document.createElement('div');
-  screen.className = 'title-screen';
+  screen.className = 'panel title-screen';
   screen.innerHTML = `
+    <div class="panel-deco tl">💖</div>
+    <div class="panel-deco tr">🌸</div>
+    <div class="panel-deco bl">🎀</div>
+    <div class="panel-deco br">💖</div>
     <div class="big-title">PRINCESS<br>PET MAKER</div>
     <div class="title-decorations">
-      <span>🐣</span><span>👑</span><span>✨</span>
+      <span class="char">🐣</span><span class="char">👑</span><span class="char">✨</span>
     </div>
     <div class="tagline">
       원시 부족의 아이가 된 너.<br>
-      새끼 펫 한 마리를 선택해 <b>1년간</b> 키워보자.<br>
+      새끼 펫 한 마리를 선택해 <b style="color:var(--pink-deep);">1년간</b> 키워보자.<br>
       너의 선택에 따라 펫의 운명이 결정된다.
     </div>
     <div class="menu-btns">
       <button class="btn primary" id="btn-start">🎬 새 게임 시작</button>
-      <button class="btn" id="btn-load">📂 이어하기</button>
+      <button class="btn lavender" id="btn-load">📂 이어하기</button>
     </div>
     <div class="stats-row">
       플레이 횟수: ${state.stats.playCount} · 최고 엔딩: ${state.stats.bestRun?.ending || '없음'}
     </div>
   `;
   app.appendChild(screen);
-  document.getElementById('btn-start').addEventListener('click', startNewRun);
-  document.getElementById('btn-load').addEventListener('click', loadGame);
+  document.getElementById('btn-start').addEventListener('click', () => { playSfx('click'); startNewRun(); });
+  document.getElementById('btn-load').addEventListener('click', () => { playSfx('click'); loadGame(); });
 }
 
 async function startNewRun() {
@@ -1486,18 +1827,20 @@ async function startNewRun() {
   render();
 }
 
-/* ============================================================
-   스타터 선택
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   스타터
+═══════════════════════════════════════════════════════════ */
 function renderStarter() {
   const screen = document.createElement('div');
   screen.className = 'panel starter-screen';
   screen.innerHTML = `
-    <h2>🐣 새끼펫 선택</h2>
+    <div class="panel-deco tl">💕</div>
+    <div class="panel-deco tr">🌟</div>
+    <h2>🐣 새끼펫 선택 🐣</h2>
     <div class="hint">부족의 전통에 따라, 너는 한 마리 새끼펫을 골라 돌보게 된다.<br>1년 후 이 펫은 어떤 존재가 될까?</div>
     <div class="starter-grid" id="starter-grid"></div>
     <div style="text-align:center; margin-top:10px;">
-      <button class="btn" id="btn-reroll">🎲 다시 뽑기</button>
+      <button class="btn lavender" id="btn-reroll">🎲 다시 뽑기</button>
       <button class="btn primary" id="btn-confirm" disabled>✓ 이 펫을 선택</button>
     </div>
   `;
@@ -1517,6 +1860,7 @@ function renderStarter() {
       </div>
     `;
     card.addEventListener('click', () => {
+      playSfx('heart');
       state.starterPick = pet.name;
       render();
     });
@@ -1524,6 +1868,7 @@ function renderStarter() {
   });
 
   document.getElementById('btn-reroll').addEventListener('click', () => {
+    playSfx('click');
     const pool = PET_DATA.filter(p => p.grade === '일반');
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
     state.starterPool = shuffled.slice(0, 6);
@@ -1533,26 +1878,29 @@ function renderStarter() {
   const confirmBtn = document.getElementById('btn-confirm');
   confirmBtn.disabled = !state.starterPick;
   confirmBtn.addEventListener('click', () => {
+    playSfx('success');
     state.scene = 'name';
     render();
   });
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════
    이름 정하기
-============================================================ */
+═══════════════════════════════════════════════════════════ */
 function renderNaming() {
   const pet = state.starterPool.find(p => p.name === state.starterPick);
   const screen = document.createElement('div');
   screen.className = 'panel';
   screen.innerHTML = `
+    <div class="panel-deco tl">💖</div>
+    <div class="panel-deco tr">✨</div>
     <div class="name-input-wrap">
       <img src="${pet.image}" alt="${pet.name}" onerror="this.style.visibility='hidden'">
-      <div style="margin: 10px 0; font-size: 16px;">선택한 펫: <b style="color: var(--accent);">${escapeHtml(pet.name)}</b></div>
-      <div style="color: var(--fg2); font-size: 12px; margin-bottom: 16px;">너의 펫에게 이름을 지어주자.</div>
+      <div style="margin: 10px 0; font-size: 17px; font-weight: 700;">선택한 펫: <b style="color: var(--pink-deep);">${escapeHtml(pet.name)}</b></div>
+      <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; font-weight: 700;">너의 펫에게 이름을 지어주자 💕</div>
       <input type="text" id="pet-name-input" class="name-input" maxlength="12" placeholder="펫의 이름" value="${escapeHtml(pet.name)}">
-      <div style="margin-top: 16px;">
-        <button class="btn" id="btn-back">← 다시 선택</button>
+      <div style="margin-top: 18px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+        <button class="btn lavender" id="btn-back">← 다시 선택</button>
         <button class="btn primary" id="btn-begin">🎬 모험 시작!</button>
       </div>
     </div>
@@ -1561,10 +1909,11 @@ function renderNaming() {
   const input = document.getElementById('pet-name-input');
   input.focus();
   input.select();
-  document.getElementById('btn-back').addEventListener('click', () => { state.scene = 'starter'; render(); });
+  document.getElementById('btn-back').addEventListener('click', () => { playSfx('click'); state.scene = 'starter'; render(); });
   document.getElementById('btn-begin').addEventListener('click', () => {
     const name = input.value.trim();
     if (name.length < 1) { alert('이름을 입력해주세요'); return; }
+    playSfx('success');
     beginGame(pet, name);
   });
   input.addEventListener('keydown', e => {
@@ -1599,9 +1948,9 @@ function beginGame(petData, customName) {
   render();
 }
 
-/* ============================================================
-   메인 플레이
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   플레이
+═══════════════════════════════════════════════════════════ */
 function renderPlaying() {
   const p = state.pet;
   const month = getMonth(state.week);
@@ -1611,11 +1960,9 @@ function renderPlaying() {
   const grid = document.createElement('div');
   grid.className = 'game-grid';
 
-  // 좌측: 펫 패널
+  const mood = getMood(p);
   const left = document.createElement('div');
   left.className = 'pet-panel';
-
-  const mood = getMood(p);
   left.innerHTML = `
     <div class="month-badge">📅 ${month}월 · ${state.week}주</div>
     <div class="pet-info-top">
@@ -1631,6 +1978,7 @@ function renderPlaying() {
     </div>
 
     <div class="pet-stage" id="pet-stage">
+      ${getStageBgSvg(season)}
       <div class="effect-layer" id="effect-layer"></div>
       <img class="pet-big-sprite ${mood}" id="pet-sprite" src="${p.image}" alt="${escapeHtml(p.name)}" onerror="this.style.visibility='hidden'">
     </div>
@@ -1650,11 +1998,10 @@ function renderPlaying() {
     </div>
 
     <div class="log-box" id="log-box">
-      ${state.log.slice(-12).map(l => `<p class="${l.cls||''}">${escapeHtml(l.msg)}</p>`).join('')}
+      ${state.log.slice(-10).map(l => `<p class="${l.cls||''}">${escapeHtml(l.msg)}</p>`).join('')}
     </div>
   `;
 
-  // 우측: 액션 패널
   const right = document.createElement('div');
   right.className = 'action-panel';
   right.innerHTML = `
@@ -1664,9 +2011,9 @@ function renderPlaying() {
       <button class="action-tab ${currentActionTab==='rest'?'active':''}" data-tab="rest">🛌 휴식</button>
     </div>
     <div class="action-list" id="action-list"></div>
-    <div style="display:flex; gap:4px; margin-top:6px;">
-      <button class="btn danger" id="btn-quit" style="flex:1;">종료</button>
-      <button class="btn" id="btn-save" style="flex:1;">💾 저장</button>
+    <div style="display:flex; gap:5px; margin-top:6px;">
+      <button class="btn danger" id="btn-quit" style="flex:1; padding:10px; font-size:12px;">종료</button>
+      <button class="btn mint" id="btn-save" style="flex:1; padding:10px; font-size:12px;">💾 저장</button>
     </div>
   `;
 
@@ -1675,14 +2022,15 @@ function renderPlaying() {
   app.appendChild(grid);
 
   right.querySelectorAll('.action-tab').forEach(tab => {
-    tab.addEventListener('click', () => { currentActionTab = tab.dataset.tab; renderActionList(); });
+    tab.addEventListener('click', () => { playSfx('click'); currentActionTab = tab.dataset.tab; renderActionList(); });
   });
   renderActionList();
 
   document.getElementById('btn-quit').addEventListener('click', () => {
+    playSfx('click');
     if (confirm('진행 중인 런을 포기하시겠습니까?')) { state.scene = 'title'; render(); }
   });
-  document.getElementById('btn-save').addEventListener('click', saveGame);
+  document.getElementById('btn-save').addEventListener('click', () => { playSfx('success'); saveGame(); });
 
   const logBox = document.getElementById('log-box');
   if (logBox) logBox.scrollTop = logBox.scrollHeight;
@@ -1748,9 +2096,9 @@ function renderActionList() {
   });
 }
 
-/* ============================================================
-   액션 실행 + 이펙트
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   액션 실행
+═══════════════════════════════════════════════════════════ */
 let actionInProgress = false;
 
 async function doAction(action) {
@@ -1765,6 +2113,9 @@ async function doAction(action) {
     p.stones += gained;
   }
 
+  // 효과음
+  if (action.sfx) playSfx(action.sfx);
+
   // 스프라이트 애니
   const sprite = document.getElementById('pet-sprite');
   if (sprite && action.anim) {
@@ -1776,9 +2127,7 @@ async function doAction(action) {
   }
 
   // 파티클
-  if (action.particles) {
-    spawnParticles(action.particles, 8);
-  }
+  if (action.particles) spawnParticles(action.particles, 8);
 
   // 스탯 변화
   const deltas = {};
@@ -1789,10 +2138,8 @@ async function doAction(action) {
     applyDelta(p, k, d);
   }
 
-  // 스탯 팝업
   showStatPopups(deltas, gained);
 
-  // 로그
   let msg = action.name;
   if (gained > 0) msg += ` (💎+${gained})`;
   const deltaStr = Object.entries(deltas)
@@ -1802,10 +2149,8 @@ async function doAction(action) {
   if (deltaStr) msg += ` → ${deltaStr}`;
   pushLog(msg, 'info');
 
-  // 스탯 바 애니메이션용 잠깐 대기
-  await sleep(600);
+  await sleep(700);
 
-  // 랜덤 이벤트
   let eventChance = 0.12;
   if (action.event) eventChance = 0.55;
   if (Math.random() < eventChance) {
@@ -1814,7 +2159,6 @@ async function doAction(action) {
     return;
   }
 
-  // 대회
   const tourney = TOURNAMENTS.find(t => t.week === state.week);
   if (tourney) {
     applyTournament(tourney);
@@ -1838,23 +2182,22 @@ function spawnParticles(emojis, count = 6) {
     p.className = 'effect';
     p.textContent = randChoice(emojis);
     const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
-    const dist = rand(40, 80);
+    const dist = rand(50, 90);
     p.style.left = cx + 'px';
     p.style.top = cy + 'px';
     p.style.setProperty('--startX', '0px');
     p.style.setProperty('--startY', '0px');
     p.style.setProperty('--endX', Math.cos(angle) * dist + 'px');
-    p.style.setProperty('--endY', (Math.sin(angle) * dist - 20) + 'px');
+    p.style.setProperty('--endY', (Math.sin(angle) * dist - 25) + 'px');
     p.style.animationDelay = (i * 40) + 'ms';
     layer.appendChild(p);
-    setTimeout(() => p.remove(), 1500);
+    setTimeout(() => p.remove(), 1600);
   }
 }
 
 function showStatPopups(deltas, stonesDelta) {
   const stage = document.getElementById('pet-stage');
   if (!stage) return;
-  const rect = stage.getBoundingClientRect();
 
   const items = [];
   for (const [k, v] of Object.entries(deltas)) {
@@ -1868,10 +2211,10 @@ function showStatPopups(deltas, stonesDelta) {
     popup.className = 'stat-popup ' + it.cls;
     popup.textContent = it.text;
     popup.style.left = '50%';
-    popup.style.top = (30 + i * 22) + 'px';
+    popup.style.top = (30 + i * 24) + 'px';
     popup.style.animationDelay = (i * 120) + 'ms';
     stage.appendChild(popup);
-    setTimeout(() => popup.remove(), 2000);
+    setTimeout(() => popup.remove(), 2100);
   });
 }
 
@@ -1884,7 +2227,7 @@ function advanceWeek() {
   const p = state.pet;
   p.fatigue = Math.max(0, p.fatigue - 2);
   p.happy = Math.max(0, p.happy - 1);
-  if (p.fatigue >= 70) { p.hp = Math.max(0, p.hp - 2); pushLog(`😫 피곤해서 체력이 떨어진다!`, 'hurt'); }
+  if (p.fatigue >= 70) { p.hp = Math.max(0, p.hp - 2); pushLog(`😫 피곤해서 체력 감소!`, 'hurt'); }
   if (p.stress >= 70) { p.bond = Math.max(0, p.bond - 2); pushLog(`😰 스트레스로 친밀도 감소`, 'hurt'); }
   if (p.happy >= 70) { p.stress = Math.max(0, p.stress - 1); }
 
@@ -1903,17 +2246,16 @@ function advanceWeek() {
   render();
 }
 
-/* ============================================================
-   이벤트 모달
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   이벤트
+═══════════════════════════════════════════════════════════ */
 function triggerEvent() {
   const ev = randChoice(EVENTS);
-  state.currentEvent = ev;
+  playSfx('event');
   renderEventModal(ev);
 }
 
 function renderEventModal(ev) {
-  // 화면 플래시
   const flash = document.createElement('div');
   flash.className = 'flash-overlay';
   document.body.appendChild(flash);
@@ -1931,12 +2273,14 @@ function renderEventModal(ev) {
     }
     return `<button class="ev-choice" data-idx="${i}" ${disabled?'disabled':''}>
       ${escapeHtml(c.text)}
-      ${hint ? `<div class="hint" style="color:#ff7070;">${hint}</div>` : ''}
+      ${hint ? `<div class="hint" style="color:var(--red);">${hint}</div>` : ''}
     </button>`;
   }).join('');
 
   overlay.innerHTML = `
     <div class="event-panel">
+      <div class="panel-deco tl">💖</div>
+      <div class="panel-deco tr">✨</div>
       <div class="ev-icon">${ev.icon}</div>
       <div class="ev-title">${escapeHtml(ev.title)}</div>
       <div class="ev-desc">${escapeHtml(ev.desc)}</div>
@@ -1958,13 +2302,20 @@ function showEventResult(ev, choiceIdx, overlay) {
   const choice = ev.choices[choiceIdx];
   const p = state.pet;
   const deltas = {};
+  let hasPositive = false, hasNegative = false;
   for (const [k, v] of Object.entries(choice.effect || {})) {
     applyDelta(p, k, v);
     deltas[k] = v;
+    if (k !== 'stones' && v > 0) hasPositive = true;
+    if (k !== 'stones' && v < 0) hasNegative = true;
   }
   pushLog(`📜 ${ev.title}: ${choice.msg}`, 'event');
 
-  // 결과 표시
+  // 결과에 맞는 효과음
+  if (hasPositive && !hasNegative) playSfx('success');
+  else if (hasNegative && !hasPositive) playSfx('hurt');
+  else playSfx('click');
+
   const panel = overlay.querySelector('.event-panel');
   const deltasHtml = Object.entries(deltas).filter(([k,v]) => v !== 0).map(([k,v]) => {
     const cls = k === 'stones' ? 'gold' : (v > 0 ? 'up' : 'down');
@@ -1973,14 +2324,17 @@ function showEventResult(ev, choiceIdx, overlay) {
   }).join('');
 
   panel.innerHTML = `
+    <div class="panel-deco tl">💖</div>
+    <div class="panel-deco tr">✨</div>
     <div class="ev-icon">${ev.icon}</div>
-    <div class="ev-title event-result">${escapeHtml(ev.title)}</div>
+    <div class="ev-title">${escapeHtml(ev.title)}</div>
     <div class="ev-msg">${escapeHtml(choice.msg)}</div>
     ${deltasHtml ? `<div class="ev-deltas">${deltasHtml}</div>` : ''}
     <button class="btn primary full" id="ev-continue">▶ 계속</button>
   `;
 
   document.getElementById('ev-continue').addEventListener('click', () => {
+    playSfx('click');
     overlay.remove();
     const tourney = TOURNAMENTS.find(t => t.week === state.week);
     if (tourney) applyTournament(tourney);
@@ -1988,13 +2342,12 @@ function showEventResult(ev, choiceIdx, overlay) {
   });
 }
 
-/* ============================================================
-   분기 대회
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   대회
+═══════════════════════════════════════════════════════════ */
 function applyTournament(t) {
   const p = state.pet;
-  let score;
-  let thresholds;
+  let score, thresholds;
   if (t.stat === 'overall') {
     score = p.str + p.agi + p.hp + p.cute + p.int + p.elem;
     thresholds = [240, 180, 120];
@@ -2003,10 +2356,10 @@ function applyTournament(t) {
     thresholds = [60, 40, 25];
   }
   let rank, prize, bondDelta;
-  if (score >= thresholds[0]) { rank = '🥇 1등!'; prize = 100; bondDelta = 8; }
-  else if (score >= thresholds[1]) { rank = '🥈 2등'; prize = 50; bondDelta = 4; }
-  else if (score >= thresholds[2]) { rank = '🥉 3등'; prize = 20; bondDelta = 2; }
-  else { rank = '참가상'; prize = 5; bondDelta = -1; }
+  if (score >= thresholds[0]) { rank = '🥇 1등!'; prize = 100; bondDelta = 8; playSfx('win'); }
+  else if (score >= thresholds[1]) { rank = '🥈 2등'; prize = 50; bondDelta = 4; playSfx('success'); }
+  else if (score >= thresholds[2]) { rank = '🥉 3등'; prize = 20; bondDelta = 2; playSfx('coin'); }
+  else { rank = '참가상'; prize = 5; bondDelta = -1; playSfx('fail'); }
 
   p.stones += prize;
   applyDelta(p, 'bond', bondDelta);
@@ -2014,22 +2367,30 @@ function applyTournament(t) {
   pushLog(`🎪 ${t.name} ${rank} (💎+${prize}, 💕${bondDelta>0?'+':''}${bondDelta})`, 'event');
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════
    엔딩
-============================================================ */
+═══════════════════════════════════════════════════════════ */
 function renderEnding() {
   const p = state.pet;
   const ending = decideEnding(p);
-  updateSeasonBackground('winter');
+  updateSeasonBackground('spring');
 
-  // 엔딩 파티클 (축하)
   if (['champion','soulmate','spirit','star','warrior'].includes(ending.id)) {
     spawnEndingParticles();
+    playSfx('win');
+  } else if (['death','runaway','broken','wildbeast'].includes(ending.id)) {
+    playSfx('fail');
+  } else {
+    playSfx('success');
   }
 
   const screen = document.createElement('div');
-  screen.className = 'ending-screen';
+  screen.className = 'panel ending-screen';
   screen.innerHTML = `
+    <div class="panel-deco tl">💖</div>
+    <div class="panel-deco tr">✨</div>
+    <div class="panel-deco bl">🎀</div>
+    <div class="panel-deco br">💖</div>
     <div class="ep-emoji" style="color: ${ending.color};">${ending.emoji}</div>
     <div class="ep-title" style="color: ${ending.color};">${escapeHtml(ending.name)}</div>
     <img class="ep-pet-img" src="${p.image}" alt="${escapeHtml(p.name)}" onerror="this.style.visibility='hidden'">
@@ -2042,30 +2403,30 @@ function renderEnding() {
       💎 최종 스톤 <b>${p.stones}</b>
     </div>
     <div class="ep-buttons">
-      <button class="btn primary" id="btn-submit-ranking">🏆 랭킹 등록</button>
-      <button class="btn" id="btn-restart">↻ 새 게임</button>
+      <button class="btn gold" id="btn-submit-ranking">🏆 랭킹 등록</button>
+      <button class="btn primary" id="btn-restart">↻ 새 게임</button>
     </div>
   `;
   app.appendChild(screen);
 
-  document.getElementById('btn-restart').addEventListener('click', () => { state.scene = 'title'; render(); });
-  document.getElementById('btn-submit-ranking').addEventListener('click', () => submitRanking(ending));
+  document.getElementById('btn-restart').addEventListener('click', () => { playSfx('click'); state.scene = 'title'; render(); });
+  document.getElementById('btn-submit-ranking').addEventListener('click', () => { playSfx('success'); submitRanking(ending); });
 }
 
 function spawnEndingParticles() {
   const layer = document.createElement('div');
   layer.className = 'ending-particles';
   document.body.appendChild(layer);
-  const emojis = ['🎉', '✨', '⭐', '💫', '🌟', '💖'];
-  for (let i = 0; i < 40; i++) {
+  const emojis = ['🎉', '✨', '⭐', '💫', '🌟', '💖', '🎀', '👑'];
+  for (let i = 0; i < 50; i++) {
     const p = document.createElement('span');
     p.className = 'particle';
     p.textContent = randChoice(emojis);
     p.style.left = Math.random() * 100 + '%';
     p.style.animationDuration = (rand(5, 10)) + 's';
     p.style.animationDelay = (Math.random() * -10) + 's';
-    p.style.setProperty('--drift', (rand(-80, 80)) + 'px');
-    p.style.fontSize = rand(20, 36) + 'px';
+    p.style.setProperty('--drift', (rand(-100, 100)) + 'px');
+    p.style.fontSize = rand(22, 40) + 'px';
     layer.appendChild(p);
   }
 }
@@ -2085,15 +2446,13 @@ async function submitRanking(ending) {
       stats: { str: p.str, agi: p.agi, hp: p.hp, int: p.int, elem: p.elem, cute: p.cute, wild: p.wild, bond: p.bond, happy: p.happy },
       timestamp: Date.now(),
     });
-    alert('랭킹 등록 완료!');
-  } catch(e) {
-    alert('등록 실패: ' + e.message);
-  }
+    alert('랭킹 등록 완료! 💖');
+  } catch(e) { alert('등록 실패: ' + e.message); }
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════
    저장/불러오기
-============================================================ */
+═══════════════════════════════════════════════════════════ */
 function saveGame() {
   const nick = prompt('저장할 닉네임 (2~10자)', localStorage.getItem('raise_nick') || '');
   if (!nick || nick.length < 2) return;
@@ -2101,7 +2460,7 @@ function saveGame() {
   const key = nick.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
   db.ref('raise_saves/' + key).set({
     pet: state.pet, week: state.week, log: state.log.slice(-20), timestamp: Date.now(),
-  }).then(() => alert('저장 완료!')).catch(e => alert('저장 실패: ' + e.message));
+  }).then(() => alert('저장 완료! 💾')).catch(e => alert('저장 실패: ' + e.message));
 }
 
 async function loadGame() {
@@ -2121,14 +2480,23 @@ async function loadGame() {
   } catch(e) { alert('불러오기 실패: ' + e.message); }
 }
 
-/* ============================================================
-   초기화
-============================================================ */
+/* ═══════════════════════════════════════════════════════════
+   오디오 버튼
+═══════════════════════════════════════════════════════════ */
+document.getElementById('btn-bgm').addEventListener('click', () => { playSfx('click'); toggleBgm(); });
+document.getElementById('btn-sfx').addEventListener('click', () => { playSfx('click'); toggleSfx(); });
+updateAudioBtns();
+
+/* ═══════════════════════════════════════════════════════════
+   초기
+═══════════════════════════════════════════════════════════ */
 loadLocalStats();
+generateBgSparkles();
 (async () => {
   await loadPetData();
   render();
 })();
 </script>
+
 </body>
 </html>
