@@ -24,10 +24,8 @@
     --red: #ff7070;
     --text: #5a3a4a;
     --text-muted: #8e6a7c;
-    --white: #fff5fa;
-    --panel-bg: rgba(255, 245, 250, 0.92);
+    --panel-bg: rgba(255, 245, 250, 0.95);
     --border-pink: #ffb8d4;
-    --shadow-pink: rgba(255, 107, 159, 0.3);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -40,32 +38,14 @@
     transition: background 1.5s;
   }
 
-  /* ═══════════════════════════════════════════════
-     계절별 배경
-  ═══════════════════════════════════════════════ */
-  body.season-spring {
-    background: linear-gradient(180deg, #ffd4e5 0%, #ffe8f0 50%, #ffc4d8 100%);
-  }
-  body.season-summer {
-    background: linear-gradient(180deg, #b8e8ff 0%, #d4f4ff 50%, #ffe8a0 100%);
-  }
-  body.season-autumn {
-    background: linear-gradient(180deg, #ffb894 0%, #ffd4a0 50%, #ffc48c 100%);
-  }
-  body.season-winter {
-    background: linear-gradient(180deg, #c4d4ff 0%, #e0e8ff 50%, #f0f4ff 100%);
-  }
+  body.season-spring { background: linear-gradient(180deg, #ffd4e5 0%, #ffe8f0 50%, #ffc4d8 100%); }
+  body.season-summer { background: linear-gradient(180deg, #b8e8ff 0%, #d4f4ff 50%, #ffe8a0 100%); }
+  body.season-autumn { background: linear-gradient(180deg, #ffb894 0%, #ffd4a0 50%, #ffc48c 100%); }
+  body.season-winter { background: linear-gradient(180deg, #c4d4ff 0%, #e0e8ff 50%, #f0f4ff 100%); }
 
-  /* 반짝이는 배경 장식 */
-  .bg-sparkles {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-  }
+  .bg-sparkles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
   .bg-sparkle {
-    position: absolute;
-    opacity: 0.5;
+    position: absolute; opacity: 0.5;
     animation: sparkleFloat infinite ease-in-out;
     font-size: 24px;
   }
@@ -74,17 +54,12 @@
     50% { transform: translateY(-20px) scale(1.2); opacity: 0.7; }
   }
 
-  /* 계절 파티클 */
   .season-particles {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-    z-index: 2;
+    position: fixed; inset: 0;
+    pointer-events: none; overflow: hidden; z-index: 2;
   }
   .particle {
-    position: absolute;
-    top: -30px;
+    position: absolute; top: -30px;
     animation-name: fall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
@@ -98,9 +73,6 @@
     100% { transform: translateY(110vh) translateX(var(--drift)) rotate(720deg); opacity: 0; }
   }
 
-  /* ═══════════════════════════════════════════════
-     레이아웃
-  ═══════════════════════════════════════════════ */
   .wrap {
     max-width: 960px;
     margin: 0 auto;
@@ -109,58 +81,27 @@
     z-index: 10;
   }
 
-  .title-bar {
-    text-align: center;
-    padding: 14px 0 8px;
-  }
+  .title-bar { text-align: center; padding: 14px 0 8px; }
   .title-bar h1 {
     font-family: 'Jua', sans-serif;
     font-size: 32px;
     color: var(--pink-deep);
     margin: 0;
-    text-shadow:
-      2px 2px 0 #fff,
-      3px 3px 0 var(--lavender),
-      4px 4px 10px rgba(154, 111, 255, 0.4);
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender), 4px 4px 10px rgba(154,111,255,0.4);
     letter-spacing: 2px;
-    font-weight: 900;
   }
-  .title-bar .sub {
-    font-size: 13px;
-    color: var(--text);
-    margin-top: 4px;
-    font-weight: 700;
-  }
+  .title-bar .sub { font-size: 13px; color: var(--text); margin-top: 4px; font-weight: 700; }
 
-  /* ═══════════════════════════════════════════════
-     패널
-  ═══════════════════════════════════════════════ */
+  /* 공통 패널 */
   .panel {
     background: var(--panel-bg);
     backdrop-filter: blur(10px);
     border: 3px solid var(--border-pink);
     border-radius: 24px;
     padding: 18px;
-    box-shadow:
-      0 6px 0 var(--pink),
-      0 12px 30px rgba(255,107,159,0.25),
-      inset 0 1px 0 rgba(255,255,255,0.8);
+    box-shadow: 0 6px 0 var(--pink), 0 12px 30px rgba(255,107,159,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
     position: relative;
   }
-  .panel::before {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: 30px;
-    width: 40px;
-    height: 16px;
-    background: var(--pink);
-    border-radius: 50%;
-    opacity: 0.6;
-    filter: blur(8px);
-  }
-
-  /* 하트 장식 코너 */
   .panel-deco {
     position: absolute;
     font-size: 20px;
@@ -175,9 +116,7 @@
     50% { transform: rotate(15deg) scale(1.1); }
   }
 
-  /* ═══════════════════════════════════════════════
-     버튼
-  ═══════════════════════════════════════════════ */
+  /* 버튼 */
   .btn {
     background: linear-gradient(180deg, #fff 0%, var(--pink-light) 100%);
     border: 3px solid var(--pink);
@@ -197,10 +136,8 @@
   .btn::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
     transition: left .5s;
   }
@@ -211,61 +148,45 @@
   }
   .btn:active:not(:disabled) {
     transform: translateY(1px);
-    box-shadow: 0 2px 0 var(--pink), 0 3px 6px rgba(255,107,159,0.2);
+    box-shadow: 0 2px 0 var(--pink);
   }
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
   .btn.primary {
-    background: linear-gradient(180deg, var(--pink) 0%, var(--pink-deep) 100%);
-    color: #fff;
-    border-color: var(--pink-deep);
-    box-shadow: 0 4px 0 #c04870, 0 6px 16px rgba(255,107,159,0.5);
+    background: linear-gradient(180deg, var(--pink), var(--pink-deep));
+    color: #fff; border-color: var(--pink-deep);
+    box-shadow: 0 4px 0 #c04870;
   }
-  .btn.primary:hover:not(:disabled) {
-    box-shadow: 0 7px 0 #c04870, 0 10px 20px rgba(255,107,159,0.6);
-  }
+  .btn.primary:hover:not(:disabled) { box-shadow: 0 7px 0 #c04870; }
   .btn.lavender {
-    background: linear-gradient(180deg, #d9bdff 0%, var(--lavender-deep) 100%);
-    color: #fff;
-    border-color: var(--lavender-deep);
+    background: linear-gradient(180deg, #d9bdff, var(--lavender-deep));
+    color: #fff; border-color: var(--lavender-deep);
     box-shadow: 0 4px 0 #6a4aaa;
   }
   .btn.mint {
-    background: linear-gradient(180deg, var(--mint) 0%, var(--mint-deep) 100%);
-    color: #fff;
-    border-color: var(--mint-deep);
+    background: linear-gradient(180deg, var(--mint), var(--mint-deep));
+    color: #fff; border-color: var(--mint-deep);
     box-shadow: 0 4px 0 #3a9a78;
   }
   .btn.gold {
-    background: linear-gradient(180deg, var(--cream) 0%, var(--gold) 100%);
-    color: #8a5a10;
-    border-color: var(--gold-deep);
+    background: linear-gradient(180deg, var(--cream), var(--gold));
+    color: #8a5a10; border-color: var(--gold-deep);
     box-shadow: 0 4px 0 #c07020;
   }
   .btn.danger {
-    background: linear-gradient(180deg, #ffb0b0 0%, var(--red) 100%);
-    color: #fff;
-    border-color: #c04040;
+    background: linear-gradient(180deg, #ffb0b0, var(--red));
+    color: #fff; border-color: #c04040;
     box-shadow: 0 4px 0 #803030;
   }
   .btn.full { width: 100%; }
+  .btn.small { padding: 8px 14px; font-size: 12px; border-radius: 18px; }
 
-  /* ═══════════════════════════════════════════════
-     타이틀 화면
-  ═══════════════════════════════════════════════ */
-  .title-screen {
-    text-align: center;
-    padding: 20px;
-    position: relative;
-  }
+  /* 타이틀 */
+  .title-screen { text-align: center; padding: 20px; position: relative; }
   .title-screen .big-title {
     font-family: 'Jua', sans-serif;
     font-size: 56px;
     color: var(--pink-deep);
-    text-shadow:
-      3px 3px 0 #fff,
-      6px 6px 0 var(--lavender),
-      9px 9px 20px rgba(154,111,255,0.5);
+    text-shadow: 3px 3px 0 #fff, 6px 6px 0 var(--lavender), 9px 9px 20px rgba(154,111,255,0.5);
     letter-spacing: 3px;
     margin-bottom: 10px;
     line-height: 1.1;
@@ -275,31 +196,11 @@
     0%, 100% { transform: translateY(0) rotate(-1deg); }
     50% { transform: translateY(-8px) rotate(1deg); }
   }
-  @media (max-width: 500px) {
-    .title-screen .big-title { font-size: 38px; letter-spacing: 2px; }
-  }
-  .title-screen .tagline {
-    font-size: 15px;
-    color: var(--text);
-    margin-bottom: 25px;
-    line-height: 1.8;
-    font-weight: 700;
-  }
-  .title-screen .menu-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 300px;
-    margin: 0 auto;
-  }
+  @media (max-width: 500px) { .title-screen .big-title { font-size: 38px; letter-spacing: 2px; } }
+  .title-screen .tagline { font-size: 15px; color: var(--text); margin-bottom: 25px; line-height: 1.8; font-weight: 700; }
+  .title-screen .menu-btns { display: flex; flex-direction: column; gap: 10px; max-width: 300px; margin: 0 auto; }
   .title-screen .menu-btns .btn { padding: 14px; font-size: 18px; }
-
-  .title-decorations {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 24px 0;
-  }
+  .title-decorations { display: flex; justify-content: center; gap: 20px; margin: 24px 0; }
   .title-decorations .char {
     font-size: 50px;
     animation: floatChar 3s ease-in-out infinite;
@@ -312,34 +213,18 @@
     0%, 100% { transform: translateY(0) rotate(-8deg) scale(1); }
     50% { transform: translateY(-15px) rotate(8deg) scale(1.1); }
   }
+  .title-screen .stats-row { margin-top: 24px; font-size: 12px; color: var(--text-muted); font-weight: 700; }
 
-  .title-screen .stats-row {
-    margin-top: 24px;
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 700;
-  }
-
-  /* ═══════════════════════════════════════════════
-     스타터 선택
-  ═══════════════════════════════════════════════ */
+  /* 스타터 */
   .starter-screen h2 {
     font-family: 'Jua', sans-serif;
     color: var(--pink-deep);
     text-align: center;
     margin: 0 0 6px;
-    letter-spacing: 1px;
     font-size: 28px;
     text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
   }
-  .starter-screen .hint {
-    text-align: center;
-    color: var(--text);
-    font-size: 13px;
-    margin-bottom: 16px;
-    line-height: 1.6;
-    font-weight: 700;
-  }
+  .starter-screen .hint { text-align: center; color: var(--text); font-size: 13px; margin-bottom: 16px; font-weight: 700; }
   .starter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -358,20 +243,6 @@
     overflow: hidden;
     box-shadow: 0 4px 0 var(--pink), 0 8px 16px rgba(255,107,159,0.2);
   }
-  .starter-card::before {
-    content: '💖';
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    font-size: 14px;
-    opacity: 0;
-    transition: opacity .2s;
-  }
-  .starter-card:hover::before { opacity: 0.6; animation: heartPop 1s infinite; }
-  @keyframes heartPop {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-  }
   .starter-card:hover {
     border-color: var(--pink-deep);
     transform: translateY(-6px) scale(1.03);
@@ -380,10 +251,7 @@
   .starter-card.selected {
     border-color: var(--pink-deep);
     background: linear-gradient(180deg, #fff 0%, var(--pink-light) 100%);
-    box-shadow:
-      0 0 0 4px var(--pink),
-      0 0 25px var(--pink-deep),
-      0 8px 0 var(--pink-deep);
+    box-shadow: 0 0 0 4px var(--pink), 0 0 25px var(--pink-deep), 0 8px 0 var(--pink-deep);
     animation: selectedPulse 1.2s ease-in-out infinite;
   }
   @keyframes selectedPulse {
@@ -394,58 +262,27 @@
     width: 80px; height: 80px;
     object-fit: contain;
     image-rendering: pixelated;
-    display: block;
-    margin: 0 auto 4px;
+    display: block; margin: 0 auto 4px;
     filter: drop-shadow(2px 4px 6px rgba(255,107,159,0.3));
-    transition: transform .2s;
   }
-  .starter-card:hover img { transform: scale(1.15) rotate(-5deg); }
   .starter-card.selected img { animation: bouncePet 1s ease-in-out infinite; }
   @keyframes bouncePet {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-10px) scale(1.08); }
   }
-  .starter-card .name {
-    font-family: 'Jua', sans-serif;
-    font-size: 18px;
-    color: var(--pink-deep);
-    margin-top: 4px;
-  }
-  .starter-card .attrs {
-    display: flex;
-    gap: 3px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 4px;
-  }
-  .attr-tag {
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-size: 10px;
-    font-weight: 700;
-    color: #fff;
-    font-family: 'Jua';
-    border: 1.5px solid rgba(0,0,0,0.2);
-  }
-  .attr-tag.earth  { background: var(--mint-deep); }
-  .attr-tag.water  { background: #5ac4ff; }
-  .attr-tag.fire   { background: #ff7070; }
-  .attr-tag.wind   { background: #ffbd55; color: #5a3a00; }
-  .attr-tag.neutral{ background: #b0a0a8; }
-  .starter-card .stats-mini {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 4px;
-    font-weight: 700;
-  }
+  .starter-card .name { font-family: 'Jua', sans-serif; font-size: 18px; color: var(--pink-deep); margin-top: 4px; }
+  .starter-card .attrs { display: flex; gap: 3px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+  .attr-tag { padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; color: #fff; font-family: 'Jua'; border: 1.5px solid rgba(0,0,0,0.15); }
+  .attr-tag.earth { background: var(--mint-deep); }
+  .attr-tag.water { background: #5ac4ff; }
+  .attr-tag.fire { background: #ff7070; }
+  .attr-tag.wind { background: #ffbd55; color: #5a3a00; }
+  .attr-tag.neutral { background: #b0a0a8; }
+  .starter-card .stats-mini { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 700; }
 
-  .name-input-wrap {
-    text-align: center;
-    padding: 24px 20px;
-  }
+  .name-input-wrap { text-align: center; padding: 24px 20px; }
   .name-input-wrap img {
-    width: 130px;
-    height: 130px;
+    width: 130px; height: 130px;
     image-rendering: pixelated;
     object-fit: contain;
     animation: nameFloat 3s ease-in-out infinite;
@@ -465,63 +302,146 @@
     font-size: 18px;
     font-weight: 700;
     text-align: center;
-    width: 240px;
-    max-width: 80%;
-    box-shadow: 0 3px 0 var(--pink-deep), inset 0 2px 4px rgba(255,107,159,0.1);
+    width: 240px; max-width: 80%;
+    box-shadow: 0 3px 0 var(--pink-deep);
   }
-  .name-input:focus {
-    outline: none;
-    border-color: var(--pink-deep);
-    box-shadow: 0 3px 0 var(--pink-deep), 0 0 15px var(--pink), inset 0 2px 4px rgba(255,107,159,0.1);
-  }
+  .name-input:focus { outline: none; border-color: var(--pink-deep); box-shadow: 0 3px 0 var(--pink-deep), 0 0 15px var(--pink); }
 
-  /* ═══════════════════════════════════════════════
-     메인 플레이
-  ═══════════════════════════════════════════════ */
-  .game-grid {
+  /* ═════════════════════════════════════════════
+     플레이 레이아웃 (재정비)
+  ═════════════════════════════════════════════ */
+  .play-layout {
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 320px 1fr;
     gap: 14px;
+    align-items: start;
   }
-  @media (max-width: 720px) {
-    .game-grid { grid-template-columns: 1fr; }
+  @media (max-width: 820px) {
+    .play-layout { grid-template-columns: 1fr; }
   }
 
-  .pet-panel {
+  /* 펫 상태 패널 (좌측) */
+  .pet-status-panel {
     background: var(--panel-bg);
     backdrop-filter: blur(10px);
     border: 3px solid var(--border-pink);
     border-radius: 24px;
-    padding: 18px;
+    padding: 16px;
     box-shadow: 0 6px 0 var(--pink), 0 12px 30px rgba(255,107,159,0.25);
     position: relative;
   }
-
-  .pet-panel .month-badge {
+  .pet-status-panel .month-badge {
     position: absolute;
     top: -12px;
-    right: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     background: linear-gradient(180deg, var(--cream), var(--gold));
     color: #8a5a10;
-    padding: 6px 16px;
+    padding: 6px 20px;
     border-radius: 20px;
     font-family: 'Jua';
     font-size: 14px;
     font-weight: 800;
-    letter-spacing: 0.5px;
     box-shadow: 0 3px 0 var(--gold-deep);
     z-index: 5;
     border: 2px solid #fff;
+    white-space: nowrap;
+  }
+
+  .pet-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+  }
+  .pet-big-sprite-wrap {
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(ellipse, rgba(255,182,193,0.4) 0%, transparent 70%);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .pet-big-sprite-wrap img {
+    width: 86px; height: 86px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(2px 4px 6px rgba(255,107,159,0.4));
+    animation: breathe 3s ease-in-out infinite;
+  }
+  .pet-big-sprite-wrap img.mood-happy {
+    animation: moodHappy 0.8s ease-in-out infinite;
+  }
+  .pet-big-sprite-wrap img.mood-tired {
+    animation: moodTired 4s ease-in-out infinite;
+    filter: drop-shadow(2px 4px 6px rgba(255,107,159,0.4)) saturate(0.6);
+  }
+  .pet-big-sprite-wrap img.mood-stress {
+    animation: moodStress 0.2s linear infinite;
+    filter: drop-shadow(2px 4px 6px rgba(255,107,159,0.4)) hue-rotate(-20deg);
+  }
+  @keyframes breathe {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2px) scale(1.02); }
+  }
+  @keyframes moodHappy {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(-8px) rotate(-3deg); }
+    75% { transform: translateY(-8px) rotate(3deg); }
+  }
+  @keyframes moodTired {
+    0%, 100% { transform: rotate(-6deg) translateY(4px); }
+    50% { transform: rotate(-8deg) translateY(6px); }
+  }
+  @keyframes moodStress {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+  }
+
+  .pet-name-box { flex: 1; min-width: 0; }
+  .pet-name-box .pname {
+    font-family: 'Jua', sans-serif;
+    font-size: 22px;
+    color: var(--pink-deep);
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
+    word-break: break-all;
+  }
+  .pet-name-box .pspecies { font-size: 11px; color: var(--text-muted); margin-top: -2px; font-weight: 700; }
+  .pet-name-box .pattrs { display: flex; gap: 3px; margin-top: 4px; flex-wrap: wrap; }
+
+  .stones-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .stones-big {
+    font-family: 'Jua';
+    font-size: 20px;
+    color: #8a5a10;
+    background: linear-gradient(180deg, var(--cream), var(--gold));
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 2px solid var(--gold-deep);
+    box-shadow: 0 3px 0 var(--gold-deep);
+    animation: stonesShine 2s ease-in-out infinite;
+    flex: 1;
+    text-align: center;
+  }
+  @keyframes stonesShine {
+    0%, 100% { box-shadow: 0 3px 0 var(--gold-deep); }
+    50% { box-shadow: 0 3px 0 var(--gold-deep), 0 0 15px var(--gold); }
   }
 
   .week-progress {
-    margin-top: 10px;
     background: rgba(255,255,255,0.6);
     border-radius: 12px;
     height: 10px;
     overflow: hidden;
     border: 2px solid var(--pink);
-    box-shadow: inset 0 1px 3px rgba(255,107,159,0.2);
+    margin-bottom: 10px;
   }
   .week-progress-fill {
     height: 100%;
@@ -530,304 +450,202 @@
     box-shadow: 0 0 10px var(--pink);
   }
 
-  /* 펫 스테이지 - 무대! */
-  .pet-stage {
-    width: 100%;
-    height: 220px;
-    background:
-      radial-gradient(ellipse at center bottom, rgba(255,182,193,0.5) 0%, transparent 70%),
-      linear-gradient(180deg, var(--bg-pink) 0%, var(--bg-cream) 100%);
-    border: 3px solid var(--pink);
-    border-radius: 18px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    margin-top: 14px;
-    margin-bottom: 14px;
-    box-shadow: inset 0 2px 8px rgba(255,107,159,0.15);
-  }
-
-  /* 스테이지 배경 SVG (무지개 언덕) */
-  .stage-bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* 스테이지 바닥 그림자 */
-  .pet-stage::before {
-    content: '';
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 18px;
-    background: radial-gradient(ellipse, rgba(255,107,159,0.5) 0%, transparent 70%);
-    border-radius: 50%;
-    z-index: 1;
-    filter: blur(2px);
-  }
-
-  .pet-big-sprite {
-    width: 170px;
-    height: 170px;
-    object-fit: contain;
-    image-rendering: pixelated;
-    filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4));
-    position: relative;
-    z-index: 3;
-    animation: breathe 3s ease-in-out infinite;
-  }
-  @keyframes breathe {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-3px) scale(1.02); }
-  }
-
-  /* 감정 애니메이션 */
-  .pet-big-sprite.mood-happy {
-    animation: moodHappy 0.8s ease-in-out infinite;
-  }
-  @keyframes moodHappy {
-    0%, 100% { transform: translateY(0) rotate(0); }
-    25% { transform: translateY(-15px) rotate(-4deg); }
-    75% { transform: translateY(-15px) rotate(4deg); }
-  }
-  .pet-big-sprite.mood-tired {
-    animation: moodTired 4s ease-in-out infinite;
-    filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4)) saturate(0.6);
-  }
-  @keyframes moodTired {
-    0%, 100% { transform: rotate(-8deg) translateY(8px); }
-    50% { transform: rotate(-10deg) translateY(10px); }
-  }
-  .pet-big-sprite.mood-stress {
-    animation: moodStress 0.2s linear infinite;
-    filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4)) hue-rotate(-20deg);
-  }
-  @keyframes moodStress {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-3px); }
-    75% { transform: translateX(3px); }
-  }
-
-  /* 액션 애니메이션 */
-  .pet-big-sprite.action-train {
-    animation: actionTrain 0.6s ease-in-out;
-  }
-  @keyframes actionTrain {
-    0% { transform: translateY(0) scale(1); }
-    30% { transform: translateY(-40px) scale(1.15); }
-    60% { transform: translateY(8px) scale(0.92); }
-    100% { transform: translateY(0) scale(1); }
-  }
-  .pet-big-sprite.action-run {
-    animation: actionRun 0.6s ease-in-out;
-  }
-  @keyframes actionRun {
-    0% { transform: translateX(-40px) scaleX(-1); }
-    50% { transform: translateX(40px) scaleX(1); }
-    100% { transform: translateX(0); }
-  }
-  .pet-big-sprite.action-eat {
-    animation: actionEat 0.8s ease-in-out;
-  }
-  @keyframes actionEat {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.15) rotate(-5deg); }
-    50% { transform: scale(1.12) rotate(5deg); }
-    75% { transform: scale(1.15) rotate(-5deg); }
-  }
-  .pet-big-sprite.action-spirit {
-    animation: actionSpirit 1s ease-in-out;
-  }
-  @keyframes actionSpirit {
-    0%, 100% { transform: scale(1); filter: drop-shadow(4px 6px 10px rgba(255,107,159,0.4)); }
-    50% { transform: scale(1.12); filter: drop-shadow(0 0 25px var(--lavender-deep)) drop-shadow(4px 6px 10px rgba(255,107,159,0.4)); }
-  }
-
-  .effect-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
-  }
-  .effect {
-    position: absolute;
-    font-size: 28px;
-    pointer-events: none;
-    animation: effectPop 1.4s ease-out forwards;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-  }
-  @keyframes effectPop {
-    0% { opacity: 0; transform: translate(var(--startX, 0), var(--startY, 0)) scale(0.3) rotate(0); }
-    20% { opacity: 1; transform: translate(var(--startX, 0), var(--startY, 0)) scale(1.4) rotate(30deg); }
-    100% { opacity: 0; transform: translate(var(--endX, 0), var(--endY, -60px)) scale(0.9) rotate(180deg); }
-  }
-
-  .stat-popup {
-    position: absolute;
-    font-family: 'Jua';
-    font-size: 22px;
-    font-weight: 800;
-    pointer-events: none;
-    z-index: 10;
-    text-shadow: 2px 2px 0 #fff, 0 0 8px currentColor;
-    animation: statPopup 1.6s ease-out forwards;
-  }
-  @keyframes statPopup {
-    0% { opacity: 0; transform: translate(-50%, 0) scale(0.5); }
-    15% { opacity: 1; transform: translate(-50%, -10px) scale(1.3); }
-    40% { transform: translate(-50%, -25px) scale(1); }
-    100% { opacity: 0; transform: translate(-50%, -80px) scale(0.9); }
-  }
-  .stat-popup.up { color: var(--mint-deep); }
-  .stat-popup.down { color: var(--red); }
-  .stat-popup.gold { color: var(--gold-deep); }
-
-  /* 펫 정보 상단 */
-  .pet-info-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
-    padding-right: 90px;
-  }
-  .pet-name-box { flex: 1; min-width: 0; }
-  .pet-name-box .pname {
-    font-family: 'Jua', sans-serif;
-    font-size: 26px;
-    color: var(--pink-deep);
-    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
-    letter-spacing: 1px;
-    word-break: break-all;
-  }
-  .pet-name-box .pspecies {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: -2px;
-    font-weight: 700;
-  }
-  .pet-name-box .pattrs {
-    display: flex;
-    gap: 3px;
-    margin-top: 4px;
-  }
-  .stones-big {
-    font-family: 'Jua';
-    font-size: 22px;
-    color: #8a5a10;
-    background: linear-gradient(180deg, var(--cream), var(--gold));
-    padding: 8px 14px;
-    border-radius: 24px;
-    border: 2px solid var(--gold-deep);
-    white-space: nowrap;
-    box-shadow: 0 3px 0 var(--gold-deep);
-    animation: stonesShine 2s ease-in-out infinite;
-  }
-  @keyframes stonesShine {
-    0%, 100% { box-shadow: 0 3px 0 var(--gold-deep), 0 0 0 transparent; }
-    50% { box-shadow: 0 3px 0 var(--gold-deep), 0 0 15px var(--gold); }
-  }
-
-  /* 스탯 */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px 12px;
-    margin-top: 10px;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 10px;
   }
-  @media (max-width: 500px) {
-    .stats-grid { grid-template-columns: 1fr; }
-  }
-  .stat-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 700;
-  }
-  .stat-label {
-    width: 56px;
-    flex-shrink: 0;
-    color: var(--text);
-  }
+  .stat-row { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; }
+  .stat-label { width: 48px; flex-shrink: 0; color: var(--text); }
   .stat-bar {
     flex: 1;
-    height: 10px;
+    height: 9px;
     background: rgba(255,255,255,0.7);
-    border-radius: 6px;
+    border-radius: 5px;
     overflow: hidden;
-    position: relative;
     border: 1.5px solid var(--border-pink);
-    box-shadow: inset 0 1px 2px rgba(255,107,159,0.15);
   }
   .stat-fill {
     height: 100%;
-    transition: width .5s cubic-bezier(.3,.7,.4,1);
+    transition: width .5s;
     background: linear-gradient(90deg, var(--pink), var(--pink-deep));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
   }
   .stat-fill.positive { background: linear-gradient(90deg, var(--mint), var(--mint-deep)); }
   .stat-fill.negative { background: linear-gradient(90deg, #ffb0b0, var(--red)); }
   .stat-value {
-    width: 34px;
-    text-align: right;
-    font-family: 'Jua';
-    font-size: 15px;
+    width: 26px; text-align: right;
+    font-family: 'Jua'; font-size: 13px;
     color: var(--pink-deep);
     flex-shrink: 0;
   }
 
-  /* 로그 */
+  /* 로그 박스 */
   .log-box {
     background: rgba(255,255,255,0.7);
     border: 2px solid var(--border-pink);
-    border-radius: 14px;
-    padding: 8px 14px;
-    margin-top: 12px;
-    max-height: 110px;
+    border-radius: 12px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    max-height: 100px;
     overflow-y: auto;
-    font-size: 12px;
-    line-height: 1.7;
-    font-family: 'Gaegu', sans-serif;
+    font-size: 11px;
+    line-height: 1.6;
     font-weight: 700;
   }
   .log-box p { margin: 0 0 2px; color: var(--text); }
   .log-box p.heal { color: var(--mint-deep); }
   .log-box p.hurt { color: var(--red); }
   .log-box p.info { color: var(--lavender-deep); }
-  .log-box p.event { color: var(--gold-deep); font-weight: 700; }
+  .log-box p.event { color: var(--gold-deep); }
+  .log-box p.rival { color: var(--pink-deep); font-weight: 700; }
 
-  /* ═══════════════════════════════════════════════
-     액션 패널
-  ═══════════════════════════════════════════════ */
-  .action-panel {
+  /* 저장/종료 */
+  .status-buttons {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+  }
+  .status-buttons .btn { flex: 1; padding: 8px; font-size: 12px; border-radius: 14px; }
+
+  /* ═════════════════════════════════════════════
+     우측: 스케줄 + 액션
+  ═════════════════════════════════════════════ */
+  .main-area {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* 스케줄표 */
+  .schedule-panel {
     background: var(--panel-bg);
     backdrop-filter: blur(10px);
     border: 3px solid var(--border-pink);
     border-radius: 24px;
-    padding: 14px;
+    padding: 16px;
     box-shadow: 0 6px 0 var(--pink), 0 12px 30px rgba(255,107,159,0.25);
+    position: relative;
+  }
+  .schedule-title {
+    font-family: 'Jua';
+    font-size: 18px;
+    color: var(--pink-deep);
+    text-align: center;
+    margin: 0 0 12px;
+    text-shadow: 2px 2px 0 #fff;
+  }
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  @media (max-width: 600px) {
+    .schedule-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  .schedule-day {
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 2.5px solid var(--border-pink);
+    border-radius: 14px;
+    padding: 6px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+    min-height: 95px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .schedule-day:hover {
+    border-color: var(--pink-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 var(--pink);
+  }
+  .schedule-day.filled {
+    background: linear-gradient(180deg, var(--pink-light), #fff);
+    border-color: var(--pink-deep);
+  }
+  .schedule-day .day-label {
+    font-family: 'Jua';
+    font-size: 11px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.6);
+    border-radius: 8px;
+    padding: 1px 4px;
+  }
+  .schedule-day.filled .day-label { background: var(--pink-deep); color: #fff; }
+  .schedule-day .day-icon-svg {
+    margin: 4px auto;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .schedule-day .day-icon-svg svg { width: 100%; height: 100%; }
+  .schedule-day .day-action {
+    font-family: 'Jua';
+    font-size: 10px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .schedule-day.filled .day-action { color: var(--pink-deep); font-weight: 700; }
+  .schedule-day.empty .day-action { color: var(--text-muted); font-size: 22px; }
+
+  .schedule-footer {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .schedule-footer .btn { flex: 1; }
+
+  /* 액션 선택 팝업 */
+  .action-chooser-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,182,193,0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn .25s;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .action-chooser-overlay.open { display: flex; }
+  .action-chooser-panel {
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 4px solid var(--pink-deep);
+    border-radius: 24px;
+    padding: 18px;
+    max-width: 620px;
+    width: 100%;
+    max-height: 85vh;
+    box-shadow: 0 0 0 6px #fff, 0 0 50px var(--pink);
+    display: flex;
+    flex-direction: column;
+    animation: panelSlideIn .35s cubic-bezier(.3,.7,.4,1.3);
+  }
+  @keyframes panelSlideIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .action-chooser-title {
+    font-family: 'Jua';
+    font-size: 18px;
+    color: var(--pink-deep);
+    text-align: center;
+    margin: 0 0 10px;
+    text-shadow: 2px 2px 0 #fff;
   }
   .action-tabs {
     display: flex;
     gap: 4px;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
   }
   .action-tab {
     flex: 1;
     padding: 8px 4px;
-    background: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.7);
     border: 2px solid var(--border-pink);
     color: var(--text-muted);
     border-radius: 12px;
@@ -835,89 +653,246 @@
     font-family: 'Jua';
     font-size: 12px;
     font-weight: 700;
-    transition: all .15s;
-  }
-  .action-tab:hover {
-    color: var(--pink-deep);
-    border-color: var(--pink);
   }
   .action-tab.active {
     background: linear-gradient(180deg, var(--pink), var(--pink-deep));
     color: #fff;
     border-color: var(--pink-deep);
     box-shadow: 0 3px 0 #c04870;
-    transform: translateY(-2px);
   }
-  .action-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    max-height: 450px;
+  .action-items-grid {
+    flex: 1;
     overflow-y: auto;
-    padding-right: 2px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    padding: 4px;
   }
-  .action-btn {
+  .action-item {
     background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
     border: 2px solid var(--border-pink);
     border-radius: 14px;
-    padding: 9px 12px;
-    text-align: left;
+    padding: 8px;
     cursor: pointer;
-    color: var(--text);
-    font-family: 'Jua', 'Noto Sans KR';
-    font-size: 12px;
     transition: all .15s;
+    text-align: center;
     box-shadow: 0 3px 0 var(--pink);
   }
-  .action-btn:hover:not(:disabled) {
+  .action-item:hover:not(.disabled) {
     border-color: var(--pink-deep);
-    transform: translateX(3px) translateY(-1px);
-    box-shadow: 0 4px 0 var(--pink), 0 0 10px rgba(255,107,159,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 0 var(--pink-deep);
   }
-  .action-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  .action-item.disabled { opacity: 0.45; cursor: not-allowed; }
+  .action-item .ai-icon {
+    width: 52px; height: 52px;
+    margin: 0 auto 4px;
   }
-  .action-btn .ab-name {
-    font-weight: 700;
+  .action-item .ai-icon svg { width: 100%; height: 100%; }
+  .action-item .ai-name {
+    font-family: 'Jua';
+    font-size: 12px;
     color: var(--pink-deep);
-    font-size: 14px;
+    font-weight: 700;
     margin-bottom: 2px;
   }
-  .action-btn .ab-desc {
-    font-size: 11px;
+  .action-item .ai-desc {
+    font-size: 10px;
     color: var(--text-muted);
-    margin-bottom: 2px;
+    line-height: 1.3;
+    margin-bottom: 3px;
   }
-  .action-btn .ab-cost {
-    font-size: 11px;
+  .action-item .ai-cost {
+    font-size: 10px;
     color: var(--gold-deep);
     font-family: 'Jua';
     font-weight: 700;
   }
-  .action-btn .ab-req {
-    font-size: 10px;
+  .action-item .ai-req {
+    font-size: 9px;
     color: var(--red);
+    margin-top: 2px;
+  }
+  .action-chooser-footer {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .action-chooser-footer .btn { flex: 1; }
+
+  /* ═════════════════════════════════════════════
+     라이벌 패널
+  ═════════════════════════════════════════════ */
+  .rival-panel {
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+    border: 3px solid var(--lavender-deep);
+    border-radius: 24px;
+    padding: 14px;
+    box-shadow: 0 6px 0 var(--lavender-deep), 0 12px 30px rgba(154,111,255,0.25);
+    position: relative;
+  }
+  .rival-panel .rival-label {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: linear-gradient(180deg, var(--lavender), var(--lavender-deep));
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 16px;
+    font-family: 'Jua';
+    font-size: 13px;
+    box-shadow: 0 3px 0 #6a4aaa;
+    border: 2px solid #fff;
+  }
+  .rival-content {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 2px;
+  }
+  .rival-img-wrap {
+    width: 70px; height: 70px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .rival-img-wrap img {
+    width: 66px; height: 66px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(2px 4px 5px rgba(154,111,255,0.4));
+    animation: breathe 3.5s ease-in-out infinite;
+  }
+  .rival-info { flex: 1; min-width: 0; }
+  .rival-info .rname {
+    font-family: 'Jua';
+    font-size: 15px;
+    color: var(--lavender-deep);
+    text-shadow: 1px 1px 0 #fff;
+  }
+  .rival-info .rspecies { font-size: 10px; color: var(--text-muted); margin-top: -1px; font-weight: 700; }
+  .rival-info .rpower {
+    font-size: 11px;
+    color: var(--text);
+    margin-top: 3px;
+    font-weight: 700;
+  }
+  .rival-msg {
+    background: rgba(201,166,255,0.2);
+    border: 2px solid var(--lavender);
+    border-radius: 12px;
+    padding: 6px 10px;
+    margin-top: 8px;
+    font-family: 'Gaegu', sans-serif;
+    font-size: 12px;
+    color: var(--lavender-deep);
+    font-weight: 700;
+    position: relative;
+    line-height: 1.5;
+  }
+  .rival-msg::before {
+    content: '💬';
+    margin-right: 4px;
   }
 
-  /* ═══════════════════════════════════════════════
-     이벤트 모달
-  ═══════════════════════════════════════════════ */
+  /* ═════════════════════════════════════════════
+     주간 결과 모달 (스케줄 실행 후)
+  ═════════════════════════════════════════════ */
+  .week-result-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,182,193,0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    z-index: 101;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn .25s;
+  }
+  .week-result-overlay.open { display: flex; }
+  .week-result-panel {
+    background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
+    border: 4px solid var(--pink-deep);
+    border-radius: 24px;
+    padding: 20px;
+    max-width: 520px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 0 0 6px #fff, 0 0 50px var(--pink);
+  }
+  .wr-title {
+    font-family: 'Jua';
+    font-size: 22px;
+    color: var(--pink-deep);
+    text-align: center;
+    margin: 0 0 12px;
+    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
+  }
+  .wr-day {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    background: rgba(255,255,255,0.6);
+    border: 2px solid var(--border-pink);
+    border-radius: 12px;
+    margin-bottom: 5px;
+    animation: wrSlideIn 0.4s cubic-bezier(.3,.7,.4,1.3) backwards;
+  }
+  @keyframes wrSlideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .wr-day .wr-day-label {
+    font-family: 'Jua';
+    font-size: 12px;
+    color: var(--pink-deep);
+    background: var(--pink-light);
+    padding: 3px 8px;
+    border-radius: 10px;
+    min-width: 40px;
+    text-align: center;
+  }
+  .wr-day .wr-day-icon { width: 36px; height: 36px; flex-shrink: 0; }
+  .wr-day .wr-day-icon svg { width: 100%; height: 100%; }
+  .wr-day .wr-day-action {
+    flex: 1;
+    font-family: 'Jua';
+    font-size: 13px;
+    color: var(--text);
+  }
+  .wr-day .wr-day-deltas {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    font-size: 11px;
+    font-family: 'Jua';
+  }
+  .wr-delta {
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .wr-delta.up { background: rgba(90,203,168,0.3); color: var(--mint-deep); }
+  .wr-delta.down { background: rgba(255,112,112,0.2); color: var(--red); }
+  .wr-delta.gold { background: rgba(255,198,64,0.25); color: var(--gold-deep); }
+
+  /* 이벤트 모달 */
   .event-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(255, 182, 193, 0.5);
+    background: rgba(255,182,193,0.5);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 100;
+    z-index: 102;
     padding: 20px;
     backdrop-filter: blur(8px);
     animation: fadeIn .3s;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
   }
   .event-overlay.open { display: flex; }
   .event-panel {
@@ -927,23 +902,15 @@
     padding: 24px;
     max-width: 440px;
     width: 100%;
-    box-shadow:
-      0 0 0 6px #fff,
-      0 0 50px var(--pink),
-      0 12px 30px rgba(255,107,159,0.5);
+    box-shadow: 0 0 0 6px #fff, 0 0 50px var(--pink);
     animation: panelSlideIn .4s cubic-bezier(.3,.7,.4,1.3);
     position: relative;
-  }
-  @keyframes panelSlideIn {
-    from { opacity: 0; transform: scale(0.6) rotate(-10deg); }
-    to { opacity: 1; transform: scale(1) rotate(0); }
   }
   .event-panel .ev-icon {
     font-size: 64px;
     text-align: center;
     margin-bottom: 6px;
     animation: iconFloat 2s ease-in-out infinite;
-    filter: drop-shadow(3px 5px 8px rgba(255,107,159,0.4));
   }
   @keyframes iconFloat {
     0%, 100% { transform: translateY(0) rotate(-5deg); }
@@ -955,8 +922,7 @@
     color: var(--pink-deep);
     text-align: center;
     margin-bottom: 10px;
-    letter-spacing: 1px;
-    text-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--lavender);
+    text-shadow: 2px 2px 0 #fff;
   }
   .event-panel .ev-desc {
     font-size: 14px;
@@ -969,11 +935,7 @@
     border-left: 4px solid var(--pink);
     font-weight: 700;
   }
-  .event-panel .ev-choices {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .event-panel .ev-choices { display: flex; flex-direction: column; gap: 8px; }
   .event-panel .ev-choice {
     background: linear-gradient(180deg, #fff 0%, var(--bg-pink) 100%);
     border: 2.5px solid var(--border-pink);
@@ -981,7 +943,7 @@
     padding: 12px 16px;
     border-radius: 14px;
     cursor: pointer;
-    font-family: 'Jua', 'Noto Sans KR';
+    font-family: 'Jua';
     font-size: 14px;
     font-weight: 700;
     text-align: left;
@@ -991,22 +953,11 @@
   .event-panel .ev-choice:hover:not(:disabled) {
     border-color: var(--pink-deep);
     transform: translateX(3px);
-    box-shadow: 0 4px 0 var(--pink-deep);
   }
-  .event-panel .ev-choice:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .event-panel .ev-choice .hint {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 2px;
-    font-weight: 400;
-  }
-
-  /* 이벤트 결과 */
+  .event-panel .ev-choice:disabled { opacity: 0.5; cursor: not-allowed; }
+  .event-panel .ev-choice .hint { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-weight: 400; }
   .ev-msg {
-    background: linear-gradient(180deg, rgba(160,232,208,0.4), rgba(90,203,168,0.3));
+    background: rgba(160,232,208,0.3);
     border: 3px solid var(--mint-deep);
     border-radius: 14px;
     padding: 14px;
@@ -1016,19 +967,9 @@
     color: var(--text);
     font-weight: 700;
   }
-  .ev-deltas {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin: 14px 0;
-    font-family: 'Jua';
-    font-size: 18px;
-  }
+  .ev-deltas { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 14px 0; font-family: 'Jua'; font-size: 18px; }
   .ev-delta {
-    background: #fff;
-    padding: 5px 12px;
-    border-radius: 18px;
+    background: #fff; padding: 5px 12px; border-radius: 18px;
     border: 2.5px solid var(--pink);
     box-shadow: 0 2px 0 var(--pink);
   }
@@ -1036,14 +977,8 @@
   .ev-delta.down { color: var(--red); border-color: var(--red); box-shadow: 0 2px 0 var(--red); }
   .ev-delta.gold { color: var(--gold-deep); border-color: var(--gold-deep); box-shadow: 0 2px 0 var(--gold-deep); }
 
-  /* ═══════════════════════════════════════════════
-     엔딩
-  ═══════════════════════════════════════════════ */
-  .ending-screen {
-    text-align: center;
-    padding: 30px 20px;
-    position: relative;
-  }
+  /* 엔딩 */
+  .ending-screen { text-align: center; padding: 30px 20px; position: relative; }
   .ending-screen .ep-emoji {
     font-size: 110px;
     margin-bottom: 10px;
@@ -1058,13 +993,11 @@
     font-family: 'Jua';
     font-size: 48px;
     color: var(--pink-deep);
-    text-shadow: 3px 3px 0 #fff, 6px 6px 0 var(--lavender), 9px 9px 20px rgba(154,111,255,0.5);
+    text-shadow: 3px 3px 0 #fff, 6px 6px 0 var(--lavender);
     margin-bottom: 10px;
-    letter-spacing: 2px;
   }
   .ending-screen .ep-pet-img {
-    width: 200px;
-    height: 200px;
+    width: 200px; height: 200px;
     image-rendering: pixelated;
     object-fit: contain;
     margin: 20px auto;
@@ -1076,12 +1009,7 @@
     0%, 100% { transform: translateY(0) rotate(-5deg); }
     50% { transform: translateY(-14px) rotate(5deg); }
   }
-  .ending-screen .ep-pet {
-    font-size: 15px;
-    color: var(--text);
-    margin-bottom: 20px;
-    font-weight: 700;
-  }
+  .ending-screen .ep-pet { font-size: 15px; color: var(--text); margin-bottom: 20px; font-weight: 700; }
   .ending-screen .ep-desc {
     background: var(--panel-bg);
     border: 3px solid var(--pink);
@@ -1091,8 +1019,7 @@
     margin: 0 auto 20px;
     font-size: 15px;
     line-height: 1.9;
-    color: var(--text);
-    box-shadow: 0 6px 0 var(--pink), 0 10px 30px rgba(255,107,159,0.4);
+    box-shadow: 0 6px 0 var(--pink);
     font-weight: 700;
   }
   .ending-screen .ep-stats {
@@ -1100,7 +1027,6 @@
     margin: 0 auto 20px;
     text-align: left;
     font-size: 14px;
-    color: var(--text);
     background: rgba(255,255,255,0.7);
     padding: 16px 24px;
     border-radius: 16px;
@@ -1108,37 +1034,19 @@
     border: 2.5px solid var(--pink);
     font-weight: 700;
   }
-  .ending-screen .ep-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  .ending-screen .ep-buttons { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .ending-particles { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
 
-  .ending-particles {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  /* ═══════════════════════════════════════════════
-     오디오 컨트롤
-  ═══════════════════════════════════════════════ */
+  /* 오디오 컨트롤 */
   .audio-control {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 200;
-    display: flex;
-    gap: 6px;
+    position: fixed; top: 16px; right: 16px; z-index: 200;
+    display: flex; gap: 6px;
   }
   .audio-btn {
     background: #fff;
     border: 3px solid var(--pink);
     color: var(--pink-deep);
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     cursor: pointer;
     font-size: 18px;
@@ -1151,10 +1059,8 @@
   }
   .audio-btn.muted { opacity: 0.5; }
 
-  /* 유틸 */
   .flash-overlay {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: var(--pink);
     opacity: 0;
     pointer-events: none;
@@ -1162,12 +1068,9 @@
     animation: flashOnce .6s;
   }
   @keyframes flashOnce {
-    0% { opacity: 0; }
-    20% { opacity: 0.35; }
-    100% { opacity: 0; }
+    0% { opacity: 0; } 20% { opacity: 0.35; } 100% { opacity: 0; }
   }
 
-  /* 스크롤바 */
   ::-webkit-scrollbar { width: 10px; }
   ::-webkit-scrollbar-track { background: rgba(255,255,255,0.3); border-radius: 5px; }
   ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 5px; }
@@ -1179,19 +1082,14 @@
 </head>
 <body class="season-spring">
 
-<!-- 배경 반짝이 -->
 <div class="bg-sparkles" id="bg-sparkles"></div>
-
-<!-- 계절 파티클 -->
 <div class="season-particles" id="season-particles"></div>
 
-<!-- 오디오 컨트롤 -->
 <div class="audio-control">
   <button class="audio-btn" id="btn-bgm" title="배경음악">🎵</button>
   <button class="audio-btn" id="btn-sfx" title="효과음">🔔</button>
 </div>
 
-<!-- BGM 오디오 -->
 <audio id="bgm-audio" loop preload="auto">
   <source src="raise_bgm/palace_garden.mp3" type="audio/mpeg">
 </audio>
@@ -1199,14 +1097,31 @@
 <div class="wrap">
   <div class="title-bar">
     <h1>👑 PRINCESS PET MAKER</h1>
-    <div class="sub">스톤에이지 부족에서 1년간 새끼펫 키우기 · 52주 후 엔딩</div>
+    <div class="sub">주간 스케줄을 짜서 펫을 키우세요 💕</div>
   </div>
   <div id="app"></div>
 </div>
 
+<!-- 액션 선택 오버레이 (클릭으로 스케줄 채우기) -->
+<div class="action-chooser-overlay" id="chooser-overlay">
+  <div class="action-chooser-panel" id="chooser-panel">
+    <div class="action-chooser-title" id="chooser-title">💖 활동 선택 - ?요일</div>
+    <div class="action-tabs">
+      <button class="action-tab active" data-tab="train">🏋️ 훈련</button>
+      <button class="action-tab" data-tab="job">💼 일</button>
+      <button class="action-tab" data-tab="rest">🛌 휴식</button>
+    </div>
+    <div class="action-items-grid" id="chooser-grid"></div>
+    <div class="action-chooser-footer">
+      <button class="btn lavender full" id="chooser-clear">🗑 비우기</button>
+      <button class="btn primary full" id="chooser-cancel">❌ 취소</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ═══════════════════════════════════════════════════════════
-   오디오 시스템 (Web Audio API로 효과음 생성)
+   오디오
 ═══════════════════════════════════════════════════════════ */
 const audio = {
   ctx: null,
@@ -1215,38 +1130,24 @@ const audio = {
   sfxEnabled: true,
   bgmStarted: false,
 };
-
-// localStorage에서 설정 로드
 try {
   const savedBgm = localStorage.getItem('raise_bgm');
   const savedSfx = localStorage.getItem('raise_sfx');
   if (savedBgm !== null) audio.bgmEnabled = savedBgm === '1';
   if (savedSfx !== null) audio.sfxEnabled = savedSfx === '1';
 } catch(e) {}
-
 audio.bgm.volume = 0.25;
 
 function ensureAudioCtx() {
-  if (!audio.ctx) {
-    try { audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
-  }
+  if (!audio.ctx) { try { audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
   return audio.ctx;
 }
-
-function playBgm() {
-  if (!audio.bgmEnabled) return;
-  audio.bgm.play().catch(() => {});
-  audio.bgmStarted = true;
-}
-function pauseBgm() {
-  audio.bgm.pause();
-}
-
+function playBgm() { if (!audio.bgmEnabled) return; audio.bgm.play().catch(() => {}); audio.bgmStarted = true; }
+function pauseBgm() { audio.bgm.pause(); }
 function toggleBgm() {
   audio.bgmEnabled = !audio.bgmEnabled;
   localStorage.setItem('raise_bgm', audio.bgmEnabled ? '1' : '0');
-  if (audio.bgmEnabled) playBgm();
-  else pauseBgm();
+  if (audio.bgmEnabled) playBgm(); else pauseBgm();
   updateAudioBtns();
 }
 function toggleSfx() {
@@ -1261,154 +1162,67 @@ function updateAudioBtns() {
   document.getElementById('btn-sfx').textContent = audio.sfxEnabled ? '🔔' : '🔕';
 }
 
-// 효과음 생성기 (Web Audio API)
 function playSfx(type) {
   if (!audio.sfxEnabled) return;
   const ctx = ensureAudioCtx();
   if (!ctx) return;
-
   const now = ctx.currentTime;
-
-  if (type === 'click') {
-    // 짧은 팝 소리
+  const play = (freq, dur, type2 = 'sine', gain = 0.15, delay = 0) => {
     const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(800, now);
-    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(now); osc.stop(now + 0.1);
-  }
-  else if (type === 'success') {
-    // 경쾌한 도-미-솔
-    const notes = [523.25, 659.25, 783.99];
-    notes.forEach((f, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(f, now + i * 0.08);
-      gain.gain.setValueAtTime(0, now + i * 0.08);
-      gain.gain.linearRampToValueAtTime(0.2, now + i * 0.08 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(now + i * 0.08); osc.stop(now + i * 0.08 + 0.3);
-    });
-  }
-  else if (type === 'level_up') {
-    // 상승하는 아르페지오 (스탯 상승)
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((f, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(f, now + i * 0.06);
-      gain.gain.setValueAtTime(0, now + i * 0.06);
-      gain.gain.linearRampToValueAtTime(0.15, now + i * 0.06 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.2);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(now + i * 0.06); osc.stop(now + i * 0.06 + 0.2);
-    });
-  }
-  else if (type === 'coin') {
-    // 동전 소리
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(988, now);
-    osc.frequency.setValueAtTime(1319, now + 0.05);
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(now); osc.stop(now + 0.2);
-  }
+    const g = ctx.createGain();
+    osc.type = type2;
+    osc.frequency.setValueAtTime(freq, now + delay);
+    g.gain.setValueAtTime(gain, now + delay);
+    g.gain.exponentialRampToValueAtTime(0.001, now + delay + dur);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(now + delay); osc.stop(now + delay + dur);
+  };
+  if (type === 'click') play(800, 0.08, 'sine', 0.1);
+  else if (type === 'success') { [523, 659, 784].forEach((f, i) => play(f, 0.25, 'triangle', 0.18, i*0.08)); }
+  else if (type === 'level_up') { [523, 659, 784, 1046].forEach((f, i) => play(f, 0.2, 'sine', 0.15, i*0.06)); }
+  else if (type === 'coin') { play(988, 0.1, 'square', 0.12); play(1319, 0.12, 'square', 0.12, 0.05); }
   else if (type === 'fail') {
-    // 하강음
     const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const g = ctx.createGain();
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(300, now);
     osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
-    gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-    osc.connect(gain); gain.connect(ctx.destination);
+    g.gain.setValueAtTime(0.12, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(g); g.connect(ctx.destination);
     osc.start(now); osc.stop(now + 0.3);
   }
-  else if (type === 'event') {
-    // 신비로운 반짝 소리
-    [1047, 1319, 1568].forEach((f, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(f, now + i * 0.03);
-      gain.gain.setValueAtTime(0, now + i * 0.03);
-      gain.gain.linearRampToValueAtTime(0.12, now + i * 0.03 + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.03 + 0.5);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(now + i * 0.03); osc.stop(now + i * 0.03 + 0.5);
-    });
-  }
+  else if (type === 'event') { [1047, 1319, 1568].forEach((f, i) => play(f, 0.4, 'triangle', 0.11, i*0.03)); }
   else if (type === 'heart') {
-    // 뿅- 하트 소리
     const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const g = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(600, now);
     osc.frequency.exponentialRampToValueAtTime(900, now + 0.1);
     osc.frequency.exponentialRampToValueAtTime(700, now + 0.2);
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-    osc.connect(gain); gain.connect(ctx.destination);
+    g.gain.setValueAtTime(0.18, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+    osc.connect(g); g.connect(ctx.destination);
     osc.start(now); osc.stop(now + 0.3);
   }
-  else if (type === 'hurt') {
-    // 삐 낮은음
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(200, now);
-    gain.gain.setValueAtTime(0.1, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.start(now); osc.stop(now + 0.15);
-  }
+  else if (type === 'hurt') { play(200, 0.15, 'square', 0.09); }
   else if (type === 'win') {
-    // 팡파레
     const notes = [523, 523, 523, 659, 784, 1047];
-    const times =  [0, 0.1, 0.2, 0.3, 0.4, 0.55];
-    notes.forEach((f, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(f, now + times[i]);
-      gain.gain.setValueAtTime(0, now + times[i]);
-      gain.gain.linearRampToValueAtTime(0.2, now + times[i] + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + times[i] + 0.4);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(now + times[i]); osc.stop(now + times[i] + 0.4);
-    });
+    const times = [0, 0.1, 0.2, 0.3, 0.4, 0.55];
+    notes.forEach((f, i) => play(f, 0.35, 'triangle', 0.16, times[i]));
   }
 }
-
-// 첫 유저 인터랙션 후 BGM 시작
-function tryStartBgm() {
-  if (!audio.bgmStarted && audio.bgmEnabled) playBgm();
-}
+function tryStartBgm() { if (!audio.bgmStarted && audio.bgmEnabled) playBgm(); }
 document.addEventListener('click', tryStartBgm, { once: false });
 
 /* ═══════════════════════════════════════════════════════════
-   데이터 로드
+   데이터
 ═══════════════════════════════════════════════════════════ */
 let PET_DATA = [];
-
 async function loadPetData() {
   try {
     const r = await fetch('pet_info_data.json?t=' + Date.now(), { cache: 'no-store' });
-    if (r.ok) {
-      const data = await r.json();
-      if (Array.isArray(data)) { PET_DATA = data; return; }
-    }
+    if (r.ok) { const data = await r.json(); if (Array.isArray(data)) { PET_DATA = data; return; } }
   } catch(e) {}
   try {
     const r = await fetch('game_pets.json?t=' + Date.now(), { cache: 'no-store' });
@@ -1429,177 +1243,241 @@ if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 /* ═══════════════════════════════════════════════════════════
-   훈련/일/휴식 데이터
+   SVG 일러스트 (액션별)
 ═══════════════════════════════════════════════════════════ */
-const TRAININGS = [
-  { id: 'rock',    name: '🗿 바위 들기', desc: '근력 강화', cost: 8,  effects: { str:[3,6], hp:[-2,-1], fatigue:[5,10] }, anim: 'action-train', particles: ['💪', '🗿', '✨'], sfx: 'level_up' },
-  { id: 'run',     name: '🏃 달리기',     desc: '민첩 훈련', cost: 6,  effects: { agi:[3,6], hp:[-1,0], fatigue:[3,7] }, anim: 'action-run', particles: ['🏃', '💨', '⚡'], sfx: 'level_up' },
-  { id: 'swim',    name: '🏊 수영',       desc: '체력+민첩', cost: 10, effects: { hp:[2,5], agi:[1,3], fatigue:[5,10] }, anim: 'action-train', particles: ['💧', '🌊', '🐟'], sfx: 'level_up' },
-  { id: 'spirit',  name: '🔥 정령 수행',  desc: '속성력 ↑', cost: 15, effects: { elem:[3,7], stress:[2,5] }, anim: 'action-spirit', particles: ['🔥', '💫', '✨', '🌟'], sfx: 'event' },
-  { id: 'study',   name: '📖 인간 언어',  desc: '지능+애교', cost: 12, effects: { int:[3,6], cute:[1,3], fatigue:[2,5] }, anim: 'action-train', particles: ['📖', '💡', '✨'], sfx: 'level_up' },
-  { id: 'wild',    name: '🐾 야성 훈련',  desc: '야생성+근력', cost: 10, effects: { wild:[3,6], str:[1,3], cute:[-2,-1] }, anim: 'action-train', particles: ['🐾', '🔥', '💢'], sfx: 'level_up' },
-  { id: 'trick',   name: '🎪 재주 연습',  desc: '애교 ↑', cost: 8,  effects: { cute:[3,6], wild:[-2,-1], fatigue:[2,4] }, anim: 'action-train', particles: ['🎪', '🎉', '⭐'], sfx: 'heart' },
-  { id: 'dance',   name: '💃 춤 연습',   desc: '민첩+애교', cost: 10, effects: { agi:[2,4], cute:[2,4], fatigue:[3,6] }, anim: 'action-run', particles: ['💃', '🎵', '✨'], sfx: 'heart' },
-];
-
-const JOBS = [
-  { id: 'miner',   name: '⛏ 광산 짐꾼', desc: '스톤 쏠쏠', gain: [15,25], effects: { str:[2,4], hp:[-3,-1], fatigue:[10,15] }, req: { str:20 }, particles: ['⛏', '💎', '🗿'], sfx: 'coin' },
-  { id: 'fisher',  name: '🐟 어장 도우미', desc: '민첩 키움', gain: [12,18], effects: { agi:[2,4], happy:[2,4], fatigue:[5,10] }, req: { agi:15 }, particles: ['🐟', '🌊', '💎'], sfx: 'coin' },
-  { id: 'hunter',  name: '🍖 사냥 동반', desc: '위험하지만', gain: [20,30], effects: { str:[2,4], agi:[2,4], stress:[5,10], hp:[-3,-1] }, req: { str:20, agi:20 }, particles: ['🍖', '🏹', '💪'], sfx: 'coin' },
-  { id: 'guard',   name: '🏕 부족 경비', desc: '체력 훈련', gain: [18,25], effects: { hp:[2,4], wild:[1,3], fatigue:[8,12] }, req: { hp:20 }, particles: ['🛡', '🏕', '⚔️'], sfx: 'coin' },
-  { id: 'perform', name: '🎪 광장 공연', desc: '인기몰이', gain: [15,22], effects: { cute:[2,4], bond:[2,4], fatigue:[3,7] }, req: { cute:30 }, particles: ['🎪', '⭐', '🎉', '💕'], sfx: 'heart' },
-  { id: 'courier', name: '💌 편지 배달', desc: '빠른 발 필요', gain: [10,14], effects: { agi:[2,4], fatigue:[3,6] }, req: { agi:10 }, particles: ['💌', '💨', '✨'], sfx: 'coin' },
-  { id: 'shop',    name: '🛒 가게 도우미', desc: '친근해야', gain: [12,16], effects: { cute:[2,3], bond:[1,3], fatigue:[4,7] }, req: { cute:15 }, particles: ['🛒', '💰', '✨'], sfx: 'coin' },
-  { id: 'herb',    name: '🌿 약초 채집', desc: '지혜로운 일', gain: [14,18], effects: { int:[2,4], hp:[1,2], fatigue:[5,8] }, req: { int:15 }, particles: ['🌿', '🌱', '💚'], sfx: 'coin' },
-  { id: 'nanny',   name: '👶 아기 돌보미', desc: '친절한 펫만', gain: [8,12], effects: { cute:[2,4], bond:[3,5], wild:[-3,-1] }, req: { cute:20, wildMax:40 }, particles: ['👶', '💕', '✨'], sfx: 'heart' },
-  { id: 'shaman',  name: '🔮 무당 조수', desc: '정령 능력', gain: [25,35], effects: { elem:[2,4], int:[2,4], stress:[3,6] }, req: { elem:20, int:20 }, particles: ['🔮', '💫', '✨', '🌟'], sfx: 'event' },
-  { id: 'star',    name: '🎭 부족 스타', desc: '애교꾼만', gain: [30,40], effects: { cute:[3,5], bond:[2,4], stress:[2,5] }, req: { cute:50 }, particles: ['🎭', '⭐', '💫', '💕'], sfx: 'heart' },
-  { id: 'escort',  name: '🏪 상인 호위', desc: '능력자만', gain: [25,32], effects: { str:[2,4], agi:[2,4], fatigue:[8,12] }, req: { str:25, agi:25 }, particles: ['🛡', '💎', '⚔️'], sfx: 'coin' },
-];
-
-const RESTS = [
-  { id: 'sleep',   name: '💤 휴식', desc: '피로/스트레스 ↓', cost: 0,  effects: { fatigue:[-20,-15], stress:[-8,-4], hp:[3,6] }, anim: 'action-eat', particles: ['💤', '✨'], sfx: 'heart' },
-  { id: 'play',    name: '🎮 놀아주기', desc: '유대+행복', cost: 5,  effects: { bond:[3,6], happy:[3,6], stress:[-5,-2] }, anim: 'action-run', particles: ['💕', '🎮', '🎉', '❤️'], sfx: 'heart' },
-  { id: 'feed',    name: '🍖 먹이주기', desc: '평범한 고기', cost: 10, effects: { hp:[3,6], bond:[1,3], happy:[1,3] }, anim: 'action-eat', particles: ['🍖', '😋', '💕'], sfx: 'heart' },
-  { id: 'luxury',  name: '🥩 고급 고기', desc: '대박 효과', cost: 25, effects: { hp:[6,12], bond:[3,6], happy:[3,6], str:[1,2] }, anim: 'action-eat', particles: ['🥩', '😍', '💕', '✨'], sfx: 'success' },
-  { id: 'walk',    name: '🏞 산책', desc: '랜덤 이벤트 가능', cost: 0, effects: { bond:[1,3], happy:[2,4] }, event: true, anim: 'action-run', particles: ['🏞', '🌿', '✨'], sfx: 'click' },
-  { id: 'stone',   name: '🪨 정령석', desc: '속성력 급상승', cost: 50, effects: { elem:[8,15], stress:[3,6] }, anim: 'action-spirit', particles: ['🪨', '💫', '⚡', '🌟'], sfx: 'event' },
-];
+const ACTION_SVG = {
+  // 훈련
+  rock: `<svg viewBox="0 0 60 60"><defs><linearGradient id="g_rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9a078"/><stop offset="1" stop-color="#8b5a3c"/></linearGradient></defs><ellipse cx="30" cy="50" rx="22" ry="4" fill="#000" opacity="0.2"/><path d="M 12 42 Q 15 20 30 16 Q 45 20 48 42 Z" fill="url(#g_rock)" stroke="#5a3a28" stroke-width="1.5"/><ellipse cx="22" cy="26" rx="4" ry="3" fill="#fff" opacity="0.5"/><text x="40" y="12" font-size="18">💪</text></svg>`,
+  run: `<svg viewBox="0 0 60 60"><text x="8" y="42" font-size="32">🏃</text><text x="38" y="20" font-size="14">💨</text><text x="42" y="42" font-size="12">⚡</text><path d="M 4 35 L 14 35 M 4 40 L 12 40 M 4 45 L 16 45" stroke="#ffb8d4" stroke-width="2" stroke-linecap="round"/></svg>`,
+  swim: `<svg viewBox="0 0 60 60"><defs><linearGradient id="g_water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8e8ff"/><stop offset="1" stop-color="#4ad9ff"/></linearGradient></defs><rect x="0" y="30" width="60" height="30" fill="url(#g_water)"/><path d="M 0 34 Q 15 30 30 34 Q 45 38 60 34 L 60 30 L 0 30 Z" fill="#fff" opacity="0.5"/><text x="14" y="30" font-size="26">🏊</text><text x="42" y="48" font-size="14">🌊</text></svg>`,
+  spirit: `<svg viewBox="0 0 60 60"><defs><radialGradient id="g_spirit"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#c9a6ff"/><stop offset="1" stop-color="#9a6fff"/></radialGradient></defs><circle cx="30" cy="30" r="22" fill="url(#g_spirit)" opacity="0.8"/><circle cx="30" cy="30" r="16" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.8"/><text x="18" y="40" font-size="26">🔮</text><text x="6" y="18" font-size="12">✨</text><text x="44" y="22" font-size="12">⭐</text><text x="44" y="50" font-size="10">💫</text></svg>`,
+  study: `<svg viewBox="0 0 60 60"><rect x="10" y="18" width="40" height="30" rx="2" fill="#fff5e4" stroke="#c4a878" stroke-width="2"/><line x1="30" y1="18" x2="30" y2="48" stroke="#c4a878" stroke-width="1"/><line x1="14" y1="24" x2="26" y2="24" stroke="#8e6a7c" stroke-width="0.6"/><line x1="14" y1="28" x2="26" y2="28" stroke="#8e6a7c" stroke-width="0.6"/><line x1="14" y1="32" x2="26" y2="32" stroke="#8e6a7c" stroke-width="0.6"/><line x1="34" y1="24" x2="46" y2="24" stroke="#8e6a7c" stroke-width="0.6"/><line x1="34" y1="28" x2="46" y2="28" stroke="#8e6a7c" stroke-width="0.6"/><line x1="34" y1="32" x2="46" y2="32" stroke="#8e6a7c" stroke-width="0.6"/><text x="4" y="16" font-size="14">💡</text><text x="42" y="58" font-size="10">✨</text></svg>`,
+  wild: `<svg viewBox="0 0 60 60"><circle cx="30" cy="34" r="18" fill="#ff8c5a"/><circle cx="24" cy="30" r="3" fill="#2a1810"/><circle cx="36" cy="30" r="3" fill="#2a1810"/><path d="M 24 40 Q 30 45 36 40" stroke="#5a1a10" stroke-width="2" fill="none" stroke-linecap="round"/><polygon points="20,20 24,28 18,28" fill="#ff8c5a"/><polygon points="40,20 42,28 36,28" fill="#ff8c5a"/><text x="2" y="22" font-size="14">🔥</text><text x="44" y="14" font-size="12">💢</text></svg>`,
+  trick: `<svg viewBox="0 0 60 60"><defs><linearGradient id="g_tent" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b9f"/><stop offset="1" stop-color="#ff9ec7"/></linearGradient></defs><path d="M 8 45 L 30 10 L 52 45 Z" fill="url(#g_tent)"/><path d="M 12 45 L 24 20 L 30 35 L 36 20 L 48 45" fill="none" stroke="#fff" stroke-width="1" opacity="0.6"/><rect x="8" y="45" width="44" height="3" fill="#8b5a3c"/><text x="24" y="58" font-size="14">🎪</text><text x="2" y="18" font-size="12">⭐</text><text x="44" y="18" font-size="12">⭐</text></svg>`,
+  dance: `<svg viewBox="0 0 60 60"><text x="8" y="48" font-size="34">💃</text><text x="38" y="16" font-size="16">🎵</text><text x="40" y="44" font-size="14">✨</text><circle cx="20" cy="52" r="5" fill="#9a6fff" opacity="0.3"/></svg>`,
+  // 일
+  miner: `<svg viewBox="0 0 60 60"><path d="M 8 50 L 52 50 L 48 35 Q 46 30 40 30 L 20 30 Q 14 30 12 35 Z" fill="#5a4030" stroke="#2a1810" stroke-width="1.5"/><path d="M 20 30 L 20 20 Q 22 16 30 16 Q 38 16 40 20 L 40 30" fill="#706050"/><rect x="24" y="16" width="12" height="4" fill="#ffd866"/><text x="22" y="36" font-size="14">⛏️</text><text x="8" y="24" font-size="14">💎</text><text x="44" y="24" font-size="12">💎</text></svg>`,
+  fisher: `<svg viewBox="0 0 60 60"><defs><linearGradient id="g_fw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8e8ff"/><stop offset="1" stop-color="#4ad9ff"/></linearGradient></defs><rect x="0" y="30" width="60" height="30" fill="url(#g_fw)"/><path d="M 0 34 Q 15 30 30 34 Q 45 38 60 34 L 60 30 L 0 30 Z" fill="#fff" opacity="0.5"/><path d="M 42 8 L 42 38" stroke="#8b5a3c" stroke-width="2"/><path d="M 42 12 L 30 24" stroke="#333" stroke-width="0.6" stroke-dasharray="2,1"/><circle cx="28" cy="26" r="2" fill="#c4a878"/><text x="10" y="44" font-size="18">🐟</text><text x="40" y="46" font-size="14">🐠</text></svg>`,
+  hunter: `<svg viewBox="0 0 60 60"><circle cx="16" cy="40" r="14" fill="#ff8c5a"/><circle cx="14" cy="38" r="1.5" fill="#2a1810"/><polygon points="10,30 12,36 8,36" fill="#ff8c5a"/><path d="M 30 20 L 50 20 M 30 20 Q 34 16 38 18 M 30 20 Q 34 24 38 22" stroke="#8b5a3c" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="48" cy="20" r="3" fill="#c04040"/><text x="30" y="50" font-size="14">🏹</text></svg>`,
+  guard: `<svg viewBox="0 0 60 60"><path d="M 30 8 L 48 18 L 48 38 Q 48 48 30 54 Q 12 48 12 38 L 12 18 Z" fill="#ff9ec7" stroke="#ff6b9f" stroke-width="2"/><path d="M 20 26 L 40 26 M 30 18 L 30 46" stroke="#fff" stroke-width="3" stroke-linecap="round"/><text x="30" y="42" text-anchor="middle" font-size="14">🛡️</text></svg>`,
+  perform: `<svg viewBox="0 0 60 60"><path d="M 8 45 L 30 10 L 52 45 Z" fill="#ff6b9f"/><path d="M 20 45 L 30 25 L 40 45 Z" fill="#c9a6ff"/><text x="22" y="42" font-size="14">🎭</text><text x="4" y="14" font-size="12">⭐</text><text x="44" y="14" font-size="12">⭐</text><text x="20" y="58" font-size="10">🎉</text><text x="34" y="58" font-size="10">💕</text></svg>`,
+  courier: `<svg viewBox="0 0 60 60"><rect x="12" y="18" width="36" height="24" rx="2" fill="#fff" stroke="#ff6b9f" stroke-width="2"/><path d="M 12 18 L 30 32 L 48 18" fill="none" stroke="#ff6b9f" stroke-width="2"/><text x="26" y="34" text-anchor="middle" font-size="11">💌</text><text x="2" y="40" font-size="14">💨</text><text x="44" y="12" font-size="12">✨</text></svg>`,
+  shop: `<svg viewBox="0 0 60 60"><rect x="8" y="20" width="44" height="30" fill="#fff5e4" stroke="#c4a878" stroke-width="2"/><rect x="4" y="14" width="52" height="8" fill="#ff6b9f"/><path d="M 12 26 L 20 26 L 20 42 L 12 42 Z" fill="#ffe0ec"/><path d="M 40 26 L 48 26 L 48 42 L 40 42 Z" fill="#ffe0ec"/><text x="26" y="40" text-anchor="middle" font-size="11">🛒</text><text x="30" y="18" text-anchor="middle" font-size="6" fill="#fff">SHOP</text></svg>`,
+  herb: `<svg viewBox="0 0 60 60"><ellipse cx="30" cy="50" rx="22" ry="4" fill="#8b5a3c" opacity="0.3"/><path d="M 30 50 L 30 30 Q 28 20 20 18 Q 22 26 30 30 Q 32 20 40 18 Q 38 26 30 30" fill="#5acba8"/><circle cx="22" cy="20" r="3" fill="#ff9ec7"/><circle cx="38" cy="20" r="3" fill="#ff9ec7"/><circle cx="30" cy="25" r="3" fill="#ffc640"/><text x="40" y="50" font-size="12">🌿</text></svg>`,
+  nanny: `<svg viewBox="0 0 60 60"><circle cx="30" cy="34" r="16" fill="#ffd4e5"/><circle cx="24" cy="32" r="2" fill="#2a1810"/><circle cx="36" cy="32" r="2" fill="#2a1810"/><path d="M 26 40 Q 30 43 34 40" stroke="#c04870" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="24" r="6" fill="#ff9ec7"/><circle cx="38" cy="24" r="6" fill="#ff9ec7"/><text x="4" y="58" font-size="12">👶</text><text x="44" y="18" font-size="12">💕</text></svg>`,
+  shaman: `<svg viewBox="0 0 60 60"><defs><radialGradient id="g_sham"><stop offset="0" stop-color="#fff"/><stop offset="0.6" stop-color="#c9a6ff"/><stop offset="1" stop-color="#6a4aaa"/></radialGradient></defs><circle cx="30" cy="30" r="24" fill="url(#g_sham)" opacity="0.7"/><path d="M 30 10 L 30 50 M 10 30 L 50 30 M 15 15 L 45 45 M 45 15 L 15 45" stroke="#9a6fff" stroke-width="0.6" opacity="0.5"/><circle cx="30" cy="30" r="10" fill="#9a6fff"/><text x="22" y="36" font-size="14">🔮</text><text x="2" y="18" font-size="10">✨</text><text x="48" y="48" font-size="10">💫</text></svg>`,
+  star: `<svg viewBox="0 0 60 60"><polygon points="30,6 36,24 56,24 40,36 46,54 30,42 14,54 20,36 4,24 24,24" fill="#ffc640" stroke="#ff9a30" stroke-width="2"/><text x="22" y="34" font-size="12">🎭</text><text x="4" y="14" font-size="8">⭐</text><text x="52" y="16" font-size="8">⭐</text><text x="28" y="58" font-size="10">💕</text></svg>`,
+  escort: `<svg viewBox="0 0 60 60"><path d="M 30 8 L 48 16 L 48 38 Q 48 48 30 54 Q 12 48 12 38 L 12 16 Z" fill="#c9a6ff" stroke="#6a4aaa" stroke-width="2"/><path d="M 24 22 L 30 30 L 24 38 M 36 22 L 30 30 L 36 38" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/><text x="44" y="16" font-size="12">💎</text></svg>`,
+  // 휴식
+  sleep: `<svg viewBox="0 0 60 60"><ellipse cx="30" cy="36" rx="22" ry="14" fill="#c9a6ff"/><rect x="12" y="30" width="36" height="14" fill="#fff"/><text x="20" y="28" font-size="14">💤</text><text x="40" y="22" font-size="10">Z</text><text x="48" y="16" font-size="8">z</text></svg>`,
+  play: `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="#ff9ec7"/><text x="14" y="40" font-size="24">🎮</text><text x="40" y="20" font-size="14">💕</text><text x="4" y="16" font-size="10">✨</text></svg>`,
+  feed: `<svg viewBox="0 0 60 60"><defs><linearGradient id="g_meat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a6a"/><stop offset="1" stop-color="#c04030"/></linearGradient></defs><ellipse cx="30" cy="34" rx="20" ry="14" fill="url(#g_meat)" stroke="#8a2020" stroke-width="1.5"/><rect x="24" y="18" width="3" height="8" fill="#fff" rx="1"/><rect x="33" y="18" width="3" height="8" fill="#fff" rx="1"/><circle cx="25" cy="32" r="2" fill="#a03020"/><text x="42" y="22" font-size="12">😋</text></svg>`,
+  luxury: `<svg viewBox="0 0 60 60"><defs><linearGradient id="g_lux" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a6a"/><stop offset="1" stop-color="#8b2020"/></linearGradient></defs><ellipse cx="30" cy="36" rx="22" ry="16" fill="url(#g_lux)" stroke="#5a1010" stroke-width="2"/><rect x="23" y="18" width="4" height="10" fill="#fff" rx="2"/><rect x="33" y="18" width="4" height="10" fill="#fff" rx="2"/><circle cx="24" cy="34" r="2.5" fill="#a03020"/><circle cx="36" cy="32" r="2" fill="#a03020"/><text x="4" y="16" font-size="12">👑</text><text x="44" y="16" font-size="12">✨</text></svg>`,
+  walk: `<svg viewBox="0 0 60 60"><path d="M 0 50 Q 15 40 30 45 Q 45 50 60 42 L 60 60 L 0 60 Z" fill="#a0d4a0"/><path d="M 8 38 L 8 30 L 6 22 L 8 20 L 10 22 L 8 30" fill="#8b5a3c"/><circle cx="8" cy="16" r="6" fill="#5acba8"/><circle cx="45" cy="22" r="5" fill="#ff9ec7"/><text x="22" y="44" font-size="18">🏞️</text><text x="2" y="16" font-size="10">☀️</text></svg>`,
+  stone: `<svg viewBox="0 0 60 60"><defs><radialGradient id="g_stn"><stop offset="0" stop-color="#fff"/><stop offset="0.5" stop-color="#ff6b9f"/><stop offset="1" stop-color="#9a6fff"/></radialGradient></defs><polygon points="30,10 44,24 44,42 30,54 16,42 16,24" fill="url(#g_stn)" stroke="#6a4aaa" stroke-width="2"/><polygon points="30,10 38,20 30,30 22,20" fill="#fff" opacity="0.5"/><text x="4" y="20" font-size="12">✨</text><text x="46" y="50" font-size="12">💫</text></svg>`,
+};
 
 /* ═══════════════════════════════════════════════════════════
-   이벤트
+   액션 데이터
 ═══════════════════════════════════════════════════════════ */
+const TRAININGS = [
+  { id: 'rock', name: '🗿 바위 들기', desc: '근력 강화', cost: 8, effects: { str:[3,6], hp:[-2,-1], fatigue:[5,10] }, sfx: 'level_up' },
+  { id: 'run', name: '🏃 달리기', desc: '민첩 훈련', cost: 6, effects: { agi:[3,6], hp:[-1,0], fatigue:[3,7] }, sfx: 'level_up' },
+  { id: 'swim', name: '🏊 수영', desc: '체력+민첩', cost: 10, effects: { hp:[2,5], agi:[1,3], fatigue:[5,10] }, sfx: 'level_up' },
+  { id: 'spirit', name: '🔥 정령 수행', desc: '속성력 ↑', cost: 15, effects: { elem:[3,7], stress:[2,5] }, sfx: 'event' },
+  { id: 'study', name: '📖 인간 언어', desc: '지능+애교', cost: 12, effects: { int:[3,6], cute:[1,3], fatigue:[2,5] }, sfx: 'level_up' },
+  { id: 'wild', name: '🐾 야성 훈련', desc: '야생성+근력', cost: 10, effects: { wild:[3,6], str:[1,3], cute:[-2,-1] }, sfx: 'level_up' },
+  { id: 'trick', name: '🎪 재주 연습', desc: '애교 ↑', cost: 8, effects: { cute:[3,6], wild:[-2,-1], fatigue:[2,4] }, sfx: 'heart' },
+  { id: 'dance', name: '💃 춤 연습', desc: '민첩+애교', cost: 10, effects: { agi:[2,4], cute:[2,4], fatigue:[3,6] }, sfx: 'heart' },
+];
+const JOBS = [
+  { id: 'miner', name: '⛏ 광산 짐꾼', desc: '스톤 쏠쏠', gain: [15,25], effects: { str:[2,4], hp:[-3,-1], fatigue:[10,15] }, req: { str:20 }, sfx: 'coin' },
+  { id: 'fisher', name: '🐟 어장 도우미', desc: '민첩 키움', gain: [12,18], effects: { agi:[2,4], happy:[2,4], fatigue:[5,10] }, req: { agi:15 }, sfx: 'coin' },
+  { id: 'hunter', name: '🍖 사냥 동반', desc: '위험하지만', gain: [20,30], effects: { str:[2,4], agi:[2,4], stress:[5,10], hp:[-3,-1] }, req: { str:20, agi:20 }, sfx: 'coin' },
+  { id: 'guard', name: '🏕 부족 경비', desc: '체력 훈련', gain: [18,25], effects: { hp:[2,4], wild:[1,3], fatigue:[8,12] }, req: { hp:20 }, sfx: 'coin' },
+  { id: 'perform', name: '🎪 광장 공연', desc: '인기몰이', gain: [15,22], effects: { cute:[2,4], bond:[2,4], fatigue:[3,7] }, req: { cute:30 }, sfx: 'heart' },
+  { id: 'courier', name: '💌 편지 배달', desc: '빠른 발 필요', gain: [10,14], effects: { agi:[2,4], fatigue:[3,6] }, req: { agi:10 }, sfx: 'coin' },
+  { id: 'shop', name: '🛒 가게 도우미', desc: '친근해야', gain: [12,16], effects: { cute:[2,3], bond:[1,3], fatigue:[4,7] }, req: { cute:15 }, sfx: 'coin' },
+  { id: 'herb', name: '🌿 약초 채집', desc: '지혜로운 일', gain: [14,18], effects: { int:[2,4], hp:[1,2], fatigue:[5,8] }, req: { int:15 }, sfx: 'coin' },
+  { id: 'nanny', name: '👶 아기 돌보미', desc: '친절한 펫만', gain: [8,12], effects: { cute:[2,4], bond:[3,5], wild:[-3,-1] }, req: { cute:20, wildMax:40 }, sfx: 'heart' },
+  { id: 'shaman', name: '🔮 무당 조수', desc: '정령 능력', gain: [25,35], effects: { elem:[2,4], int:[2,4], stress:[3,6] }, req: { elem:20, int:20 }, sfx: 'event' },
+  { id: 'star', name: '🎭 부족 스타', desc: '애교꾼만', gain: [30,40], effects: { cute:[3,5], bond:[2,4], stress:[2,5] }, req: { cute:50 }, sfx: 'heart' },
+  { id: 'escort', name: '🏪 상인 호위', desc: '능력자만', gain: [25,32], effects: { str:[2,4], agi:[2,4], fatigue:[8,12] }, req: { str:25, agi:25 }, sfx: 'coin' },
+];
+const RESTS = [
+  { id: 'sleep', name: '💤 휴식', desc: '피로/스트레스 ↓', cost: 0, effects: { fatigue:[-20,-15], stress:[-8,-4], hp:[3,6] }, sfx: 'heart' },
+  { id: 'play', name: '🎮 놀아주기', desc: '유대+행복', cost: 5, effects: { bond:[3,6], happy:[3,6], stress:[-5,-2] }, sfx: 'heart' },
+  { id: 'feed', name: '🍖 먹이주기', desc: '평범한 고기', cost: 10, effects: { hp:[3,6], bond:[1,3], happy:[1,3] }, sfx: 'heart' },
+  { id: 'luxury', name: '🥩 고급 고기', desc: '대박 효과', cost: 25, effects: { hp:[6,12], bond:[3,6], happy:[3,6], str:[1,2] }, sfx: 'success' },
+  { id: 'walk', name: '🏞 산책', desc: '랜덤 이벤트!', cost: 0, effects: { bond:[1,3], happy:[2,4] }, event: true, sfx: 'click' },
+  { id: 'stone', name: '🪨 정령석', desc: '속성력 급상승', cost: 50, effects: { elem:[8,15], stress:[3,6] }, sfx: 'event' },
+];
+
+/* 이벤트 */
 const EVENTS = [
-  { id: 'bear', icon: '🐻', title: '야생 곰 출현!',
-    desc: '산책 중 거대한 곰을 만났다! 너의 펫이 긴장한 표정으로 쳐다본다...',
-    choices: [
-      { text: '⚔️ 싸우게 한다', effect: { str:4, wild:3, stress:5, hp:-5 }, msg: '치열한 싸움 끝에 곰을 물리쳤다!' },
-      { text: '🏃 도망간다', effect: { agi:2, stress:3, fatigue:8 }, msg: '간신히 도망쳤다.' },
-      { text: '🍖 고기를 던진다 (💎30)', effect: { stones:-30, wild:-2, cute:2 }, msg: '곰이 고기를 물고 떠났다.', req: { stones:30 } },
-    ],
-  },
-  { id: 'elder', icon: '👴', title: '부족 장로의 방문',
-    desc: '부족 장로가 너의 펫을 보더니 감탄한다. "좋은 펫이로다..."',
-    choices: [
-      { text: '🙇 정중히 인사', effect: { int:3, cute:3, bond:2 }, msg: '장로가 기뻐하며 가르침을 주었다.' },
-      { text: '😐 그냥 지나친다', effect: { wild:2, cute:-2 }, msg: '장로가 실망한 표정으로 돌아섰다.' },
-    ],
-  },
-  { id: 'volcano', icon: '🌋', title: '화산 폭발!',
-    desc: '멀리서 화산이 폭발했다! 땅이 흔들리고 연기가 하늘을 덮는다...',
-    choices: [
-      { text: '🏃 피난', effect: { agi:2, stress:5, fatigue:5 }, msg: '간신히 피했다.' },
-      { text: '🔮 정령에게 기도', effect: { elem:5, stress:-3 }, msg: '정령이 응답했다, 마음이 편안해졌다.', req: { elem:15 } },
-    ],
-  },
-  { id: 'treasure', icon: '🎁', title: '보물 발견!',
-    desc: '산책 중 낡은 상자를 발견했다. 안에 뭔가 들어있는 것 같다...',
-    choices: [
-      { text: '📦 연다', effect: { stones:50, happy:3 }, msg: '💎 50이 들어있었다!' },
-      { text: '🙅 위험해 보여 놔둔다', effect: { int:1 }, msg: '신중한 판단이었다.' },
-    ],
-  },
-  { id: 'rival', icon: '🐾', title: '다른 펫과 조우',
-    desc: '건방진 야생 펫이 길을 막고 으르렁거린다!',
-    choices: [
-      { text: '⚔️ 대결', effect: { str:3, wild:2, stress:3 }, msg: '우리 펫이 승리했다!' },
-      { text: '🤝 친해진다', effect: { cute:2, bond:2, happy:3 }, msg: '친구가 되었다!' },
-      { text: '🏃 피한다', effect: { agi:1, cute:-1 }, msg: '무난하게 피했다.' },
-    ],
-  },
-  { id: 'sick', icon: '🤒', title: '병에 걸렸어요',
-    desc: '펫이 기침을 한다. 눈에 생기가 없다...',
-    choices: [
-      { text: '🌿 약초 달이기 (💎20)', effect: { stones:-20, hp:8, stress:-3 }, msg: '약초 덕에 금방 나았다.', req: { stones:20 } },
-      { text: '💤 그냥 쉬게 한다', effect: { hp:2, fatigue:-10, stress:3 }, msg: '시간이 지나자 좀 나아졌다.' },
-      { text: '🔮 무당에게 (💎40)', effect: { stones:-40, hp:12, elem:3, bond:2 }, msg: '신비로운 의식 후 완쾌!', req: { stones:40 } },
-    ],
-  },
-  { id: 'meteor', icon: '🌟', title: '하늘의 빛',
-    desc: '밤하늘에서 이상한 빛이 떨어졌다. 펫이 그 방향을 바라본다...',
-    choices: [
-      { text: '🔍 조사한다', effect: { elem:8, int:2, stress:2 }, msg: '신비한 돌조각! 정령력이 크게 늘었다.' },
-      { text: '😨 무서워 피한다', effect: { stress:3, cute:1 }, msg: '펫이 네 품에 파고들었다.' },
-    ],
-  },
-  { id: 'festival', icon: '🎪', title: '유랑 서커스',
-    desc: '유랑 서커스단이 마을에 왔다! 펫이 호기심에 다가간다.',
-    choices: [
-      { text: '🎭 공연 참여 (💎20)', effect: { stones:20, cute:4, bond:2 }, msg: '공연으로 💎40을 받았다!', req: { stones:20 } },
-      { text: '👀 관람만', effect: { happy:3, cute:1 }, msg: '즐거운 시간을 보냈다.' },
-    ],
-  },
-  { id: 'dream', icon: '👻', title: '이상한 꿈',
-    desc: '펫이 꿈꾸며 으르렁거린다. 아침에 기운이 빠진 모습이다...',
-    choices: [
-      { text: '🔮 꿈을 해석', effect: { int:3, elem:3 }, msg: '영적 능력이 각성되는 것 같다.' },
-      { text: '🤗 토닥여준다', effect: { bond:3, stress:-3 }, msg: '마음의 안정을 찾았다.' },
-      { text: '😐 무시', effect: { stress:2, wild:1 }, msg: '별일 아니겠지.' },
-    ],
-  },
-  { id: 'merchant', icon: '🏪', title: '수상한 상인',
-    desc: '후드를 쓴 상인이 "희귀한 물건"을 판다고 한다...',
-    choices: [
-      { text: '💎 비싼 물약 (💎60)', effect: { stones:-60, hp:8, str:4, agi:4 }, msg: '진짜 효험이 있었다!', req: { stones:60 } },
-      { text: '💎 싸구려 약 (💎15)', effect: { stones:-15 }, msg: '아무 효과도 없는 물이었다...', req: { stones:15 } },
-      { text: '🚶 지나친다', effect: { int:1 }, msg: '수상함을 눈치챘다.' },
-    ],
-  },
-  { id: 'child', icon: '👶', title: '꼬마가 놀아달래요',
-    desc: '부족 꼬마가 너의 펫과 놀고 싶다며 다가온다.',
-    choices: [
-      { text: '😊 놀게 해준다', effect: { cute:3, bond:2, happy:2, wild:-2 }, msg: '꼬마와 신나게 놀았다!' },
-      { text: '😠 거절', effect: { wild:2, cute:-2 }, msg: '꼬마가 울었다...' },
-    ],
-  },
-  { id: 'spar', icon: '⚔️', title: '대결 도전',
-    desc: '옆집 전사가 "네 펫 VS 내 펫!"을 외친다.',
-    choices: [
-      { text: '⚔️ 수락 (내기 💎30)', effect: { stones:50, str:3, wild:3, stress:3 }, msg: '간신히 승리! 💎50 획득!', req: { str:25 } },
-      { text: '🙅 거절', effect: { stress:-1 }, msg: '조용히 지나갔다.' },
-    ],
-  },
-  { id: 'bird', icon: '🦅', title: '상처입은 새',
-    desc: '나뭇가지에 걸린 작은 새를 발견했다. 펫이 걱정스럽게 쳐다본다.',
-    choices: [
-      { text: '🌿 구해준다', effect: { cute:4, bond:3, happy:3 }, msg: '새가 감사인사하고 날아갔다.' },
-      { text: '😐 그냥 지나친다', effect: { wild:1 }, msg: '자연의 섭리지...' },
-    ],
-  },
-  { id: 'rain', icon: '🌧', title: '갑작스런 폭우',
-    desc: '산책 중 갑자기 비가 쏟아졌다!',
-    choices: [
-      { text: '🏃 전력질주로 귀가', effect: { agi:3, hp:-2 }, msg: '간신히 도착했지만 추웠다.' },
-      { text: '🌳 큰 나무 밑에서 대기', effect: { int:2, bond:2, stress:-2 }, msg: '펫과 조용히 기다렸다.' },
-    ],
-  },
+  { id: 'bear', icon: '🐻', title: '야생 곰 출현!', desc: '산책 중 거대한 곰을 만났다!', choices: [
+    { text: '⚔️ 싸우게 한다', effect: { str:4, wild:3, stress:5, hp:-5 }, msg: '곰을 물리쳤다!' },
+    { text: '🏃 도망간다', effect: { agi:2, stress:3, fatigue:8 }, msg: '간신히 도망쳤다.' },
+    { text: '🍖 고기를 던진다 (💎30)', effect: { stones:-30, wild:-2, cute:2 }, msg: '곰이 고기를 물고 떠났다.', req: { stones:30 } },
+  ]},
+  { id: 'elder', icon: '👴', title: '부족 장로의 방문', desc: '장로가 너의 펫을 보며 감탄한다.', choices: [
+    { text: '🙇 정중히 인사', effect: { int:3, cute:3, bond:2 }, msg: '장로가 가르침을 주었다.' },
+    { text: '😐 그냥 지나친다', effect: { wild:2, cute:-2 }, msg: '장로가 실망했다.' },
+  ]},
+  { id: 'treasure', icon: '🎁', title: '보물 발견!', desc: '낡은 상자를 발견했다.', choices: [
+    { text: '📦 연다', effect: { stones:50, happy:3 }, msg: '💎 50 획득!' },
+    { text: '🙅 놔둔다', effect: { int:1 }, msg: '신중한 판단이었다.' },
+  ]},
+  { id: 'rival_challenge', icon: '⚔️', title: '라이벌의 도전!', desc: '라이벌이 "내 펫이 너보다 훨씬 강해!" 하고 도전한다.', choices: [
+    { text: '⚔️ 응전 (💎20)', effect: { stones:-20, str:3, wild:2, stress:3 }, msg: '치열한 대결!', req: { stones:20 }, rivalBattle: true },
+    { text: '🙅 무시', effect: { stress:2 }, msg: '라이벌이 비웃었다.' },
+  ]},
+  { id: 'sick', icon: '🤒', title: '병에 걸렸어요', desc: '펫이 기침을 한다.', choices: [
+    { text: '🌿 약초 (💎20)', effect: { stones:-20, hp:8, stress:-3 }, msg: '금방 나았다.', req: { stones:20 } },
+    { text: '💤 쉬게 한다', effect: { hp:2, fatigue:-10, stress:3 }, msg: '좀 나아졌다.' },
+    { text: '🔮 무당 (💎40)', effect: { stones:-40, hp:12, elem:3, bond:2 }, msg: '완쾌!', req: { stones:40 } },
+  ]},
+  { id: 'meteor', icon: '🌟', title: '하늘의 빛', desc: '이상한 빛이 떨어졌다.', choices: [
+    { text: '🔍 조사', effect: { elem:8, int:2, stress:2 }, msg: '정령력이 크게 늘었다!' },
+    { text: '😨 피한다', effect: { stress:3, cute:1 }, msg: '품에 파고들었다.' },
+  ]},
+  { id: 'festival', icon: '🎪', title: '유랑 서커스', desc: '서커스단이 왔다!', choices: [
+    { text: '🎭 참여 (💎20)', effect: { stones:20, cute:4, bond:2 }, msg: '💎40 획득!', req: { stones:20 } },
+    { text: '👀 관람만', effect: { happy:3, cute:1 }, msg: '즐거웠다.' },
+  ]},
+  { id: 'child', icon: '👶', title: '꼬마가 놀아달래요', desc: '꼬마가 펫과 놀고싶다네.', choices: [
+    { text: '😊 놀게', effect: { cute:3, bond:2, happy:2, wild:-2 }, msg: '신나게 놀았다!' },
+    { text: '😠 거절', effect: { wild:2, cute:-2 }, msg: '꼬마가 울었다.' },
+  ]},
+  { id: 'rain', icon: '🌧', title: '갑작스런 폭우', desc: '비가 쏟아진다!', choices: [
+    { text: '🏃 전력질주', effect: { agi:3, hp:-2 }, msg: '간신히 도착.' },
+    { text: '🌳 나무밑 대기', effect: { int:2, bond:2, stress:-2 }, msg: '조용히 기다렸다.' },
+  ]},
 ];
 
 const TOURNAMENTS = [
-  { week: 13, name: '🌸 봄 사냥 축제', stat: 'str', msg: '힘자랑 축제' },
-  { week: 26, name: '🌊 여름 수영 대회', stat: 'agi', msg: '물개처럼 빠르게' },
-  { week: 39, name: '🍂 가을 풍요제', stat: 'cute', msg: '부족의 인기스타' },
-  { week: 50, name: '❄️ 겨울 극한 챔피언', stat: 'overall', msg: '올라운더 대결' },
+  { week: 13, name: '🌸 봄 사냥 축제', stat: 'str' },
+  { week: 26, name: '🌊 여름 수영 대회', stat: 'agi' },
+  { week: 39, name: '🍂 가을 풍요제', stat: 'cute' },
+  { week: 50, name: '❄️ 겨울 극한 챔피언', stat: 'overall' },
 ];
+
+/* ═══════════════════════════════════════════════════════════
+   라이벌 시스템
+═══════════════════════════════════════════════════════════ */
+const RIVAL_PRESETS = [
+  { name: '엘리나', personality: 'arrogant' },
+  { name: '보르그', personality: 'arrogant' },
+  { name: '세리나', personality: 'friendly' },
+  { name: '바로크', personality: 'cold' },
+  { name: '카리나', personality: 'friendly' },
+  { name: '디무스', personality: 'cold' },
+];
+
+const RIVAL_MESSAGES = {
+  arrogant: {
+    start: ['내 펫이 훨씬 강해질 거야. 넌 따라올 수나 있겠어?', '겨우 그런 펫으로 나랑 경쟁하려고?', '흥, 두고 보자.'],
+    lead: ['이 정도면 너 발끝도 못 따라오지?', '뭐 어때, 어차피 난 이길 거야.', '그 정도로 뭘 하겠다고?'],
+    behind: ['... 일시적으로 밀렸을 뿐이야!', '다음엔 반드시 이긴다!', '운이 좋았네.'],
+    tournament: ['대회에서 실력 좀 보자!', '이번엔 확실히 이긴다!'],
+  },
+  friendly: {
+    start: ['오! 너도 펫 키우는구나! 같이 힘내자!', '와 귀엽다~ 우리 서로 화이팅!', '잘 부탁해~'],
+    lead: ['우와 많이 컸네! 나도 더 열심히 해야지.', '너의 펫 대단해!', '그 정도 성장이라니... 대단한걸?'],
+    behind: ['나도 따라잡을 거야! 같이 힘내자!', '헤헤 아직 멀었네~', '더 열심히 키워볼게!'],
+    tournament: ['대회에서 좋은 승부 하자!', '최선을 다할게!'],
+  },
+  cold: {
+    start: ['...', '...흠.', '...관심 없다.'],
+    lead: ['...따라올 생각은 말도록.', '예상했던 수준이군.', '...'],
+    behind: ['...이번엔 졌지만.', '인정은 하지.', '...'],
+    tournament: ['대회에서 결판내자.', '...'],
+  },
+};
+
+function chooseRival() {
+  const preset = RIVAL_PRESETS[Math.floor(Math.random() * RIVAL_PRESETS.length)];
+  // 랜덤 일반 펫 1마리
+  const pool = PET_DATA.filter(p => p.grade === '일반');
+  const petData = pool[Math.floor(Math.random() * pool.length)];
+  return {
+    name: preset.name,
+    personality: preset.personality,
+    petName: petData.name,
+    petSpecies: petData.name,
+    image: petData.image,
+    attr: petData.attr,
+    data: petData,
+    // 라이벌 능력치 (자동 성장)
+    str: Math.round(petData.ic.atk * 1.5),
+    agi: Math.round(petData.ic.agi * 1.8),
+    hp: Math.round(petData.ic.hp * 0.8),
+    cute: 20,
+    int: 10,
+    elem: Object.values(petData.attr).reduce((s,v)=>s+v, 0),
+    totalGrowth: petData.sg.atk + petData.sg.agi + petData.sg.hp + petData.sg.def,
+    currentMsg: null,
+  };
+}
+
+function growRival(rival, weeks = 1) {
+  // 매주 자동으로 조금씩 자람 (1.2 + 성장률 * 보정)
+  const growthBase = rival.totalGrowth * 0.4;
+  for (let i = 0; i < weeks; i++) {
+    rival.str += randInt(1, 2);
+    rival.agi += randInt(1, 2);
+    rival.hp += randInt(1, 2);
+    rival.cute += randInt(0, 2);
+    rival.int += randInt(0, 1);
+    rival.elem += randInt(0, 1);
+  }
+  // 클램프
+  ['str','agi','hp','cute','int','elem'].forEach(k => {
+    rival[k] = Math.min(100, rival[k]);
+  });
+}
+
+function getRivalPower(rival) {
+  return rival.str + rival.agi + rival.hp + rival.cute + rival.int + rival.elem;
+}
+function getMyPower(p) {
+  return p.str + p.agi + p.hp + p.cute + p.int + p.elem;
+}
+
+function pickRivalMsg(rival, context) {
+  const msgs = RIVAL_MESSAGES[rival.personality][context] || [];
+  if (msgs.length === 0) return '...';
+  return msgs[Math.floor(Math.random() * msgs.length)];
+}
+
+function updateRivalMsg(p, rival) {
+  const myPow = getMyPower(p);
+  const rvPow = getRivalPower(rival);
+  const diff = myPow - rvPow;
+  let ctx;
+  if (diff > 30) ctx = 'behind'; // 라이벌이 뒤쳐짐
+  else if (diff < -30) ctx = 'lead';
+  else ctx = 'start';
+  rival.currentMsg = pickRivalMsg(rival, ctx);
+}
 
 /* ═══════════════════════════════════════════════════════════
    엔딩
 ═══════════════════════════════════════════════════════════ */
 function decideEnding(p) {
   if (p.hp <= 0) return { id: 'death', emoji: '☠️', name: '요절', desc: `${p.name}은(는) 너무 지쳐 쓰러졌다.\n모든 것이 끝났다...`, color: '#888' };
-  if (p.happy <= 10 && p.bond <= 20) return { id: 'runaway', emoji: '😱', name: '가출 엔딩', desc: `${p.name}은(는) 어느 날 조용히 떠났다.\n돌아오지 않았다. 부디 잘 지내길...`, color: '#886' };
-  if (p.stress >= 90) return { id: 'broken', emoji: '💔', name: '지친 펫', desc: `${p.name}은(는) 극도의 스트레스로 마음을 닫았다.`, color: '#c66' };
-
-  if (p.bond >= 90 && p.happy >= 70) return { id: 'soulmate', emoji: '💕', name: '영혼의 동반자', desc: `${p.name}은(는) 너와 평생을 함께하기로 했다.\n최고의 유대! 부족에서 가장 행복한 펫으로 기록될 것이다.`, color: '#ff6b9f' };
+  if (p.happy <= 10 && p.bond <= 20) return { id: 'runaway', emoji: '😱', name: '가출 엔딩', desc: `${p.name}은(는) 조용히 떠났다.\n돌아오지 않았다...`, color: '#886' };
+  if (p.stress >= 90) return { id: 'broken', emoji: '💔', name: '지친 펫', desc: `${p.name}은(는) 마음을 닫았다.`, color: '#c66' };
+  if (p.bond >= 90 && p.happy >= 70) return { id: 'soulmate', emoji: '💕', name: '영혼의 동반자', desc: `${p.name}은(는) 너와 평생을 함께하기로 했다.\n부족에서 가장 행복한 펫!`, color: '#ff6b9f' };
   if (p.wild >= 80 && p.bond < 30) return { id: 'wildbeast', emoji: '👹', name: '포악한 야수', desc: `${p.name}은(는) 야생에 완전히 지배됐다.`, color: '#d84040' };
-  if (p.elem >= 80) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.\n부족의 무당마저 고개를 숙이는 신비로운 존재.`, color: '#9a6fff' };
-  if (p.str >= 60 && p.agi >= 60 && p.hp >= 60 && p.cute >= 60) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 모든 면에서 완벽한 펫이 되었다.\n부족 역사에 길이 남을 전설이다!`, color: '#ffc640' };
+  if (p.elem >= 80) return { id: 'spirit', emoji: '🔮', name: '정령수', desc: `${p.name}은(는) 정령과 하나가 되었다.`, color: '#9a6fff' };
+  if (p.str >= 60 && p.agi >= 60 && p.hp >= 60 && p.cute >= 60) return { id: 'champion', emoji: '🏆', name: '전설의 챔피언', desc: `${p.name}은(는) 완벽한 펫이 되었다.\n전설이다!`, color: '#ffc640' };
   if (p.cute >= 80) return { id: 'star', emoji: '🎪', name: '부족의 스타', desc: `${p.name}은(는) 부족의 연예인이 되었다.`, color: '#ff9ac0' };
   if (p.int >= 70) return { id: 'sage', emoji: '📚', name: '현자의 펫', desc: `${p.name}은(는) 지혜로운 조언자가 되었다.`, color: '#7fd47f' };
-  if (p.str >= 70 && p.hp >= 70) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 전설적인 수호자가 되었다.`, color: '#d4943a' };
-  if (p.str >= 60 && p.agi >= 60) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 최고의 사냥 파트너가 되었다.`, color: '#c4743a' };
-  if (p.bond >= 60) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족이 되었다.`, color: '#a0d4a0' };
-  return { id: 'normal', emoji: '🏠', name: '평범한 부족펫', desc: `${p.name}은(는) 평범한 부족의 일원으로 살아간다.`, color: '#b0a080' };
+  if (p.str >= 70 && p.hp >= 70) return { id: 'warrior', emoji: '⚔️', name: '부족 수호펫', desc: `${p.name}은(는) 부족의 수호자.`, color: '#d4943a' };
+  if (p.str >= 60 && p.agi >= 60) return { id: 'hunter', emoji: '🏹', name: '맹수 사냥꾼', desc: `${p.name}은(는) 사냥 파트너.`, color: '#c4743a' };
+  if (p.bond >= 60) return { id: 'family', emoji: '🐾', name: '가족', desc: `${p.name}은(는) 너의 진정한 가족.`, color: '#a0d4a0' };
+  return { id: 'normal', emoji: '🏠', name: '평범한 부족펫', desc: `${p.name}은(는) 평범한 부족 일원.`, color: '#b0a080' };
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1609,21 +1487,24 @@ const state = {
   scene: 'title',
   week: 1,
   pet: null,
+  rival: null,
   log: [],
   starterPool: [],
   starterPick: null,
+  schedule: Array(7).fill(null), // 월~일 7일치, 각 칸은 { type: 'train'|'job'|'rest', id: 'rock' }
+  currentSlot: 0, // 편집 중인 슬롯
   stats: { playCount: 0, bestRun: null },
 };
-let currentActionTab = 'train';
+
+const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
 const app = document.getElementById('app');
 
-function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 function escapeHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function pushLog(msg, cls = '') {
   state.log.push({ msg, cls });
@@ -1641,50 +1522,41 @@ function getSeason(week) {
 function getAttrTags(pet) {
   if (!pet || !pet.attr) return '';
   const tagMap = { '지':'earth', '수':'water', '화':'fire', '풍':'wind' };
-  return Object.entries(pet.attr)
-    .filter(([k, v]) => v > 0)
-    .map(([k, v]) => `<span class="attr-tag ${tagMap[k]||'neutral'}">${k}${v}</span>`)
-    .join('');
+  return Object.entries(pet.attr).filter(([k,v]) => v>0).map(([k,v]) => `<span class="attr-tag ${tagMap[k]||'neutral'}">${k}${v}</span>`).join('');
 }
 function loadLocalStats() {
   try { const s = localStorage.getItem('raise_stats'); if (s) state.stats = { ...state.stats, ...JSON.parse(s) }; } catch(e) {}
 }
 function saveLocalStats() { localStorage.setItem('raise_stats', JSON.stringify(state.stats)); }
-function statLabel(k) {
-  return { str:'💪근력', agi:'🏃민첩', hp:'❤️체력', int:'🧠지능', elem:'🔥속성', cute:'😊애교', wild:'🎭야생', bond:'💕친밀', happy:'🌈행복' }[k] || k;
-}
-function statEmoji(k) {
-  return { str:'💪', agi:'🏃', hp:'❤️', int:'🧠', elem:'🔥', cute:'😊', wild:'🎭', bond:'💕', happy:'🌈', stress:'😰', fatigue:'😫' }[k] || k;
+function statLabel(k) { return { str:'💪근력', agi:'🏃민첩', hp:'❤️체력', int:'🧠지능', elem:'🔥속성', cute:'😊애교', wild:'🎭야생', bond:'💕친밀', happy:'🌈행복' }[k] || k; }
+function statEmoji(k) { return { str:'💪', agi:'🏃', hp:'❤️', int:'🧠', elem:'🔥', cute:'😊', wild:'🎭', bond:'💕', happy:'🌈', stress:'😰', fatigue:'😫' }[k] || k; }
+
+function getActionById(type, id) {
+  const arr = type === 'train' ? TRAININGS : type === 'job' ? JOBS : RESTS;
+  return arr.find(a => a.id === id);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   배경 반짝이
-═══════════════════════════════════════════════════════════ */
+/* 배경 반짝이 */
 function generateBgSparkles() {
   const layer = document.getElementById('bg-sparkles');
   layer.innerHTML = '';
   const emojis = ['✨', '💫', '⭐', '🌟'];
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 10; i++) {
     const s = document.createElement('span');
     s.className = 'bg-sparkle';
     s.textContent = randChoice(emojis);
     s.style.left = Math.random() * 100 + '%';
     s.style.top = Math.random() * 100 + '%';
-    s.style.animationDuration = rand(3, 6) + 's';
+    s.style.animationDuration = randInt(3, 6) + 's';
     s.style.animationDelay = (Math.random() * -5) + 's';
-    s.style.fontSize = rand(14, 22) + 'px';
+    s.style.fontSize = randInt(14, 22) + 'px';
     layer.appendChild(s);
   }
 }
-
-/* ═══════════════════════════════════════════════════════════
-   계절
-═══════════════════════════════════════════════════════════ */
 function updateSeasonBackground(season) {
   document.body.className = 'season-' + season;
   generateSeasonParticles(season);
 }
-
 function generateSeasonParticles(season) {
   const layer = document.getElementById('season-particles');
   layer.innerHTML = '';
@@ -1694,83 +1566,21 @@ function generateSeasonParticles(season) {
     autumn: ['🍂', '🍁', '🌰', '🍄', '🌾'],
     winter: ['❄️', '❄', '✨', '⛄', '🎀'],
   }[season] || ['✨'];
-
-  const count = 18;
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < 18; i++) {
     const p = document.createElement('span');
     p.className = 'particle';
     p.textContent = randChoice(emoji);
     p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (rand(9, 22)) + 's';
+    p.style.animationDuration = randInt(9, 22) + 's';
     p.style.animationDelay = (Math.random() * -20) + 's';
-    p.style.setProperty('--drift', (rand(-100, 100)) + 'px');
-    p.style.fontSize = rand(18, 30) + 'px';
-    p.style.opacity = (0.5 + Math.random() * 0.4);
+    p.style.setProperty('--drift', randInt(-100, 100) + 'px');
+    p.style.fontSize = randInt(18, 30) + 'px';
+    p.style.opacity = 0.5 + Math.random() * 0.4;
     layer.appendChild(p);
   }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SVG 스테이지 배경 생성
-═══════════════════════════════════════════════════════════ */
-function getStageBgSvg(season) {
-  const themes = {
-    spring: { sky: '#ffe4ec', hill1: '#ffc4d8', hill2: '#ffa0c0', tree: '#ff89b0', trunk: '#a06050', decor: '#ff6b9f' },
-    summer: { sky: '#d0f0ff', hill1: '#a8e8c0', hill2: '#70d090', tree: '#60b070', trunk: '#7a5040', decor: '#ffc440' },
-    autumn: { sky: '#ffd8b0', hill1: '#ffb080', hill2: '#ff8050', tree: '#ff6040', trunk: '#6a4030', decor: '#ffa020' },
-    winter: { sky: '#e0e8ff', hill1: '#d0d8f0', hill2: '#c0cce8', tree: '#e8f0ff', trunk: '#6a6a80', decor: '#fff' },
-  };
-  const t = themes[season] || themes.spring;
-  return `
-    <svg class="stage-bg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
-      <defs>
-        <linearGradient id="skyGrad${season}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="${t.sky}"/>
-          <stop offset="100%" stop-color="${t.hill1}" stop-opacity="0.6"/>
-        </linearGradient>
-      </defs>
-      <!-- 하늘 -->
-      <rect width="400" height="220" fill="url(#skyGrad${season})"/>
-      <!-- 먼 산 -->
-      <path d="M 0 160 Q 80 120 160 150 Q 240 170 320 130 Q 380 110 400 140 L 400 220 L 0 220 Z" fill="${t.hill1}" opacity="0.7"/>
-      <!-- 가까운 언덕 -->
-      <path d="M 0 190 Q 100 160 200 180 Q 300 200 400 170 L 400 220 L 0 220 Z" fill="${t.hill2}" opacity="0.8"/>
-      <!-- 왼쪽 나무 -->
-      <rect x="38" y="140" width="10" height="30" fill="${t.trunk}"/>
-      <circle cx="43" cy="135" r="22" fill="${t.tree}" opacity="0.85"/>
-      <circle cx="35" cy="125" r="15" fill="${t.tree}" opacity="0.85"/>
-      <circle cx="52" cy="128" r="14" fill="${t.tree}" opacity="0.85"/>
-      <!-- 오른쪽 나무 -->
-      <rect x="350" y="145" width="8" height="26" fill="${t.trunk}"/>
-      <circle cx="354" cy="140" r="18" fill="${t.tree}" opacity="0.85"/>
-      <circle cx="346" cy="133" r="12" fill="${t.tree}" opacity="0.85"/>
-      <!-- 구름 or 눈 -->
-      <circle cx="80" cy="40" r="12" fill="#fff" opacity="0.8"/>
-      <circle cx="95" cy="36" r="16" fill="#fff" opacity="0.8"/>
-      <circle cx="110" cy="42" r="13" fill="#fff" opacity="0.8"/>
-      <circle cx="300" cy="30" r="10" fill="#fff" opacity="0.7"/>
-      <circle cx="315" cy="28" r="14" fill="#fff" opacity="0.7"/>
-      <!-- 귀여운 꽃/장식 -->
-      <g opacity="0.8">
-        <circle cx="20" cy="200" r="3" fill="${t.decor}"/>
-        <circle cx="75" cy="205" r="3" fill="${t.decor}"/>
-        <circle cx="120" cy="202" r="3" fill="${t.decor}"/>
-        <circle cx="280" cy="205" r="3" fill="${t.decor}"/>
-        <circle cx="340" cy="201" r="3" fill="${t.decor}"/>
-      </g>
-      <!-- 하트 장식 (봄/소울메이트 느낌) -->
-      ${season === 'spring' ? `
-        <text x="190" y="50" font-size="18" opacity="0.4">💕</text>
-        <text x="60" y="80" font-size="14" opacity="0.3">✨</text>
-        <text x="330" y="70" font-size="14" opacity="0.3">✨</text>
-      ` : ''}
-    </svg>
-  `;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   씬 라우팅
-═══════════════════════════════════════════════════════════ */
+/* 씬 라우팅 */
 function render() {
   app.innerHTML = '';
   if (state.scene === 'title') renderTitle();
@@ -1780,26 +1590,22 @@ function render() {
   else if (state.scene === 'ending') renderEnding();
 }
 
-/* ═══════════════════════════════════════════════════════════
-   타이틀
-═══════════════════════════════════════════════════════════ */
+/* 타이틀 */
 function renderTitle() {
   updateSeasonBackground('spring');
   const screen = document.createElement('div');
   screen.className = 'panel title-screen';
   screen.innerHTML = `
-    <div class="panel-deco tl">💖</div>
-    <div class="panel-deco tr">🌸</div>
-    <div class="panel-deco bl">🎀</div>
-    <div class="panel-deco br">💖</div>
+    <div class="panel-deco tl">💖</div><div class="panel-deco tr">🌸</div>
+    <div class="panel-deco bl">🎀</div><div class="panel-deco br">💖</div>
     <div class="big-title">PRINCESS<br>PET MAKER</div>
     <div class="title-decorations">
       <span class="char">🐣</span><span class="char">👑</span><span class="char">✨</span>
     </div>
     <div class="tagline">
       원시 부족의 아이가 된 너.<br>
-      새끼 펫 한 마리를 선택해 <b style="color:var(--pink-deep);">1년간</b> 키워보자.<br>
-      너의 선택에 따라 펫의 운명이 결정된다.
+      새끼 펫 한 마리를 <b style="color:var(--pink-deep);">1년간</b> 키워보자.<br>
+      주간 스케줄을 짜서 훈련/일/휴식을 배분해!
     </div>
     <div class="menu-btns">
       <button class="btn primary" id="btn-start">🎬 새 게임 시작</button>
@@ -1815,10 +1621,7 @@ function renderTitle() {
 }
 
 async function startNewRun() {
-  if (PET_DATA.length === 0) {
-    alert('펫 데이터 로딩 중...');
-    return;
-  }
+  if (PET_DATA.length === 0) { alert('펫 데이터 로딩 중...'); return; }
   const pool = PET_DATA.filter(p => p.grade === '일반');
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   state.starterPool = shuffled.slice(0, 6);
@@ -1827,25 +1630,21 @@ async function startNewRun() {
   render();
 }
 
-/* ═══════════════════════════════════════════════════════════
-   스타터
-═══════════════════════════════════════════════════════════ */
+/* 스타터 */
 function renderStarter() {
   const screen = document.createElement('div');
   screen.className = 'panel starter-screen';
   screen.innerHTML = `
-    <div class="panel-deco tl">💕</div>
-    <div class="panel-deco tr">🌟</div>
+    <div class="panel-deco tl">💕</div><div class="panel-deco tr">🌟</div>
     <h2>🐣 새끼펫 선택 🐣</h2>
-    <div class="hint">부족의 전통에 따라, 너는 한 마리 새끼펫을 골라 돌보게 된다.<br>1년 후 이 펫은 어떤 존재가 될까?</div>
+    <div class="hint">부족의 전통에 따라 한 마리 새끼펫을 골라 돌보게 된다.<br>1년 후 이 펫은 어떤 존재가 될까?</div>
     <div class="starter-grid" id="starter-grid"></div>
-    <div style="text-align:center; margin-top:10px;">
+    <div style="text-align:center;">
       <button class="btn lavender" id="btn-reroll">🎲 다시 뽑기</button>
       <button class="btn primary" id="btn-confirm" disabled>✓ 이 펫을 선택</button>
     </div>
   `;
   app.appendChild(screen);
-
   const grid = document.getElementById('starter-grid');
   state.starterPool.forEach(pet => {
     const card = document.createElement('div');
@@ -1856,17 +1655,12 @@ function renderStarter() {
       <div class="attrs">${getAttrTags(pet)}</div>
       <div class="stats-mini">
         HP ${Math.round(pet.ic.hp)} / ATK ${Math.round(pet.ic.atk)}<br>
-        성장 ${Math.round((pet.sg.hp + pet.sg.atk + pet.sg.def + pet.sg.agi) * 10)/10}
+        성장 ${Math.round((pet.sg.hp+pet.sg.atk+pet.sg.def+pet.sg.agi)*10)/10}
       </div>
     `;
-    card.addEventListener('click', () => {
-      playSfx('heart');
-      state.starterPick = pet.name;
-      render();
-    });
+    card.addEventListener('click', () => { playSfx('heart'); state.starterPick = pet.name; render(); });
     grid.appendChild(card);
   });
-
   document.getElementById('btn-reroll').addEventListener('click', () => {
     playSfx('click');
     const pool = PET_DATA.filter(p => p.grade === '일반');
@@ -1877,31 +1671,23 @@ function renderStarter() {
   });
   const confirmBtn = document.getElementById('btn-confirm');
   confirmBtn.disabled = !state.starterPick;
-  confirmBtn.addEventListener('click', () => {
-    playSfx('success');
-    state.scene = 'name';
-    render();
-  });
+  confirmBtn.addEventListener('click', () => { playSfx('success'); state.scene = 'name'; render(); });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   이름 정하기
-═══════════════════════════════════════════════════════════ */
 function renderNaming() {
   const pet = state.starterPool.find(p => p.name === state.starterPick);
   const screen = document.createElement('div');
   screen.className = 'panel';
   screen.innerHTML = `
-    <div class="panel-deco tl">💖</div>
-    <div class="panel-deco tr">✨</div>
+    <div class="panel-deco tl">💖</div><div class="panel-deco tr">✨</div>
     <div class="name-input-wrap">
-      <img src="${pet.image}" alt="${pet.name}" onerror="this.style.visibility='hidden'">
-      <div style="margin: 10px 0; font-size: 17px; font-weight: 700;">선택한 펫: <b style="color: var(--pink-deep);">${escapeHtml(pet.name)}</b></div>
-      <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; font-weight: 700;">너의 펫에게 이름을 지어주자 💕</div>
+      <img src="${pet.image}" onerror="this.style.visibility='hidden'">
+      <div style="margin: 10px 0; font-size: 17px; font-weight: 700;">선택: <b style="color: var(--pink-deep);">${escapeHtml(pet.name)}</b></div>
+      <div style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px; font-weight: 700;">펫에게 이름을 지어주자 💕</div>
       <input type="text" id="pet-name-input" class="name-input" maxlength="12" placeholder="펫의 이름" value="${escapeHtml(pet.name)}">
-      <div style="margin-top: 18px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
-        <button class="btn lavender" id="btn-back">← 다시 선택</button>
-        <button class="btn primary" id="btn-begin">🎬 모험 시작!</button>
+      <div style="margin-top: 18px; display: flex; gap: 6px; justify-content: center;">
+        <button class="btn lavender" id="btn-back">← 다시</button>
+        <button class="btn primary" id="btn-begin">🎬 시작!</button>
       </div>
     </div>
   `;
@@ -1912,13 +1698,11 @@ function renderNaming() {
   document.getElementById('btn-back').addEventListener('click', () => { playSfx('click'); state.scene = 'starter'; render(); });
   document.getElementById('btn-begin').addEventListener('click', () => {
     const name = input.value.trim();
-    if (name.length < 1) { alert('이름을 입력해주세요'); return; }
+    if (name.length < 1) return;
     playSfx('success');
     beginGame(pet, name);
   });
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') document.getElementById('btn-begin').click();
-  });
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btn-begin').click(); });
 }
 
 function beginGame(petData, customName) {
@@ -1928,13 +1712,13 @@ function beginGame(petData, customName) {
     species: petData.name,
     image: petData.image,
     attr: petData.attr,
-    str:  Math.round(petData.ic.atk * 1.5),
-    agi:  Math.round(petData.ic.agi * 1.8),
-    hp:   Math.round(petData.ic.hp * 0.8),
-    int:  10 + rand(0, 5),
-    elem: Object.values(petData.attr).reduce((s,v)=>s+v, 0) + rand(0, 5),
-    cute: 20 + rand(0, 10),
-    wild: 30 + rand(0, 15),
+    str: Math.round(petData.ic.atk * 1.5),
+    agi: Math.round(petData.ic.agi * 1.8),
+    hp: Math.round(petData.ic.hp * 0.8),
+    int: 10 + randInt(0, 5),
+    elem: Object.values(petData.attr).reduce((s,v)=>s+v,0) + randInt(0,5),
+    cute: 20 + randInt(0, 10),
+    wild: 30 + randInt(0, 15),
     bond: 30,
     happy: 50,
     stress: 0,
@@ -1943,13 +1727,17 @@ function beginGame(petData, customName) {
   };
   state.week = 1;
   state.log = [];
+  state.schedule = Array(7).fill(null);
+  state.rival = chooseRival();
+  updateRivalMsg(state.pet, state.rival);
   state.scene = 'playing';
   pushLog(`${customName}과(와)의 1년이 시작되었다!`, 'info');
+  pushLog(`🎯 라이벌 ${state.rival.name}이(가) 등장했다!`, 'rival');
   render();
 }
 
 /* ═══════════════════════════════════════════════════════════
-   플레이
+   플레이 화면
 ═══════════════════════════════════════════════════════════ */
 function renderPlaying() {
   const p = state.pet;
@@ -1957,33 +1745,46 @@ function renderPlaying() {
   const season = getSeason(state.week);
   updateSeasonBackground(season);
 
-  const grid = document.createElement('div');
-  grid.className = 'game-grid';
+  const layout = document.createElement('div');
+  layout.className = 'play-layout';
 
+  // 좌측: 펫 상태
+  layout.appendChild(renderPetStatus(p));
+
+  // 우측: 스케줄 + 라이벌
+  const main = document.createElement('div');
+  main.className = 'main-area';
+  main.appendChild(renderSchedulePanel());
+  main.appendChild(renderRivalPanel());
+  layout.appendChild(main);
+
+  app.appendChild(layout);
+}
+
+function renderPetStatus(p) {
   const mood = getMood(p);
-  const left = document.createElement('div');
-  left.className = 'pet-panel';
-  left.innerHTML = `
-    <div class="month-badge">📅 ${month}월 · ${state.week}주</div>
-    <div class="pet-info-top">
+  const month = getMonth(state.week);
+  const panel = document.createElement('div');
+  panel.className = 'pet-status-panel';
+  panel.innerHTML = `
+    <div class="month-badge">📅 ${month}월 · ${state.week}/52주</div>
+    <div class="pet-header">
+      <div class="pet-big-sprite-wrap">
+        <img src="${p.image}" class="${mood}" id="pet-sprite" onerror="this.style.visibility='hidden'">
+      </div>
       <div class="pet-name-box">
         <div class="pname">${escapeHtml(p.name)}</div>
         <div class="pspecies">${escapeHtml(p.species)}</div>
         <div class="pattrs">${getAttrTags(p.data)}</div>
       </div>
+    </div>
+    <div class="stones-row">
       <div class="stones-big">💎 ${p.stones}</div>
     </div>
     <div class="week-progress">
       <div class="week-progress-fill" style="width:${(state.week/52)*100}%"></div>
     </div>
-
-    <div class="pet-stage" id="pet-stage">
-      ${getStageBgSvg(season)}
-      <div class="effect-layer" id="effect-layer"></div>
-      <img class="pet-big-sprite ${mood}" id="pet-sprite" src="${p.image}" alt="${escapeHtml(p.name)}" onerror="this.style.visibility='hidden'">
-    </div>
-
-    <div class="stats-grid" id="stats-grid">
+    <div class="stats-grid">
       ${statBar('💪 근력', 'str', p.str, 100)}
       ${statBar('🏃 민첩', 'agi', p.agi, 100)}
       ${statBar('❤️ 체력', 'hp', p.hp, 100)}
@@ -1996,44 +1797,24 @@ function renderPlaying() {
       ${statBar('😰 스트레스', 'stress', p.stress, 100, 'negative')}
       ${statBar('😫 피로', 'fatigue', p.fatigue, 100, 'negative')}
     </div>
-
     <div class="log-box" id="log-box">
-      ${state.log.slice(-10).map(l => `<p class="${l.cls||''}">${escapeHtml(l.msg)}</p>`).join('')}
+      ${state.log.slice(-8).map(l => `<p class="${l.cls||''}">${escapeHtml(l.msg)}</p>`).join('')}
+    </div>
+    <div class="status-buttons">
+      <button class="btn danger small" id="btn-quit">🚪 종료</button>
+      <button class="btn mint small" id="btn-save">💾 저장</button>
     </div>
   `;
-
-  const right = document.createElement('div');
-  right.className = 'action-panel';
-  right.innerHTML = `
-    <div class="action-tabs">
-      <button class="action-tab ${currentActionTab==='train'?'active':''}" data-tab="train">🏋️ 훈련</button>
-      <button class="action-tab ${currentActionTab==='job'?'active':''}" data-tab="job">💼 일</button>
-      <button class="action-tab ${currentActionTab==='rest'?'active':''}" data-tab="rest">🛌 휴식</button>
-    </div>
-    <div class="action-list" id="action-list"></div>
-    <div style="display:flex; gap:5px; margin-top:6px;">
-      <button class="btn danger" id="btn-quit" style="flex:1; padding:10px; font-size:12px;">종료</button>
-      <button class="btn mint" id="btn-save" style="flex:1; padding:10px; font-size:12px;">💾 저장</button>
-    </div>
-  `;
-
-  grid.appendChild(left);
-  grid.appendChild(right);
-  app.appendChild(grid);
-
-  right.querySelectorAll('.action-tab').forEach(tab => {
-    tab.addEventListener('click', () => { playSfx('click'); currentActionTab = tab.dataset.tab; renderActionList(); });
-  });
-  renderActionList();
-
-  document.getElementById('btn-quit').addEventListener('click', () => {
-    playSfx('click');
-    if (confirm('진행 중인 런을 포기하시겠습니까?')) { state.scene = 'title'; render(); }
-  });
-  document.getElementById('btn-save').addEventListener('click', () => { playSfx('success'); saveGame(); });
-
-  const logBox = document.getElementById('log-box');
-  if (logBox) logBox.scrollTop = logBox.scrollHeight;
+  // 이벤트는 layout이 DOM에 추가된 후에 달리므로 setTimeout
+  setTimeout(() => {
+    const quit = document.getElementById('btn-quit');
+    const save = document.getElementById('btn-save');
+    if (quit) quit.addEventListener('click', () => { playSfx('click'); if (confirm('포기?')) { state.scene = 'title'; render(); } });
+    if (save) save.addEventListener('click', () => { playSfx('success'); saveGame(); });
+    const logBox = document.getElementById('log-box');
+    if (logBox) logBox.scrollTop = logBox.scrollHeight;
+  }, 0);
+  return panel;
 }
 
 function getMood(p) {
@@ -2047,175 +1828,216 @@ function getMood(p) {
 function statBar(label, key, val, max, cls = '') {
   val = clamp(Math.round(val), 0, 999);
   const pct = Math.min(100, (val / max) * 100);
-  return `
-    <div class="stat-row">
-      <div class="stat-label">${label}</div>
-      <div class="stat-bar"><div class="stat-fill ${cls}" data-key="${key}" style="width:${pct}%"></div></div>
-      <div class="stat-value" data-key="${key}">${val}</div>
-    </div>
-  `;
+  return `<div class="stat-row"><div class="stat-label">${label}</div><div class="stat-bar"><div class="stat-fill ${cls}" style="width:${pct}%"></div></div><div class="stat-value">${val}</div></div>`;
 }
 
-function renderActionList() {
-  const list = document.getElementById('action-list');
-  if (!list) return;
-  list.innerHTML = '';
-  let actions;
-  if (currentActionTab === 'train') actions = TRAININGS;
-  else if (currentActionTab === 'job') actions = JOBS;
-  else actions = RESTS;
+/* 스케줄 패널 */
+function renderSchedulePanel() {
+  const panel = document.createElement('div');
+  panel.className = 'schedule-panel';
+  const allFilled = state.schedule.every(s => s !== null);
+  panel.innerHTML = `
+    <div class="panel-deco tl">📅</div>
+    <h3 class="schedule-title">💖 이번 주 스케줄 짜기 💖</h3>
+    <div class="schedule-grid" id="schedule-grid"></div>
+    <div class="schedule-footer">
+      <button class="btn lavender" id="btn-clear-all">🗑 전체 비우기</button>
+      <button class="btn primary" id="btn-run-week" ${allFilled ? '' : 'disabled'}>▶ 일주일 실행!</button>
+    </div>
+  `;
+  setTimeout(() => {
+    const grid = document.getElementById('schedule-grid');
+    if (!grid) return;
+    state.schedule.forEach((slot, i) => {
+      const day = document.createElement('div');
+      if (slot) {
+        const action = getActionById(slot.type, slot.id);
+        const svg = ACTION_SVG[slot.id] || '';
+        day.className = 'schedule-day filled';
+        day.innerHTML = `
+          <div class="day-label">${DAYS[i]}</div>
+          <div class="day-icon-svg">${svg}</div>
+          <div class="day-action">${action ? action.name : '?'}</div>
+        `;
+      } else {
+        day.className = 'schedule-day empty';
+        day.innerHTML = `
+          <div class="day-label">${DAYS[i]}</div>
+          <div class="day-icon-svg" style="font-size:30px; color:var(--text-muted);">+</div>
+          <div class="day-action">비어있음</div>
+        `;
+      }
+      day.addEventListener('click', () => { playSfx('click'); openChooser(i); });
+      grid.appendChild(day);
+    });
+    const clearBtn = document.getElementById('btn-clear-all');
+    const runBtn = document.getElementById('btn-run-week');
+    clearBtn.addEventListener('click', () => { playSfx('click'); state.schedule = Array(7).fill(null); render(); });
+    runBtn.addEventListener('click', () => { playSfx('success'); runWeek(); });
+  }, 0);
+  return panel;
+}
 
+/* 라이벌 패널 */
+function renderRivalPanel() {
+  const rival = state.rival;
+  const panel = document.createElement('div');
+  panel.className = 'rival-panel';
+  const rvPow = getRivalPower(rival);
+  const myPow = getMyPower(state.pet);
+  let comparison;
+  if (myPow > rvPow + 30) comparison = '💪 내가 훨씬 앞섬';
+  else if (myPow > rvPow) comparison = '🌟 내가 살짝 앞섬';
+  else if (myPow > rvPow - 30) comparison = '🔥 비슷한 수준';
+  else comparison = '😰 라이벌이 앞섬';
+
+  panel.innerHTML = `
+    <div class="rival-label">🎯 라이벌</div>
+    <div class="rival-content">
+      <div class="rival-img-wrap">
+        <img src="${rival.image}" onerror="this.style.visibility='hidden'">
+      </div>
+      <div class="rival-info">
+        <div class="rname">${escapeHtml(rival.name)}</div>
+        <div class="rspecies">${escapeHtml(rival.petSpecies)}</div>
+        <div class="rpower">전투력 <b style="color:var(--lavender-deep);">${rvPow}</b> · ${comparison}</div>
+      </div>
+    </div>
+    <div class="rival-msg">${escapeHtml(rival.currentMsg || '...')}</div>
+  `;
+  return panel;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   액션 선택 팝업
+═══════════════════════════════════════════════════════════ */
+let chooserTab = 'train';
+
+function openChooser(slotIdx) {
+  state.currentSlot = slotIdx;
+  chooserTab = 'train';
+  document.getElementById('chooser-title').textContent = `💖 ${DAYS[slotIdx]}요일 활동 선택 💖`;
+  renderChooserItems();
+  document.getElementById('chooser-overlay').classList.add('open');
+}
+function closeChooser() {
+  document.getElementById('chooser-overlay').classList.remove('open');
+}
+function renderChooserItems() {
+  document.querySelectorAll('.action-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === chooserTab));
+  const grid = document.getElementById('chooser-grid');
+  grid.innerHTML = '';
+  const actions = chooserTab === 'train' ? TRAININGS : chooserTab === 'job' ? JOBS : RESTS;
+  const p = state.pet;
   actions.forEach(a => {
-    const btn = document.createElement('button');
-    btn.className = 'action-btn';
-    const p = state.pet;
+    const item = document.createElement('div');
+    item.className = 'action-item';
     let reqFail = null;
     if (a.req) {
       for (const [k, v] of Object.entries(a.req)) {
         if (k === 'stones') { if (p.stones < v) { reqFail = `💎 ${v} 필요`; break; } }
-        else if (k === 'wildMax') { if (p.wild > v) { reqFail = `🎭 야생 ${v}↓ 필요`; break; } }
-        else { if ((p[k]||0) < v) { reqFail = `${statLabel(k)} ${v} 필요`; break; } }
+        else if (k === 'wildMax') { if (p.wild > v) { reqFail = `🎭 ${v}↓ 필요`; break; } }
+        else { if ((p[k]||0) < v) { reqFail = `${statLabel(k)} ${v}+`; break; } }
       }
     }
     if (a.cost && p.stones < a.cost) { if (!reqFail) reqFail = `💎 ${a.cost} 부족`; }
-    if (p.fatigue >= 80 && a.id !== 'sleep') { if (!reqFail) reqFail = `⚠ 너무 피곤함`; }
-
-    const costLine = a.cost ? `<div class="ab-cost">💎 ${a.cost}</div>`
-                    : a.gain ? `<div class="ab-cost">💎 +${a.gain[0]}~${a.gain[1]}</div>`
-                    : '';
-
-    btn.innerHTML = `
-      <div class="ab-name">${a.name}</div>
-      <div class="ab-desc">${a.desc}</div>
+    const costLine = a.cost ? `<div class="ai-cost">💎 ${a.cost}</div>`
+                    : a.gain ? `<div class="ai-cost">💎 +${a.gain[0]}~${a.gain[1]}</div>`
+                    : '<div class="ai-cost">&nbsp;</div>';
+    const svg = ACTION_SVG[a.id] || '';
+    item.innerHTML = `
+      <div class="ai-icon">${svg}</div>
+      <div class="ai-name">${a.name}</div>
+      <div class="ai-desc">${a.desc}</div>
       ${costLine}
-      ${reqFail ? `<div class="ab-req">${reqFail}</div>` : ''}
+      ${reqFail ? `<div class="ai-req">${reqFail}</div>` : ''}
     `;
-    if (reqFail) btn.disabled = true;
-    btn.addEventListener('click', () => doAction(a));
-    list.appendChild(btn);
+    if (reqFail) item.classList.add('disabled');
+    else item.addEventListener('click', () => {
+      playSfx('heart');
+      state.schedule[state.currentSlot] = { type: chooserTab, id: a.id };
+      closeChooser();
+      render();
+    });
+    grid.appendChild(item);
   });
 }
+
+document.querySelectorAll('.action-tab').forEach(tab => {
+  tab.addEventListener('click', () => { playSfx('click'); chooserTab = tab.dataset.tab; renderChooserItems(); });
+});
+document.getElementById('chooser-cancel').addEventListener('click', () => { playSfx('click'); closeChooser(); });
+document.getElementById('chooser-clear').addEventListener('click', () => {
+  playSfx('click');
+  state.schedule[state.currentSlot] = null;
+  closeChooser();
+  render();
+});
 
 /* ═══════════════════════════════════════════════════════════
-   액션 실행
+   일주일 실행
 ═══════════════════════════════════════════════════════════ */
-let actionInProgress = false;
-
-async function doAction(action) {
-  if (actionInProgress) return;
-  actionInProgress = true;
-
+async function runWeek() {
+  const results = [];
   const p = state.pet;
-  if (action.cost) p.stones -= action.cost;
-  let gained = 0;
-  if (action.gain) {
-    gained = rand(action.gain[0], action.gain[1]);
-    p.stones += gained;
+  // 각 날짜 처리
+  for (let i = 0; i < 7; i++) {
+    const slot = state.schedule[i];
+    if (!slot) continue;
+    const action = getActionById(slot.type, slot.id);
+    if (!action) continue;
+
+    const dayResult = { day: DAYS[i], action, deltas: {}, gained: 0, reqFail: false };
+
+    // 조건 재검사 (일주일 동안 상태 변할 수 있으니)
+    let canDo = true;
+    if (action.req) {
+      for (const [k, v] of Object.entries(action.req)) {
+        if (k === 'stones' && p.stones < v) { canDo = false; break; }
+        else if (k === 'wildMax' && p.wild > v) { canDo = false; break; }
+        else if (k !== 'stones' && k !== 'wildMax' && (p[k]||0) < v) { canDo = false; break; }
+      }
+    }
+    if (action.cost && p.stones < action.cost) canDo = false;
+
+    if (!canDo || p.fatigue >= 80 && action.id !== 'sleep') {
+      dayResult.reqFail = true;
+      results.push(dayResult);
+      continue;
+    }
+
+    if (action.cost) p.stones -= action.cost;
+    if (action.gain) {
+      const g = randInt(action.gain[0], action.gain[1]);
+      p.stones += g;
+      dayResult.gained = g;
+    }
+    if (action.effects) {
+      for (const [k, range] of Object.entries(action.effects)) {
+        const d = randInt(range[0], range[1]);
+        dayResult.deltas[k] = d;
+        applyDelta(p, k, d);
+      }
+    }
+    results.push(dayResult);
   }
 
-  // 효과음
-  if (action.sfx) playSfx(action.sfx);
-
-  // 스프라이트 애니
-  const sprite = document.getElementById('pet-sprite');
-  if (sprite && action.anim) {
-    sprite.classList.remove('mood-happy', 'mood-tired', 'mood-stress');
-    sprite.classList.remove('action-train', 'action-run', 'action-eat', 'action-spirit');
-    void sprite.offsetWidth;
-    sprite.classList.add(action.anim);
-    setTimeout(() => sprite.classList.remove(action.anim), 1200);
-  }
-
-  // 파티클
-  if (action.particles) spawnParticles(action.particles, 8);
-
-  // 스탯 변화
-  const deltas = {};
-  const eff = action.effects || {};
-  for (const [k, range] of Object.entries(eff)) {
-    const d = rand(range[0], range[1]);
-    deltas[k] = d;
-    applyDelta(p, k, d);
-  }
-
-  showStatPopups(deltas, gained);
-
-  let msg = action.name;
-  if (gained > 0) msg += ` (💎+${gained})`;
-  const deltaStr = Object.entries(deltas)
-    .filter(([k, v]) => v !== 0)
-    .map(([k, v]) => `${statEmoji(k)}${v>0?'+':''}${v}`)
-    .join(' ');
-  if (deltaStr) msg += ` → ${deltaStr}`;
-  pushLog(msg, 'info');
-
-  await sleep(700);
-
-  let eventChance = 0.12;
-  if (action.event) eventChance = 0.55;
+  // 이번 주 체크 이벤트: 산책이 있으면 발동할 수도 있고, 일반 랜덤 이벤트
+  let eventTriggered = null;
+  const hasWalk = state.schedule.some(s => s && s.id === 'walk');
+  const eventChance = hasWalk ? 0.5 : 0.2;
   if (Math.random() < eventChance) {
-    actionInProgress = false;
-    triggerEvent();
-    return;
+    eventTriggered = randChoice(EVENTS);
   }
 
-  const tourney = TOURNAMENTS.find(t => t.week === state.week);
-  if (tourney) {
-    applyTournament(tourney);
-    await sleep(400);
-  }
+  // 라이벌도 이번 주 자동 성장
+  growRival(state.rival, 1);
 
-  advanceWeek();
-  actionInProgress = false;
-}
+  // 스케줄 초기화
+  state.schedule = Array(7).fill(null);
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-function spawnParticles(emojis, count = 6) {
-  const layer = document.getElementById('effect-layer');
-  if (!layer) return;
-  const rect = layer.getBoundingClientRect();
-  const cx = rect.width / 2;
-  const cy = rect.height / 2;
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'effect';
-    p.textContent = randChoice(emojis);
-    const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
-    const dist = rand(50, 90);
-    p.style.left = cx + 'px';
-    p.style.top = cy + 'px';
-    p.style.setProperty('--startX', '0px');
-    p.style.setProperty('--startY', '0px');
-    p.style.setProperty('--endX', Math.cos(angle) * dist + 'px');
-    p.style.setProperty('--endY', (Math.sin(angle) * dist - 25) + 'px');
-    p.style.animationDelay = (i * 40) + 'ms';
-    layer.appendChild(p);
-    setTimeout(() => p.remove(), 1600);
-  }
-}
-
-function showStatPopups(deltas, stonesDelta) {
-  const stage = document.getElementById('pet-stage');
-  if (!stage) return;
-
-  const items = [];
-  for (const [k, v] of Object.entries(deltas)) {
-    if (!v || v === 0) continue;
-    items.push({ text: `${statEmoji(k)}${v > 0 ? '+' : ''}${v}`, cls: v > 0 ? 'up' : 'down' });
-  }
-  if (stonesDelta > 0) items.push({ text: `💎+${stonesDelta}`, cls: 'gold' });
-
-  items.forEach((it, i) => {
-    const popup = document.createElement('div');
-    popup.className = 'stat-popup ' + it.cls;
-    popup.textContent = it.text;
-    popup.style.left = '50%';
-    popup.style.top = (30 + i * 24) + 'px';
-    popup.style.animationDelay = (i * 120) + 'ms';
-    stage.appendChild(popup);
-    setTimeout(() => popup.remove(), 2100);
-  });
+  // 주간 결과 모달 표시
+  showWeekResult(results, eventTriggered);
 }
 
 function applyDelta(p, k, d) {
@@ -2223,13 +2045,88 @@ function applyDelta(p, k, d) {
   p[k] = clamp((p[k]||0) + d, 0, 100);
 }
 
-function advanceWeek() {
+function showWeekResult(results, eventTriggered) {
+  const overlay = document.createElement('div');
+  overlay.className = 'week-result-overlay open';
+  const rowsHtml = results.map((r, i) => {
+    if (r.reqFail) {
+      return `
+        <div class="wr-day" style="animation-delay:${i*0.08}s; opacity: 0.5;">
+          <div class="wr-day-label">${r.day}</div>
+          <div class="wr-day-icon">${ACTION_SVG[r.action.id]||''}</div>
+          <div class="wr-day-action">${r.action.name}</div>
+          <div class="wr-day-deltas"><span class="wr-delta down">❌ 조건 불충분</span></div>
+        </div>
+      `;
+    }
+    const deltasHtml = Object.entries(r.deltas).filter(([k,v]) => v !== 0).map(([k,v]) => {
+      const cls = v > 0 ? 'up' : 'down';
+      return `<span class="wr-delta ${cls}">${statEmoji(k)}${v>0?'+':''}${v}</span>`;
+    }).join('');
+    const coinHtml = r.gained > 0 ? `<span class="wr-delta gold">💎+${r.gained}</span>` : '';
+    return `
+      <div class="wr-day" style="animation-delay:${i*0.08}s;">
+        <div class="wr-day-label">${r.day}</div>
+        <div class="wr-day-icon">${ACTION_SVG[r.action.id]||''}</div>
+        <div class="wr-day-action">${r.action.name}</div>
+        <div class="wr-day-deltas">${coinHtml}${deltasHtml}</div>
+      </div>
+    `;
+  }).join('');
+
+  overlay.innerHTML = `
+    <div class="week-result-panel">
+      <h2 class="wr-title">📅 ${state.week}주차 결과 📅</h2>
+      ${rowsHtml || '<div style="text-align:center; color:var(--text-muted); padding:20px;">아무것도 하지 않았다...</div>'}
+      <div style="text-align:center; margin-top:14px;">
+        <button class="btn primary full" id="wr-continue">▶ 계속</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  playSfx('success');
+
+  // 로그 추가
+  results.forEach(r => {
+    if (r.reqFail) {
+      pushLog(`${r.day}: ${r.action.name} 실패 (조건 불충분)`, 'hurt');
+    } else {
+      const deltaStr = Object.entries(r.deltas).filter(([k,v]) => v !== 0).map(([k,v]) => `${statEmoji(k)}${v>0?'+':''}${v}`).join(' ');
+      let msg = `${r.day}: ${r.action.name}`;
+      if (r.gained > 0) msg += ` 💎+${r.gained}`;
+      if (deltaStr) msg += ` ${deltaStr}`;
+      pushLog(msg, 'info');
+    }
+  });
+
+  document.getElementById('wr-continue').addEventListener('click', () => {
+    playSfx('click');
+    overlay.remove();
+    if (eventTriggered) {
+      setTimeout(() => showEvent(eventTriggered), 200);
+    } else {
+      afterWeek();
+    }
+  });
+}
+
+function afterWeek() {
   const p = state.pet;
-  p.fatigue = Math.max(0, p.fatigue - 2);
+  // 주간 자연 감쇠
+  p.fatigue = Math.max(0, p.fatigue - 3);
   p.happy = Math.max(0, p.happy - 1);
-  if (p.fatigue >= 70) { p.hp = Math.max(0, p.hp - 2); pushLog(`😫 피곤해서 체력 감소!`, 'hurt'); }
-  if (p.stress >= 70) { p.bond = Math.max(0, p.bond - 2); pushLog(`😰 스트레스로 친밀도 감소`, 'hurt'); }
-  if (p.happy >= 70) { p.stress = Math.max(0, p.stress - 1); }
+  if (p.fatigue >= 70) { p.hp = Math.max(0, p.hp - 2); pushLog(`😫 피곤으로 체력↓`, 'hurt'); }
+  if (p.stress >= 70) { p.bond = Math.max(0, p.bond - 2); pushLog(`😰 스트레스로 친밀도↓`, 'hurt'); }
+  if (p.happy >= 70) p.stress = Math.max(0, p.stress - 1);
+
+  // 대회 체크
+  const tourney = TOURNAMENTS.find(t => t.week === state.week);
+  if (tourney) {
+    applyTournament(tourney);
+  }
+
+  // 라이벌 멘트 업데이트
+  updateRivalMsg(p, state.rival);
 
   state.week++;
   if (state.week > 52) {
@@ -2246,16 +2143,9 @@ function advanceWeek() {
   render();
 }
 
-/* ═══════════════════════════════════════════════════════════
-   이벤트
-═══════════════════════════════════════════════════════════ */
-function triggerEvent() {
-  const ev = randChoice(EVENTS);
+/* 이벤트 모달 */
+function showEvent(ev) {
   playSfx('event');
-  renderEventModal(ev);
-}
-
-function renderEventModal(ev) {
   const flash = document.createElement('div');
   flash.className = 'flash-overlay';
   document.body.appendChild(flash);
@@ -2268,19 +2158,14 @@ function renderEventModal(ev) {
     if (c.req) {
       for (const [k, v] of Object.entries(c.req)) {
         if (k === 'stones' && state.pet.stones < v) { disabled = true; hint = `💎 ${v} 필요`; break; }
-        else if (k !== 'stones' && (state.pet[k]||0) < v) { disabled = true; hint = `${statLabel(k)} ${v} 필요`; break; }
+        else if (k !== 'stones' && (state.pet[k]||0) < v) { disabled = true; hint = `${statLabel(k)} ${v}+`; break; }
       }
     }
-    return `<button class="ev-choice" data-idx="${i}" ${disabled?'disabled':''}>
-      ${escapeHtml(c.text)}
-      ${hint ? `<div class="hint" style="color:var(--red);">${hint}</div>` : ''}
-    </button>`;
+    return `<button class="ev-choice" data-idx="${i}" ${disabled?'disabled':''}>${escapeHtml(c.text)}${hint?`<div class="hint" style="color:var(--red);">${hint}</div>`:''}</button>`;
   }).join('');
-
   overlay.innerHTML = `
     <div class="event-panel">
-      <div class="panel-deco tl">💖</div>
-      <div class="panel-deco tr">✨</div>
+      <div class="panel-deco tl">💖</div><div class="panel-deco tr">✨</div>
       <div class="ev-icon">${ev.icon}</div>
       <div class="ev-title">${escapeHtml(ev.title)}</div>
       <div class="ev-desc">${escapeHtml(ev.desc)}</div>
@@ -2288,32 +2173,44 @@ function renderEventModal(ev) {
     </div>
   `;
   document.body.appendChild(overlay);
-
   overlay.querySelectorAll('.ev-choice').forEach(btn => {
     if (btn.disabled) return;
-    btn.addEventListener('click', () => {
-      const idx = +btn.dataset.idx;
-      showEventResult(ev, idx, overlay);
-    });
+    btn.addEventListener('click', () => showEventResult(ev, +btn.dataset.idx, overlay));
   });
 }
 
-function showEventResult(ev, choiceIdx, overlay) {
-  const choice = ev.choices[choiceIdx];
+function showEventResult(ev, idx, overlay) {
+  const choice = ev.choices[idx];
   const p = state.pet;
   const deltas = {};
-  let hasPositive = false, hasNegative = false;
+  let hasPos = false, hasNeg = false;
   for (const [k, v] of Object.entries(choice.effect || {})) {
     applyDelta(p, k, v);
     deltas[k] = v;
-    if (k !== 'stones' && v > 0) hasPositive = true;
-    if (k !== 'stones' && v < 0) hasNegative = true;
+    if (k !== 'stones' && v > 0) hasPos = true;
+    if (k !== 'stones' && v < 0) hasNeg = true;
   }
   pushLog(`📜 ${ev.title}: ${choice.msg}`, 'event');
 
-  // 결과에 맞는 효과음
-  if (hasPositive && !hasNegative) playSfx('success');
-  else if (hasNegative && !hasPositive) playSfx('hurt');
+  // 라이벌 배틀 특수 처리
+  if (choice.rivalBattle) {
+    const myPow = getMyPower(p);
+    const rvPow = getRivalPower(state.rival);
+    const bonusMsg = myPow > rvPow ? '\n🎉 라이벌에게 승리!' : '\n💧 라이벌에게 패배...';
+    if (myPow > rvPow) {
+      applyDelta(p, 'bond', 3);
+      applyDelta(p, 'stones', 30);
+      deltas.bond = (deltas.bond || 0) + 3;
+      deltas.stones = (deltas.stones || 0) + 30;
+    } else {
+      applyDelta(p, 'stress', 5);
+      deltas.stress = (deltas.stress || 0) + 5;
+    }
+    choice.msg = choice.msg + bonusMsg;
+  }
+
+  if (hasPos && !hasNeg) playSfx('success');
+  else if (hasNeg && !hasPos) playSfx('hurt');
   else playSfx('click');
 
   const panel = overlay.querySelector('.event-panel');
@@ -2322,29 +2219,21 @@ function showEventResult(ev, choiceIdx, overlay) {
     const label = k === 'stones' ? `💎 ${v>0?'+':''}${v}` : `${statEmoji(k)} ${v>0?'+':''}${v}`;
     return `<span class="ev-delta ${cls}">${label}</span>`;
   }).join('');
-
   panel.innerHTML = `
-    <div class="panel-deco tl">💖</div>
-    <div class="panel-deco tr">✨</div>
+    <div class="panel-deco tl">💖</div><div class="panel-deco tr">✨</div>
     <div class="ev-icon">${ev.icon}</div>
     <div class="ev-title">${escapeHtml(ev.title)}</div>
-    <div class="ev-msg">${escapeHtml(choice.msg)}</div>
+    <div class="ev-msg">${escapeHtml(choice.msg).replace(/\n/g,'<br>')}</div>
     ${deltasHtml ? `<div class="ev-deltas">${deltasHtml}</div>` : ''}
     <button class="btn primary full" id="ev-continue">▶ 계속</button>
   `;
-
   document.getElementById('ev-continue').addEventListener('click', () => {
     playSfx('click');
     overlay.remove();
-    const tourney = TOURNAMENTS.find(t => t.week === state.week);
-    if (tourney) applyTournament(tourney);
-    advanceWeek();
+    afterWeek();
   });
 }
 
-/* ═══════════════════════════════════════════════════════════
-   대회
-═══════════════════════════════════════════════════════════ */
 function applyTournament(t) {
   const p = state.pet;
   let score, thresholds;
@@ -2355,26 +2244,32 @@ function applyTournament(t) {
     score = p[t.stat];
     thresholds = [60, 40, 25];
   }
+  // 라이벌 점수
+  const rival = state.rival;
+  let rvScore;
+  if (t.stat === 'overall') rvScore = getRivalPower(rival);
+  else rvScore = rival[t.stat] || 0;
+
   let rank, prize, bondDelta;
   if (score >= thresholds[0]) { rank = '🥇 1등!'; prize = 100; bondDelta = 8; playSfx('win'); }
   else if (score >= thresholds[1]) { rank = '🥈 2등'; prize = 50; bondDelta = 4; playSfx('success'); }
   else if (score >= thresholds[2]) { rank = '🥉 3등'; prize = 20; bondDelta = 2; playSfx('coin'); }
   else { rank = '참가상'; prize = 5; bondDelta = -1; playSfx('fail'); }
-
   p.stones += prize;
   applyDelta(p, 'bond', bondDelta);
   applyDelta(p, 'happy', bondDelta > 0 ? 5 : -3);
-  pushLog(`🎪 ${t.name} ${rank} (💎+${prize}, 💕${bondDelta>0?'+':''}${bondDelta})`, 'event');
+  pushLog(`🎪 ${t.name} ${rank} (💎+${prize})`, 'event');
+
+  // 라이벌 멘트
+  const vsRival = score > rvScore ? '이겼다!' : '라이벌에게 졌다...';
+  pushLog(`${state.rival.name}: "${pickRivalMsg(state.rival, 'tournament')}" (${vsRival})`, 'rival');
 }
 
-/* ═══════════════════════════════════════════════════════════
-   엔딩
-═══════════════════════════════════════════════════════════ */
+/* 엔딩 */
 function renderEnding() {
   const p = state.pet;
   const ending = decideEnding(p);
   updateSeasonBackground('spring');
-
   if (['champion','soulmate','spirit','star','warrior'].includes(ending.id)) {
     spawnEndingParticles();
     playSfx('win');
@@ -2383,24 +2278,21 @@ function renderEnding() {
   } else {
     playSfx('success');
   }
-
   const screen = document.createElement('div');
   screen.className = 'panel ending-screen';
   screen.innerHTML = `
-    <div class="panel-deco tl">💖</div>
-    <div class="panel-deco tr">✨</div>
-    <div class="panel-deco bl">🎀</div>
-    <div class="panel-deco br">💖</div>
+    <div class="panel-deco tl">💖</div><div class="panel-deco tr">✨</div>
+    <div class="panel-deco bl">🎀</div><div class="panel-deco br">💖</div>
     <div class="ep-emoji" style="color: ${ending.color};">${ending.emoji}</div>
     <div class="ep-title" style="color: ${ending.color};">${escapeHtml(ending.name)}</div>
-    <img class="ep-pet-img" src="${p.image}" alt="${escapeHtml(p.name)}" onerror="this.style.visibility='hidden'">
+    <img class="ep-pet-img" src="${p.image}" onerror="this.style.visibility='hidden'">
     <div class="ep-pet"><b>${escapeHtml(p.name)}</b> (${escapeHtml(p.species)}) · 1년 후</div>
-    <div class="ep-desc">${ending.desc.split('\n').map(s => escapeHtml(s)).join('<br>')}</div>
+    <div class="ep-desc">${ending.desc.split('\n').map(s=>escapeHtml(s)).join('<br>')}</div>
     <div class="ep-stats">
       💪 근력 <b>${p.str}</b> · 🏃 민첩 <b>${p.agi}</b> · ❤️ 체력 <b>${p.hp}</b><br>
       🧠 지능 <b>${p.int}</b> · 🔥 속성 <b>${p.elem}</b> · 😊 애교 <b>${p.cute}</b><br>
       🎭 야생 <b>${p.wild}</b> · 💕 친밀 <b>${p.bond}</b> · 🌈 행복 <b>${p.happy}</b><br>
-      💎 최종 스톤 <b>${p.stones}</b>
+      💎 최종 <b>${p.stones}</b>
     </div>
     <div class="ep-buttons">
       <button class="btn gold" id="btn-submit-ranking">🏆 랭킹 등록</button>
@@ -2408,7 +2300,6 @@ function renderEnding() {
     </div>
   `;
   app.appendChild(screen);
-
   document.getElementById('btn-restart').addEventListener('click', () => { playSfx('click'); state.scene = 'title'; render(); });
   document.getElementById('btn-submit-ranking').addEventListener('click', () => { playSfx('success'); submitRanking(ending); });
 }
@@ -2423,79 +2314,66 @@ function spawnEndingParticles() {
     p.className = 'particle';
     p.textContent = randChoice(emojis);
     p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (rand(5, 10)) + 's';
+    p.style.animationDuration = randInt(5,10) + 's';
     p.style.animationDelay = (Math.random() * -10) + 's';
-    p.style.setProperty('--drift', (rand(-100, 100)) + 'px');
-    p.style.fontSize = rand(22, 40) + 'px';
+    p.style.setProperty('--drift', randInt(-100,100) + 'px');
+    p.style.fontSize = randInt(22,40) + 'px';
     layer.appendChild(p);
   }
 }
 
 async function submitRanking(ending) {
-  const nick = prompt('랭킹에 등록할 닉네임 (2~10자)');
+  const nick = prompt('랭킹 닉네임 (2~10자)');
   if (!nick || nick.length < 2 || nick.length > 10) return;
   const p = state.pet;
   try {
     await db.ref('raise_rankings').push({
-      nickname: nick,
-      pet: p.name,
-      species: p.species,
-      ending: ending.name,
-      endingId: ending.id,
-      stones: p.stones,
-      stats: { str: p.str, agi: p.agi, hp: p.hp, int: p.int, elem: p.elem, cute: p.cute, wild: p.wild, bond: p.bond, happy: p.happy },
+      nickname: nick, pet: p.name, species: p.species,
+      ending: ending.name, endingId: ending.id, stones: p.stones,
+      stats: { str:p.str, agi:p.agi, hp:p.hp, int:p.int, elem:p.elem, cute:p.cute, wild:p.wild, bond:p.bond, happy:p.happy },
       timestamp: Date.now(),
     });
-    alert('랭킹 등록 완료! 💖');
-  } catch(e) { alert('등록 실패: ' + e.message); }
+    alert('등록 완료! 💖');
+  } catch(e) { alert('실패: ' + e.message); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   저장/불러오기
-═══════════════════════════════════════════════════════════ */
 function saveGame() {
-  const nick = prompt('저장할 닉네임 (2~10자)', localStorage.getItem('raise_nick') || '');
+  const nick = prompt('저장 닉네임', localStorage.getItem('raise_nick') || '');
   if (!nick || nick.length < 2) return;
   localStorage.setItem('raise_nick', nick);
   const key = nick.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
   db.ref('raise_saves/' + key).set({
-    pet: state.pet, week: state.week, log: state.log.slice(-20), timestamp: Date.now(),
-  }).then(() => alert('저장 완료! 💾')).catch(e => alert('저장 실패: ' + e.message));
+    pet: state.pet, week: state.week, log: state.log.slice(-20),
+    rival: state.rival, schedule: state.schedule, timestamp: Date.now(),
+  }).then(() => alert('저장 완료! 💾')).catch(e => alert('실패: ' + e.message));
 }
 
 async function loadGame() {
-  const nick = prompt('불러올 닉네임', localStorage.getItem('raise_nick') || '');
+  const nick = prompt('닉네임', localStorage.getItem('raise_nick') || '');
   if (!nick) return;
   localStorage.setItem('raise_nick', nick);
   const key = nick.replace(/[^a-zA-Z0-9가-힣_-]/g, '_');
   try {
     const snap = await db.ref('raise_saves/' + key).once('value');
     const data = snap.val();
-    if (!data) { alert('저장된 데이터가 없습니다.'); return; }
+    if (!data) { alert('저장 없음'); return; }
     state.pet = data.pet;
     state.week = data.week;
     state.log = data.log || [];
+    state.rival = data.rival || chooseRival();
+    state.schedule = data.schedule || Array(7).fill(null);
     state.scene = 'playing';
     render();
-  } catch(e) { alert('불러오기 실패: ' + e.message); }
+  } catch(e) { alert('실패: ' + e.message); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   오디오 버튼
-═══════════════════════════════════════════════════════════ */
 document.getElementById('btn-bgm').addEventListener('click', () => { playSfx('click'); toggleBgm(); });
 document.getElementById('btn-sfx').addEventListener('click', () => { playSfx('click'); toggleSfx(); });
 updateAudioBtns();
 
-/* ═══════════════════════════════════════════════════════════
-   초기
-═══════════════════════════════════════════════════════════ */
 loadLocalStats();
 generateBgSparkles();
-(async () => {
-  await loadPetData();
-  render();
-})();
+(async () => { await loadPetData(); render(); })();
 </script>
 
 </body>
