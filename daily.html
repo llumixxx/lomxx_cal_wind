@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🌍 데일리 - wind01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1318;
+    --bg2: #1a1f29;
+    --panel: #1e2531;
+    --panel2: #2a3344;
+    --border: #3a4458;
+    --text: #e8ecf2;
+    --text-muted: #8a96a8;
+    --accent: #5acba8;
+    --pink: #ff9ec7;
+    --gold: #ffc640;
+    --red: #ff6b6b;
+    --blue: #4da6ff;
+    --green: #5acba8;
+    --purple: #c9a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+
+  /* 헤더 */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0 20px;
+    border-bottom: 1.5px solid var(--border);
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .header h1 {
+    font-family: 'Jua', sans-serif;
+    font-size: 28px;
+    margin: 0;
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .header .date {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .header .refresh-btn {
+    background: var(--panel2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all .15s;
+  }
+  .header .refresh-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* 카테고리 탭 */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+    padding: 8px 14px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all .15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    color: #1a1f29;
+    border-color: transparent;
+  }
+
+  /* 카드 그리드 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 14px;
+  }
+  .card {
+    background: linear-gradient(180deg, var(--panel) 0%, var(--bg2) 100%);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: all .2s;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 180px;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+  /* 카드 카테고리 라벨 */
+  .card-cat {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .card-cat.news    { background: var(--blue); color: #fff; }
+  .card-cat.k-news  { background: var(--purple); color: #1a1f29; }
+  .card-cat.us-stock{ background: var(--green); color: #1a1f29; }
+  .card-cat.kr-stock{ background: var(--gold); color: #1a1f29; }
+  .card-cat.recommend{ background: linear-gradient(90deg, var(--gold), var(--red)); color: #fff; }
+  .card-cat.crypto  { background: var(--red); color: #fff; }
+  .card-cat.fx      { background: var(--pink); color: #1a1f29; }
+  .card-cat.weather { background: #87ceeb; color: #1a1f29; }
+
+  /* 펫 + 코멘트 */
+  .pet-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 6px 0;
+  }
+  .pet-img {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(2px 3px 5px rgba(0,0,0,0.4));
+    animation: petBob 3s ease-in-out infinite;
+  }
+  @keyframes petBob {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-4px) rotate(3deg); }
+  }
+  .pet-comment {
+    flex: 1;
+    min-width: 0;
+    background: var(--panel2);
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    position: relative;
+    color: var(--text);
+    font-weight: 700;
+  }
+  .pet-comment::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 14px;
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid var(--panel2);
+  }
+
+  /* 카드 타이틀 */
+  .card-title {
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.4;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .card-title a:hover { color: var(--accent); }
+  .card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  /* 가격/수치 표시 */
+  .big-value {
+    font-family: 'Jua', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 4px 0;
+  }
+  .big-value.up { color: var(--green); }
+  .big-value.down { color: var(--red); }
+  .big-value.neutral { color: var(--text); }
+
+  .change {
+    font-family: 'Jua', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .change.up { color: var(--green); }
+  .change.down { color: var(--red); }
+  .change::before {
+    content: '';
+    display: inline-block;
+    margin-right: 4px;
+  }
+  .change.up::before { content: '▲'; }
+  .change.down::before { content: '▼'; }
+
+  .label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .symbol {
+    font-family: 'Jua', sans-serif;
+    font-size: 16px;
+    color: var(--accent);
+    font-weight: 800;
+  }
+
+  /* 작은 차트 영역 */
+  .mini-chart {
+    height: 40px;
+    margin-top: 6px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .mini-chart .bar {
+    flex: 1;
+    background: var(--accent);
+    border-radius: 1px 1px 0 0;
+    min-height: 4px;
+    opacity: 0.7;
+  }
+
+  /* 로딩 */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .loading::after {
+    content: '';
+    display: inline-block;
+    margin-left: 4px;
+    animation: dots 1.5s steps(4, end) infinite;
+  }
+  @keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+  }
+
+  .err {
+    text-align: center;
+    padding: 20px;
+    color: var(--red);
+    font-size: 12px;
+    background: rgba(255,107,107,0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(255,107,107,0.3);
+  }
+
+  /* 날씨 카드 */
+  .weather-icon {
+    font-size: 42px;
+    text-align: center;
+    margin: 4px 0;
+  }
+  .weather-temp {
+    font-family: 'Jua', sans-serif;
+    font-size: 32px;
+    text-align: center;
+    color: var(--gold);
+    font-weight: 800;
+  }
+  .weather-detail {
+    display: flex;
+    justify-content: space-around;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 700;
+  }
+
+  /* 도시 선택 */
+  .city-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    padding: 8px 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .city-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .city-selector select {
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .city-selector select:focus { outline: none; border-color: var(--accent); }
+  .city-apply-btn {
+    background: var(--accent);
+    border: none;
+    color: var(--bg);
+    padding: 5px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .city-apply-btn:hover { background: #4ab098; }
+
+  /* 추천 종목 카드 강조 */
+  .card.recommend {
+    border-color: var(--gold);
+    background: linear-gradient(180deg, rgba(255,198,64,0.08) 0%, var(--bg2) 100%);
+  }
+  .card.warning {
+    border-color: var(--red);
+    background: linear-gradient(180deg, rgba(255,107,107,0.08) 0%, var(--bg2) 100%);
+  }
+  .recommend-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .recommend-tag.buy {
+    background: var(--green);
+    color: var(--bg);
+  }
+  .recommend-tag.watch {
+    background: var(--gold);
+    color: var(--bg);
+  }
+  .recommend-tag.caution {
+    background: var(--red);
+    color: #fff;
+  }
+  .recommend-reason {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 4px;
+    font-weight: 700;
+  }
+
+
+  .footer {
+    margin-top: 30px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    line-height: 1.7;
+    padding: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 22px; }
+  }
+</style>
+<script src="nav.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="header">
+    <div>
+      <h1>🌍 데일리 모닝</h1>
+      <div class="date" id="today-date"></div>
+    </div>
+    <button class="refresh-btn" id="refresh-btn">🔄 새로고침</button>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-cat="all">전체</button>
+    <button class="tab" data-cat="news">📰 해외뉴스</button>
+    <button class="tab" data-cat="k-news">📰 한국뉴스</button>
+    <button class="tab" data-cat="us-stock">📈 미국주식</button>
+    <button class="tab" data-cat="kr-stock">📊 한국주식</button>
+    <button class="tab" data-cat="recommend">⭐ 추천종목</button>
+    <button class="tab" data-cat="crypto">🪙 코인</button>
+    <button class="tab" data-cat="fx">💱 환율</button>
+    <button class="tab" data-cat="weather">🌤 날씨</button>
+  </div>
+
+  <!-- 한국 날씨 도시 선택 -->
+  <div class="city-selector" id="city-selector">
+    <span class="city-label">🇰🇷 한국 도시:</span>
+    <select id="kr-city-select">
+      <option value="seoul">서울</option>
+      <option value="busan">부산</option>
+      <option value="incheon">인천</option>
+      <option value="daegu">대구</option>
+      <option value="daejeon">대전</option>
+      <option value="gwangju">광주</option>
+      <option value="ulsan">울산</option>
+      <option value="suwon">수원</option>
+      <option value="changwon">창원</option>
+      <option value="jeju">제주</option>
+      <option value="chuncheon">춘천</option>
+      <option value="gangneung">강릉</option>
+      <option value="jeonju">전주</option>
+      <option value="pohang">포항</option>
+      <option value="andong">안동</option>
+    </select>
+    <button class="city-apply-btn" id="city-apply-btn">📍 변경</button>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="loading">데이터 불러오는 중</div>
+  </div>
+
+  <div class="footer">
+    데이터 출처: CoinGecko, ExchangeRate-API, Open-Meteo, Yahoo Finance, RSS feeds<br>
+    펫 마스코트는 실제 시세/뉴스에 따라 다른 코멘트를 합니다 🐾
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════
+   상태
+════════════════════════════════════════════════ */
+const state = {
+  petData: [],
+  cards: [],
+  currentCat: 'all',
+  krCity: localStorage.getItem('daily_kr_city') || 'seoul',
+};
+
+const $ = id => document.getElementById(id);
+
+/* ════════════════════════════════════════════════
+   날짜 표시
+════════════════════════════════════════════════ */
+function updateDate() {
+  const d = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  $('today-date').textContent = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]}) ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} 기준`;
+}
+
+/* ════════════════════════════════════════════════
+   펫 데이터 로드
+════════════════════════════════════════════════ */
+async function loadPets() {
+  try {
+    const r = await fetch('pet_info_data.json?t=' + Date.now(), { cache: 'no-store' });
+    if (r.ok) {
+      const data = await r.json();
+      if (Array.isArray(data)) state.petData = data;
+    }
+  } catch(e) { console.warn('펫 로드 실패', e); }
+}
+
+function randomPet(filter) {
+  let pool = state.petData;
+  if (filter) pool = pool.filter(filter);
+  if (pool.length === 0) pool = state.petData;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function petByAttr(attr) {
+  // 속성 기반 펫 선택 (수=물/금융, 화=뉴스, 풍=빠름, 지=안정)
+  return randomPet(p => (p.attr || {})[attr] >= 5);
+}
+
+/* ════════════════════════════════════════════════
+   펫 코멘트 생성기
+════════════════════════════════════════════════ */
+function commentForChange(pct, type) {
+  // pct: 변동률 (퍼센트). 양수=상승.
+  if (pct === null || pct === undefined || isNaN(pct)) {
+    return randPick([
+      '오늘은 어떨까~?',
+      '상태 알아보는 중!',
+      '두근두근...',
+    ]);
+  }
+  if (type === 'fx') {
+    // 환율은 올라가면 원화 약세
+    if (pct > 1) return randPick(['헉 환율 많이 올랐어 😱', '달러 비싸지고 있어!', '여행 가실 분들 주목 ㅠ']);
+    if (pct > 0.3) return randPick(['살짝 올랐네', '조심조심~', '미국 가실 분 미리 환전?']);
+    if (pct < -1) return randPick(['환율 뚝! 😎', '원화 강세!', '해외직구 갈 시간!']);
+    if (pct < -0.3) return randPick(['살짝 떨어졌어', '환율 안정세~']);
+    return randPick(['평온~ 😌', '큰 변동 없네', '오늘은 무난해']);
+  }
+  if (type === 'crypto') {
+    if (pct > 10) return randPick(['🚀🚀🚀 떡상이다!!', '와우 폭등 중!!', '대박~ 가즈아!']);
+    if (pct > 3) return randPick(['오 좋아 좋아 📈', '슬슬 가는데?', '오늘 좋네!']);
+    if (pct > 0) return randPick(['살짝 상승 중~', '나쁘지 않아', '평범한 그린']);
+    if (pct > -3) return randPick(['살짝 빠졌어', '큰일은 아냐', '주의 모드']);
+    if (pct > -10) return randPick(['음... 떨어지고 있어', '버티자 ㅠㅠ', '존버각']);
+    return randPick(['💀 폭락이다 도망쳐!!', '이게 뭐야 ㅠㅠㅠ', '익절했어야...']);
+  }
+  if (type === 'stock') {
+    if (pct > 5) return randPick(['🔥 활활 타오르네!', '주가 떡상!', '오늘 대박!']);
+    if (pct > 1) return randPick(['오 상승세 좋아!', '주주분들 축하~ 🎉', '기분 좋은 그린!']);
+    if (pct > 0) return randPick(['살짝 올랐어', '소소하게 상승~', '나쁘지 않아 😊']);
+    if (pct > -1) return randPick(['보합권이네', '큰 변화 없음', '잠잠한 하루']);
+    if (pct > -5) return randPick(['음 하락세 ㅠ', '오늘은 빨간날', '버텨봐야지']);
+    return randPick(['😱 폭락이야!!', '이거 어쩌지...', '존버모드 ON']);
+  }
+  return '음...';
+}
+
+function commentForNews(title) {
+  // 뉴스 제목 키워드 기반 코멘트
+  const t = (title || '').toLowerCase();
+  const keywords = [
+    { keys: ['전쟁', '공격', '폭발', 'war', 'attack', 'killed'], comments: ['🥺 무서운 소식이야...', '평화가 빨리 왔으면', '안타깝다 ㅠㅠ'] },
+    { keys: ['금리', '인플레', 'inflation', 'rate', 'fed'], comments: ['💸 돈 얘기다~', '경제가 어려워 ㅠ', '금리 어떡하지?'] },
+    { keys: ['ai', '인공지능', 'gpt', 'chatgpt'], comments: ['🤖 또 AI 얘기?!', 'AI 세상 진짜 빠르다', '신기방기'] },
+    { keys: ['선거', '대통령', 'election', 'president', 'biden', 'trump'], comments: ['🗳 정치 뉴스다', '관심 있게 봐야지', '뉴스 속보!'] },
+    { keys: ['우주', 'nasa', 'space', '화성', '달'], comments: ['🚀 우주야 우주!', '낭만 가득~', '꿈만 같아'] },
+    { keys: ['기후', '온난화', 'climate', '환경'], comments: ['🌱 지구 지키자', '심각하다 진짜', '우리도 도와야지'] },
+    { keys: ['올림픽', '월드컵', 'world cup', 'olympic'], comments: ['🏆 스포츠 뉴스!', '응원합니다!', '재밌겠다~'] },
+    { keys: ['삼성', 'samsung', 'apple', 'tesla', '테슬라'], comments: ['📱 기업 소식이야', '관련 주식 어떨까?', '주목!'] },
+    { keys: ['확진', '코로나', '바이러스', 'virus', 'covid'], comments: ['😷 건강 조심해!', '마스크 챙기자', '조심조심~'] },
+  ];
+  for (const k of keywords) {
+    if (k.keys.some(kw => t.includes(kw))) {
+      return randPick(k.comments);
+    }
+  }
+  return randPick([
+    '오늘의 소식이야~',
+    '한 번 읽어봐!',
+    '재밌는 뉴스다',
+    '뭔 일이지?',
+    '읽을 가치 있어!',
+  ]);
+}
+
+function commentForWeather(temp, condition) {
+  const tempInt = Math.round(temp);
+  if (tempInt >= 30) return randPick(['🥵 너무 더워!', '에어컨 가즈아', '시원한 거 마셔요']);
+  if (tempInt >= 25) return randPick(['살짝 더운 날씨', '얇게 입자!', '여름이네~']);
+  if (tempInt >= 20) return randPick(['딱 좋은 날씨~', '산책하기 좋아', '편안한 온도']);
+  if (tempInt >= 15) return randPick(['살짝 쌀쌀해', '얇은 겉옷 추천', '아침저녁 주의']);
+  if (tempInt >= 10) return randPick(['🍁 가을느낌', '겉옷 챙겨!', '쌀쌀하네~']);
+  if (tempInt >= 5) return randPick(['🥶 춥다 추워', '두툼하게 입어', '따뜻하게 보내']);
+  if (tempInt >= 0) return randPick(['❄️ 본격 겨울', '코트 필수!', '핫팩 챙기세요']);
+  return randPick(['🥶 한파야 한파!', '얼어붙는다', '집에 있고 싶어요']);
+}
+
+function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+/* ════════════════════════════════════════════════
+   카드 렌더링
+════════════════════════════════════════════════ */
+function escapeHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function renderCard(c) {
+  const pet = c.pet;
+  const petImg = pet ? `<img class="pet-img" src="${pet.image}" alt="${pet.name}" onerror="this.style.visibility='hidden'">` : '';
+  const extraClass = c.isRecommend ? ' recommend' : c.isWarning ? ' warning' : '';
+  return `
+    <div class="card${extraClass}" data-cat="${c.cat}">
+      <span class="card-cat ${c.cat}">${c.catLabel}</span>
+      ${c.body}
+      <div class="pet-row">
+        ${petImg}
+        <div class="pet-comment">${escapeHtml(c.comment)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderGrid() {
+  const grid = $('grid');
+  const filtered = state.currentCat === 'all'
+    ? state.cards
+    : state.cards.filter(c => c.cat === state.currentCat);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="loading">데이터 없음</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(renderCard).join('');
+}
+
+/* ════════════════════════════════════════════════
+   데이터 가져오기
+════════════════════════════════════════════════ */
+async function fetchAll() {
+  $('grid').innerHTML = '<div class="loading">전 세계 데이터 모으는 중</div>';
+  state.cards = [];
+
+  const tasks = [
+    fetchCrypto(),
+    fetchFx(),
+    fetchWeather(),
+    fetchUSStocks(),
+    fetchKRStocks(),
+    fetchKoreanNews(),
+    fetchWorldNews(),
+  ];
+
+  await Promise.allSettled(tasks);
+
+  // 카드 섞기 (전체 보기에서 다양하게)
+  state.cards = shuffle(state.cards);
+  renderGrid();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ──── 코인 시세 (CoinGecko) ──────────────────── */
+async function fetchCrypto() {
+  try {
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,ripple&vs_currencies=usd&include_24hr_change=true';
+    const r = await fetch(url);
+    const data = await r.json();
+    const meta = [
+      { id: 'bitcoin', sym: 'BTC', name: '비트코인', emoji: '₿' },
+      { id: 'ethereum', sym: 'ETH', name: '이더리움', emoji: 'Ξ' },
+      { id: 'solana', sym: 'SOL', name: '솔라나', emoji: '◎' },
+      { id: 'ripple', sym: 'XRP', name: '리플', emoji: '✕' },
+      { id: 'dogecoin', sym: 'DOGE', name: '도지코인', emoji: 'Ð' },
+    ];
+    meta.forEach(m => {
+      const d = data[m.id];
+      if (!d) return;
+      const price = d.usd;
+      const pct = d.usd_24h_change;
+      const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
+      const pet = petByAttr('수') || randomPet();
+      state.cards.push({
+        cat: 'crypto',
+        catLabel: '코인',
+        pet,
+        comment: commentForChange(pct, 'crypto'),
+        body: `
+          <div class="label-row">
+            <span class="symbol">${m.emoji} ${m.sym}</span>
+            <span class="card-meta">${m.name}</span>
+          </div>
+          <div class="big-value ${upDown}">$${price.toLocaleString('en-US', { maximumFractionDigits: price > 1 ? 2 : 4 })}</div>
+          <div class="change ${upDown}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (24h)</div>
+        `,
+      });
+    });
+  } catch(e) {
+    console.warn('crypto fetch fail', e);
+  }
+}
+
+/* ──── 환율 (ExchangeRate-API.io 무료 / open) ──── */
+async function fetchFx() {
+  try {
+    // open exchange rates (free, CORS OK)
+    const r = await fetch('https://open.er-api.com/v6/latest/USD');
+    const data = await r.json();
+    const krw = data.rates?.KRW;
+    const jpy = data.rates?.JPY;
+    const eur = data.rates?.EUR;
+    const cny = data.rates?.CNY;
+    if (!krw) return;
+
+    // KRW: 어제값과 비교 어렵지만, 임의의 추세는 못함. 변동률 없이 현재값만.
+    const fxList = [
+      { name: '원/달러', sym: 'USD/KRW', val: krw, emoji: '🇰🇷🇺🇸', flag: 'KRW' },
+      { name: '원/엔', sym: 'JPY/KRW', val: krw / jpy * 100, emoji: '🇰🇷🇯🇵', flag: 'JPY100' },
+      { name: '원/유로', sym: 'EUR/KRW', val: krw / eur, emoji: '🇰🇷🇪🇺', flag: 'EUR' },
+      { name: '원/위안', sym: 'CNY/KRW', val: krw / cny, emoji: '🇰🇷🇨🇳', flag: 'CNY' },
+    ];
+    fxList.forEach(f => {
+      const pet = petByAttr('수') || randomPet();
+      state.cards.push({
+        cat: 'fx',
+        catLabel: '환율',
+        pet,
+        comment: commentForChange(0, 'fx'), // 변동률 정보 없으니 평온
+        body: `
+          <div class="label-row">
+            <span class="symbol">${f.emoji} ${f.sym}</span>
+            <span class="card-meta">${f.name}</span>
+          </div>
+          <div class="big-value neutral">${f.val.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}<span style="font-size:14px;"> 원</span></div>
+        `,
+      });
+    });
+  } catch(e) {
+    console.warn('fx fetch fail', e);
+  }
+}
+
+/* ──── 한국 도시 좌표 ──── */
+const KR_CITIES = {
+  seoul:    { name: '서울',   lat: 37.5665, lon: 126.9780 },
+  busan:    { name: '부산',   lat: 35.1796, lon: 129.0756 },
+  incheon:  { name: '인천',   lat: 37.4563, lon: 126.7052 },
+  daegu:    { name: '대구',   lat: 35.8714, lon: 128.6014 },
+  daejeon:  { name: '대전',   lat: 36.3504, lon: 127.3845 },
+  gwangju:  { name: '광주',   lat: 35.1595, lon: 126.8526 },
+  ulsan:    { name: '울산',   lat: 35.5384, lon: 129.3114 },
+  suwon:    { name: '수원',   lat: 37.2636, lon: 127.0286 },
+  changwon: { name: '창원',   lat: 35.2280, lon: 128.6811 },
+  jeju:     { name: '제주',   lat: 33.4996, lon: 126.5312 },
+  chuncheon:{ name: '춘천',   lat: 37.8813, lon: 127.7300 },
+  gangneung:{ name: '강릉',   lat: 37.7519, lon: 128.8761 },
+  jeonju:   { name: '전주',   lat: 35.8242, lon: 127.1480 },
+  pohang:   { name: '포항',   lat: 36.0190, lon: 129.3435 },
+  andong:   { name: '안동',   lat: 36.5684, lon: 128.7294 },
+};
+
+/* ──── 날씨 (Open-Meteo 무료, CORS OK) ──── */
+async function fetchWeather() {
+  // 한국 선택 도시 + 해외 주요 도시
+  const krCityKey = state.krCity || 'seoul';
+  const krCity = KR_CITIES[krCityKey];
+  const cities = [
+    { name: krCity.name, lat: krCity.lat, lon: krCity.lon, emoji: '🇰🇷', isMain: true },
+    { name: '뉴욕', lat: 40.7128, lon: -74.0060, emoji: '🇺🇸' },
+    { name: '도쿄', lat: 35.6762, lon: 139.6503, emoji: '🇯🇵' },
+    { name: '런던', lat: 51.5074, lon: -0.1278, emoji: '🇬🇧' },
+  ];
+  for (const c of cities) {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto`;
+      const r = await fetch(url);
+      const d = await r.json();
+      const cur = d.current;
+      if (!cur) continue;
+      const code = cur.weather_code;
+      const icon = weatherIconFromCode(code);
+      const desc = weatherDescFromCode(code);
+      const pet = petByAttr('풍') || randomPet();
+      state.cards.push({
+        cat: 'weather',
+        catLabel: c.isMain ? '한국날씨' : '해외날씨',
+        pet,
+        comment: commentForWeather(cur.temperature_2m, desc),
+        body: `
+          <div class="label-row">
+            <span class="symbol">${c.emoji} ${c.name}${c.isMain ? ' ⭐' : ''}</span>
+            <span class="card-meta">${desc}</span>
+          </div>
+          <div class="weather-icon">${icon}</div>
+          <div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
+          <div class="weather-detail">
+            <span>💨 ${Math.round(cur.wind_speed_10m)}km/h</span>
+            <span>💧 ${Math.round(cur.relative_humidity_2m)}%</span>
+          </div>
+        `,
+      });
+    } catch(e) { console.warn(`weather ${c.name} fail`, e); }
+  }
+}
+
+function weatherIconFromCode(c) {
+  if (c === 0) return '☀️';
+  if (c <= 3) return '⛅';
+  if (c <= 48) return '🌫';
+  if (c <= 57) return '🌦';
+  if (c <= 67) return '🌧';
+  if (c <= 77) return '❄️';
+  if (c <= 82) return '🌧';
+  if (c <= 86) return '🌨';
+  if (c <= 99) return '⛈';
+  return '🌤';
+}
+function weatherDescFromCode(c) {
+  if (c === 0) return '맑음';
+  if (c <= 3) return '구름조금';
+  if (c <= 48) return '안개';
+  if (c <= 57) return '이슬비';
+  if (c <= 67) return '비';
+  if (c <= 77) return '눈';
+  if (c <= 82) return '소나기';
+  if (c <= 86) return '눈보라';
+  if (c <= 99) return '뇌우';
+  return '날씨';
+}
+
+/* ──── 미국 주식 (Stooq CSV - CORS OK) ──── */
+async function fetchUSStocks() {
+  const tickers = [
+    { sym: 'AAPL', name: '애플', emoji: '🍎' },
+    { sym: 'MSFT', name: '마이크로소프트', emoji: '🪟' },
+    { sym: 'GOOGL', name: '구글', emoji: '🔍' },
+    { sym: 'AMZN', name: '아마존', emoji: '📦' },
+    { sym: 'TSLA', name: '테슬라', emoji: '🚗' },
+    { sym: 'NVDA', name: '엔비디아', emoji: '🟢' },
+    { sym: 'META', name: '메타', emoji: '🌐' },
+    { sym: 'NFLX', name: '넷플릭스', emoji: '🎬' },
+    { sym: 'AMD', name: 'AMD', emoji: '🔴' },
+    { sym: 'INTC', name: '인텔', emoji: '🔵' },
+    // 지수
+    { sym: '^SPX', stooq: '^spx', name: 'S&P 500', emoji: '📈', isIndex: true },
+    { sym: '^NDX', stooq: '^ndx', name: '나스닥100', emoji: '💻', isIndex: true },
+    { sym: '^DJI', stooq: '^dji', name: '다우존스', emoji: '🏛', isIndex: true },
+  ];
+  // 통계 수집
+  const fetchedStocks = [];
+  for (const t of tickers) {
+    try {
+      const stooqSym = t.stooq || (t.sym.toLowerCase() + '.us');
+      const url = `https://stooq.com/q/l/?s=${stooqSym}&f=sd2t2ohlcv&h&e=csv`;
+      const r = await fetch(url);
+      const txt = await r.text();
+      const lines = txt.trim().split('\n');
+      if (lines.length < 2) continue;
+      const cols = lines[1].split(',');
+      const open = parseFloat(cols[3]);
+      const close = parseFloat(cols[6]);
+      if (isNaN(close)) continue;
+      const pct = ((close - open) / open) * 100;
+      fetchedStocks.push({ ...t, open, close, pct });
+      const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
+      const pet = randomPet();
+      state.cards.push({
+        cat: 'us-stock',
+        catLabel: t.isIndex ? '美지수' : '美주식',
+        pet,
+        comment: commentForChange(pct, 'stock'),
+        body: `
+          <div class="label-row">
+            <span class="symbol">${t.emoji} ${t.sym.replace('^','')}</span>
+            <span class="card-meta">${t.name}</span>
+          </div>
+          <div class="big-value ${upDown}">${t.isIndex ? close.toFixed(2) : '$' + close.toFixed(2)}</div>
+          <div class="change ${upDown}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (당일)</div>
+        `,
+      });
+    } catch(e) { console.warn(`stock ${t.sym} fail`, e); }
+  }
+  // 추천/주의 카드 생성
+  generateRecommendations(fetchedStocks, 'us');
+}
+
+/* ──── 한국 주식 (Stooq KR) ──── */
+async function fetchKRStocks() {
+  const tickers = [
+    { sym: '^KOSPI', stooq: '^kospi', name: '코스피', emoji: '🇰🇷', isIndex: true },
+    { sym: '^KOSDAQ', stooq: '^kosdaq', name: '코스닥', emoji: '💹', isIndex: true },
+    { sym: '005930', stooq: '005930.kr', name: '삼성전자', emoji: '📱' },
+    { sym: '000660', stooq: '000660.kr', name: 'SK하이닉스', emoji: '💾' },
+    { sym: '035420', stooq: '035420.kr', name: '네이버', emoji: '🔎' },
+    { sym: '035720', stooq: '035720.kr', name: '카카오', emoji: '💛' },
+    { sym: '005380', stooq: '005380.kr', name: '현대차', emoji: '🚙' },
+    { sym: '051910', stooq: '051910.kr', name: 'LG화학', emoji: '🧪' },
+    { sym: '006400', stooq: '006400.kr', name: '삼성SDI', emoji: '🔋' },
+    { sym: '207940', stooq: '207940.kr', name: '삼성바이오', emoji: '💊' },
+    { sym: '003670', stooq: '003670.kr', name: '포스코홀딩스', emoji: '🏗' },
+    { sym: '068270', stooq: '068270.kr', name: '셀트리온', emoji: '🧬' },
+  ];
+  const fetchedStocks = [];
+  for (const t of tickers) {
+    try {
+      const url = `https://stooq.com/q/l/?s=${t.stooq}&f=sd2t2ohlcv&h&e=csv`;
+      const r = await fetch(url);
+      const txt = await r.text();
+      const lines = txt.trim().split('\n');
+      if (lines.length < 2) continue;
+      const cols = lines[1].split(',');
+      const open = parseFloat(cols[3]);
+      const close = parseFloat(cols[6]);
+      if (isNaN(close)) continue;
+      const pct = ((close - open) / open) * 100;
+      fetchedStocks.push({ ...t, open, close, pct });
+      const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
+      const pet = randomPet();
+      state.cards.push({
+        cat: 'kr-stock',
+        catLabel: t.isIndex ? '韓지수' : '韓주식',
+        pet,
+        comment: commentForChange(pct, 'stock'),
+        body: `
+          <div class="label-row">
+            <span class="symbol">${t.emoji} ${t.sym.replace('^','')}</span>
+            <span class="card-meta">${t.name}</span>
+          </div>
+          <div class="big-value ${upDown}">${t.isIndex ? close.toFixed(2) : close.toLocaleString('ko-KR') + '원'}</div>
+          <div class="change ${upDown}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (당일)</div>
+        `,
+      });
+    } catch(e) { console.warn(`kr stock ${t.sym} fail`, e); }
+  }
+  generateRecommendations(fetchedStocks, 'kr');
+}
+
+/* ──── 추천/주의 종목 카드 생성 ──── */
+function generateRecommendations(stocks, market) {
+  // 지수 빼고 종목만
+  const onlyStocks = stocks.filter(s => !s.isIndex);
+  if (onlyStocks.length === 0) return;
+
+  // 정렬해서 상승률 TOP 1, 하락률 TOP 1 뽑기
+  const sortedDesc = [...onlyStocks].sort((a, b) => b.pct - a.pct);
+  const topGainer = sortedDesc[0];
+  const topLoser = sortedDesc[sortedDesc.length - 1];
+
+  const marketLabel = market === 'us' ? '미국' : '한국';
+  const currency = market === 'us' ? '$' : '';
+  const currencyAfter = market === 'us' ? '' : '원';
+
+  // 상승 종목 추천
+  if (topGainer && topGainer.pct > 0) {
+    const tag = topGainer.pct > 5 ? 'buy' : 'watch';
+    const tagText = topGainer.pct > 5 ? '🔥 강력 추천' : '👀 관심 종목';
+    const reason = topGainer.pct > 5
+      ? `오늘 ${marketLabel} 시장에서 가장 뜨거운 종목! 상승 흐름이 강력해.`
+      : `상승세 진입. 추가 상승 여부 지켜보면 좋음.`;
+    const pet = randomPet();
+    state.cards.push({
+      cat: 'recommend',
+      catLabel: '⭐추천',
+      pet,
+      comment: `오늘은 ${topGainer.name}이(가) 핫해! 🌟`,
+      body: `
+        <div class="recommend-tag ${tag}">${tagText}</div>
+        <div class="label-row">
+          <span class="symbol">${topGainer.emoji} ${topGainer.name}</span>
+          <span class="card-meta">${topGainer.sym.replace('^','')}</span>
+        </div>
+        <div class="big-value up">${currency}${topGainer.close.toLocaleString()}${currencyAfter}</div>
+        <div class="change up">${topGainer.pct >= 0 ? '+' : ''}${topGainer.pct.toFixed(2)}%</div>
+        <div class="recommend-reason">💡 ${reason}</div>
+      `,
+      isRecommend: true,
+    });
+  }
+
+  // 하락 종목 주의
+  if (topLoser && topLoser.pct < 0) {
+    const tagText = topLoser.pct < -5 ? '⚠️ 주의' : '👀 관망';
+    const reason = topLoser.pct < -5
+      ? `오늘 ${marketLabel} 시장에서 가장 큰 낙폭. 추가 하락 가능성 주의.`
+      : `약세 흐름. 매수 시점 신중히 판단 필요.`;
+    const pet = randomPet();
+    state.cards.push({
+      cat: 'recommend',
+      catLabel: '⚠️주의',
+      pet,
+      comment: `${topLoser.name} 조심해야 해 ㅠㅠ`,
+      body: `
+        <div class="recommend-tag caution">${tagText}</div>
+        <div class="label-row">
+          <span class="symbol">${topLoser.emoji} ${topLoser.name}</span>
+          <span class="card-meta">${topLoser.sym.replace('^','')}</span>
+        </div>
+        <div class="big-value down">${currency}${topLoser.close.toLocaleString()}${currencyAfter}</div>
+        <div class="change down">${topLoser.pct.toFixed(2)}%</div>
+        <div class="recommend-reason">💡 ${reason}</div>
+      `,
+      isWarning: true,
+    });
+  }
+}
+
+/* ──── 한국 뉴스 (RSS via rss2json) ──── */
+async function fetchKoreanNews() {
+  try {
+    // rss2json 무료 API
+    const rss = encodeURIComponent('https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko');
+    const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
+    const r = await fetch(url);
+    const data = await r.json();
+    const items = (data.items || []).slice(0, 5);
+    items.forEach(it => {
+      const pet = petByAttr('화') || randomPet();
+      const ts = it.pubDate ? new Date(it.pubDate) : null;
+      const tsStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2,'0')}` : '';
+      state.cards.push({
+        cat: 'k-news',
+        catLabel: '한뉴스',
+        pet,
+        comment: commentForNews(it.title),
+        body: `
+          <div class="card-title">
+            <a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a>
+          </div>
+          <div class="card-meta">${escapeHtml((it.author||'').slice(0,30))} · ${tsStr}</div>
+        `,
+      });
+    });
+  } catch(e) {
+    console.warn('k-news fail', e);
+  }
+}
+
+/* ──── 번역 (MyMemory 무료 API) ──── */
+async function translateToKr(text) {
+  if (!text) return '';
+  try {
+    // 길이 제한 (MyMemory 500자)
+    const trimmed = text.length > 500 ? text.slice(0, 500) : text;
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trimmed)}&langpair=en|ko`;
+    const r = await fetch(url);
+    const data = await r.json();
+    if (data.responseData && data.responseData.translatedText) {
+      return data.responseData.translatedText;
+    }
+  } catch(e) { console.warn('translate fail', e); }
+  return text; // 실패 시 원문
+}
+
+/* ──── 해외 뉴스 (BBC RSS via rss2json + 번역) ──── */
+async function fetchWorldNews() {
+  try {
+    const rss = encodeURIComponent('http://feeds.bbci.co.uk/news/world/rss.xml');
+    const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
+    const r = await fetch(url);
+    const data = await r.json();
+    const items = (data.items || []).slice(0, 5);
+    // 번역은 병렬로
+    const translations = await Promise.all(items.map(it => translateToKr(it.title)));
+    items.forEach((it, idx) => {
+      const pet = petByAttr('풍') || randomPet();
+      const ts = it.pubDate ? new Date(it.pubDate) : null;
+      const tsStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2,'0')}` : '';
+      const koTitle = translations[idx];
+      const showOriginal = koTitle !== it.title;
+      state.cards.push({
+        cat: 'news',
+        catLabel: '世뉴스',
+        pet,
+        comment: commentForNews(it.title + ' ' + koTitle),
+        body: `
+          <div class="card-title">
+            <a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a>
+          </div>
+          ${showOriginal ? `<div class="card-meta" style="font-style:italic; opacity:0.7;">📰 ${escapeHtml(it.title)}</div>` : ''}
+          <div class="card-meta">BBC · ${tsStr}</div>
+        `,
+      });
+    });
+  } catch(e) {
+    console.warn('world news fail', e);
+  }
+}
+
+/* ════════════════════════════════════════════════
+   탭
+════════════════════════════════════════════════ */
+$('tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+  state.currentCat = tab.dataset.cat;
+  renderGrid();
+});
+
+$('refresh-btn').addEventListener('click', () => {
+  updateDate();
+  fetchAll();
+});
+
+$('city-apply-btn').addEventListener('click', () => {
+  const v = $('kr-city-select').value;
+  state.krCity = v;
+  localStorage.setItem('daily_kr_city', v);
+  fetchAll();
+});
+
+/* ════════════════════════════════════════════════
+   초기화
+════════════════════════════════════════════════ */
+(async () => {
+  updateDate();
+  $('kr-city-select').value = state.krCity;
+  await loadPets();
+  await fetchAll();
+  // 1분마다 시계 업데이트
+  setInterval(updateDate, 60000);
+})();
+</script>
+
+</body>
+</html>
