@@ -13,7 +13,6 @@
     --panel: #1a2332;
     --panel2: #232b3a;
     --border: #2a3344;
-    --border-hi: #3d4858;
     --text: #e8ecf2;
     --text-muted: #8a96a8;
     --accent: #5acba8;
@@ -104,115 +103,102 @@
     border-color: transparent;
   }
 
-  /* 검색바 (주식 탭 전용) */
-  .search-bar {
-    display: none;
-    background: var(--panel);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
+  /* 섹션 헤더 */
+  .section-h {
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    margin: 24px 0 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent);
+    display: flex;
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
   }
-  .search-bar.active { display: flex; }
-  .search-bar .search-label {
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  .search-bar input {
-    flex: 1;
-    min-width: 140px;
-    background: var(--bg2);
+  .section-h.recommend { border-left-color: var(--gold); }
+  .section-h.warning { border-left-color: var(--red); }
+
+  /* TradingView 위젯 컨테이너 */
+  .tv-container {
+    background: var(--panel);
     border: 1.5px solid var(--border);
-    color: var(--text);
-    padding: 8px 14px;
-    border-radius: 18px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .search-bar input:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-  .search-bar button {
-    background: var(--accent);
-    border: none;
-    color: var(--bg);
-    padding: 8px 16px;
-    border-radius: 18px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 800;
-  }
-  .search-bar button:hover { background: #4ab098; }
-  .search-bar .hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    width: 100%;
-    margin-top: 4px;
-  }
-  .search-bar .quick-add {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-  .quick-chip {
-    background: var(--bg2);
-    border: 1.5px solid var(--border);
-    color: var(--text-muted);
-    padding: 4px 10px;
     border-radius: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 0;
+    margin-bottom: 16px;
+    overflow: hidden;
   }
-  .quick-chip:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  .tv-container.full-chart {
+    height: 500px;
+  }
+  .tv-container.market-overview {
+    height: 600px;
+  }
+  .tv-container.ticker-tape {
+    height: 50px;
+  }
+  .tv-container.market-movers {
+    height: 500px;
+  }
+  .tv-container.symbol-info {
+    height: 200px;
   }
 
-  /* 추가된 종목 표시 */
-  .my-stocks {
-    display: none;
-    margin-bottom: 14px;
+  /* 외부 링크 버튼 */
+  .ext-link-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .ext-link {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
+    transition: all .15s;
+  }
+  .ext-link:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* 차트 검색 박스 */
+  .chart-search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
     flex-wrap: wrap;
   }
-  .my-stocks.active { display: flex; }
-  .my-stocks .label {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 700;
-  }
-  .my-stock-chip {
+  .chart-search-box select {
     background: var(--panel2);
     border: 1.5px solid var(--border);
     color: var(--text);
-    padding: 3px 10px 3px 8px;
-    border-radius: 12px;
-    font-size: 11px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .my-stock-chip .x {
-    color: var(--red);
     cursor: pointer;
-    font-weight: 800;
-    margin-left: 2px;
+  }
+  .chart-search-box select:focus { outline: none; border-color: var(--accent); }
+  .chart-search-box label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 700;
   }
 
   /* ════════════════════════════════════════
-     주식 카드 (전문가 스타일)
+     추천 종목 카드 (우리가 직접)
   ════════════════════════════════════════ */
   .stock-card {
     background: var(--panel);
@@ -230,7 +216,6 @@
     box-shadow: 0 0 0 1px rgba(255,80,80,0.2);
   }
 
-  /* 카드 상단: 회사명 + 가격 */
   .sc-header {
     display: flex;
     justify-content: space-between;
@@ -266,7 +251,7 @@
   }
   .sc-tag {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 3px 9px;
     border-radius: 10px;
     font-size: 10px;
     font-weight: 800;
@@ -288,7 +273,6 @@
     color: var(--red);
     border: 1px solid var(--red);
   }
-
   .sc-price {
     text-align: right;
   }
@@ -310,7 +294,6 @@
   .sc-change.up { color: var(--green); }
   .sc-change.down { color: var(--red); }
 
-  /* 시간대 비교 (전일/1주/1개월/등) */
   .sc-period-compare {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
@@ -339,74 +322,18 @@
   .sc-period-value.down { color: var(--red); }
   .sc-period-value.neutral { color: var(--text); }
 
-  /* 차트 영역 */
-  .sc-chart-wrap {
-    padding: 16px 20px 12px;
-    background: var(--bg2);
-  }
-  .sc-chart-tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-  .sc-chart-tab {
-    background: transparent;
-    border: 1.5px solid var(--border);
-    color: var(--text-muted);
-    padding: 4px 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 11px;
-    font-weight: 700;
-    transition: all .15s;
-  }
-  .sc-chart-tab:hover { color: var(--text); }
-  .sc-chart-tab.active {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-  }
-  .sc-chart {
-    width: 100%;
-    height: 160px;
-    display: block;
-  }
-  .sc-chart-loading {
-    text-align: center;
-    color: var(--text-muted);
-    padding: 60px 0;
-    font-size: 12px;
-  }
-
-  /* OHLC 통계 */
-  .sc-stats {
-    padding: 10px 20px 16px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 10px;
-    background: var(--bg2);
-  }
-  .sc-stat {
-    text-align: left;
-  }
-  .sc-stat-label {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-weight: 700;
-  }
-  .sc-stat-val {
-    font-family: 'Jua', sans-serif;
+  .sc-recommend-reason {
+    padding: 12px 20px;
     font-size: 13px;
-    color: var(--text);
-    margin-top: 1px;
-    font-weight: 800;
+    color: var(--gold);
+    font-weight: 700;
+    line-height: 1.5;
+    background: var(--bg2);
   }
-  .sc-stat-val.up { color: var(--green); }
-  .sc-stat-val.down { color: var(--red); }
+  .sc-warning-reason {
+    color: var(--red);
+  }
 
-  /* 펫 코멘트 (카드 하단) */
   .sc-pet-row {
     display: flex;
     gap: 10px;
@@ -451,16 +378,16 @@
     border-bottom: 6px solid transparent;
     border-right: 6px solid var(--panel2);
   }
-  .sc-recommend-reason {
-    padding: 0 20px 12px;
-    font-size: 12px;
-    color: var(--gold);
-    font-weight: 700;
-    line-height: 1.5;
+
+  /* 추천 종목 그리드 */
+  .recommend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 14px;
   }
 
   /* ════════════════════════════════════════
-     비주식 카드 (코인/뉴스/날씨/환율) - 작게
+     비주식 카드
   ════════════════════════════════════════ */
   .grid {
     display: grid;
@@ -485,8 +412,6 @@
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.4);
   }
-
-  /* 펫 + 코멘트 (작은 카드) */
   .pet-row {
     display: flex;
     gap: 10px;
@@ -592,10 +517,11 @@
 
   @media (max-width: 600px) {
     .grid { grid-template-columns: 1fr; }
+    .recommend-grid { grid-template-columns: 1fr; }
     .header h1 { font-size: 22px; }
-    .sc-header { padding: 14px; }
-    .sc-name { font-size: 18px; }
-    .sc-price-now { font-size: 22px; }
+    .tv-container.full-chart { height: 400px; }
+    .tv-container.market-overview { height: 500px; }
+    .tv-container.market-movers { height: 400px; }
   }
 </style>
 <script src="nav.js"></script>
@@ -622,25 +548,13 @@
     <button class="tab" data-cat="weather">🌤 날씨</button>
   </div>
 
-  <!-- 검색바 (주식 탭 전용) -->
-  <div class="search-bar" id="search-bar">
-    <span class="search-label">🔍 종목 검색</span>
-    <input type="text" id="stock-search" placeholder="회사명 또는 티커 (예: AAPL, 카카오, 005930)">
-    <button id="stock-search-btn">추가</button>
-    <div class="quick-add" id="quick-add"></div>
-    <div class="hint">💡 한국 종목은 6자리 코드 또는 회사명으로, 미국은 티커(AAPL 등)로 검색</div>
-  </div>
-
-  <!-- 내가 추가한 종목들 표시 -->
-  <div class="my-stocks" id="my-stocks"></div>
-
   <!-- 메인 컨테이너 -->
   <div id="main-container">
-    <div class="loading">데이터 불러오는 중...</div>
+    <div class="loading">불러오는 중...</div>
   </div>
 
   <div class="footer">
-    데이터: Yahoo Finance, CoinGecko, ExchangeRate-API, Open-Meteo, BBC, Google News<br>
+    차트: TradingView · 추천종목 분석: Yahoo Finance · 코인: CoinGecko · 환율: ExchangeRate-API · 날씨: Open-Meteo · 뉴스: BBC, Google News<br>
     펫 마스코트가 시세에 따라 코멘트 합니다 🐾
   </div>
 </div>
@@ -652,111 +566,12 @@
 const state = {
   petData: [],
   currentCat: 'us-stock',
-  // 추가한 종목 (localStorage 동기화)
-  myUSStocks: JSON.parse(localStorage.getItem('myUS') || '[]'),
-  myKRStocks: JSON.parse(localStorage.getItem('myKR') || '[]'),
-  // 미니카드용 캐시 (코인/환율/뉴스/날씨)
-  miniCards: {},
-  // 주식 데이터 캐시
-  stockCache: {},
-  // 차트 시간대 선택 (sym -> '1d'|'1w'|'1m'|'3m'|'1y')
-  chartRange: {},
 };
 
 const $ = id => document.getElementById(id);
 
 /* ════════════════════════════════════════════════
-   기본 종목 (대표 3개씩)
-════════════════════════════════════════════════ */
-const DEFAULT_US = [
-  { sym: 'AAPL',  name: '애플',     emoji: '🍎' },
-  { sym: 'TSLA',  name: '테슬라',   emoji: '🚗' },
-  { sym: 'NVDA',  name: '엔비디아', emoji: '🟢' },
-];
-const DEFAULT_KR = [
-  { sym: '005930.KS', name: '삼성전자',    emoji: '📱' },
-  { sym: '000660.KS', name: 'SK하이닉스',   emoji: '💾' },
-  { sym: '035420.KS', name: '네이버',      emoji: '🔎' },
-];
-
-/* 검색용 한국 종목 매핑 (회사명 ↔ 티커) */
-const KR_STOCK_DB = [
-  { sym: '005930.KS', name: '삼성전자',    emoji: '📱', aliases: ['삼성', 'samsung'] },
-  { sym: '000660.KS', name: 'SK하이닉스',   emoji: '💾', aliases: ['하이닉스', 'sk하이닉스'] },
-  { sym: '035420.KS', name: '네이버',      emoji: '🔎', aliases: ['naver'] },
-  { sym: '035720.KS', name: '카카오',      emoji: '💛', aliases: ['kakao'] },
-  { sym: '005380.KS', name: '현대차',      emoji: '🚙', aliases: ['현대자동차', 'hyundai'] },
-  { sym: '051910.KS', name: 'LG화학',      emoji: '🧪', aliases: ['엘지화학', 'lg chem'] },
-  { sym: '006400.KS', name: '삼성SDI',     emoji: '🔋', aliases: ['삼성에스디아이'] },
-  { sym: '207940.KS', name: '삼성바이오',   emoji: '💊', aliases: ['삼성바이오로직스'] },
-  { sym: '003670.KS', name: '포스코홀딩스', emoji: '🏗', aliases: ['포스코', 'posco'] },
-  { sym: '068270.KS', name: '셀트리온',    emoji: '🧬', aliases: ['celltrion'] },
-  { sym: '055550.KS', name: '신한지주',    emoji: '🏦', aliases: ['신한금융', '신한'] },
-  { sym: '105560.KS', name: 'KB금융',      emoji: '💴', aliases: ['kb', '국민은행'] },
-  { sym: '028260.KS', name: '삼성물산',    emoji: '🏢', aliases: [] },
-  { sym: '096770.KS', name: 'SK이노베이션', emoji: '⛽', aliases: ['sk이노'] },
-  { sym: '015760.KS', name: '한국전력',    emoji: '⚡', aliases: ['한전', 'kepco'] },
-  { sym: '012330.KS', name: '현대모비스',   emoji: '🔧', aliases: ['모비스'] },
-  { sym: '066570.KS', name: 'LG전자',      emoji: '📺', aliases: ['엘지전자', 'lg전자'] },
-  { sym: '034730.KS', name: 'SK',          emoji: '🏭', aliases: [] },
-  { sym: '000270.KS', name: '기아',        emoji: '🏎', aliases: ['kia'] },
-  { sym: '017670.KS', name: 'SK텔레콤',    emoji: '📡', aliases: ['sk텔레콤', 'skt'] },
-  { sym: '030200.KS', name: 'KT',          emoji: '☎️', aliases: [] },
-  { sym: '032830.KS', name: '삼성생명',    emoji: '💎', aliases: [] },
-  { sym: '009150.KS', name: '삼성전기',    emoji: '⚙️', aliases: [] },
-  { sym: '018260.KS', name: '삼성에스디에스', emoji: '💻', aliases: ['삼성sds'] },
-  { sym: '086790.KS', name: '하나금융지주', emoji: '🏦', aliases: ['하나'] },
-  { sym: '003550.KS', name: 'LG',          emoji: '🟪', aliases: [] },
-  { sym: '316140.KS', name: '우리금융지주', emoji: '🏦', aliases: ['우리'] },
-  { sym: '024110.KS', name: '기업은행',    emoji: '🏪', aliases: ['ibk'] },
-  { sym: '267260.KS', name: 'HD현대일렉트릭', emoji: '⚡', aliases: [] },
-  { sym: '352820.KS', name: '하이브',      emoji: '🎤', aliases: ['hybe', '방탄'] },
-  { sym: '041510.KQ', name: 'SM엔터테인먼트', emoji: '🎵', aliases: ['sm', '에스엠'] },
-  { sym: '122870.KQ', name: 'YG엔터',      emoji: '🎶', aliases: ['yg'] },
-  { sym: '293490.KQ', name: '카카오게임즈', emoji: '🎮', aliases: ['카게'] },
-  { sym: '251270.KQ', name: '넷마블',      emoji: '🎲', aliases: ['netmarble'] },
-  { sym: '036570.KS', name: '엔씨소프트',  emoji: '🐉', aliases: ['ncsoft'] },
-];
-
-/* 미국 주식 검색 DB */
-const US_STOCK_DB = [
-  { sym: 'AAPL', name: '애플',          emoji: '🍎', aliases: ['apple'] },
-  { sym: 'MSFT', name: '마이크로소프트',  emoji: '🪟', aliases: ['microsoft', 'ms'] },
-  { sym: 'GOOGL', name: '구글',         emoji: '🔍', aliases: ['google', 'alphabet'] },
-  { sym: 'AMZN', name: '아마존',        emoji: '📦', aliases: ['amazon'] },
-  { sym: 'TSLA', name: '테슬라',        emoji: '🚗', aliases: ['tesla'] },
-  { sym: 'NVDA', name: '엔비디아',      emoji: '🟢', aliases: ['nvidia'] },
-  { sym: 'META', name: '메타',          emoji: '🌐', aliases: ['facebook', 'fb'] },
-  { sym: 'NFLX', name: '넷플릭스',      emoji: '🎬', aliases: ['netflix'] },
-  { sym: 'AMD',  name: 'AMD',           emoji: '🔴', aliases: [] },
-  { sym: 'INTC', name: '인텔',          emoji: '🔵', aliases: ['intel'] },
-  { sym: 'COIN', name: '코인베이스',     emoji: '₿',  aliases: ['coinbase'] },
-  { sym: 'PLTR', name: '팔란티어',      emoji: '👁',  aliases: ['palantir'] },
-  { sym: 'DIS',  name: '디즈니',        emoji: '🏰', aliases: ['disney'] },
-  { sym: 'BA',   name: '보잉',          emoji: '✈️', aliases: ['boeing'] },
-  { sym: 'JPM',  name: 'JP모건',        emoji: '🏦', aliases: ['jpmorgan', 'jp morgan'] },
-  { sym: 'BAC',  name: '뱅크오브아메리카', emoji: '🏛',  aliases: ['bofa'] },
-  { sym: 'V',    name: '비자',          emoji: '💳', aliases: ['visa'] },
-  { sym: 'MA',   name: '마스터카드',    emoji: '💳', aliases: ['mastercard'] },
-  { sym: 'WMT',  name: '월마트',        emoji: '🛒', aliases: ['walmart'] },
-  { sym: 'KO',   name: '코카콜라',      emoji: '🥤', aliases: ['coca cola'] },
-  { sym: 'NKE',  name: '나이키',        emoji: '👟', aliases: ['nike'] },
-  { sym: 'MCD',  name: '맥도날드',      emoji: '🍔', aliases: ['mcdonalds'] },
-  { sym: 'SBUX', name: '스타벅스',      emoji: '☕', aliases: ['starbucks'] },
-  { sym: 'AVGO', name: '브로드컴',      emoji: '🔬', aliases: ['broadcom'] },
-  { sym: 'ORCL', name: '오라클',        emoji: '🧙', aliases: ['oracle'] },
-  { sym: 'CRM',  name: '세일즈포스',    emoji: '☁️', aliases: ['salesforce'] },
-  { sym: 'UBER', name: '우버',          emoji: '🚕', aliases: ['uber'] },
-  { sym: 'ABNB', name: '에어비앤비',    emoji: '🏠', aliases: ['airbnb'] },
-  { sym: 'SHOP', name: '쇼피파이',      emoji: '🛍', aliases: ['shopify'] },
-];
-
-/* 빠른 추가 칩 */
-const QUICK_ADD_US = ['MSFT', 'GOOGL', 'AMZN', 'META', 'NFLX', 'COIN'];
-const QUICK_ADD_KR = ['005380.KS', '035720.KS', '352820.KS', '293490.KQ'];
-
-/* ════════════════════════════════════════════════
-   날짜 표시
+   날짜
 ════════════════════════════════════════════════ */
 function updateDate() {
   const d = new Date();
@@ -774,7 +589,7 @@ async function loadPets() {
       const data = await r.json();
       if (Array.isArray(data)) state.petData = data;
     }
-  } catch(e) { console.warn('펫 로드 실패', e); }
+  } catch(e) {}
 }
 function randomPet(filter) {
   let pool = state.petData;
@@ -795,28 +610,9 @@ function escapeHtml(s) {
 }
 function randPick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-function fmtVolume(v) {
-  if (!v || isNaN(v)) return '-';
-  if (v >= 1e9) return (v/1e9).toFixed(2) + 'B';
-  if (v >= 1e6) return (v/1e6).toFixed(2) + 'M';
-  if (v >= 1e3) return (v/1e3).toFixed(1) + 'K';
-  return v.toLocaleString();
-}
-function fmtPrice(v, isKR, isIndex) {
-  if (v === undefined || v === null || isNaN(v)) return '-';
-  if (isKR && !isIndex) return v.toLocaleString('ko-KR');
-  if (isKR) return v.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
-  if (isIndex) return v.toLocaleString('en-US', { maximumFractionDigits: 2 });
-  return v.toFixed(2);
-}
-function isKRSym(sym) {
-  return sym.endsWith('.KS') || sym.endsWith('.KQ') || sym.startsWith('^KS') || sym.startsWith('^KQ');
-}
-
-/* 변동률 → 펫 코멘트 */
 function commentForChange(pct, type) {
   if (pct === null || pct === undefined || isNaN(pct)) {
-    return randPick(['오늘은 어떨까~?', '두근두근...', '상태 확인 중!']);
+    return randPick(['오늘은 어떨까~?', '두근두근...']);
   }
   if (type === 'fx') {
     if (pct > 1) return randPick(['헉 환율 많이 올랐어 😱', '달러 비싸지고 있어!']);
@@ -826,16 +622,16 @@ function commentForChange(pct, type) {
   if (type === 'crypto') {
     if (pct > 10) return randPick(['🚀🚀🚀 떡상이다!!', '와우 폭등!!']);
     if (pct > 3) return randPick(['오 좋아 좋아 📈', '오늘 좋네!']);
-    if (pct > 0) return randPick(['살짝 상승 중~', '나쁘지 않아']);
-    if (pct > -3) return randPick(['살짝 빠졌어', '주의 모드']);
-    if (pct > -10) return randPick(['음... 떨어지고 있어', '존버각']);
-    return randPick(['💀 폭락이다!!', '익절했어야...']);
+    if (pct > 0) return randPick(['살짝 상승 중~']);
+    if (pct > -3) return randPick(['살짝 빠졌어']);
+    if (pct > -10) return randPick(['음... 떨어지고 있어']);
+    return randPick(['💀 폭락이다!!']);
   }
   if (type === 'stock') {
     if (pct > 5) return randPick(['🔥 활활 타오르네!', '주가 떡상!', '오늘 대박!']);
     if (pct > 1) return randPick(['오 상승세 좋아!', '주주분들 축하~ 🎉']);
     if (pct > 0) return randPick(['살짝 올랐어', '소소하게 상승~']);
-    if (pct > -1) return randPick(['보합권이네', '큰 변화 없음']);
+    if (pct > -1) return randPick(['보합권이네']);
     if (pct > -5) return randPick(['음 하락세 ㅠ', '오늘은 빨간날']);
     return randPick(['😱 폭락이야!!', '존버모드 ON']);
   }
@@ -845,21 +641,18 @@ function commentForChange(pct, type) {
 function commentForNews(title) {
   const t = (title || '').toLowerCase();
   const keywords = [
-    { keys: ['금리', '인플레', 'inflation', 'rate', 'fed', '연준'], comments: ['💸 돈 얘기다~', '경제가 어려워 ㅠ', '금리 어떡하지?'] },
-    { keys: ['ai', '인공지능', 'gpt'], comments: ['🤖 또 AI 얘기?!', 'AI 시대 빠르다', '신기방기'] },
-    { keys: ['삼성', 'samsung', 'apple', 'tesla', '테슬라'], comments: ['📱 기업 소식이야', '관련 주식 어떨까?', '주목!'] },
-    { keys: ['주가', '주식', 'stock', 'market'], comments: ['📊 시장 얘기다', '눈여겨 보자', '체크!'] },
-    { keys: ['반도체', 'chip', 'semiconductor'], comments: ['💾 반도체 시장!', 'K-반도체 화이팅', '주목!'] },
-    { keys: ['ipo', '상장'], comments: ['🚀 새로운 종목!', '관심있게 봐야지'] },
-    { keys: ['실적', 'earnings'], comments: ['📈 실적 발표!', '오늘 결과 어떨까?'] },
-    { keys: ['감세', '세금', 'tax'], comments: ['💰 세금 이슈', '주목!'] },
-    { keys: ['부동산', '아파트', 'real estate'], comments: ['🏠 부동산 시장', '집값 어떨까?'] },
-    { keys: ['전쟁', 'war', 'attack'], comments: ['🥺 무서운 소식', '평화가 빨리 왔으면'] },
+    { keys: ['금리', '인플레', 'rate', 'fed', '연준'], comments: ['💸 돈 얘기다~', '경제 어려워 ㅠ'] },
+    { keys: ['ai', '인공지능', 'gpt'], comments: ['🤖 또 AI 얘기?!', 'AI 시대 빠르다'] },
+    { keys: ['삼성', 'samsung', 'apple', 'tesla', '테슬라'], comments: ['📱 기업 소식이야', '주목!'] },
+    { keys: ['주가', '주식', 'stock', 'market'], comments: ['📊 시장 얘기다', '체크!'] },
+    { keys: ['반도체', 'chip', 'semiconductor'], comments: ['💾 반도체 시장!', 'K-반도체 화이팅'] },
+    { keys: ['실적', 'earnings'], comments: ['📈 실적 발표!', '결과 어떨까?'] },
+    { keys: ['전쟁', 'war'], comments: ['🥺 무서운 소식', '평화가 빨리 왔으면'] },
   ];
   for (const k of keywords) {
     if (k.keys.some(kw => t.includes(kw))) return randPick(k.comments);
   }
-  return randPick(['📰 오늘의 경제 소식!', '한 번 읽어봐!', '주목할 뉴스다', '체크!']);
+  return randPick(['📰 오늘의 경제 소식!', '한 번 읽어봐!', '체크!']);
 }
 
 function commentForWeather(temp) {
@@ -869,267 +662,520 @@ function commentForWeather(temp) {
   if (t >= 20) return randPick(['딱 좋은 날씨~', '산책하기 좋아']);
   if (t >= 15) return randPick(['살짝 쌀쌀해', '얇은 겉옷 추천']);
   if (t >= 10) return randPick(['🍁 가을느낌', '겉옷 챙겨!']);
-  if (t >= 5) return randPick(['🥶 춥다 추워', '두툼하게 입어']);
-  if (t >= 0) return randPick(['❄️ 본격 겨울', '코트 필수!']);
-  return randPick(['🥶 한파야 한파!', '집에 있고 싶어요']);
+  if (t >= 5) return randPick(['🥶 춥다 추워']);
+  if (t >= 0) return randPick(['❄️ 본격 겨울']);
+  return randPick(['🥶 한파야 한파!']);
+}
+
+function fmtPrice(v, isKR, isIndex) {
+  if (v === undefined || v === null || isNaN(v)) return '-';
+  if (isKR && !isIndex) return v.toLocaleString('ko-KR');
+  if (isKR) return v.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+  if (isIndex) return v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  return v.toFixed(2);
+}
+function isKRSym(sym) {
+  return sym.endsWith('.KS') || sym.endsWith('.KQ');
 }
 
 /* ════════════════════════════════════════════════
-   주식 데이터 fetch (시간대별 차트 같이)
+   탭별 콘텐츠 렌더
 ════════════════════════════════════════════════ */
-const RANGE_MAP = {
-  '1d': { range: '1d',  interval: '5m'  },
-  '5d': { range: '5d',  interval: '15m' },
-  '1m': { range: '1mo', interval: '1d'  },
-  '3m': { range: '3mo', interval: '1d'  },
-  '6m': { range: '6mo', interval: '1d'  },
-  '1y': { range: '1y',  interval: '1d'  },
-  '5y': { range: '5y',  interval: '1wk' },
-};
+function renderTab() {
+  const cat = state.currentCat;
+  const cont = $('main-container');
 
-async function fetchStockChart(symbol, range = '1m') {
-  const r = RANGE_MAP[range] || RANGE_MAP['1m'];
-  const key = symbol + '_' + range;
-  if (state.stockCache[key]) return state.stockCache[key];
-  try {
-    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${r.interval}&range=${r.range}`)}`;
-    const resp = await fetch(url);
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    const result = data?.chart?.result?.[0];
-    if (!result) return null;
-    const meta = result.meta;
-    const quotes = result.indicators?.quote?.[0] || {};
-    const ts = result.timestamp || [];
-    const closes = quotes.close || [];
-    // null 필터링하면서 timestamp도 같이 정렬
-    const points = [];
-    for (let i = 0; i < closes.length; i++) {
-      if (closes[i] !== null && closes[i] !== undefined) {
-        points.push({ t: ts[i] * 1000, c: closes[i] });
-      }
-    }
-    const cached = {
-      meta,
-      points,
-      highs: (quotes.high || []).filter(v => v !== null),
-      lows:  (quotes.low  || []).filter(v => v !== null),
-      opens: (quotes.open || []).filter(v => v !== null),
-      volumes: (quotes.volume || []).filter(v => v !== null),
-    };
-    state.stockCache[key] = cached;
-    return cached;
-  } catch(e) {
-    console.warn('chart fetch fail', e);
-    return null;
+  if (cat === 'us-stock') {
+    renderUSStockMarket(cont);
+  } else if (cat === 'kr-stock') {
+    renderKRStockMarket(cont);
+  } else if (cat === 'recommend') {
+    renderRecommendations(cont);
+  } else if (cat === 'k-news') {
+    renderKNews(cont);
+  } else if (cat === 'news') {
+    renderWorldNews(cont);
+  } else if (cat === 'crypto') {
+    renderCrypto(cont);
+  } else if (cat === 'fx') {
+    renderFx(cont);
+  } else if (cat === 'weather') {
+    renderWeather(cont);
   }
-}
-
-/* 가격 변동률 (전일/주/월/3개월/연) */
-async function fetchStockSummary(symbol) {
-  // 1년치 가져와서 다양한 시점 비교
-  const y = await fetchStockChart(symbol, '1y');
-  if (!y || y.points.length === 0) return null;
-  const points = y.points;
-  const last = points[points.length - 1];
-  const close = last.c;
-  // 거꾸로 인덱싱
-  const idxAt = (daysBack) => {
-    if (points.length === 0) return null;
-    const targetTs = last.t - daysBack * 86400000;
-    let best = points[0];
-    for (const p of points) {
-      if (p.t <= targetTs) best = p;
-      else break;
-    }
-    return best;
-  };
-  const yesterday = points.length >= 2 ? points[points.length - 2] : null;
-  const wAgo = idxAt(7);
-  const mAgo = idxAt(30);
-  const m3Ago = idxAt(90);
-  const yAgo = idxAt(365);
-  const calcPct = (then) => then ? ((close - then.c) / then.c) * 100 : null;
-  return {
-    meta: y.meta,
-    close,
-    yesterday: yesterday ? yesterday.c : null,
-    wAgo: wAgo ? wAgo.c : null,
-    mAgo: mAgo ? mAgo.c : null,
-    m3Ago: m3Ago ? m3Ago.c : null,
-    yAgo: yAgo ? yAgo.c : null,
-    pctDay:  calcPct(yesterday),
-    pctWeek: calcPct(wAgo),
-    pctMonth: calcPct(mAgo),
-    pct3Month: calcPct(m3Ago),
-    pctYear: calcPct(yAgo),
-    open: y.opens[y.opens.length - 1],
-    high: y.highs[y.highs.length - 1],
-    low: y.lows[y.lows.length - 1],
-    volume: y.volumes[y.volumes.length - 1],
-    yearHigh: y.meta.fiftyTwoWeekHigh,
-    yearLow: y.meta.fiftyTwoWeekLow,
-  };
 }
 
 /* ════════════════════════════════════════════════
-   차트 렌더링 (큰 SVG, 가격 라벨 포함)
+   미국주식 - TradingView 위젯들
 ════════════════════════════════════════════════ */
-function renderChart(points, isUp, container, w, h) {
-  if (!points || points.length < 2) {
-    return '<div class="sc-chart-loading">차트 데이터 없음</div>';
-  }
-  const padding = { top: 10, right: 50, bottom: 20, left: 6 };
-  const chartW = w - padding.left - padding.right;
-  const chartH = h - padding.top - padding.bottom;
-  const closes = points.map(p => p.c);
-  const min = Math.min(...closes);
-  const max = Math.max(...closes);
-  const range = max - min || 1;
-  const step = chartW / (points.length - 1);
-  const xy = points.map((p, i) => ({
-    x: padding.left + i * step,
-    y: padding.top + chartH - ((p.c - min) / range) * chartH,
-    c: p.c,
-    t: p.t,
-  }));
-  const linePath = xy.map((p, i) => (i === 0 ? 'M' : 'L') + p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' ');
-  const areaPath = linePath + ` L${xy[xy.length-1].x.toFixed(1)},${padding.top + chartH} L${xy[0].x.toFixed(1)},${padding.top + chartH} Z`;
-  const color = isUp ? '#00d97e' : '#ff5050';
-  const fillId = 'fillG_' + Math.random().toString(36).slice(2,8);
+function renderUSStockMarket(cont) {
+  cont.innerHTML = `
+    <!-- 외부 사이트 링크 -->
+    <div class="ext-link-row">
+      <a href="https://kr.investing.com/equities/americas" target="_blank" class="ext-link">🌐 미국 주식 전체보기 (Investing.com)</a>
+      <a href="https://finance.yahoo.com/markets/stocks/most-active/" target="_blank" class="ext-link">🌐 거래량 TOP (Yahoo Finance)</a>
+    </div>
 
-  // 가격 격자 (5단계)
-  const yLabels = [];
-  for (let i = 0; i <= 4; i++) {
-    const v = max - (range * i / 4);
-    const y = padding.top + (chartH * i / 4);
-    yLabels.push({ v, y });
-  }
-  const gridLines = yLabels.map(l =>
-    `<line x1="${padding.left}" y1="${l.y}" x2="${padding.left + chartW}" y2="${l.y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`
-  ).join('');
-  const yLabelsHtml = yLabels.map(l =>
-    `<text x="${w - padding.right + 4}" y="${l.y + 3}" fill="#8a96a8" font-size="9" text-anchor="start">${fmtPrice(l.v, false, false)}</text>`
-  ).join('');
+    <!-- 실시간 티커 띠 (지수) -->
+    <div class="section-h">📊 실시간 미국 시장 흐름</div>
+    <div class="tv-container ticker-tape">
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+      </div>
+    </div>
 
-  // X축 시간 라벨 (시작/중간/끝)
-  const xLabels = [];
-  if (xy.length > 0) {
-    const first = xy[0];
-    const last = xy[xy.length - 1];
-    const mid = xy[Math.floor(xy.length / 2)];
-    [first, mid, last].forEach((p, i) => {
-      const d = new Date(p.t);
-      const lbl = `${d.getMonth()+1}/${d.getDate()}`;
-      const anchor = i === 0 ? 'start' : i === 2 ? 'end' : 'middle';
-      xLabels.push(`<text x="${p.x}" y="${h - 4}" fill="#8a96a8" font-size="9" text-anchor="${anchor}">${lbl}</text>`);
-    });
-  }
+    <!-- 차트 검색 + 차트 -->
+    <div class="section-h">📈 종목 차트 (실시간)</div>
+    <div class="chart-search-box">
+      <label>종목 선택:</label>
+      <select id="us-chart-select">
+        <option value="NASDAQ:AAPL">🍎 애플 (AAPL)</option>
+        <option value="NASDAQ:MSFT">🪟 마이크로소프트 (MSFT)</option>
+        <option value="NASDAQ:GOOGL">🔍 구글 (GOOGL)</option>
+        <option value="NASDAQ:AMZN">📦 아마존 (AMZN)</option>
+        <option value="NASDAQ:TSLA">🚗 테슬라 (TSLA)</option>
+        <option value="NASDAQ:NVDA">🟢 엔비디아 (NVDA)</option>
+        <option value="NASDAQ:META">🌐 메타 (META)</option>
+        <option value="NASDAQ:NFLX">🎬 넷플릭스 (NFLX)</option>
+        <option value="NASDAQ:AMD">🔴 AMD</option>
+        <option value="NASDAQ:INTC">🔵 인텔 (INTC)</option>
+        <option value="NASDAQ:COIN">₿ 코인베이스 (COIN)</option>
+        <option value="NASDAQ:PLTR">👁 팔란티어 (PLTR)</option>
+        <option value="NYSE:DIS">🏰 디즈니 (DIS)</option>
+        <option value="NYSE:BA">✈️ 보잉 (BA)</option>
+        <option value="NYSE:JPM">🏦 JP모건 (JPM)</option>
+        <option value="NYSE:V">💳 비자 (V)</option>
+        <option value="NYSE:WMT">🛒 월마트 (WMT)</option>
+        <option value="NYSE:KO">🥤 코카콜라 (KO)</option>
+        <option value="NYSE:NKE">👟 나이키 (NKE)</option>
+        <option value="NYSE:MCD">🍔 맥도날드 (MCD)</option>
+      </select>
+    </div>
+    <div class="tv-container full-chart">
+      <div class="tradingview-widget-container" style="height:100%; width:100%;">
+        <div class="tradingview-widget-container__widget" id="us-chart-widget" style="height:100%; width:100%;"></div>
+      </div>
+    </div>
 
-  return `
-    <svg class="sc-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="${fillId}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="${color}" stop-opacity="0.4"/>
-          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      ${gridLines}
-      <path d="${areaPath}" fill="url(#${fillId})"/>
-      <path d="${linePath}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/>
-      ${yLabelsHtml}
-      ${xLabels.join('')}
-    </svg>
-  `;
-}
-
-/* ════════════════════════════════════════════════
-   주식 카드 렌더 (전문가 스타일)
-════════════════════════════════════════════════ */
-function renderStockCard(t, summary, options = {}) {
-  const isKR = isKRSym(t.sym);
-  const isIndex = t.isIndex || false;
-  const pct = summary.pctDay;
-  const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
-  const pet = randomPet();
-  const comment = options.comment || commentForChange(pct, 'stock');
-
-  const priceStr = isIndex
-    ? fmtPrice(summary.close, isKR, true)
-    : (isKR ? fmtPrice(summary.close, isKR, false) + '원' : '$' + fmtPrice(summary.close, false, false));
-  const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '─';
-  const diff = summary.close - (summary.yesterday || summary.close);
-  const diffStr = (diff >= 0 ? '+' : '') + fmtPrice(Math.abs(diff), isKR, isIndex);
-
-  // 시간대 비교
-  const periodCompare = `
-    <div class="sc-period-compare">
-      ${periodItem('전일', summary.pctDay)}
-      ${periodItem('1주', summary.pctWeek)}
-      ${periodItem('1개월', summary.pctMonth)}
-      ${periodItem('3개월', summary.pct3Month)}
-      ${periodItem('1년', summary.pctYear)}
+    <!-- 시장 동향 (상승/하락/거래량 TOP) -->
+    <div class="section-h">🔥 미국 시장 동향 - 상승/하락/거래량</div>
+    <div class="tv-container market-movers">
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget" id="us-movers-widget"></div>
+      </div>
     </div>
   `;
 
-  // 차트 시간대
-  const range = state.chartRange[t.sym] || '1m';
-  const rangeBtns = ['1d','5d','1m','3m','6m','1y','5y'].map(r =>
-    `<button class="sc-chart-tab ${r === range ? 'active' : ''}" data-sym="${t.sym}" data-range="${r}">${rangeLabel(r)}</button>`
-  ).join('');
+  // TradingView 위젯 로드
+  setTimeout(() => {
+    loadTickerTape();
+    loadUSChart('NASDAQ:AAPL');
+    loadUSMovers();
+    $('us-chart-select').addEventListener('change', e => loadUSChart(e.target.value));
+  }, 50);
+}
 
-  // 추천 태그
-  let tagHtml = '';
-  if (options.tag) {
-    const tagClass = options.tag === 'buy' ? 'buy' : options.tag === 'caution' ? 'caution' : 'watch';
-    const tagText = options.tag === 'buy' ? '🔥 강력 추천'
-                   : options.tag === 'caution' ? '⚠️ 주의'
-                   : '👀 관심 종목';
-    tagHtml = `<span class="sc-tag ${tagClass}">${tagText}</span>`;
+/* ════════════════════════════════════════════════
+   한국주식 - TradingView 위젯
+════════════════════════════════════════════════ */
+function renderKRStockMarket(cont) {
+  cont.innerHTML = `
+    <div class="ext-link-row">
+      <a href="https://finance.naver.com/sise/" target="_blank" class="ext-link">🌐 네이버 금융 시세보기</a>
+      <a href="https://finance.daum.net/" target="_blank" class="ext-link">🌐 다음 금융</a>
+      <a href="https://kr.investing.com/equities/south-korea" target="_blank" class="ext-link">🌐 Investing.com 한국</a>
+    </div>
+
+    <div class="section-h">📊 코스피 / 코스닥 흐름</div>
+    <div class="tv-container ticker-tape">
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget" id="kr-tape-widget"></div>
+      </div>
+    </div>
+
+    <div class="section-h">📈 한국 주식 차트</div>
+    <div class="chart-search-box">
+      <label>종목 선택:</label>
+      <select id="kr-chart-select">
+        <option value="KRX:KOSPI">🇰🇷 코스피 지수</option>
+        <option value="KRX:KOSDAQ">💹 코스닥 지수</option>
+        <option value="KRX:005930">📱 삼성전자</option>
+        <option value="KRX:000660">💾 SK하이닉스</option>
+        <option value="KRX:035420">🔎 네이버</option>
+        <option value="KRX:035720">💛 카카오</option>
+        <option value="KRX:005380">🚙 현대차</option>
+        <option value="KRX:051910">🧪 LG화학</option>
+        <option value="KRX:006400">🔋 삼성SDI</option>
+        <option value="KRX:207940">💊 삼성바이오로직스</option>
+        <option value="KRX:003670">🏗 포스코홀딩스</option>
+        <option value="KRX:068270">🧬 셀트리온</option>
+        <option value="KRX:055550">🏦 신한지주</option>
+        <option value="KRX:105560">💴 KB금융</option>
+        <option value="KRX:028260">🏢 삼성물산</option>
+        <option value="KRX:096770">⛽ SK이노베이션</option>
+        <option value="KRX:015760">⚡ 한국전력</option>
+        <option value="KRX:012330">🔧 현대모비스</option>
+        <option value="KRX:066570">📺 LG전자</option>
+        <option value="KRX:000270">🏎 기아</option>
+        <option value="KRX:017670">📡 SK텔레콤</option>
+        <option value="KRX:030200">☎️ KT</option>
+        <option value="KRX:086790">🏦 하나금융지주</option>
+        <option value="KRX:316140">🏦 우리금융지주</option>
+        <option value="KRX:352820">🎤 하이브</option>
+        <option value="KOSDAQ:041510">🎵 SM엔터</option>
+        <option value="KOSDAQ:122870">🎶 YG엔터</option>
+        <option value="KOSDAQ:293490">🎮 카카오게임즈</option>
+        <option value="KRX:036570">🐉 엔씨소프트</option>
+      </select>
+    </div>
+    <div class="tv-container full-chart">
+      <div class="tradingview-widget-container" style="height:100%; width:100%;">
+        <div class="tradingview-widget-container__widget" id="kr-chart-widget" style="height:100%; width:100%;"></div>
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    loadKRTape();
+    loadKRChart('KRX:005930');
+    $('kr-chart-select').addEventListener('change', e => loadKRChart(e.target.value));
+  }, 50);
+}
+
+/* ════════════════════════════════════════════════
+   TradingView 위젯 로더
+════════════════════════════════════════════════ */
+function loadTradingViewScript(containerId, src, config) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  // 기존 위젯 제거
+  container.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = src;
+  script.async = true;
+  script.type = 'text/javascript';
+  script.innerHTML = JSON.stringify(config);
+  container.appendChild(script);
+}
+
+function loadTickerTape() {
+  // 미국 티커 띠
+  const wrap = document.querySelector('#main-container .ticker-tape .tradingview-widget-container__widget');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+  script.async = true;
+  script.type = 'text/javascript';
+  script.innerHTML = JSON.stringify({
+    symbols: [
+      { proName: "FOREXCOM:SPXUSD", title: "S&P 500" },
+      { proName: "NASDAQ:NDX", title: "나스닥 100" },
+      { proName: "NASDAQ:AAPL", title: "애플" },
+      { proName: "NASDAQ:NVDA", title: "엔비디아" },
+      { proName: "NASDAQ:TSLA", title: "테슬라" },
+      { proName: "NASDAQ:MSFT", title: "MS" },
+      { proName: "NASDAQ:GOOGL", title: "구글" },
+      { proName: "NASDAQ:AMZN", title: "아마존" },
+      { proName: "NASDAQ:META", title: "메타" },
+    ],
+    showSymbolLogo: true,
+    isTransparent: true,
+    displayMode: "adaptive",
+    colorTheme: "dark",
+    locale: "kr"
+  });
+  wrap.appendChild(script);
+}
+
+function loadUSChart(symbol) {
+  const wrap = $('us-chart-widget');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.async = true;
+  script.type = 'text/javascript';
+  script.innerHTML = JSON.stringify({
+    autosize: true,
+    symbol: symbol,
+    interval: "D",
+    timezone: "Asia/Seoul",
+    theme: "dark",
+    style: "1",
+    locale: "kr",
+    enable_publishing: false,
+    backgroundColor: "rgba(26, 35, 50, 1)",
+    gridColor: "rgba(42, 51, 68, 0.5)",
+    hide_top_toolbar: false,
+    hide_legend: false,
+    save_image: false,
+    calendar: false,
+    support_host: "https://www.tradingview.com"
+  });
+  wrap.appendChild(script);
+}
+
+function loadUSMovers() {
+  const wrap = $('us-movers-widget');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-hotlists.js';
+  script.async = true;
+  script.type = 'text/javascript';
+  script.innerHTML = JSON.stringify({
+    colorTheme: "dark",
+    dateRange: "12M",
+    exchange: "US",
+    showChart: true,
+    locale: "kr",
+    largeChartUrl: "",
+    isTransparent: true,
+    showSymbolLogo: true,
+    showFloatingTooltip: false,
+    width: "100%",
+    height: "500",
+    plotLineColorGrowing: "rgba(0, 217, 126, 1)",
+    plotLineColorFalling: "rgba(255, 80, 80, 1)",
+    gridLineColor: "rgba(42, 46, 57, 0)",
+    scaleFontColor: "rgba(120, 123, 134, 1)",
+    belowLineFillColorGrowing: "rgba(0, 217, 126, 0.12)",
+    belowLineFillColorFalling: "rgba(255, 80, 80, 0.12)",
+    belowLineFillColorGrowingBottom: "rgba(0, 217, 126, 0)",
+    belowLineFillColorFallingBottom: "rgba(255, 80, 80, 0)",
+    symbolActiveColor: "rgba(255, 198, 64, 0.12)"
+  });
+  wrap.appendChild(script);
+}
+
+function loadKRTape() {
+  const wrap = $('kr-tape-widget');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';
+  script.async = true;
+  script.type = 'text/javascript';
+  script.innerHTML = JSON.stringify({
+    symbols: [
+      { proName: "KRX:KOSPI", title: "코스피" },
+      { proName: "KRX:KOSDAQ", title: "코스닥" },
+      { proName: "KRX:005930", title: "삼성전자" },
+      { proName: "KRX:000660", title: "SK하이닉스" },
+      { proName: "KRX:035420", title: "네이버" },
+      { proName: "KRX:035720", title: "카카오" },
+      { proName: "KRX:005380", title: "현대차" },
+      { proName: "KRX:051910", title: "LG화학" },
+      { proName: "KRX:207940", title: "삼성바이오" },
+      { proName: "KRX:068270", title: "셀트리온" },
+    ],
+    showSymbolLogo: true,
+    isTransparent: true,
+    displayMode: "adaptive",
+    colorTheme: "dark",
+    locale: "kr"
+  });
+  wrap.appendChild(script);
+}
+
+function loadKRChart(symbol) {
+  const wrap = $('kr-chart-widget');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.async = true;
+  script.type = 'text/javascript';
+  script.innerHTML = JSON.stringify({
+    autosize: true,
+    symbol: symbol,
+    interval: "D",
+    timezone: "Asia/Seoul",
+    theme: "dark",
+    style: "1",
+    locale: "kr",
+    enable_publishing: false,
+    backgroundColor: "rgba(26, 35, 50, 1)",
+    gridColor: "rgba(42, 51, 68, 0.5)",
+    hide_top_toolbar: false,
+    hide_legend: false,
+    save_image: false,
+    calendar: false,
+    support_host: "https://www.tradingview.com"
+  });
+  wrap.appendChild(script);
+}
+
+/* ════════════════════════════════════════════════
+   추천 종목 - 우리가 직접 분석
+════════════════════════════════════════════════ */
+const RECOMMEND_TARGETS = [
+  // 미국
+  { sym: 'AAPL',  name: '애플',         emoji: '🍎', market: 'us' },
+  { sym: 'MSFT',  name: '마이크로소프트', emoji: '🪟', market: 'us' },
+  { sym: 'GOOGL', name: '구글',         emoji: '🔍', market: 'us' },
+  { sym: 'AMZN',  name: '아마존',       emoji: '📦', market: 'us' },
+  { sym: 'TSLA',  name: '테슬라',       emoji: '🚗', market: 'us' },
+  { sym: 'NVDA',  name: '엔비디아',     emoji: '🟢', market: 'us' },
+  { sym: 'META',  name: '메타',         emoji: '🌐', market: 'us' },
+  { sym: 'NFLX',  name: '넷플릭스',     emoji: '🎬', market: 'us' },
+  { sym: 'AMD',   name: 'AMD',          emoji: '🔴', market: 'us' },
+  { sym: 'COIN',  name: '코인베이스',    emoji: '₿', market: 'us' },
+  { sym: 'PLTR',  name: '팔란티어',     emoji: '👁', market: 'us' },
+  { sym: 'JPM',   name: 'JP모건',       emoji: '🏦', market: 'us' },
+  // 한국
+  { sym: '005930.KS', name: '삼성전자',    emoji: '📱', market: 'kr' },
+  { sym: '000660.KS', name: 'SK하이닉스',   emoji: '💾', market: 'kr' },
+  { sym: '035420.KS', name: '네이버',      emoji: '🔎', market: 'kr' },
+  { sym: '035720.KS', name: '카카오',      emoji: '💛', market: 'kr' },
+  { sym: '005380.KS', name: '현대차',      emoji: '🚙', market: 'kr' },
+  { sym: '051910.KS', name: 'LG화학',      emoji: '🧪', market: 'kr' },
+  { sym: '207940.KS', name: '삼성바이오',   emoji: '💊', market: 'kr' },
+  { sym: '068270.KS', name: '셀트리온',    emoji: '🧬', market: 'kr' },
+  { sym: '055550.KS', name: '신한지주',    emoji: '🏦', market: 'kr' },
+  { sym: '105560.KS', name: 'KB금융',      emoji: '💴', market: 'kr' },
+];
+
+async function fetchStockSummary(symbol) {
+  try {
+    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`)}`;
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const data = await r.json();
+    const result = data?.chart?.result?.[0];
+    if (!result) return null;
+    const meta = result.meta;
+    const close = meta.regularMarketPrice;
+    const prevClose = meta.chartPreviousClose;
+    const ts = result.timestamp || [];
+    const closes = result.indicators?.quote?.[0]?.close || [];
+    const points = [];
+    for (let i = 0; i < closes.length; i++) {
+      if (closes[i] != null) points.push({ t: ts[i] * 1000, c: closes[i] });
+    }
+    if (points.length === 0) return null;
+    const last = points[points.length - 1];
+    const idxAt = (daysBack) => {
+      const targetTs = last.t - daysBack * 86400000;
+      let best = points[0];
+      for (const p of points) {
+        if (p.t <= targetTs) best = p;
+        else break;
+      }
+      return best;
+    };
+    const yesterday = points.length >= 2 ? points[points.length - 2] : null;
+    const wAgo = idxAt(7);
+    const mAgo = idxAt(30);
+    const m3Ago = idxAt(90);
+    const yAgo = idxAt(365);
+    const calcPct = (then) => then ? ((close - then.c) / then.c) * 100 : null;
+    return {
+      close,
+      yesterday: yesterday ? yesterday.c : null,
+      pctDay:  calcPct(yesterday),
+      pctWeek: calcPct(wAgo),
+      pctMonth: calcPct(mAgo),
+      pct3Month: calcPct(m3Ago),
+      pctYear: calcPct(yAgo),
+    };
+  } catch(e) { return null; }
+}
+
+async function renderRecommendations(cont) {
+  cont.innerHTML = '<div class="loading">시장 분석 중... (1분 소요)</div>';
+
+  const results = [];
+  for (const t of RECOMMEND_TARGETS) {
+    const summary = await fetchStockSummary(t.sym);
+    if (!summary || summary.pctDay === null) continue;
+    results.push({ ...t, ...summary });
   }
 
-  let extraClass = '';
-  if (options.tag === 'buy' || options.tag === 'watch') extraClass = ' recommend';
-  else if (options.tag === 'caution') extraClass = ' warning';
+  if (results.length === 0) {
+    cont.innerHTML = `
+      <div class="loading">
+        시장 데이터를 가져올 수 없습니다 ㅠㅠ<br>
+        <small>장 마감 후 또는 API 일시 차단일 수 있어요. 잠시 후 다시 시도해보세요.</small>
+      </div>
+    `;
+    return;
+  }
+
+  const sortedDesc = [...results].sort((a, b) => b.pctDay - a.pctDay);
+  const topGainers = sortedDesc.slice(0, 5);
+  const topLosers = sortedDesc.slice(-5).reverse();
+
+  let html = `
+    <div class="section-h recommend">🔥 오늘의 강력 추천 종목 (상승 TOP 5)</div>
+    <div class="recommend-grid">
+  `;
+  topGainers.forEach(t => {
+    const tag = t.pctDay > 5 ? 'buy' : 'watch';
+    const reason = t.pctDay > 5
+      ? `🔥 오늘 ${t.pctDay.toFixed(2)}% 상승! 강력한 모멘텀이 보여요.`
+      : `👀 오늘 ${t.pctDay.toFixed(2)}% 상승. 추가 상승 가능성 있음.`;
+    html += renderRecommendCard(t, { tag, reason });
+  });
+  html += '</div>';
+
+  html += `
+    <div class="section-h warning">⚠️ 주의 종목 (하락 TOP 5)</div>
+    <div class="recommend-grid">
+  `;
+  topLosers.forEach(t => {
+    const reason = t.pctDay < -5
+      ? `⚠️ 오늘 ${t.pctDay.toFixed(2)}% 하락. 추가 하락 가능성 주의!`
+      : `📉 오늘 ${t.pctDay.toFixed(2)}% 하락. 매수 시점 신중히.`;
+    html += renderRecommendCard(t, { tag: 'caution', reason });
+  });
+  html += '</div>';
+
+  cont.innerHTML = html;
+}
+
+function renderRecommendCard(t, options) {
+  const isKR = isKRSym(t.sym);
+  const pct = t.pctDay;
+  const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
+  const pet = randomPet();
+  const comment = commentForChange(pct, 'stock');
+  const priceStr = isKR ? fmtPrice(t.close, true, false) + '원' : '$' + fmtPrice(t.close, false, false);
+  const arrow = pct > 0 ? '▲' : pct < 0 ? '▼' : '─';
+  const diff = t.close - (t.yesterday || t.close);
+  const diffStr = (diff >= 0 ? '+' : '') + fmtPrice(Math.abs(diff), isKR, false);
+  const tagClass = options.tag === 'buy' ? 'buy' : options.tag === 'caution' ? 'caution' : 'watch';
+  const tagText = options.tag === 'buy' ? '🔥 강력 추천'
+                : options.tag === 'caution' ? '⚠️ 주의'
+                : '👀 관심 종목';
+  const cardClass = (options.tag === 'buy' || options.tag === 'watch') ? 'recommend' : 'warning';
 
   return `
-    <div class="stock-card${extraClass}" data-sym="${t.sym}">
+    <div class="stock-card ${cardClass}">
       <div class="sc-header">
         <div class="sc-info">
           <span class="sc-emoji">${t.emoji}</span>
           <div class="sc-name-block">
             <div class="sc-name">${escapeHtml(t.name)}</div>
-            <div class="sc-sub">${t.sym.replace('.KS','').replace('.KQ','').replace('^','')} ${isIndex ? '· 지수' : ''}</div>
-            ${tagHtml}
+            <div class="sc-sub">${t.sym.replace('.KS','').replace('.KQ','')} · ${t.market === 'us' ? '미국' : '한국'}</div>
+            <span class="sc-tag ${tagClass}">${tagText}</span>
           </div>
         </div>
         <div class="sc-price">
           <div class="sc-price-now ${upDown}">${priceStr}</div>
-          <div class="sc-change ${upDown}">${arrow} ${pct >= 0 ? '+' : ''}${(pct||0).toFixed(2)}% (${diffStr})</div>
+          <div class="sc-change ${upDown}">${arrow} ${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (${diffStr})</div>
         </div>
       </div>
 
-      ${periodCompare}
-
-      <div class="sc-chart-wrap">
-        <div class="sc-chart-tabs">${rangeBtns}</div>
-        <div class="sc-chart-container" data-sym="${t.sym}">
-          <div class="sc-chart-loading">차트 로딩 중...</div>
-        </div>
+      <div class="sc-period-compare">
+        ${periodItem('전일', t.pctDay)}
+        ${periodItem('1주', t.pctWeek)}
+        ${periodItem('1개월', t.pctMonth)}
+        ${periodItem('3개월', t.pct3Month)}
+        ${periodItem('1년', t.pctYear)}
       </div>
 
-      ${summary.open ? `
-      <div class="sc-stats">
-        <div class="sc-stat"><div class="sc-stat-label">시가</div><div class="sc-stat-val">${fmtPrice(summary.open, isKR, isIndex)}</div></div>
-        <div class="sc-stat"><div class="sc-stat-label">고가</div><div class="sc-stat-val up">${fmtPrice(summary.high, isKR, isIndex)}</div></div>
-        <div class="sc-stat"><div class="sc-stat-label">저가</div><div class="sc-stat-val down">${fmtPrice(summary.low, isKR, isIndex)}</div></div>
-        ${summary.volume ? `<div class="sc-stat"><div class="sc-stat-label">거래량</div><div class="sc-stat-val">${fmtVolume(summary.volume)}</div></div>` : ''}
-        ${summary.yearHigh ? `<div class="sc-stat"><div class="sc-stat-label">52주 고</div><div class="sc-stat-val">${fmtPrice(summary.yearHigh, isKR, isIndex)}</div></div>` : ''}
-        ${summary.yearLow ? `<div class="sc-stat"><div class="sc-stat-label">52주 저</div><div class="sc-stat-val">${fmtPrice(summary.yearLow, isKR, isIndex)}</div></div>` : ''}
-      </div>
-      ` : ''}
-
-      ${options.reason ? `<div class="sc-recommend-reason">💡 ${escapeHtml(options.reason)}</div>` : ''}
+      <div class="sc-recommend-reason ${cardClass === 'warning' ? 'sc-warning-reason' : ''}">${escapeHtml(options.reason)}</div>
 
       <div class="sc-pet-row">
         ${pet ? `<img class="sc-pet-img" src="${pet.image}" alt="" onerror="this.style.visibility='hidden'">` : ''}
@@ -1148,67 +1194,9 @@ function periodItem(label, pct) {
   return `<div class="sc-period-item"><div class="sc-period-label">${label}</div><div class="sc-period-value ${cls}">${sign}${pct.toFixed(2)}%</div></div>`;
 }
 
-function rangeLabel(r) {
-  return { '1d':'1일', '5d':'5일', '1m':'1개월', '3m':'3개월', '6m':'6개월', '1y':'1년', '5y':'5년' }[r] || r;
-}
-
-/* 카드의 차트 부분만 다시 그리기 */
-async function refreshChart(sym) {
-  const range = state.chartRange[sym] || '1m';
-  const container = document.querySelector(`.sc-chart-container[data-sym="${sym}"]`);
-  if (!container) return;
-  container.innerHTML = '<div class="sc-chart-loading">차트 로딩 중...</div>';
-  const data = await fetchStockChart(sym, range);
-  if (!data || data.points.length === 0) {
-    container.innerHTML = '<div class="sc-chart-loading">차트 데이터 없음</div>';
-    return;
-  }
-  const isUp = data.points[data.points.length - 1].c >= data.points[0].c;
-  container.innerHTML = renderChart(data.points, isUp, container.clientWidth || 600, 160);
-}
-
 /* ════════════════════════════════════════════════
-   탭별 콘텐츠 렌더
+   비주식 카드 (그대로)
 ════════════════════════════════════════════════ */
-async function renderTab() {
-  const cat = state.currentCat;
-  const cont = $('main-container');
-
-  // 검색바 표시 여부
-  const showSearch = (cat === 'us-stock' || cat === 'kr-stock');
-  $('search-bar').classList.toggle('active', showSearch);
-  $('my-stocks').classList.toggle('active', showSearch);
-  if (showSearch) updateSearchUI();
-
-  if (cat === 'us-stock') {
-    await renderStocks(cont, 'us');
-  } else if (cat === 'kr-stock') {
-    await renderStocks(cont, 'kr');
-  } else if (cat === 'recommend') {
-    await renderRecommendations(cont);
-  } else if (cat === 'k-news') {
-    cont.innerHTML = '<div class="loading">불러오는 중...</div>';
-    const items = await fetchKoreanNews();
-    cont.innerHTML = `<div class="grid">${items.map(renderMiniCard).join('')}</div>` || '<div class="loading">데이터 없음</div>';
-  } else if (cat === 'news') {
-    cont.innerHTML = '<div class="loading">번역 중...</div>';
-    const items = await fetchWorldNews();
-    cont.innerHTML = `<div class="grid">${items.map(renderMiniCard).join('')}</div>` || '<div class="loading">데이터 없음</div>';
-  } else if (cat === 'crypto') {
-    cont.innerHTML = '<div class="loading">코인 시세 가져오는 중...</div>';
-    const items = await fetchCrypto();
-    cont.innerHTML = `<div class="grid">${items.map(renderMiniCard).join('')}</div>` || '<div class="loading">데이터 없음</div>';
-  } else if (cat === 'fx') {
-    cont.innerHTML = '<div class="loading">환율 가져오는 중...</div>';
-    const items = await fetchFx();
-    cont.innerHTML = `<div class="grid">${items.map(renderMiniCard).join('')}</div>` || '<div class="loading">데이터 없음</div>';
-  } else if (cat === 'weather') {
-    cont.innerHTML = '<div class="loading">날씨 가져오는 중...</div>';
-    const items = await fetchWeather();
-    cont.innerHTML = `<div class="grid">${items.map(renderMiniCard).join('')}</div>` || '<div class="loading">데이터 없음</div>';
-  }
-}
-
 function renderMiniCard(c) {
   const pet = c.pet;
   const petImg = pet ? `<img class="pet-img" src="${pet.image}" alt="" onerror="this.style.visibility='hidden'">` : '';
@@ -1223,213 +1211,31 @@ function renderMiniCard(c) {
   `;
 }
 
-/* ────────────────────────────────────────
-   주식 탭 렌더
-──────────────────────────────────────── */
-async function renderStocks(cont, market) {
-  cont.innerHTML = '<div class="loading">주식 데이터 가져오는 중...</div>';
-  const defaults = market === 'us' ? DEFAULT_US : DEFAULT_KR;
-  const myList = market === 'us' ? state.myUSStocks : state.myKRStocks;
-  const db = market === 'us' ? US_STOCK_DB : KR_STOCK_DB;
-
-  // 표시할 종목 = 기본 + 추가된 (중복 제거)
-  const allSyms = [...new Set([...defaults.map(d => d.sym), ...myList])];
-  const tickers = allSyms.map(sym => {
-    const def = defaults.find(d => d.sym === sym);
-    if (def) return def;
-    const found = db.find(d => d.sym === sym);
-    if (found) return found;
-    return { sym, name: sym, emoji: '📊' };
-  });
-
-  // 카드 셸 먼저 그리고 비동기로 채움
-  const html = tickers.map(t => `<div id="card_${cssEscape(t.sym)}" class="stock-card-placeholder loading">${t.emoji} ${t.name} 데이터 가져오는 중...</div>`).join('');
-  cont.innerHTML = html || '<div class="loading">종목 없음</div>';
-
-  // 병렬로 fetch
-  for (const t of tickers) {
-    const summary = await fetchStockSummary(t.sym);
-    const slot = document.getElementById('card_' + cssId(t.sym));
-    if (!slot) continue;
-    if (!summary) {
-      slot.outerHTML = `<div class="stock-card"><div class="sc-header"><div class="sc-info"><span class="sc-emoji">${t.emoji}</span><div><div class="sc-name">${t.name}</div><div class="sc-sub">데이터 가져오기 실패 (장 마감 또는 인식 불가)</div></div></div></div></div>`;
-      continue;
-    }
-    slot.outerHTML = renderStockCard(t, summary);
-    // 초기 차트 렌더 (1m 기본)
-    if (!state.chartRange[t.sym]) state.chartRange[t.sym] = '1m';
-    refreshChart(t.sym);
-  }
-}
-
-function cssId(s) { return s.replace(/[^a-zA-Z0-9_-]/g, '_'); }
-function cssEscape(s) { return cssId(s); }
-
-/* ────────────────────────────────────────
-   추천 탭 - 더 많은 추천 종목
-──────────────────────────────────────── */
-async function renderRecommendations(cont) {
-  cont.innerHTML = '<div class="loading">시장 분석 중...</div>';
-
-  // 미국, 한국 모든 주요 종목 fetch
-  const usSyms = US_STOCK_DB.slice(0, 20).map(d => d.sym);
-  const krSyms = KR_STOCK_DB.slice(0, 20).map(d => d.sym);
-  const allSyms = [...usSyms, ...krSyms];
-
-  const all = [];
-  for (const sym of allSyms) {
-    const summary = await fetchStockSummary(sym);
-    if (!summary || summary.pctDay === null) continue;
-    const meta = [...US_STOCK_DB, ...KR_STOCK_DB].find(d => d.sym === sym);
-    all.push({ ...meta, summary });
-  }
-
-  // 정렬: 일간 변동률 기준
-  const sortedDesc = [...all].sort((a, b) => b.summary.pctDay - a.summary.pctDay);
-
-  // TOP 5 상승 / TOP 5 하락
-  const topGainers = sortedDesc.slice(0, 5);
-  const topLosers = sortedDesc.slice(-5).reverse();
-
-  let html = '<h2 style="font-family:Jua;color:#00d97e;margin:10px 0;">🔥 오늘의 강력 추천 종목 (상승 TOP 5)</h2>';
-  topGainers.forEach((t, idx) => {
-    const tag = t.summary.pctDay > 5 ? 'buy' : 'watch';
-    const reason = t.summary.pctDay > 5
-      ? `🔥 오늘 ${t.summary.pctDay.toFixed(1)}% 상승! 강력한 모멘텀.`
-      : `👀 오늘 ${t.summary.pctDay.toFixed(1)}% 상승. 추가 상승 기대.`;
-    html += renderStockCard(t, t.summary, { tag, reason });
-  });
-
-  html += '<h2 style="font-family:Jua;color:#ff5050;margin:30px 0 10px;">⚠️ 주의 종목 (하락 TOP 5)</h2>';
-  topLosers.forEach((t, idx) => {
-    const reason = t.summary.pctDay < -5
-      ? `⚠️ 오늘 ${t.summary.pctDay.toFixed(1)}% 하락. 추가 하락 가능성 주의.`
-      : `📉 오늘 ${t.summary.pctDay.toFixed(1)}% 하락. 매수 시점 신중히.`;
-    html += renderStockCard(t, t.summary, { tag: 'caution', reason });
-  });
-
-  cont.innerHTML = html;
-
-  // 차트 비동기 렌더
-  for (const t of [...topGainers, ...topLosers]) {
-    if (!state.chartRange[t.sym]) state.chartRange[t.sym] = '1m';
-    refreshChart(t.sym);
-  }
-}
-
-/* ════════════════════════════════════════════════
-   검색 + 종목 추가
-════════════════════════════════════════════════ */
-function searchStock(query) {
-  query = query.trim().toLowerCase();
-  if (!query) return null;
-  // 한국 종목 (6자리)
-  if (/^\d{6}$/.test(query)) {
-    const ksFound = KR_STOCK_DB.find(d => d.sym.startsWith(query));
-    if (ksFound) return { ...ksFound, market: 'kr' };
-    // DB에 없어도 .KS로 시도
-    return { sym: query + '.KS', name: query, emoji: '📊', market: 'kr' };
-  }
-  // 미국 티커 (대문자만)
-  if (/^[A-Z]{1,5}$/.test(query.toUpperCase())) {
-    const found = US_STOCK_DB.find(d => d.sym === query.toUpperCase());
-    if (found) return { ...found, market: 'us' };
-    return { sym: query.toUpperCase(), name: query.toUpperCase(), emoji: '📊', market: 'us' };
-  }
-  // 회사명 검색
-  for (const db of [KR_STOCK_DB, US_STOCK_DB]) {
-    const found = db.find(d => {
-      if (d.name.toLowerCase().includes(query)) return true;
-      if ((d.aliases || []).some(a => a.toLowerCase().includes(query))) return true;
-      return false;
-    });
-    if (found) return { ...found, market: db === KR_STOCK_DB ? 'kr' : 'us' };
-  }
-  return null;
-}
-
-function addStock(sym, market) {
-  if (market === 'us') {
-    if (!state.myUSStocks.includes(sym)) {
-      state.myUSStocks.push(sym);
-      localStorage.setItem('myUS', JSON.stringify(state.myUSStocks));
-    }
-  } else {
-    if (!state.myKRStocks.includes(sym)) {
-      state.myKRStocks.push(sym);
-      localStorage.setItem('myKR', JSON.stringify(state.myKRStocks));
-    }
-  }
-  // 해당 탭으로 전환
-  state.currentCat = market === 'us' ? 'us-stock' : 'kr-stock';
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.cat === state.currentCat));
-  renderTab();
-}
-
-function removeStock(sym) {
-  state.myUSStocks = state.myUSStocks.filter(s => s !== sym);
-  state.myKRStocks = state.myKRStocks.filter(s => s !== sym);
-  localStorage.setItem('myUS', JSON.stringify(state.myUSStocks));
-  localStorage.setItem('myKR', JSON.stringify(state.myKRStocks));
-  renderTab();
-}
-
-function updateSearchUI() {
-  const isUS = state.currentCat === 'us-stock';
-  const myList = isUS ? state.myUSStocks : state.myKRStocks;
-  const db = isUS ? US_STOCK_DB : KR_STOCK_DB;
-  const quickList = isUS ? QUICK_ADD_US : QUICK_ADD_KR;
-  const myAdded = new Set(myList);
-
-  // 빠른 추가
-  $('quick-add').innerHTML = quickList.filter(s => !myAdded.has(s)).map(sym => {
-    const meta = db.find(d => d.sym === sym);
-    if (!meta) return '';
-    return `<button class="quick-chip" onclick="addStock('${sym}', '${isUS ? 'us' : 'kr'}')">+ ${meta.emoji} ${meta.name}</button>`;
-  }).join('');
-
-  // 내 종목 칩
-  if (myList.length > 0) {
-    $('my-stocks').innerHTML = '<span class="label">내 종목:</span>' + myList.map(sym => {
-      const meta = db.find(d => d.sym === sym);
-      const name = meta ? meta.name : sym;
-      const emoji = meta ? meta.emoji : '📊';
-      return `<span class="my-stock-chip">${emoji} ${name}<span class="x" onclick="removeStock('${sym}')">×</span></span>`;
-    }).join('');
-  } else {
-    $('my-stocks').innerHTML = '';
-  }
-}
-
-window.addStock = addStock;
-window.removeStock = removeStock;
-
-/* ════════════════════════════════════════════════
-   비주식 데이터 fetch
-════════════════════════════════════════════════ */
-async function fetchKoreanNews() {
+async function renderKNews(cont) {
+  cont.innerHTML = '<div class="loading">불러오는 중...</div>';
   try {
     const rss = encodeURIComponent('https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=ko&gl=KR&ceid=KR:ko');
     const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
     const r = await fetch(url);
     const data = await r.json();
-    const items = (data.items || []).slice(0, 12);
-    return items.map(it => {
+    const items = (data.items || []).slice(0, 16);
+    const html = items.map(it => {
       const pet = petByAttr('화') || randomPet();
       const ts = it.pubDate ? new Date(it.pubDate) : null;
       const tsStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2,'0')}` : '';
-      return {
+      return renderMiniCard({
         pet,
         comment: commentForNews(it.title),
         body: `
-          <div class="card-title">
-            <a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a>
-          </div>
+          <div class="card-title"><a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a></div>
           <div class="card-meta">${escapeHtml((it.author||'').slice(0,30))} · ${tsStr}</div>
         `,
-      };
-    });
-  } catch(e) { return []; }
+      });
+    }).join('');
+    cont.innerHTML = `<div class="grid">${html}</div>`;
+  } catch(e) {
+    cont.innerHTML = '<div class="loading">뉴스를 불러올 수 없습니다.</div>';
+  }
 }
 
 async function translateToKr(text) {
@@ -1446,36 +1252,39 @@ async function translateToKr(text) {
   return text;
 }
 
-async function fetchWorldNews() {
+async function renderWorldNews(cont) {
+  cont.innerHTML = '<div class="loading">번역 중...</div>';
   try {
     const rss = encodeURIComponent('http://feeds.bbci.co.uk/news/business/rss.xml');
     const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
     const r = await fetch(url);
     const data = await r.json();
-    const items = (data.items || []).slice(0, 12);
+    const items = (data.items || []).slice(0, 16);
     const translations = await Promise.all(items.map(it => translateToKr(it.title)));
-    return items.map((it, idx) => {
+    const html = items.map((it, idx) => {
       const pet = petByAttr('풍') || randomPet();
       const ts = it.pubDate ? new Date(it.pubDate) : null;
       const tsStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2,'0')}` : '';
       const koTitle = translations[idx];
       const showOriginal = koTitle !== it.title;
-      return {
+      return renderMiniCard({
         pet,
         comment: commentForNews(it.title + ' ' + koTitle),
         body: `
-          <div class="card-title">
-            <a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a>
-          </div>
+          <div class="card-title"><a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a></div>
           ${showOriginal ? `<div class="card-meta" style="font-style:italic; opacity:0.7;">📰 ${escapeHtml(it.title)}</div>` : ''}
           <div class="card-meta">BBC Business · ${tsStr}</div>
         `,
-      };
-    });
-  } catch(e) { return []; }
+      });
+    }).join('');
+    cont.innerHTML = `<div class="grid">${html}</div>`;
+  } catch(e) {
+    cont.innerHTML = '<div class="loading">뉴스를 불러올 수 없습니다.</div>';
+  }
 }
 
-async function fetchCrypto() {
+async function renderCrypto(cont) {
+  cont.innerHTML = '<div class="loading">코인 시세 가져오는 중...</div>';
   try {
     const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,ripple,cardano,polkadot,avalanche-2,polygon-ecosystem-token,chainlink,litecoin,bitcoin-cash&vs_currencies=usd&include_24hr_change=true';
     const r = await fetch(url);
@@ -1494,13 +1303,13 @@ async function fetchCrypto() {
       { id: 'litecoin', sym: 'LTC',  name: '라이트코인',   emoji: 'Ł' },
       { id: 'bitcoin-cash', sym: 'BCH', name: '비트코인캐시', emoji: '₿' },
     ];
-    return meta.filter(m => data[m.id]).map(m => {
+    const html = meta.filter(m => data[m.id]).map(m => {
       const d = data[m.id];
       const price = d.usd;
       const pct = d.usd_24h_change;
       const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
       const pet = petByAttr('수') || randomPet();
-      return {
+      return renderMiniCard({
         pet,
         comment: commentForChange(pct, 'crypto'),
         body: `
@@ -1508,17 +1317,21 @@ async function fetchCrypto() {
           <div class="big-value ${upDown}">$${price.toLocaleString('en-US', { maximumFractionDigits: price > 1 ? 2 : 4 })}</div>
           <div class="change ${upDown}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (24h)</div>
         `,
-      };
-    });
-  } catch(e) { return []; }
+      });
+    }).join('');
+    cont.innerHTML = `<div class="grid">${html}</div>`;
+  } catch(e) {
+    cont.innerHTML = '<div class="loading">코인 시세를 불러올 수 없습니다.</div>';
+  }
 }
 
-async function fetchFx() {
+async function renderFx(cont) {
+  cont.innerHTML = '<div class="loading">환율 가져오는 중...</div>';
   try {
     const r = await fetch('https://open.er-api.com/v6/latest/USD');
     const data = await r.json();
     const krw = data.rates?.KRW;
-    if (!krw) return [];
+    if (!krw) { cont.innerHTML = '<div class="loading">환율 정보 없음</div>'; return; }
     const fxList = [
       { name: '원/달러',   sym: 'USD/KRW', val: krw,                       emoji: '🇺🇸' },
       { name: '원/엔100',  sym: 'JPY/KRW', val: krw / data.rates.JPY * 100,emoji: '🇯🇵' },
@@ -1529,15 +1342,18 @@ async function fetchFx() {
       { name: '원/캐달러', sym: 'CAD/KRW', val: krw / data.rates.CAD,      emoji: '🇨🇦' },
       { name: '원/스프랑', sym: 'CHF/KRW', val: krw / data.rates.CHF,      emoji: '🇨🇭' },
     ];
-    return fxList.map(f => ({
+    const html = fxList.map(f => renderMiniCard({
       pet: petByAttr('수') || randomPet(),
       comment: commentForChange(0, 'fx'),
       body: `
         <div class="label-row"><span class="symbol">${f.emoji} ${f.sym}</span><span class="card-meta">${f.name}</span></div>
         <div class="big-value neutral">${f.val.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}<span style="font-size:14px;"> 원</span></div>
       `,
-    }));
-  } catch(e) { return []; }
+    })).join('');
+    cont.innerHTML = `<div class="grid">${html}</div>`;
+  } catch(e) {
+    cont.innerHTML = '<div class="loading">환율을 불러올 수 없습니다.</div>';
+  }
 }
 
 const WEATHER_CITIES = [
@@ -1552,35 +1368,6 @@ const WEATHER_CITIES = [
   { name: '강릉', lat: 37.7519, lon: 128.8761, emoji: '🌅' },
   { name: '춘천', lat: 37.8813, lon: 127.7300, emoji: '🏞' },
 ];
-
-async function fetchWeather() {
-  const items = [];
-  for (const c of WEATHER_CITIES) {
-    try {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto`;
-      const r = await fetch(url);
-      const d = await r.json();
-      const cur = d.current;
-      if (!cur) continue;
-      const code = cur.weather_code;
-      const icon = weatherIconFromCode(code);
-      const desc = weatherDescFromCode(code);
-      const pet = petByAttr('풍') || randomPet();
-      items.push({
-        pet,
-        comment: commentForWeather(cur.temperature_2m),
-        body: `
-          <div class="label-row"><span class="symbol">${c.emoji} ${c.name}</span><span class="card-meta">${desc}</span></div>
-          <div class="weather-icon">${icon}</div>
-          <div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
-          <div class="weather-detail"><span>💨 ${Math.round(cur.wind_speed_10m)}km/h</span><span>💧 ${Math.round(cur.relative_humidity_2m)}%</span></div>
-        `,
-      });
-    } catch(e) {}
-  }
-  return items;
-}
-
 function weatherIconFromCode(c) {
   if (c === 0) return '☀️';
   if (c <= 3) return '⛅';
@@ -1606,8 +1393,37 @@ function weatherDescFromCode(c) {
   return '날씨';
 }
 
+async function renderWeather(cont) {
+  cont.innerHTML = '<div class="loading">날씨 가져오는 중...</div>';
+  const items = [];
+  for (const c of WEATHER_CITIES) {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto`;
+      const r = await fetch(url);
+      const d = await r.json();
+      const cur = d.current;
+      if (!cur) continue;
+      const code = cur.weather_code;
+      const icon = weatherIconFromCode(code);
+      const desc = weatherDescFromCode(code);
+      const pet = petByAttr('풍') || randomPet();
+      items.push(renderMiniCard({
+        pet,
+        comment: commentForWeather(cur.temperature_2m),
+        body: `
+          <div class="label-row"><span class="symbol">${c.emoji} ${c.name}</span><span class="card-meta">${desc}</span></div>
+          <div class="weather-icon">${icon}</div>
+          <div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
+          <div class="weather-detail"><span>💨 ${Math.round(cur.wind_speed_10m)}km/h</span><span>💧 ${Math.round(cur.relative_humidity_2m)}%</span></div>
+        `,
+      }));
+    } catch(e) {}
+  }
+  cont.innerHTML = items.length ? `<div class="grid">${items.join('')}</div>` : '<div class="loading">날씨 정보 없음</div>';
+}
+
 /* ════════════════════════════════════════════════
-   이벤트 바인딩
+   이벤트
 ════════════════════════════════════════════════ */
 $('tabs').addEventListener('click', e => {
   const tab = e.target.closest('.tab');
@@ -1619,37 +1435,7 @@ $('tabs').addEventListener('click', e => {
 
 $('refresh-btn').addEventListener('click', () => {
   updateDate();
-  state.stockCache = {};
   renderTab();
-});
-
-$('stock-search-btn').addEventListener('click', () => {
-  const q = $('stock-search').value.trim();
-  if (!q) return;
-  const found = searchStock(q);
-  if (!found) {
-    alert('종목을 찾을 수 없습니다. 회사명이나 티커를 정확히 입력해주세요.');
-    return;
-  }
-  addStock(found.sym, found.market);
-  $('stock-search').value = '';
-});
-$('stock-search').addEventListener('keydown', e => {
-  if (e.key === 'Enter') $('stock-search-btn').click();
-});
-
-// 차트 시간대 탭 클릭 (이벤트 위임)
-document.addEventListener('click', e => {
-  const tab = e.target.closest('.sc-chart-tab');
-  if (!tab) return;
-  const sym = tab.dataset.sym;
-  const range = tab.dataset.range;
-  state.chartRange[sym] = range;
-  // 같은 카드의 다른 tabs 갱신
-  document.querySelectorAll(`.sc-chart-tab[data-sym="${sym}"]`).forEach(t => {
-    t.classList.toggle('active', t.dataset.range === range);
-  });
-  refreshChart(sym);
 });
 
 /* ════════════════════════════════════════════════
@@ -1658,7 +1444,7 @@ document.addEventListener('click', e => {
 (async () => {
   updateDate();
   await loadPets();
-  await renderTab();
+  renderTab();
   setInterval(updateDate, 60000);
 })();
 </script>
