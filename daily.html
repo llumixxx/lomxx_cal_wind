@@ -319,48 +319,6 @@
     font-weight: 700;
   }
 
-  /* 도시 선택 */
-  .city-selector {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--panel);
-    border: 1.5px solid var(--border);
-    border-radius: 18px;
-    padding: 8px 14px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-  }
-  .city-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 700;
-  }
-  .city-selector select {
-    background: var(--bg2);
-    border: 1.5px solid var(--border);
-    color: var(--text);
-    padding: 5px 10px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-  .city-selector select:focus { outline: none; border-color: var(--accent); }
-  .city-apply-btn {
-    background: var(--accent);
-    border: none;
-    color: var(--bg);
-    padding: 5px 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 800;
-  }
-  .city-apply-btn:hover { background: #4ab098; }
-
   /* 추천 종목 카드 강조 */
   .card.recommend {
     border-color: var(--gold);
@@ -398,6 +356,30 @@
     font-weight: 700;
   }
 
+  /* 주식 종목명 (큰 회사명) */
+  .stock-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .stock-emoji {
+    font-size: 22px;
+  }
+  .stock-name {
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    color: var(--text);
+    font-weight: 800;
+  }
+
+  /* 미니 주식 차트 */
+  .mini-stock-chart {
+    width: 100%;
+    height: 50px;
+    margin-top: 6px;
+    display: block;
+  }
 
   .footer {
     margin-top: 30px;
@@ -437,29 +419,6 @@
     <button class="tab" data-cat="weather">🌤 날씨</button>
   </div>
 
-  <!-- 한국 날씨 도시 선택 -->
-  <div class="city-selector" id="city-selector">
-    <span class="city-label">🇰🇷 한국 도시:</span>
-    <select id="kr-city-select">
-      <option value="seoul">서울</option>
-      <option value="busan">부산</option>
-      <option value="incheon">인천</option>
-      <option value="daegu">대구</option>
-      <option value="daejeon">대전</option>
-      <option value="gwangju">광주</option>
-      <option value="ulsan">울산</option>
-      <option value="suwon">수원</option>
-      <option value="changwon">창원</option>
-      <option value="jeju">제주</option>
-      <option value="chuncheon">춘천</option>
-      <option value="gangneung">강릉</option>
-      <option value="jeonju">전주</option>
-      <option value="pohang">포항</option>
-      <option value="andong">안동</option>
-    </select>
-    <button class="city-apply-btn" id="city-apply-btn">📍 변경</button>
-  </div>
-
   <div class="grid" id="grid">
     <div class="loading">데이터 불러오는 중</div>
   </div>
@@ -478,7 +437,6 @@ const state = {
   petData: [],
   cards: [],
   currentCat: 'k-news',
-  krCity: localStorage.getItem('daily_kr_city') || 'seoul',
 };
 
 const $ = id => document.getElementById(id);
@@ -755,37 +713,26 @@ async function fetchFx() {
   }
 }
 
-/* ──── 한국 도시 좌표 ──── */
-const KR_CITIES = {
-  seoul:    { name: '서울',   lat: 37.5665, lon: 126.9780 },
-  busan:    { name: '부산',   lat: 35.1796, lon: 129.0756 },
-  incheon:  { name: '인천',   lat: 37.4563, lon: 126.7052 },
-  daegu:    { name: '대구',   lat: 35.8714, lon: 128.6014 },
-  daejeon:  { name: '대전',   lat: 36.3504, lon: 127.3845 },
-  gwangju:  { name: '광주',   lat: 35.1595, lon: 126.8526 },
-  ulsan:    { name: '울산',   lat: 35.5384, lon: 129.3114 },
-  suwon:    { name: '수원',   lat: 37.2636, lon: 127.0286 },
-  changwon: { name: '창원',   lat: 35.2280, lon: 128.6811 },
-  jeju:     { name: '제주',   lat: 33.4996, lon: 126.5312 },
-  chuncheon:{ name: '춘천',   lat: 37.8813, lon: 127.7300 },
-  gangneung:{ name: '강릉',   lat: 37.7519, lon: 128.8761 },
-  jeonju:   { name: '전주',   lat: 35.8242, lon: 127.1480 },
-  pohang:   { name: '포항',   lat: 36.0190, lon: 129.3435 },
-  andong:   { name: '안동',   lat: 36.5684, lon: 128.7294 },
-};
+/* ──── 한국 대표 도시 + 해외 주요 도시 ──── */
+const WEATHER_CITIES = [
+  { name: '서울',   lat: 37.5665, lon: 126.9780, emoji: '🏙', country: 'kr' },
+  { name: '인천',   lat: 37.4563, lon: 126.7052, emoji: '🛫', country: 'kr' },
+  { name: '대전',   lat: 36.3504, lon: 127.3845, emoji: '🌳', country: 'kr' },
+  { name: '대구',   lat: 35.8714, lon: 128.6014, emoji: '🍎', country: 'kr' },
+  { name: '광주',   lat: 35.1595, lon: 126.8526, emoji: '🌸', country: 'kr' },
+  { name: '부산',   lat: 35.1796, lon: 129.0756, emoji: '🌊', country: 'kr' },
+  { name: '울산',   lat: 35.5384, lon: 129.3114, emoji: '🏭', country: 'kr' },
+  { name: '제주',   lat: 33.4996, lon: 126.5312, emoji: '🌴', country: 'kr' },
+  { name: '강릉',   lat: 37.7519, lon: 128.8761, emoji: '🌅', country: 'kr' },
+  { name: '춘천',   lat: 37.8813, lon: 127.7300, emoji: '🏞', country: 'kr' },
+  { name: '뉴욕',   lat: 40.7128, lon: -74.0060, emoji: '🇺🇸', country: 'us' },
+  { name: '도쿄',   lat: 35.6762, lon: 139.6503, emoji: '🇯🇵', country: 'jp' },
+  { name: '런던',   lat: 51.5074, lon: -0.1278,  emoji: '🇬🇧', country: 'uk' },
+];
 
 /* ──── 날씨 (Open-Meteo 무료, CORS OK) ──── */
 async function fetchWeather() {
-  // 한국 선택 도시 + 해외 주요 도시
-  const krCityKey = state.krCity || 'seoul';
-  const krCity = KR_CITIES[krCityKey];
-  const cities = [
-    { name: krCity.name, lat: krCity.lat, lon: krCity.lon, emoji: '🇰🇷', isMain: true },
-    { name: '뉴욕', lat: 40.7128, lon: -74.0060, emoji: '🇺🇸' },
-    { name: '도쿄', lat: 35.6762, lon: 139.6503, emoji: '🇯🇵' },
-    { name: '런던', lat: 51.5074, lon: -0.1278, emoji: '🇬🇧' },
-  ];
-  for (const c of cities) {
+  for (const c of WEATHER_CITIES) {
     try {
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto`;
       const r = await fetch(url);
@@ -798,12 +745,12 @@ async function fetchWeather() {
       const pet = petByAttr('풍') || randomPet();
       state.cards.push({
         cat: 'weather',
-        catLabel: c.isMain ? '한국날씨' : '해외날씨',
+        catLabel: c.country === 'kr' ? '한국날씨' : '해외날씨',
         pet,
         comment: commentForWeather(cur.temperature_2m, desc),
         body: `
           <div class="label-row">
-            <span class="symbol">${c.emoji} ${c.name}${c.isMain ? ' ⭐' : ''}</span>
+            <span class="symbol">${c.emoji} ${c.name}</span>
             <span class="card-meta">${desc}</span>
           </div>
           <div class="weather-icon">${icon}</div>
@@ -846,9 +793,9 @@ function weatherDescFromCode(c) {
 /* ──── 주식 가격 가져오기 (다중 소스 fallback) ──── */
 async function fetchStockPrice(symbol) {
   // 시도 1: Yahoo Finance (CORS 우회용 프록시 경유)
-  // corsproxy.io는 무료 + 빠름
+  // 1개월 차트 데이터까지 한 번에 받음
   try {
-    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=2d`)}`;
+    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1mo`)}`;
     const r = await fetch(url);
     if (r.ok) {
       const data = await r.json();
@@ -857,9 +804,16 @@ async function fetchStockPrice(symbol) {
         const meta = result.meta;
         const close = meta.regularMarketPrice;
         const prevClose = meta.chartPreviousClose || meta.previousClose;
+        const closes = (result.indicators?.quote?.[0]?.close || []).filter(v => v !== null);
         if (close && prevClose) {
           const pct = ((close - prevClose) / prevClose) * 100;
-          return { close, prev: prevClose, pct, source: 'yahoo' };
+          return {
+            close,
+            prev: prevClose,
+            pct,
+            history: closes.slice(-20),  // 최근 20일
+            source: 'yahoo'
+          };
         }
       }
     }
@@ -880,13 +834,39 @@ async function fetchStockPrice(symbol) {
         const close = parseFloat(cols[6]);
         if (!isNaN(close) && !isNaN(open)) {
           const pct = ((close - open) / open) * 100;
-          return { close, prev: open, pct, source: 'stooq' };
+          return { close, prev: open, pct, history: [], source: 'stooq' };
         }
       }
     }
   } catch(e) {}
 
   return null;
+}
+
+/* ──── SVG 미니 차트 ──── */
+function renderMiniChart(history, isUp) {
+  if (!history || history.length < 2) return '';
+  const w = 240, h = 50;
+  const min = Math.min(...history);
+  const max = Math.max(...history);
+  const range = max - min || 1;
+  const step = w / (history.length - 1);
+  const points = history.map((v, i) => {
+    const x = i * step;
+    const y = h - ((v - min) / range) * (h - 4) - 2;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const color = isUp ? '#5acba8' : '#ff6b6b';
+  const fillColor = isUp ? 'rgba(90,203,168,0.2)' : 'rgba(255,107,107,0.2)';
+  // 영역 채우기용 path
+  const lastX = (history.length - 1) * step;
+  const areaPath = `M0,${h} L${points.split(' ').join(' L')} L${lastX},${h} Z`;
+  return `
+    <svg class="mini-stock-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <path d="${areaPath}" fill="${fillColor}"/>
+      <polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5"/>
+    </svg>
+  `;
 }
 
 /* ──── 미국 주식 ──── */
@@ -908,30 +888,31 @@ async function fetchUSStocks() {
     { sym: 'BA',    name: '보잉',         emoji: '✈️' },
     { sym: 'JPM',   name: 'JP모건',       emoji: '🏦' },
     // 지수
-    { sym: '^GSPC', name: 'S&P 500',     emoji: '📈', isIndex: true, ystooq: '^spx' },
-    { sym: '^IXIC', name: '나스닥',       emoji: '💻', isIndex: true, ystooq: '^ndx' },
-    { sym: '^DJI',  name: '다우존스',     emoji: '🏛', isIndex: true, ystooq: '^dji' },
+    { sym: '^GSPC', name: 'S&P 500',     emoji: '📈', isIndex: true },
+    { sym: '^IXIC', name: '나스닥',       emoji: '💻', isIndex: true },
+    { sym: '^DJI',  name: '다우존스',     emoji: '🏛', isIndex: true },
   ];
   const fetched = [];
   for (const t of tickers) {
-    const sym = t.sym;
-    const data = await fetchStockPrice(sym);
+    const data = await fetchStockPrice(t.sym);
     if (!data) continue;
     fetched.push({ ...t, ...data });
     const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
     const pet = randomPet();
+    const chart = renderMiniChart(data.history, data.pct >= 0);
     state.cards.push({
       cat: 'us-stock',
       catLabel: t.isIndex ? '美지수' : '美주식',
       pet,
       comment: commentForChange(data.pct, 'stock'),
       body: `
-        <div class="label-row">
-          <span class="symbol">${t.emoji} ${t.sym.replace('^','')}</span>
-          <span class="card-meta">${t.name}</span>
+        <div class="stock-name-row">
+          <span class="stock-emoji">${t.emoji}</span>
+          <span class="stock-name">${t.name}</span>
         </div>
         <div class="big-value ${upDown}">${t.isIndex ? data.close.toLocaleString('en-US',{maximumFractionDigits:2}) : '$' + data.close.toFixed(2)}</div>
         <div class="change ${upDown}">${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}% (전일대비)</div>
+        ${chart}
       `,
     });
   }
@@ -968,18 +949,20 @@ async function fetchKRStocks() {
     fetched.push({ ...t, ...data });
     const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
     const pet = randomPet();
+    const chart = renderMiniChart(data.history, data.pct >= 0);
     state.cards.push({
       cat: 'kr-stock',
       catLabel: t.isIndex ? '韓지수' : '韓주식',
       pet,
       comment: commentForChange(data.pct, 'stock'),
       body: `
-        <div class="label-row">
-          <span class="symbol">${t.emoji} ${t.sym.replace('^','').replace('.KS','').replace('.KQ','')}</span>
-          <span class="card-meta">${t.name}</span>
+        <div class="stock-name-row">
+          <span class="stock-emoji">${t.emoji}</span>
+          <span class="stock-name">${t.name}</span>
         </div>
         <div class="big-value ${upDown}">${t.isIndex ? data.close.toLocaleString('ko-KR',{maximumFractionDigits:2}) : data.close.toLocaleString('ko-KR') + '원'}</div>
         <div class="change ${upDown}">${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}% (전일대비)</div>
+        ${chart}
       `,
     });
   }
@@ -988,11 +971,9 @@ async function fetchKRStocks() {
 
 /* ──── 추천/주의 종목 카드 생성 ──── */
 function generateRecommendations(stocks, market) {
-  // 지수 빼고 종목만
   const onlyStocks = stocks.filter(s => !s.isIndex);
   if (onlyStocks.length === 0) return;
 
-  // 정렬해서 상승률 TOP 1, 하락률 TOP 1 뽑기
   const sortedDesc = [...onlyStocks].sort((a, b) => b.pct - a.pct);
   const topGainer = sortedDesc[0];
   const topLoser = sortedDesc[sortedDesc.length - 1];
@@ -1001,7 +982,6 @@ function generateRecommendations(stocks, market) {
   const currency = market === 'us' ? '$' : '';
   const currencyAfter = market === 'us' ? '' : '원';
 
-  // 상승 종목 추천
   if (topGainer && topGainer.pct > 0) {
     const tag = topGainer.pct > 5 ? 'buy' : 'watch';
     const tagText = topGainer.pct > 5 ? '🔥 강력 추천' : '👀 관심 종목';
@@ -1009,6 +989,7 @@ function generateRecommendations(stocks, market) {
       ? `오늘 ${marketLabel} 시장에서 가장 뜨거운 종목! 상승 흐름이 강력해.`
       : `상승세 진입. 추가 상승 여부 지켜보면 좋음.`;
     const pet = randomPet();
+    const chart = renderMiniChart(topGainer.history, true);
     state.cards.push({
       cat: 'recommend',
       catLabel: '⭐추천',
@@ -1016,25 +997,26 @@ function generateRecommendations(stocks, market) {
       comment: `오늘은 ${topGainer.name}이(가) 핫해! 🌟`,
       body: `
         <div class="recommend-tag ${tag}">${tagText}</div>
-        <div class="label-row">
-          <span class="symbol">${topGainer.emoji} ${topGainer.name}</span>
-          <span class="card-meta">${topGainer.sym.replace('^','')}</span>
+        <div class="stock-name-row">
+          <span class="stock-emoji">${topGainer.emoji}</span>
+          <span class="stock-name">${topGainer.name}</span>
         </div>
         <div class="big-value up">${currency}${topGainer.close.toLocaleString()}${currencyAfter}</div>
         <div class="change up">${topGainer.pct >= 0 ? '+' : ''}${topGainer.pct.toFixed(2)}%</div>
+        ${chart}
         <div class="recommend-reason">💡 ${reason}</div>
       `,
       isRecommend: true,
     });
   }
 
-  // 하락 종목 주의
   if (topLoser && topLoser.pct < 0) {
     const tagText = topLoser.pct < -5 ? '⚠️ 주의' : '👀 관망';
     const reason = topLoser.pct < -5
       ? `오늘 ${marketLabel} 시장에서 가장 큰 낙폭. 추가 하락 가능성 주의.`
       : `약세 흐름. 매수 시점 신중히 판단 필요.`;
     const pet = randomPet();
+    const chart = renderMiniChart(topLoser.history, false);
     state.cards.push({
       cat: 'recommend',
       catLabel: '⚠️주의',
@@ -1042,12 +1024,13 @@ function generateRecommendations(stocks, market) {
       comment: `${topLoser.name} 조심해야 해 ㅠㅠ`,
       body: `
         <div class="recommend-tag caution">${tagText}</div>
-        <div class="label-row">
-          <span class="symbol">${topLoser.emoji} ${topLoser.name}</span>
-          <span class="card-meta">${topLoser.sym.replace('^','')}</span>
+        <div class="stock-name-row">
+          <span class="stock-emoji">${topLoser.emoji}</span>
+          <span class="stock-name">${topLoser.name}</span>
         </div>
         <div class="big-value down">${currency}${topLoser.close.toLocaleString()}${currencyAfter}</div>
         <div class="change down">${topLoser.pct.toFixed(2)}%</div>
+        ${chart}
         <div class="recommend-reason">💡 ${reason}</div>
       `,
       isWarning: true,
@@ -1153,19 +1136,11 @@ $('refresh-btn').addEventListener('click', () => {
   fetchAll();
 });
 
-$('city-apply-btn').addEventListener('click', () => {
-  const v = $('kr-city-select').value;
-  state.krCity = v;
-  localStorage.setItem('daily_kr_city', v);
-  fetchAll();
-});
-
 /* ════════════════════════════════════════════════
    초기화
 ════════════════════════════════════════════════ */
 (async () => {
   updateDate();
-  $('kr-city-select').value = state.krCity;
   await loadPets();
   await fetchAll();
   // 1분마다 시계 업데이트
