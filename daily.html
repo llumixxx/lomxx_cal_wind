@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🌍 데일리 - wind01</title>
+<title>📊 데일리 윈드 - wind01</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;800&family=Jua&display=swap" rel="stylesheet">
 <style>
@@ -110,7 +110,7 @@
   /* 카드 그리드 */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
     gap: 14px;
   }
   .card {
@@ -123,7 +123,7 @@
     transition: all .2s;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     min-height: 180px;
   }
   .card:hover {
@@ -360,25 +360,130 @@
   .stock-name-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
+    gap: 10px;
+    margin-bottom: 6px;
   }
   .stock-emoji {
-    font-size: 22px;
+    font-size: 26px;
+  }
+  .stock-name-block {
+    display: flex;
+    flex-direction: column;
   }
   .stock-name {
     font-family: 'Jua', sans-serif;
     font-size: 18px;
     color: var(--text);
     font-weight: 800;
+    line-height: 1.1;
   }
+  .stock-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+
+  /* 가격 + 변동 한 줄에 */
+  .stock-price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 2px 0;
+  }
+  .price-change-block {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .diff-value {
+    font-family: 'Jua', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: -2px;
+  }
+  .diff-value.up { color: var(--green); }
+  .diff-value.down { color: var(--red); }
+  .diff-value.neutral { color: var(--text-muted); }
 
   /* 미니 주식 차트 */
   .mini-stock-chart {
     width: 100%;
-    height: 50px;
-    margin-top: 6px;
+    height: 70px;
+    margin: 8px 0 4px;
     display: block;
+  }
+
+  /* OHLC 통계 */
+  .stock-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 4px 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-top: 4px;
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  .stat-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-weight: 700;
+  }
+  .stat-val {
+    font-family: 'Jua', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 800;
+    margin-top: 1px;
+  }
+  .stat-val.up { color: var(--green); }
+  .stat-val.down { color: var(--red); }
+
+  /* 52주 최고/최저 바 */
+  .stock-52w {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .w52-label {
+    font-weight: 700;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .w52-bar {
+    flex: 1;
+    height: 6px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--green));
+    border-radius: 3px;
+    position: relative;
+    margin: 0 4px;
+  }
+  .w52-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  }
+  .w52-range {
+    font-size: 9px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    font-weight: 700;
   }
 
   .footer {
@@ -402,15 +507,15 @@
 <div class="wrap">
   <div class="header">
     <div>
-      <h1>🌍 데일리 모닝</h1>
+      <h1>📊 데일리 윈드</h1>
       <div class="date" id="today-date"></div>
     </div>
     <button class="refresh-btn" id="refresh-btn">🔄 새로고침</button>
   </div>
 
   <div class="tabs" id="tabs">
-    <button class="tab active" data-cat="k-news">📰 한국뉴스</button>
-    <button class="tab" data-cat="news">📰 해외뉴스</button>
+    <button class="tab active" data-cat="k-news">📰 한국경제</button>
+    <button class="tab" data-cat="news">📰 해외경제</button>
     <button class="tab" data-cat="us-stock">📈 미국주식</button>
     <button class="tab" data-cat="kr-stock">📊 한국주식</button>
     <button class="tab" data-cat="recommend">⭐ 추천종목</button>
@@ -793,9 +898,8 @@ function weatherDescFromCode(c) {
 /* ──── 주식 가격 가져오기 (다중 소스 fallback) ──── */
 async function fetchStockPrice(symbol) {
   // 시도 1: Yahoo Finance (CORS 우회용 프록시 경유)
-  // 1개월 차트 데이터까지 한 번에 받음
   try {
-    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1mo`)}`;
+    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=3mo`)}`;
     const r = await fetch(url);
     if (r.ok) {
       const data = await r.json();
@@ -804,14 +908,33 @@ async function fetchStockPrice(symbol) {
         const meta = result.meta;
         const close = meta.regularMarketPrice;
         const prevClose = meta.chartPreviousClose || meta.previousClose;
-        const closes = (result.indicators?.quote?.[0]?.close || []).filter(v => v !== null);
+        const quotes = result.indicators?.quote?.[0] || {};
+        const closes = (quotes.close || []).filter(v => v !== null);
+        const highs = (quotes.high || []).filter(v => v !== null);
+        const lows = (quotes.low || []).filter(v => v !== null);
+        const opens = (quotes.open || []).filter(v => v !== null);
+        const volumes = (quotes.volume || []).filter(v => v !== null);
+
         if (close && prevClose) {
           const pct = ((close - prevClose) / prevClose) * 100;
+          // 오늘 OHLCV (마지막 인덱스)
+          const lastIdx = closes.length - 1;
           return {
             close,
             prev: prevClose,
             pct,
-            history: closes.slice(-20),  // 최근 20일
+            open: opens[lastIdx],
+            high: highs[lastIdx],
+            low: lows[lastIdx],
+            volume: volumes[lastIdx],
+            // 52주 정보 (제공되면)
+            yearHigh: meta.fiftyTwoWeekHigh,
+            yearLow: meta.fiftyTwoWeekLow,
+            // 차트용 60일치
+            history: closes.slice(-60),
+            historyHighs: highs.slice(-60),
+            historyLows: lows.slice(-60),
+            currency: meta.currency,
             source: 'yahoo'
           };
         }
@@ -819,7 +942,7 @@ async function fetchStockPrice(symbol) {
     }
   } catch(e) {}
 
-  // 시도 2: Stooq CSV (한국 주식이나 일부 종목용)
+  // 시도 2: Stooq CSV (백업)
   try {
     let stooqSym = symbol.toLowerCase();
     if (!stooqSym.includes('.') && !stooqSym.startsWith('^')) stooqSym += '.us';
@@ -831,10 +954,13 @@ async function fetchStockPrice(symbol) {
       if (lines.length >= 2) {
         const cols = lines[1].split(',');
         const open = parseFloat(cols[3]);
+        const high = parseFloat(cols[4]);
+        const low = parseFloat(cols[5]);
         const close = parseFloat(cols[6]);
+        const volume = parseFloat(cols[7]);
         if (!isNaN(close) && !isNaN(open)) {
           const pct = ((close - open) / open) * 100;
-          return { close, prev: open, pct, history: [], source: 'stooq' };
+          return { close, prev: open, pct, open, high, low, volume, history: [], source: 'stooq' };
         }
       }
     }
@@ -843,29 +969,114 @@ async function fetchStockPrice(symbol) {
   return null;
 }
 
-/* ──── SVG 미니 차트 ──── */
+/* ──── 거래량 포맷 ──── */
+function fmtVolume(v) {
+  if (!v || isNaN(v)) return '-';
+  if (v >= 1e9) return (v/1e9).toFixed(2) + 'B';
+  if (v >= 1e6) return (v/1e6).toFixed(2) + 'M';
+  if (v >= 1e3) return (v/1e3).toFixed(1) + 'K';
+  return v.toLocaleString();
+}
+
+/* ──── 가격 포맷 ──── */
+function fmtPrice(v, isKR, isIndex) {
+  if (v === undefined || v === null || isNaN(v)) return '-';
+  if (isKR && !isIndex) return v.toLocaleString('ko-KR');
+  if (isKR) return v.toLocaleString('ko-KR', { maximumFractionDigits: 2 });
+  if (isIndex) return v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  return v.toFixed(2);
+}
+
+/* ──── SVG 미니 차트 (개선) ──── */
 function renderMiniChart(history, isUp) {
   if (!history || history.length < 2) return '';
-  const w = 240, h = 50;
+  const w = 280, h = 70;
   const min = Math.min(...history);
   const max = Math.max(...history);
   const range = max - min || 1;
   const step = w / (history.length - 1);
   const points = history.map((v, i) => {
     const x = i * step;
-    const y = h - ((v - min) / range) * (h - 4) - 2;
+    const y = h - ((v - min) / range) * (h - 6) - 3;
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(' ');
   const color = isUp ? '#5acba8' : '#ff6b6b';
-  const fillColor = isUp ? 'rgba(90,203,168,0.2)' : 'rgba(255,107,107,0.2)';
-  // 영역 채우기용 path
+  const fillColor = isUp ? 'rgba(90,203,168,0.18)' : 'rgba(255,107,107,0.18)';
   const lastX = (history.length - 1) * step;
   const areaPath = `M0,${h} L${points.split(' ').join(' L')} L${lastX},${h} Z`;
+  // 격자 라인
+  const gridLines = [0.25, 0.5, 0.75].map(p => 
+    `<line x1="0" y1="${h*p}" x2="${w}" y2="${h*p}" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="2 2"/>`
+  ).join('');
   return `
     <svg class="mini-stock-chart" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      ${gridLines}
       <path d="${areaPath}" fill="${fillColor}"/>
-      <polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.5"/>
+      <polyline points="${points}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/>
     </svg>
+  `;
+}
+
+/* ──── 주식 카드 본문 생성 (전문가 스타일) ──── */
+function renderStockBody(t, data) {
+  const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
+  const isKR = t.sym.endsWith('.KS') || t.sym.endsWith('.KQ') || t.sym.startsWith('^KS') || t.sym.startsWith('^KQ');
+  const currency = isKR ? '₩' : '$';
+  const currencyAfter = isKR && !t.isIndex ? '원' : '';
+  const priceStr = t.isIndex
+    ? fmtPrice(data.close, isKR, true)
+    : (isKR ? fmtPrice(data.close, isKR, false) + '원' : '$' + fmtPrice(data.close, false, false));
+  const chart = renderMiniChart(data.history, data.pct >= 0);
+  const arrow = data.pct > 0 ? '▲' : data.pct < 0 ? '▼' : '─';
+  const diff = data.close - data.prev;
+  const diffStr = (diff >= 0 ? '+' : '') + fmtPrice(Math.abs(diff), isKR, t.isIndex);
+
+  return `
+    <div class="stock-name-row">
+      <span class="stock-emoji">${t.emoji}</span>
+      <div class="stock-name-block">
+        <div class="stock-name">${t.name}</div>
+        ${t.isIndex ? '<div class="stock-sub">지수</div>' : ''}
+      </div>
+    </div>
+    <div class="stock-price-row">
+      <div class="big-value ${upDown}">${priceStr}</div>
+      <div class="price-change-block">
+        <div class="change ${upDown}">${arrow} ${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}%</div>
+        <div class="diff-value ${upDown}">${diffStr}</div>
+      </div>
+    </div>
+    ${chart}
+    ${data.open ? `
+    <div class="stock-stats">
+      <div class="stat-item">
+        <span class="stat-label">시가</span>
+        <span class="stat-val">${fmtPrice(data.open, isKR, t.isIndex)}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">고가</span>
+        <span class="stat-val up">${fmtPrice(data.high, isKR, t.isIndex)}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">저가</span>
+        <span class="stat-val down">${fmtPrice(data.low, isKR, t.isIndex)}</span>
+      </div>
+      ${data.volume ? `
+      <div class="stat-item">
+        <span class="stat-label">거래량</span>
+        <span class="stat-val">${fmtVolume(data.volume)}</span>
+      </div>` : ''}
+    </div>
+    ` : ''}
+    ${data.yearHigh && !t.isIndex ? `
+    <div class="stock-52w">
+      <span class="w52-label">52주</span>
+      <div class="w52-bar">
+        <div class="w52-marker" style="left:${((data.close - data.yearLow) / (data.yearHigh - data.yearLow) * 100).toFixed(1)}%"></div>
+      </div>
+      <span class="w52-range">${fmtPrice(data.yearLow, isKR, false)} ~ ${fmtPrice(data.yearHigh, isKR, false)}</span>
+    </div>
+    ` : ''}
   `;
 }
 
@@ -897,23 +1108,13 @@ async function fetchUSStocks() {
     const data = await fetchStockPrice(t.sym);
     if (!data) continue;
     fetched.push({ ...t, ...data });
-    const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
     const pet = randomPet();
-    const chart = renderMiniChart(data.history, data.pct >= 0);
     state.cards.push({
       cat: 'us-stock',
       catLabel: t.isIndex ? '美지수' : '美주식',
       pet,
       comment: commentForChange(data.pct, 'stock'),
-      body: `
-        <div class="stock-name-row">
-          <span class="stock-emoji">${t.emoji}</span>
-          <span class="stock-name">${t.name}</span>
-        </div>
-        <div class="big-value ${upDown}">${t.isIndex ? data.close.toLocaleString('en-US',{maximumFractionDigits:2}) : '$' + data.close.toFixed(2)}</div>
-        <div class="change ${upDown}">${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}% (전일대비)</div>
-        ${chart}
-      `,
+      body: renderStockBody(t, data),
     });
   }
   generateRecommendations(fetched, 'us');
@@ -921,7 +1122,6 @@ async function fetchUSStocks() {
 
 /* ──── 한국 주식 ──── */
 async function fetchKRStocks() {
-  // Yahoo는 한국 종목을 .KS / .KQ 접미사로 받음
   const tickers = [
     { sym: '005930.KS', name: '삼성전자',    emoji: '📱' },
     { sym: '000660.KS', name: 'SK하이닉스',   emoji: '💾' },
@@ -947,23 +1147,13 @@ async function fetchKRStocks() {
     const data = await fetchStockPrice(t.sym);
     if (!data) continue;
     fetched.push({ ...t, ...data });
-    const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
     const pet = randomPet();
-    const chart = renderMiniChart(data.history, data.pct >= 0);
     state.cards.push({
       cat: 'kr-stock',
       catLabel: t.isIndex ? '韓지수' : '韓주식',
       pet,
       comment: commentForChange(data.pct, 'stock'),
-      body: `
-        <div class="stock-name-row">
-          <span class="stock-emoji">${t.emoji}</span>
-          <span class="stock-name">${t.name}</span>
-        </div>
-        <div class="big-value ${upDown}">${t.isIndex ? data.close.toLocaleString('ko-KR',{maximumFractionDigits:2}) : data.close.toLocaleString('ko-KR') + '원'}</div>
-        <div class="change ${upDown}">${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}% (전일대비)</div>
-        ${chart}
-      `,
+      body: renderStockBody(t, data),
     });
   }
   generateRecommendations(fetched, 'kr');
@@ -979,8 +1169,6 @@ function generateRecommendations(stocks, market) {
   const topLoser = sortedDesc[sortedDesc.length - 1];
 
   const marketLabel = market === 'us' ? '미국' : '한국';
-  const currency = market === 'us' ? '$' : '';
-  const currencyAfter = market === 'us' ? '' : '원';
 
   if (topGainer && topGainer.pct > 0) {
     const tag = topGainer.pct > 5 ? 'buy' : 'watch';
@@ -989,7 +1177,6 @@ function generateRecommendations(stocks, market) {
       ? `오늘 ${marketLabel} 시장에서 가장 뜨거운 종목! 상승 흐름이 강력해.`
       : `상승세 진입. 추가 상승 여부 지켜보면 좋음.`;
     const pet = randomPet();
-    const chart = renderMiniChart(topGainer.history, true);
     state.cards.push({
       cat: 'recommend',
       catLabel: '⭐추천',
@@ -997,13 +1184,7 @@ function generateRecommendations(stocks, market) {
       comment: `오늘은 ${topGainer.name}이(가) 핫해! 🌟`,
       body: `
         <div class="recommend-tag ${tag}">${tagText}</div>
-        <div class="stock-name-row">
-          <span class="stock-emoji">${topGainer.emoji}</span>
-          <span class="stock-name">${topGainer.name}</span>
-        </div>
-        <div class="big-value up">${currency}${topGainer.close.toLocaleString()}${currencyAfter}</div>
-        <div class="change up">${topGainer.pct >= 0 ? '+' : ''}${topGainer.pct.toFixed(2)}%</div>
-        ${chart}
+        ${renderStockBody(topGainer, topGainer)}
         <div class="recommend-reason">💡 ${reason}</div>
       `,
       isRecommend: true,
@@ -1016,7 +1197,6 @@ function generateRecommendations(stocks, market) {
       ? `오늘 ${marketLabel} 시장에서 가장 큰 낙폭. 추가 하락 가능성 주의.`
       : `약세 흐름. 매수 시점 신중히 판단 필요.`;
     const pet = randomPet();
-    const chart = renderMiniChart(topLoser.history, false);
     state.cards.push({
       cat: 'recommend',
       catLabel: '⚠️주의',
@@ -1024,13 +1204,7 @@ function generateRecommendations(stocks, market) {
       comment: `${topLoser.name} 조심해야 해 ㅠㅠ`,
       body: `
         <div class="recommend-tag caution">${tagText}</div>
-        <div class="stock-name-row">
-          <span class="stock-emoji">${topLoser.emoji}</span>
-          <span class="stock-name">${topLoser.name}</span>
-        </div>
-        <div class="big-value down">${currency}${topLoser.close.toLocaleString()}${currencyAfter}</div>
-        <div class="change down">${topLoser.pct.toFixed(2)}%</div>
-        ${chart}
+        ${renderStockBody(topLoser, topLoser)}
         <div class="recommend-reason">💡 ${reason}</div>
       `,
       isWarning: true,
@@ -1038,11 +1212,11 @@ function generateRecommendations(stocks, market) {
   }
 }
 
-/* ──── 한국 뉴스 (RSS via rss2json) ──── */
+/* ──── 한국 경제 뉴스 (구글 뉴스 - 비즈니스 카테고리) ──── */
 async function fetchKoreanNews() {
   try {
-    // rss2json 무료 API
-    const rss = encodeURIComponent('https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko');
+    // Google News 한국 비즈니스 카테고리
+    const rss = encodeURIComponent('https://news.google.com/rss/headlines/section/topic/BUSINESS?hl=ko&gl=KR&ceid=KR:ko');
     const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
     const r = await fetch(url);
     const data = await r.json();
@@ -1053,7 +1227,7 @@ async function fetchKoreanNews() {
       const tsStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2,'0')}` : '';
       state.cards.push({
         cat: 'k-news',
-        catLabel: '한뉴스',
+        catLabel: '韓경제',
         pet,
         comment: commentForNews(it.title),
         body: `
@@ -1085,10 +1259,11 @@ async function translateToKr(text) {
   return text; // 실패 시 원문
 }
 
-/* ──── 해외 뉴스 (BBC RSS via rss2json + 번역) ──── */
+/* ──── 해외 경제 뉴스 (BBC Business RSS + 번역) ──── */
 async function fetchWorldNews() {
   try {
-    const rss = encodeURIComponent('http://feeds.bbci.co.uk/news/world/rss.xml');
+    // BBC Business + 추가로 Yahoo Finance 헤드라인 등 시도 가능
+    const rss = encodeURIComponent('http://feeds.bbci.co.uk/news/business/rss.xml');
     const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
     const r = await fetch(url);
     const data = await r.json();
@@ -1103,7 +1278,7 @@ async function fetchWorldNews() {
       const showOriginal = koTitle !== it.title;
       state.cards.push({
         cat: 'news',
-        catLabel: '世뉴스',
+        catLabel: '世경제',
         pet,
         comment: commentForNews(it.title + ' ' + koTitle),
         body: `
@@ -1111,7 +1286,7 @@ async function fetchWorldNews() {
             <a href="${it.link}" target="_blank" rel="noopener">${escapeHtml(koTitle)}</a>
           </div>
           ${showOriginal ? `<div class="card-meta" style="font-style:italic; opacity:0.7;">📰 ${escapeHtml(it.title)}</div>` : ''}
-          <div class="card-meta">BBC · ${tsStr}</div>
+          <div class="card-meta">BBC Business · ${tsStr}</div>
         `,
       });
     });
