@@ -427,9 +427,8 @@
   </div>
 
   <div class="tabs" id="tabs">
-    <button class="tab active" data-cat="all">전체</button>
+    <button class="tab active" data-cat="k-news">📰 한국뉴스</button>
     <button class="tab" data-cat="news">📰 해외뉴스</button>
-    <button class="tab" data-cat="k-news">📰 한국뉴스</button>
     <button class="tab" data-cat="us-stock">📈 미국주식</button>
     <button class="tab" data-cat="kr-stock">📊 한국주식</button>
     <button class="tab" data-cat="recommend">⭐ 추천종목</button>
@@ -478,7 +477,7 @@
 const state = {
   petData: [],
   cards: [],
-  currentCat: 'all',
+  currentCat: 'k-news',
   krCity: localStorage.getItem('daily_kr_city') || 'seoul',
 };
 
@@ -613,7 +612,6 @@ function renderCard(c) {
   const extraClass = c.isRecommend ? ' recommend' : c.isWarning ? ' warning' : '';
   return `
     <div class="card${extraClass}" data-cat="${c.cat}">
-      <span class="card-cat ${c.cat}">${c.catLabel}</span>
       ${c.body}
       <div class="pet-row">
         ${petImg}
@@ -625,9 +623,7 @@ function renderCard(c) {
 
 function renderGrid() {
   const grid = $('grid');
-  const filtered = state.currentCat === 'all'
-    ? state.cards
-    : state.cards.filter(c => c.cat === state.currentCat);
+  const filtered = state.cards.filter(c => c.cat === state.currentCat);
   if (filtered.length === 0) {
     grid.innerHTML = '<div class="loading">데이터 없음</div>';
     return;
@@ -671,15 +667,22 @@ function shuffle(arr) {
 /* ──── 코인 시세 (CoinGecko) ──────────────────── */
 async function fetchCrypto() {
   try {
-    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,ripple&vs_currencies=usd&include_24hr_change=true';
+    const url = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,dogecoin,ripple,cardano,polkadot,avalanche-2,polygon-ecosystem-token,chainlink,litecoin,bitcoin-cash&vs_currencies=usd&include_24hr_change=true';
     const r = await fetch(url);
     const data = await r.json();
     const meta = [
-      { id: 'bitcoin', sym: 'BTC', name: '비트코인', emoji: '₿' },
-      { id: 'ethereum', sym: 'ETH', name: '이더리움', emoji: 'Ξ' },
-      { id: 'solana', sym: 'SOL', name: '솔라나', emoji: '◎' },
-      { id: 'ripple', sym: 'XRP', name: '리플', emoji: '✕' },
-      { id: 'dogecoin', sym: 'DOGE', name: '도지코인', emoji: 'Ð' },
+      { id: 'bitcoin',                    sym: 'BTC',   name: '비트코인',     emoji: '₿' },
+      { id: 'ethereum',                   sym: 'ETH',   name: '이더리움',     emoji: 'Ξ' },
+      { id: 'solana',                     sym: 'SOL',   name: '솔라나',       emoji: '◎' },
+      { id: 'ripple',                     sym: 'XRP',   name: '리플',         emoji: '✕' },
+      { id: 'dogecoin',                   sym: 'DOGE',  name: '도지코인',     emoji: 'Ð' },
+      { id: 'cardano',                    sym: 'ADA',   name: '에이다',       emoji: '₳' },
+      { id: 'polkadot',                   sym: 'DOT',   name: '폴카닷',       emoji: '●' },
+      { id: 'avalanche-2',                sym: 'AVAX',  name: '아발란체',     emoji: '🔺' },
+      { id: 'polygon-ecosystem-token',    sym: 'POL',   name: '폴리곤',       emoji: '⬡' },
+      { id: 'chainlink',                  sym: 'LINK',  name: '체인링크',     emoji: '🔗' },
+      { id: 'litecoin',                   sym: 'LTC',   name: '라이트코인',   emoji: 'Ł' },
+      { id: 'bitcoin-cash',               sym: 'BCH',   name: '비트코인캐시', emoji: '₿' },
     ];
     meta.forEach(m => {
       const d = data[m.id];
@@ -722,10 +725,14 @@ async function fetchFx() {
 
     // KRW: 어제값과 비교 어렵지만, 임의의 추세는 못함. 변동률 없이 현재값만.
     const fxList = [
-      { name: '원/달러', sym: 'USD/KRW', val: krw, emoji: '🇰🇷🇺🇸', flag: 'KRW' },
-      { name: '원/엔', sym: 'JPY/KRW', val: krw / jpy * 100, emoji: '🇰🇷🇯🇵', flag: 'JPY100' },
-      { name: '원/유로', sym: 'EUR/KRW', val: krw / eur, emoji: '🇰🇷🇪🇺', flag: 'EUR' },
-      { name: '원/위안', sym: 'CNY/KRW', val: krw / cny, emoji: '🇰🇷🇨🇳', flag: 'CNY' },
+      { name: '원/달러',  sym: 'USD/KRW', val: krw,                emoji: '🇺🇸' },
+      { name: '원/엔100', sym: 'JPY/KRW', val: krw / data.rates.JPY * 100, emoji: '🇯🇵' },
+      { name: '원/유로',  sym: 'EUR/KRW', val: krw / data.rates.EUR, emoji: '🇪🇺' },
+      { name: '원/위안',  sym: 'CNY/KRW', val: krw / data.rates.CNY, emoji: '🇨🇳' },
+      { name: '원/파운드', sym: 'GBP/KRW', val: krw / data.rates.GBP, emoji: '🇬🇧' },
+      { name: '원/호달러', sym: 'AUD/KRW', val: krw / data.rates.AUD, emoji: '🇦🇺' },
+      { name: '원/캐달러', sym: 'CAD/KRW', val: krw / data.rates.CAD, emoji: '🇨🇦' },
+      { name: '원/스프랑', sym: 'CHF/KRW', val: krw / data.rates.CHF, emoji: '🇨🇭' },
     ];
     fxList.forEach(f => {
       const pet = petByAttr('수') || randomPet();
@@ -836,111 +843,147 @@ function weatherDescFromCode(c) {
   return '날씨';
 }
 
-/* ──── 미국 주식 (Stooq CSV - CORS OK) ──── */
-async function fetchUSStocks() {
-  const tickers = [
-    { sym: 'AAPL', name: '애플', emoji: '🍎' },
-    { sym: 'MSFT', name: '마이크로소프트', emoji: '🪟' },
-    { sym: 'GOOGL', name: '구글', emoji: '🔍' },
-    { sym: 'AMZN', name: '아마존', emoji: '📦' },
-    { sym: 'TSLA', name: '테슬라', emoji: '🚗' },
-    { sym: 'NVDA', name: '엔비디아', emoji: '🟢' },
-    { sym: 'META', name: '메타', emoji: '🌐' },
-    { sym: 'NFLX', name: '넷플릭스', emoji: '🎬' },
-    { sym: 'AMD', name: 'AMD', emoji: '🔴' },
-    { sym: 'INTC', name: '인텔', emoji: '🔵' },
-    // 지수
-    { sym: '^SPX', stooq: '^spx', name: 'S&P 500', emoji: '📈', isIndex: true },
-    { sym: '^NDX', stooq: '^ndx', name: '나스닥100', emoji: '💻', isIndex: true },
-    { sym: '^DJI', stooq: '^dji', name: '다우존스', emoji: '🏛', isIndex: true },
-  ];
-  // 통계 수집
-  const fetchedStocks = [];
-  for (const t of tickers) {
-    try {
-      const stooqSym = t.stooq || (t.sym.toLowerCase() + '.us');
-      const url = `https://stooq.com/q/l/?s=${stooqSym}&f=sd2t2ohlcv&h&e=csv`;
-      const r = await fetch(url);
+/* ──── 주식 가격 가져오기 (다중 소스 fallback) ──── */
+async function fetchStockPrice(symbol) {
+  // 시도 1: Yahoo Finance (CORS 우회용 프록시 경유)
+  // corsproxy.io는 무료 + 빠름
+  try {
+    const url = `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=2d`)}`;
+    const r = await fetch(url);
+    if (r.ok) {
+      const data = await r.json();
+      const result = data?.chart?.result?.[0];
+      if (result) {
+        const meta = result.meta;
+        const close = meta.regularMarketPrice;
+        const prevClose = meta.chartPreviousClose || meta.previousClose;
+        if (close && prevClose) {
+          const pct = ((close - prevClose) / prevClose) * 100;
+          return { close, prev: prevClose, pct, source: 'yahoo' };
+        }
+      }
+    }
+  } catch(e) {}
+
+  // 시도 2: Stooq CSV (한국 주식이나 일부 종목용)
+  try {
+    let stooqSym = symbol.toLowerCase();
+    if (!stooqSym.includes('.') && !stooqSym.startsWith('^')) stooqSym += '.us';
+    const url = `https://stooq.com/q/l/?s=${stooqSym}&f=sd2t2ohlcv&h&e=csv`;
+    const r = await fetch(url);
+    if (r.ok) {
       const txt = await r.text();
       const lines = txt.trim().split('\n');
-      if (lines.length < 2) continue;
-      const cols = lines[1].split(',');
-      const open = parseFloat(cols[3]);
-      const close = parseFloat(cols[6]);
-      if (isNaN(close)) continue;
-      const pct = ((close - open) / open) * 100;
-      fetchedStocks.push({ ...t, open, close, pct });
-      const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
-      const pet = randomPet();
-      state.cards.push({
-        cat: 'us-stock',
-        catLabel: t.isIndex ? '美지수' : '美주식',
-        pet,
-        comment: commentForChange(pct, 'stock'),
-        body: `
-          <div class="label-row">
-            <span class="symbol">${t.emoji} ${t.sym.replace('^','')}</span>
-            <span class="card-meta">${t.name}</span>
-          </div>
-          <div class="big-value ${upDown}">${t.isIndex ? close.toFixed(2) : '$' + close.toFixed(2)}</div>
-          <div class="change ${upDown}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (당일)</div>
-        `,
-      });
-    } catch(e) { console.warn(`stock ${t.sym} fail`, e); }
-  }
-  // 추천/주의 카드 생성
-  generateRecommendations(fetchedStocks, 'us');
+      if (lines.length >= 2) {
+        const cols = lines[1].split(',');
+        const open = parseFloat(cols[3]);
+        const close = parseFloat(cols[6]);
+        if (!isNaN(close) && !isNaN(open)) {
+          const pct = ((close - open) / open) * 100;
+          return { close, prev: open, pct, source: 'stooq' };
+        }
+      }
+    }
+  } catch(e) {}
+
+  return null;
 }
 
-/* ──── 한국 주식 (Stooq KR) ──── */
-async function fetchKRStocks() {
+/* ──── 미국 주식 ──── */
+async function fetchUSStocks() {
   const tickers = [
-    { sym: '^KOSPI', stooq: '^kospi', name: '코스피', emoji: '🇰🇷', isIndex: true },
-    { sym: '^KOSDAQ', stooq: '^kosdaq', name: '코스닥', emoji: '💹', isIndex: true },
-    { sym: '005930', stooq: '005930.kr', name: '삼성전자', emoji: '📱' },
-    { sym: '000660', stooq: '000660.kr', name: 'SK하이닉스', emoji: '💾' },
-    { sym: '035420', stooq: '035420.kr', name: '네이버', emoji: '🔎' },
-    { sym: '035720', stooq: '035720.kr', name: '카카오', emoji: '💛' },
-    { sym: '005380', stooq: '005380.kr', name: '현대차', emoji: '🚙' },
-    { sym: '051910', stooq: '051910.kr', name: 'LG화학', emoji: '🧪' },
-    { sym: '006400', stooq: '006400.kr', name: '삼성SDI', emoji: '🔋' },
-    { sym: '207940', stooq: '207940.kr', name: '삼성바이오', emoji: '💊' },
-    { sym: '003670', stooq: '003670.kr', name: '포스코홀딩스', emoji: '🏗' },
-    { sym: '068270', stooq: '068270.kr', name: '셀트리온', emoji: '🧬' },
+    { sym: 'AAPL',  name: '애플',         emoji: '🍎' },
+    { sym: 'MSFT',  name: '마이크로소프트', emoji: '🪟' },
+    { sym: 'GOOGL', name: '구글',         emoji: '🔍' },
+    { sym: 'AMZN',  name: '아마존',       emoji: '📦' },
+    { sym: 'TSLA',  name: '테슬라',       emoji: '🚗' },
+    { sym: 'NVDA',  name: '엔비디아',     emoji: '🟢' },
+    { sym: 'META',  name: '메타',         emoji: '🌐' },
+    { sym: 'NFLX',  name: '넷플릭스',     emoji: '🎬' },
+    { sym: 'AMD',   name: 'AMD',          emoji: '🔴' },
+    { sym: 'INTC',  name: '인텔',         emoji: '🔵' },
+    { sym: 'COIN',  name: '코인베이스',    emoji: '₿' },
+    { sym: 'PLTR',  name: '팔란티어',     emoji: '👁' },
+    { sym: 'DIS',   name: '디즈니',       emoji: '🏰' },
+    { sym: 'BA',    name: '보잉',         emoji: '✈️' },
+    { sym: 'JPM',   name: 'JP모건',       emoji: '🏦' },
+    // 지수
+    { sym: '^GSPC', name: 'S&P 500',     emoji: '📈', isIndex: true, ystooq: '^spx' },
+    { sym: '^IXIC', name: '나스닥',       emoji: '💻', isIndex: true, ystooq: '^ndx' },
+    { sym: '^DJI',  name: '다우존스',     emoji: '🏛', isIndex: true, ystooq: '^dji' },
   ];
-  const fetchedStocks = [];
+  const fetched = [];
   for (const t of tickers) {
-    try {
-      const url = `https://stooq.com/q/l/?s=${t.stooq}&f=sd2t2ohlcv&h&e=csv`;
-      const r = await fetch(url);
-      const txt = await r.text();
-      const lines = txt.trim().split('\n');
-      if (lines.length < 2) continue;
-      const cols = lines[1].split(',');
-      const open = parseFloat(cols[3]);
-      const close = parseFloat(cols[6]);
-      if (isNaN(close)) continue;
-      const pct = ((close - open) / open) * 100;
-      fetchedStocks.push({ ...t, open, close, pct });
-      const upDown = pct > 0 ? 'up' : pct < 0 ? 'down' : 'neutral';
-      const pet = randomPet();
-      state.cards.push({
-        cat: 'kr-stock',
-        catLabel: t.isIndex ? '韓지수' : '韓주식',
-        pet,
-        comment: commentForChange(pct, 'stock'),
-        body: `
-          <div class="label-row">
-            <span class="symbol">${t.emoji} ${t.sym.replace('^','')}</span>
-            <span class="card-meta">${t.name}</span>
-          </div>
-          <div class="big-value ${upDown}">${t.isIndex ? close.toFixed(2) : close.toLocaleString('ko-KR') + '원'}</div>
-          <div class="change ${upDown}">${pct >= 0 ? '+' : ''}${pct.toFixed(2)}% (당일)</div>
-        `,
-      });
-    } catch(e) { console.warn(`kr stock ${t.sym} fail`, e); }
+    const sym = t.sym;
+    const data = await fetchStockPrice(sym);
+    if (!data) continue;
+    fetched.push({ ...t, ...data });
+    const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
+    const pet = randomPet();
+    state.cards.push({
+      cat: 'us-stock',
+      catLabel: t.isIndex ? '美지수' : '美주식',
+      pet,
+      comment: commentForChange(data.pct, 'stock'),
+      body: `
+        <div class="label-row">
+          <span class="symbol">${t.emoji} ${t.sym.replace('^','')}</span>
+          <span class="card-meta">${t.name}</span>
+        </div>
+        <div class="big-value ${upDown}">${t.isIndex ? data.close.toLocaleString('en-US',{maximumFractionDigits:2}) : '$' + data.close.toFixed(2)}</div>
+        <div class="change ${upDown}">${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}% (전일대비)</div>
+      `,
+    });
   }
-  generateRecommendations(fetchedStocks, 'kr');
+  generateRecommendations(fetched, 'us');
+}
+
+/* ──── 한국 주식 ──── */
+async function fetchKRStocks() {
+  // Yahoo는 한국 종목을 .KS / .KQ 접미사로 받음
+  const tickers = [
+    { sym: '005930.KS', name: '삼성전자',    emoji: '📱' },
+    { sym: '000660.KS', name: 'SK하이닉스',   emoji: '💾' },
+    { sym: '035420.KS', name: '네이버',      emoji: '🔎' },
+    { sym: '035720.KS', name: '카카오',      emoji: '💛' },
+    { sym: '005380.KS', name: '현대차',      emoji: '🚙' },
+    { sym: '051910.KS', name: 'LG화학',      emoji: '🧪' },
+    { sym: '006400.KS', name: '삼성SDI',     emoji: '🔋' },
+    { sym: '207940.KS', name: '삼성바이오',   emoji: '💊' },
+    { sym: '003670.KS', name: '포스코홀딩스', emoji: '🏗' },
+    { sym: '068270.KS', name: '셀트리온',    emoji: '🧬' },
+    { sym: '055550.KS', name: '신한지주',    emoji: '🏦' },
+    { sym: '105560.KS', name: 'KB금융',      emoji: '💴' },
+    { sym: '028260.KS', name: '삼성물산',    emoji: '🏢' },
+    { sym: '096770.KS', name: 'SK이노베이션', emoji: '⛽' },
+    { sym: '015760.KS', name: '한국전력',    emoji: '⚡' },
+    // 지수
+    { sym: '^KS11', name: '코스피',  emoji: '🇰🇷', isIndex: true },
+    { sym: '^KQ11', name: '코스닥',  emoji: '💹', isIndex: true },
+  ];
+  const fetched = [];
+  for (const t of tickers) {
+    const data = await fetchStockPrice(t.sym);
+    if (!data) continue;
+    fetched.push({ ...t, ...data });
+    const upDown = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'neutral';
+    const pet = randomPet();
+    state.cards.push({
+      cat: 'kr-stock',
+      catLabel: t.isIndex ? '韓지수' : '韓주식',
+      pet,
+      comment: commentForChange(data.pct, 'stock'),
+      body: `
+        <div class="label-row">
+          <span class="symbol">${t.emoji} ${t.sym.replace('^','').replace('.KS','').replace('.KQ','')}</span>
+          <span class="card-meta">${t.name}</span>
+        </div>
+        <div class="big-value ${upDown}">${t.isIndex ? data.close.toLocaleString('ko-KR',{maximumFractionDigits:2}) : data.close.toLocaleString('ko-KR') + '원'}</div>
+        <div class="change ${upDown}">${data.pct >= 0 ? '+' : ''}${data.pct.toFixed(2)}% (전일대비)</div>
+      `,
+    });
+  }
+  generateRecommendations(fetched, 'kr');
 }
 
 /* ──── 추천/주의 종목 카드 생성 ──── */
@@ -1020,7 +1063,7 @@ async function fetchKoreanNews() {
     const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
     const r = await fetch(url);
     const data = await r.json();
-    const items = (data.items || []).slice(0, 5);
+    const items = (data.items || []).slice(0, 12);
     items.forEach(it => {
       const pet = petByAttr('화') || randomPet();
       const ts = it.pubDate ? new Date(it.pubDate) : null;
@@ -1066,7 +1109,7 @@ async function fetchWorldNews() {
     const url = `https://api.rss2json.com/v1/api.json?rss_url=${rss}`;
     const r = await fetch(url);
     const data = await r.json();
-    const items = (data.items || []).slice(0, 5);
+    const items = (data.items || []).slice(0, 12);
     // 번역은 병렬로
     const translations = await Promise.all(items.map(it => translateToKr(it.title)));
     items.forEach((it, idx) => {
