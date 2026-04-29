@@ -1035,47 +1035,74 @@ async function fetchAnalystData(symbol) {
   };
 }
 
-/* 종목 뉴스 (Yahoo Finance Search) */
+/* 종목 뉴스 - 한국 종목은 구글뉴스 RSS, 미국은 Yahoo Search */
 async function fetchStockNews(symbol, companyName) {
-  // 한국 종목은 회사명으로 검색하는 게 정확함 (티커는 6자리 숫자라 다른 결과 나옴)
   const isKR = isKRSym(symbol);
-  let query = symbol;
-  if (isKR && companyName) {
-    // .KS 떼고 검색해도 됨, 또는 회사명 영문 매핑
-    const krCompanyEn = {
-      '삼성전자': 'Samsung Electronics',
-      'SK하이닉스': 'SK Hynix',
-      '네이버': 'Naver',
-      '카카오': 'Kakao',
-      '현대차': 'Hyundai Motor',
-      'LG화학': 'LG Chem',
-      '삼성SDI': 'Samsung SDI',
-      '삼성바이오': 'Samsung Biologics',
-      '포스코홀딩스': 'POSCO',
-      '셀트리온': 'Celltrion',
-      '신한지주': 'Shinhan Financial',
-      'KB금융': 'KB Financial',
-      '하이브': 'HYBE',
-      'LG전자': 'LG Electronics',
-      '기아': 'Kia',
-    };
-    query = krCompanyEn[companyName] || companyName;
+
+  if (isKR) {
+    // 구글 뉴스 한국어 RSS - 회사명으로 검색하면 한국어 뉴스 바로 나옴
+    return await fetchKoreanStockNews(companyName);
   }
-  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&newsCount=8&quotesCount=0`;
+
+  // 미국 종목: Yahoo Finance Search
+  return await fetchUSStockNews(symbol, companyName);
+}
+
+async function fetchKoreanStockNews(companyName) {
+  if (!companyName) return [];
+  try {
+    const query = encodeURIComponent(companyName + ' 주식');
+    const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=ko&gl=KR&ceid=KR:ko`;
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+    const r = await fetch(apiUrl);
+    if (!r.ok) return [];
+    const data = await r.json();
+    const items = (data.items || []).slice(0, 5);
+    // 회사명 들어간 것만 필터
+    const filtered = items.filter(it => {
+      const title = (it.title || '').toLowerCase();
+      return title.includes(companyName.toLowerCase());
+    });
+    const finalList = filtered.length >= 2 ? filtered : items;
+    return finalList.slice(0, 3).map(it => ({
+      title: it.title,
+      koTitle: it.title, // 이미 한국어
+      publisher: it.author || extractPublisherFromTitle(it.title),
+      link: it.link,
+      publishedAt: it.pubDate ? new Date(it.pubDate) : null,
+    }));
+  } catch(e) {
+    console.warn('한국 뉴스 fetch 실패', e);
+    return [];
+  }
+}
+
+function extractPublisherFromTitle(title) {
+  // 구글 뉴스 제목 끝에 " - 매체명" 형식
+  const m = title.match(/\s-\s([^-]+)$/);
+  return m ? m[1].trim() : '';
+}
+
+async function fetchUSStockNews(symbol, companyName) {
+  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${symbol}&newsCount=8&quotesCount=0`;
   const data = await corsProxyFetch(url);
   const news = data?.news || [];
-  // 관련성 필터: 제목에 회사명이나 티커가 포함된 것만 (대소문자 무관)
-  const checkTokens = [];
+  // 관련성 필터: 제목에 회사명이나 티커 포함
+  const checkTokens = [symbol.toLowerCase()];
   if (companyName) checkTokens.push(companyName.toLowerCase());
-  if (query !== symbol) checkTokens.push(query.toLowerCase());
-  const usTicker = !isKR ? symbol.toLowerCase() : null;
-  if (usTicker) checkTokens.push(usTicker);
+  // 영문 사명 추가
+  const enNames = {
+    '애플': 'apple', '마이크로소프트': 'microsoft', '알파벳': 'alphabet|google',
+    '아마존': 'amazon', '테슬라': 'tesla', '엔비디아': 'nvidia',
+    '메타': 'meta', '넷플릭스': 'netflix', '코인베이스': 'coinbase',
+    '팔란티어': 'palantir', 'JP모건': 'jpmorgan|jp morgan',
+    '비자': 'visa', '월마트': 'walmart', '디즈니': 'disney',
+  };
+  if (enNames[companyName]) checkTokens.push(...enNames[companyName].split('|'));
   const filtered = news.filter(n => {
     const title = (n.title || '').toLowerCase();
-    if (checkTokens.length === 0) return true;
     return checkTokens.some(tok => title.includes(tok));
   });
-  // 필터 결과가 너무 적으면 원본 사용
   const finalNews = filtered.length >= 2 ? filtered : news;
   return finalNews.slice(0, 3).map(n => ({
     title: n.title,
@@ -1085,18 +1112,41 @@ async function fetchStockNews(symbol, companyName) {
   }));
 }
 
-/* 뉴스 제목 번역 (영어 → 한국어, MyMemory 무료) */
+/* 뉴스 제목 번역 - 다중 폴백 */
 async function translateToKr(text) {
   if (!text) return '';
   // 한글이면 그대로
   if (/[가-힣]/.test(text)) return text;
+  const trimmed = text.length > 500 ? text.slice(0, 500) : text;
+
+  // 시도 1: Google Translate 비공식 (CORS 우회)
   try {
-    const trimmed = text.length > 500 ? text.slice(0, 500) : text;
+    const url = `https://corsproxy.io/?${encodeURIComponent(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=${encodeURIComponent(trimmed)}`)}`;
+    const r = await fetch(url);
+    if (r.ok) {
+      const data = await r.json();
+      if (Array.isArray(data) && data[0]) {
+        const result = data[0].map(seg => seg[0]).join('');
+        if (result && !/MYMEMORY|WARNING|TRANSLATIONS/i.test(result)) {
+          return result;
+        }
+      }
+    }
+  } catch(e) {}
+
+  // 시도 2: MyMemory (백업)
+  try {
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trimmed)}&langpair=en|ko`;
     const r = await fetch(url);
     const data = await r.json();
-    if (data.responseData?.translatedText) return data.responseData.translatedText;
+    const translated = data.responseData?.translatedText || '';
+    // 한도 초과 메시지 필터링
+    if (translated && !/MYMEMORY|WARNING|TRANSLATIONS|MUST BE A VALID/i.test(translated)) {
+      return translated;
+    }
   } catch(e) {}
+
+  // 모두 실패하면 원문
   return text;
 }
 
@@ -1362,9 +1412,14 @@ function renderNewsBlock(news, stockName) {
   const itemsHtml = news.map(n => {
     const ts = n.publishedAt;
     const tsStr = ts ? `${ts.getMonth()+1}/${ts.getDate()} ${String(ts.getHours()).padStart(2,'0')}:${String(ts.getMinutes()).padStart(2,'0')}` : '';
+    // 번역 실패 감지: MYMEMORY 같은 키워드 있으면 원문 사용
+    let displayTitle = n.koTitle || n.title;
+    if (/MYMEMORY|WARNING|TRANSLATIONS|MUST BE A VALID|USAGELIMITS/i.test(displayTitle)) {
+      displayTitle = n.title;
+    }
     return `
       <div class="news-item" onclick="window.open('${n.link}', '_blank')">
-        <div class="title">${escapeHtml(n.koTitle || n.title)}</div>
+        <div class="title">${escapeHtml(displayTitle)}</div>
         <div class="meta">${escapeHtml(n.publisher || '')} ${tsStr ? '· ' + tsStr : ''}</div>
       </div>
     `;
@@ -1559,9 +1614,9 @@ async function renderMain() {
     updateProgress();
   }
 
-  // 뉴스 번역 (한국 종목은 영문 사명으로 검색했으니 영문 뉴스가 나옴 → 다 번역)
+  // 뉴스 번역 (한국 종목은 이미 한국어니까 영문 종목만)
   for (const t of topPicks) {
-    if (t.news?.length > 0) {
+    if (!isKRSym(t.sym) && t.news?.length > 0) {
       const translations = await Promise.all(t.news.map(n => translateToKr(n.title)));
       t.news = t.news.map((n, i) => ({ ...n, koTitle: translations[i] }));
     }
