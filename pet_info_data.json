@@ -42,7 +42,7 @@
     "name": "두리",
     "image": "https://wind01.net/info/img/100251.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쿠오 해저통로 2층 전역 포획",
     "attr": {
@@ -159,7 +159,7 @@
     "name": "불그리",
     "image": "https://wind01.net/info/img/100253.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "에덴마을 (동52 남174) 포획",
     "attr": {
@@ -510,7 +510,7 @@
     "name": "얼룩부이비",
     "image": "https://wind01.net/info/img/100258.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "퀴즈 마스터(오르곤) 퀘스트",
     "attr": {
@@ -549,7 +549,7 @@
     "name": "꼬미",
     "image": "https://wind01.net/info/img/100259.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "라토토 대복도(동196 남123) 포획",
     "attr": {
@@ -588,7 +588,7 @@
     "name": "꼬비",
     "image": "https://wind01.net/info/img/100260.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "라토토 대복도(동147 남42) 포획",
     "attr": {
@@ -627,7 +627,7 @@
     "name": "꼬비오",
     "image": "https://wind01.net/info/img/100261.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "라토토 동굴 3 - 3 전역 포획",
     "attr": {
@@ -666,7 +666,7 @@
     "name": "꼬꼬비",
     "image": "https://wind01.net/info/img/100262.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "라토토 동굴 3 - 4층(동8 남19) 포획",
     "attr": {
@@ -1353,7 +1353,7 @@
     "name": "보크곤",
     "image": "https://wind01.net/info/img/100393.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "몽환의 동굴(동45 남55) 포획",
     "attr": {
@@ -2110,7 +2110,7 @@
     "name": "쿠링",
     "image": "https://wind01.net/info/img/100291.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "카루타나 마을 근처 포획",
     "attr": {
@@ -2149,7 +2149,7 @@
     "name": "쿠쿠르",
     "image": "https://wind01.net/info/img/100292.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쿠오 해저통로 2층 전역 포획",
     "attr": {
@@ -2188,7 +2188,7 @@
     "name": "포링",
     "image": "https://wind01.net/info/img/100293.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쟈루 섬(동480 남313) 포획",
     "attr": {
@@ -2227,7 +2227,7 @@
     "name": "리스키",
     "image": "https://wind01.net/info/img/100294.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "카루타나 마을 근처 포획",
     "attr": {
@@ -2266,7 +2266,7 @@
     "name": "카비트",
     "image": "https://wind01.net/info/img/100295.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "사이너스 섬(동304 남328) 포획",
     "attr": {
@@ -2305,7 +2305,7 @@
     "name": "케이비",
     "image": "https://wind01.net/info/img/100296.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쿠오 해저통로 2층 전역 포획",
     "attr": {
@@ -2344,7 +2344,7 @@
     "name": "큐이",
     "image": "https://wind01.net/info/img/100297.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "샴기르 마을 앞마당 포획",
     "attr": {
@@ -2383,7 +2383,7 @@
     "name": "골드카비트",
     "image": "https://wind01.net/info/img/100298.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "샴기르 마을 앞마당 포획",
     "attr": {
@@ -2578,7 +2578,7 @@
     "name": "휴보",
     "image": "https://wind01.net/info/img/100319.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "황금색 페트(카난) 퀘스트 보상",
     "attr": {
@@ -2617,7 +2617,7 @@
     "name": "포보",
     "image": "https://wind01.net/info/img/100320.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "고야산 동굴 4층 전역 포획",
     "attr": {
@@ -2656,7 +2656,7 @@
     "name": "쿠보",
     "image": "https://wind01.net/info/img/100321.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "베르가 포획 퀘스트 보상",
     "attr": {
@@ -2695,7 +2695,7 @@
     "name": "토로쟈",
     "image": "https://wind01.net/info/img/100322.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "속임수의 동굴 최하층 입구 포획",
     "attr": {
@@ -2734,7 +2734,7 @@
     "name": "부르보",
     "image": "https://wind01.net/info/img/100395.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "마쥬의 미로 3층 전역 포획",
     "attr": {
@@ -3285,7 +3285,7 @@
     "name": "고반케스",
     "image": "https://wind01.net/info/img/100339.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쟈루 섬(동231 남557) 포획",
     "attr": {
@@ -3324,7 +3324,7 @@
     "name": "쟈그라",
     "image": "https://wind01.net/info/img/100340.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쿠오해저터널 1층[쿠오](동20 남35) 포획",
     "attr": {
@@ -3363,7 +3363,7 @@
     "name": "쟈그",
     "image": "https://wind01.net/info/img/100341.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쿠오해저터널 1층[쟈루](동11 남31) 포획",
     "attr": {
@@ -3402,7 +3402,7 @@
     "name": "판지",
     "image": "https://wind01.net/info/img/100342.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쟈루 섬(동157 남704) 포획",
     "attr": {
@@ -4650,7 +4650,7 @@
     "name": "프이토",
     "image": "https://wind01.net/info/img/100375.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쟈쟈 복권 1등",
     "attr": {
@@ -4689,7 +4689,7 @@
     "name": "모나시프",
     "image": "https://wind01.net/info/img/100376.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "채석장의 비밀 퀘스트 보상",
     "attr": {
@@ -4728,7 +4728,7 @@
     "name": "라나프",
     "image": "https://wind01.net/info/img/100377.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "코스 포인트 상점",
     "attr": {
@@ -4767,7 +4767,7 @@
     "name": "라이혼",
     "image": "https://wind01.net/info/img/100378.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "정령 레이드",
     "attr": {
@@ -4806,7 +4806,7 @@
     "name": "타이혼",
     "image": "https://wind01.net/info/img/100430.gif",
     "grade": "1등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "후르도 복권 1등",
     "attr": {
@@ -5274,7 +5274,7 @@
     "name": "크랩",
     "image": "https://wind01.net/info/img/103096.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌의 섬(동491 남717) 포획",
     "attr": {
@@ -5313,7 +5313,7 @@
     "name": "킹크랩",
     "image": "https://wind01.net/info/img/103095.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌의 섬(동500 남833) 포획",
     "attr": {
@@ -5391,7 +5391,7 @@
     "name": "쿠팡",
     "image": "https://wind01.net/info/img/103211.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌 (동488 남850) 포획",
     "attr": {
@@ -5430,7 +5430,7 @@
     "name": "쿠아",
     "image": "https://wind01.net/info/img/103210.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌 (동488 남850) 포획",
     "attr": {
@@ -5469,7 +5469,7 @@
     "name": "밍코",
     "image": "https://wind01.net/info/img/103104.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌 (동455 남710) 포획",
     "attr": {
@@ -5508,7 +5508,7 @@
     "name": "슈우",
     "image": "https://wind01.net/info/img/160193.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌 (동202 남562) 포획",
     "attr": {
@@ -5547,7 +5547,7 @@
     "name": "킹고르",
     "image": "https://wind01.net/info/img/103090.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "스라인 지하동굴 1층 (에레보스 방향) 전역 포획",
     "attr": {
@@ -5714,7 +5714,7 @@
     "name": "산타베르가",
     "image": "https://wind01.net/info/img/160006.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "쟈루 섬(동442 남634) 희귀 포획",
     "attr": {
@@ -5753,7 +5753,7 @@
     "name": "스노밍코",
     "image": "https://wind01.net/info/img/103103.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌의 섬(동433 남711) 포획",
     "attr": {
@@ -5792,7 +5792,7 @@
     "name": "키파",
     "image": "https://wind01.net/info/img/102622.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "포우렌섬의 황금나무 퀘스트 보상",
     "attr": {
@@ -5954,7 +5954,7 @@
     "name": "구루마루",
     "image": "https://wind01.net/info/img/105204.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -5993,7 +5993,7 @@
     "name": "차크론",
     "image": "https://wind01.net/info/img/102739.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -6082,7 +6082,7 @@
     "name": "봉봉",
     "image": "https://wind01.net/info/img/103246.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -6121,7 +6121,7 @@
     "name": "보르비스",
     "image": "https://wind01.net/info/img/103204.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "하이하모 진입 퀘스트 보상",
     "attr": {
@@ -6160,7 +6160,7 @@
     "name": "포레스트크랩",
     "image": "https://wind01.net/info/img/103097.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "하이하모 섬(동260 남635) 포획",
     "attr": {
@@ -6199,7 +6199,7 @@
     "name": "포루나",
     "image": "https://wind01.net/info/img/103077.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "하이하모 섬(동140 남830) 포획",
     "attr": {
@@ -6238,7 +6238,7 @@
     "name": "피피아",
     "image": "https://wind01.net/info/img/103079.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "하이하모 섬(동325 남545) 포획",
     "attr": {
@@ -6316,7 +6316,7 @@
     "name": "아코로비",
     "image": "https://wind01.net/info/img/160195.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "하이하모 섬 (동298 남462) 포획",
     "attr": {
@@ -6472,7 +6472,7 @@
     "name": "흑호",
     "image": "https://wind01.net/info/img/160122.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "마리너스 목장의 의뢰 퀘스트 보상",
     "attr": {
@@ -6550,7 +6550,7 @@
     "name": "노스키",
     "image": "https://wind01.net/info/img/100852.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "천지 2층 전지역",
     "attr": {
@@ -6589,7 +6589,7 @@
     "name": "라스키",
     "image": "https://wind01.net/info/img/100853.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "진홍 2층 전지역",
     "attr": {
@@ -6628,7 +6628,7 @@
     "name": "토끼",
     "image": "https://wind01.net/info/img/100854.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "벽청 2층 전지역",
     "attr": {
@@ -6667,7 +6667,7 @@
     "name": "범링",
     "image": "https://wind01.net/info/img/100855.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "유리 2층 전지역",
     "attr": {
@@ -6745,7 +6745,7 @@
     "name": "핑코",
     "image": "https://wind01.net/info/img/103074.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -6784,7 +6784,7 @@
     "name": "가우",
     "image": "https://wind01.net/info/img/160120.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "듀얼 포인트 상점",
     "attr": {
@@ -6823,7 +6823,7 @@
     "name": "익시노돈",
     "image": "https://wind01.net/info/img/102610.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -6901,7 +6901,7 @@
     "name": "모사크",
     "image": "https://wind01.net/info/img/103213.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -6979,7 +6979,7 @@
     "name": "황금복덩이",
     "image": "https://wind01.net/info/img/103245.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "복덩이(어려움) 레이드",
     "attr": {
@@ -7018,7 +7018,7 @@
     "name": "크로아치",
     "image": "https://wind01.net/info/img/102635.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "크로아치의 방 전역 포획",
     "attr": {
@@ -7057,7 +7057,7 @@
     "name": "타키온",
     "image": "https://wind01.net/info/img/102627.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "오만의 방 복도 전역 포획",
     "attr": {
@@ -7096,7 +7096,7 @@
     "name": "그램고르",
     "image": "https://wind01.net/info/img/102626.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "그램고르의 방 전역 포획",
     "attr": {
@@ -7135,7 +7135,7 @@
     "name": "바라쿠스",
     "image": "https://wind01.net/info/img/103169.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "질투의 방 복도 전역 포획",
     "attr": {
@@ -7174,7 +7174,7 @@
     "name": "테로노돈",
     "image": "https://wind01.net/info/img/102629.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "전리품의 방 전역 포획",
     "attr": {
@@ -7252,7 +7252,7 @@
     "name": "라이쿠스",
     "image": "https://wind01.net/info/img/102634.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "얼음성 페트병",
     "attr": {
@@ -7375,7 +7375,7 @@
     "name": "우라노스",
     "image": "https://wind01.net/info/img/103248.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "얼음성 페트병",
     "attr": {
@@ -7414,7 +7414,7 @@
     "name": "카이스",
     "image": "https://wind01.net/info/img/200203.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "홍보이벤트",
     "attr": {
@@ -7459,7 +7459,7 @@
     "name": "카로스",
     "image": "https://wind01.net/info/img/200204.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "홍보이벤트",
     "attr": {
@@ -7504,7 +7504,7 @@
     "name": "케이르",
     "image": "https://wind01.net/info/img/200205.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "홍보이벤트",
     "attr": {
@@ -7549,7 +7549,7 @@
     "name": "타비스",
     "image": "https://wind01.net/info/img/200206.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "홍보이벤트",
     "attr": {
@@ -7594,7 +7594,7 @@
     "name": "웅이",
     "image": "https://wind01.net/info/img/103240.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "빛의동굴 3층 전역",
     "attr": {
@@ -7633,7 +7633,7 @@
     "name": "지라크",
     "image": "https://wind01.net/info/img/103207.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "하이하모 (동175 남498)",
     "attr": {
@@ -7672,7 +7672,7 @@
     "name": "타이판",
     "image": "https://wind01.net/info/img/103206.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "호피도 (동244 남220)",
     "attr": {
@@ -7711,7 +7711,7 @@
     "name": "레이론",
     "image": "https://wind01.net/info/img/201035.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "호피도 (동181 남215)",
     "attr": {
@@ -7750,7 +7750,7 @@
     "name": "디메트로돈",
     "image": "https://wind01.net/info/img/103232.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "호피도 (동122 남108)",
     "attr": {
@@ -7789,7 +7789,7 @@
     "name": "파베로스",
     "image": "https://wind01.net/info/img/103028.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -7873,7 +7873,7 @@
     "name": "샤르페",
     "image": "https://wind01.net/info/img/200218.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "부족지원페트",
     "attr": {
@@ -8118,7 +8118,7 @@
     "name": "델푸스",
     "image": "https://wind01.net/info/img/105088.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "땅정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -8157,7 +8157,7 @@
     "name": "카르페",
     "image": "https://wind01.net/info/img/105078.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "불정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -8274,7 +8274,7 @@
     "name": "블랙드래곤",
     "image": "https://wind01.net/info/img/200219.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -8324,7 +8324,7 @@
     "name": "언딘",
     "image": "https://wind01.net/info/img/103180.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "얼음성 페트병 상자(3%)",
     "attr": {
@@ -8424,7 +8424,7 @@
     "name": "흑주작",
     "image": "https://wind01.net/info/img/300271.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8474,7 +8474,7 @@
     "name": "레오딘",
     "image": "https://wind01.net/info/img/103024.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8513,7 +8513,7 @@
     "name": "테이노스",
     "image": "https://wind01.net/info/img/101819.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8563,7 +8563,7 @@
     "name": "나비드래곤",
     "image": "https://wind01.net/info/img/200212.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8608,7 +8608,7 @@
     "name": "흑풍",
     "image": "https://wind01.net/info/img/200217.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8692,7 +8692,7 @@
     "name": "데카이어던",
     "image": "https://wind01.net/info/img/300262.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8731,7 +8731,7 @@
     "name": "백룡",
     "image": "https://wind01.net/info/img/103084.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8781,7 +8781,7 @@
     "name": "모이토",
     "image": "https://wind01.net/info/img/100912.gif",
     "grade": "1등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "정규 듀얼 페트병",
     "attr": {
@@ -8820,7 +8820,7 @@
     "name": "현무",
     "image": "https://wind01.net/info/img/103177.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "정규 듀얼 보상병",
     "attr": {
@@ -8865,7 +8865,7 @@
     "name": "푸룡",
     "image": "https://wind01.net/info/img/100909.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "개인 듀얼 보상 페트",
     "attr": {
@@ -8915,7 +8915,7 @@
     "name": "석화케스",
     "image": "https://wind01.net/info/img/100879.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "가우린 해저터널 (훼이 근처)",
     "attr": {
@@ -8999,7 +8999,7 @@
     "name": "페카이어던",
     "image": "https://wind01.net/info/img/300260.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -9183,7 +9183,7 @@
     "name": "몽몽",
     "image": "https://wind01.net/info/img/160192.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -9222,7 +9222,7 @@
     "name": "페가수스",
     "image": "https://wind01.net/info/img/300256.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "말의해 기념 주간패키지",
     "attr": {
@@ -9267,7 +9267,7 @@
     "name": "데라",
     "image": "https://wind01.net/info/img/300237.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "땅정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9306,7 +9306,7 @@
     "name": "타르쿠",
     "image": "https://wind01.net/info/img/100902.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "땅정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9345,7 +9345,7 @@
     "name": "녹우리",
     "image": "https://wind01.net/info/img/100822.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "땅정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9423,7 +9423,7 @@
     "name": "라루루",
     "image": "https://wind01.net/info/img/100846.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "불정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9462,7 +9462,7 @@
     "name": "키라비",
     "image": "https://wind01.net/info/img/100858.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "불정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9540,7 +9540,7 @@
     "name": "쟈하드",
     "image": "https://wind01.net/info/img/100882.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "바람정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9618,7 +9618,7 @@
     "name": "푸비",
     "image": "https://wind01.net/info/img/100823.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "물정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9696,7 +9696,7 @@
     "name": "블루카비트",
     "image": "https://wind01.net/info/img/100856.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "물정령 페트병 (4대정령 레이드)",
     "attr": {
@@ -9785,7 +9785,7 @@
     "name": "레오린",
     "image": "https://wind01.net/info/img/300404.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원페트(VP 5500)",
     "attr": {
@@ -9824,7 +9824,7 @@
     "name": "스피노",
     "image": "https://wind01.net/info/img/103148.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원페트(VP 5500)",
     "attr": {
@@ -9902,7 +9902,7 @@
     "name": "한복밍코",
     "image": "https://wind01.net/info/img/103107.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "2026 설이벤트 (똥급 한복밍코를 찾아라)",
     "attr": {
@@ -9941,7 +9941,7 @@
     "name": "진주토로스",
     "image": "https://wind01.net/info/img/100919.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "2026 설이벤트 (한복메이와 숨바꼭질)",
     "attr": {
@@ -9980,7 +9980,7 @@
     "name": "한복메이",
     "image": "https://wind01.net/info/img/103231.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "2026 설이벤트 (한복메이와 숨바꼭질)",
     "attr": {
@@ -10069,7 +10069,7 @@
     "name": "시오",
     "image": "https://wind01.net/info/img/300255.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "온천랜드(용암의 길목)",
     "attr": {
@@ -10108,7 +10108,7 @@
     "name": "발로스",
     "image": "https://wind01.net/info/img/103101.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "화산섬 에레보스 (동155 남30)",
     "attr": {
@@ -10147,7 +10147,7 @@
     "name": "스톤크랩",
     "image": "https://wind01.net/info/img/103098.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "화산섬 에레보스 (동205 남129)",
     "attr": {
@@ -10225,7 +10225,7 @@
     "name": "미니스",
     "image": "https://wind01.net/info/img/160194.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "화산섬 에레보스 (동233 남175)",
     "attr": {
@@ -10264,7 +10264,7 @@
     "name": "비트로돈",
     "image": "https://wind01.net/info/img/103233.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "용암의 동굴 1층 전역",
     "attr": {
@@ -10381,7 +10381,7 @@
     "name": "어스드래곤",
     "image": "https://wind01.net/info/img/103120.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -10470,7 +10470,7 @@
     "name": "풍백",
     "image": "https://wind01.net/info/img/103176.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -10515,7 +10515,7 @@
     "name": "테라탄",
     "image": "https://wind01.net/info/img/103222.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "가스트의 알",
     "attr": {
@@ -10554,7 +10554,7 @@
     "name": "게이블",
     "image": "https://wind01.net/info/img/103223.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "가스트의 알",
     "attr": {
@@ -10593,7 +10593,7 @@
     "name": "가스트",
     "image": "https://wind01.net/info/img/103224.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "가스트의 알",
     "attr": {
@@ -10677,7 +10677,7 @@
     "name": "배모티스",
     "image": "https://wind01.net/info/img/102680.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "테라죠의 방 전지역 (골드볼라)",
     "attr": {
@@ -10755,7 +10755,7 @@
     "name": "헤머드",
     "image": "https://wind01.net/info/img/102474.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "테라죠의 방 (동18 남2)",
     "attr": {
@@ -11034,7 +11034,7 @@
     "name": "주작",
     "image": "https://wind01.net/info/img/103178.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11079,7 +11079,7 @@
     "name": "흑갈푸스",
     "image": "https://wind01.net/info/img/160114.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11118,7 +11118,7 @@
     "name": "핑베로스",
     "image": "https://wind01.net/info/img/300451.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11157,7 +11157,7 @@
     "name": "와일로",
     "image": "https://wind01.net/info/img/103215.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11196,7 +11196,7 @@
     "name": "푸타푸타",
     "image": "https://wind01.net/info/img/102611.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11235,7 +11235,7 @@
     "name": "레피아",
     "image": "https://wind01.net/info/img/103021.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11352,7 +11352,7 @@
     "name": "청풍",
     "image": "https://wind01.net/info/img/300470.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11397,7 +11397,7 @@
     "name": "지고르",
     "image": "https://wind01.net/info/img/102704.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": true,
     "obtain": "페트 자판기",
     "attr": {
@@ -11631,7 +11631,7 @@
     "name": "헬노스",
     "image": "https://wind01.net/info/img/102723.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "에레보스 복권페트",
     "attr": {
@@ -11670,7 +11670,7 @@
     "name": "파이톤",
     "image": "https://wind01.net/info/img/103205.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "타니토스 신전 비밀의 방 포획",
     "attr": {
@@ -11832,7 +11832,7 @@
     "name": "판그라",
     "image": "https://wind01.net/info/img/100880.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "해저통로 (타무타무방향) 전지역 포획",
     "attr": {
@@ -11871,7 +11871,7 @@
     "name": "타로아",
     "image": "https://wind01.net/info/img/100844.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "사이너스 (동301 남29) 포획",
     "attr": {
@@ -11988,7 +11988,7 @@
     "name": "뇌호",
     "image": "https://wind01.net/info/img/300513.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "1분기 감사페트 (이벤트)",
     "attr": {
@@ -12122,7 +12122,7 @@
     "name": "비룡",
     "image": "https://wind01.net/info/img/300511.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -12167,7 +12167,7 @@
     "name": "독호",
     "image": "https://wind01.net/info/img/300521.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -12212,7 +12212,7 @@
     "name": "마우",
     "image": "https://wind01.net/info/img/160155.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -12251,7 +12251,7 @@
     "name": "암풍",
     "image": "https://wind01.net/info/img/300468.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -12296,7 +12296,7 @@
     "name": "메카비스",
     "image": "https://wind01.net/info/img/300306.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "코스 포인트 상점",
     "attr": {
@@ -12335,7 +12335,7 @@
     "name": "메카카키",
     "image": "https://wind01.net/info/img/300268.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "코스 포인트 상점",
     "attr": {
@@ -12374,7 +12374,7 @@
     "name": "그리프스",
     "image": "https://wind01.net/info/img/300527.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 상점",
     "attr": {
@@ -12419,7 +12419,7 @@
     "name": "아마란스",
     "image": "https://wind01.net/info/img/300528.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 상점",
     "attr": {
@@ -12464,7 +12464,7 @@
     "name": "물범",
     "image": "https://wind01.net/info/img/300300.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "얼음성 대기실 전역",
     "attr": {
@@ -12503,7 +12503,7 @@
     "name": "메카타이혼",
     "image": "https://wind01.net/info/img/300301.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "100일 선물 상자 (이벤트)",
     "attr": {
@@ -12542,7 +12542,7 @@
     "name": "핑크토끼",
     "image": "https://wind01.net/info/img/300533.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "100일 선물 상자 (이벤트)",
     "attr": {
@@ -12581,7 +12581,7 @@
     "name": "플라티우스",
     "image": "https://wind01.net/info/img/103069.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "아이스드래곤의 전리품",
     "attr": {
@@ -12626,7 +12626,7 @@
     "name": "아이스드래곤",
     "image": "https://wind01.net/info/img/103121.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "아이스드래곤의 전리품",
     "attr": {
@@ -12676,7 +12676,7 @@
     "name": "푸베로스",
     "image": "https://wind01.net/info/img/301054.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "아이스드래곤의 전리품",
     "attr": {
@@ -12715,7 +12715,7 @@
     "name": "포일론",
     "image": "https://wind01.net/info/img/160148.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "아이스드래곤의 전리품",
     "attr": {
@@ -12754,7 +12754,7 @@
     "name": "아이스하누",
     "image": "https://wind01.net/info/img/301050.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "아이스드래곤의 전리품",
     "attr": {
@@ -12832,7 +12832,7 @@
     "name": "벨로",
     "image": "https://wind01.net/info/img/103135.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "얼음성2 플라티우스방 전역",
     "attr": {
@@ -12871,7 +12871,7 @@
     "name": "기란",
     "image": "https://wind01.net/info/img/102722.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "얼음성2 푸베로스방 전역",
     "attr": {
@@ -12988,7 +12988,7 @@
     "name": "헤티아",
     "image": "https://wind01.net/info/img/103063.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -13038,7 +13038,7 @@
     "name": "카이로스",
     "image": "https://wind01.net/info/img/300239.gif",
     "grade": "1등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "암흑정령왕 퀘스트",
     "attr": {
@@ -13083,7 +13083,7 @@
     "name": "광룡",
     "image": "https://wind01.net/info/img/300541.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "도라비스 항공 퀘스트",
     "attr": {
@@ -13128,7 +13128,7 @@
     "name": "깡우비",
     "image": "https://wind01.net/info/img/100825.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "에덴 동물원 퀘스트",
     "attr": {
@@ -13206,7 +13206,7 @@
     "name": "엘딘",
     "image": "https://wind01.net/info/img/300412.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "얼음성 엘딘 레이드",
     "attr": {
@@ -13256,7 +13256,7 @@
     "name": "구스터",
     "image": "https://wind01.net/info/img/300548.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "레이어 족장의방 전역",
     "attr": {
@@ -13334,7 +13334,7 @@
     "name": "골드드래곤",
     "image": "https://wind01.net/info/img/103119.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "지원페트(VP 5500)",
     "attr": {
@@ -13372,6 +13372,11 @@
         "title": "외형 1",
         "image": "https://wind01.net/info/img/103119_1_9900.gif",
         "vp": 9900
+      },
+      {
+        "title": "외형 2",
+        "image": "https://wind01.net/info/img/103119_2_29900.gif",
+        "vp": 29900
       }
     ]
   },
@@ -13379,7 +13384,7 @@
     "name": "라이비",
     "image": "https://wind01.net/info/img/160022.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "지원페트(VP 5500)",
     "attr": {
@@ -13463,7 +13468,7 @@
     "name": "테라르가",
     "image": "https://wind01.net/info/img/300458.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -13502,7 +13507,7 @@
     "name": "메카르가",
     "image": "https://wind01.net/info/img/300462.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "펫 코인 상점",
     "attr": {
@@ -13541,7 +13546,7 @@
     "name": "카가로스",
     "image": "https://wind01.net/info/img/103026.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
@@ -13580,7 +13585,7 @@
     "name": "카라쿠",
     "image": "https://wind01.net/info/img/102688.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13619,7 +13624,7 @@
     "name": "파라쿠",
     "image": "https://wind01.net/info/img/102689.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13658,7 +13663,7 @@
     "name": "토라쿠",
     "image": "https://wind01.net/info/img/102690.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13697,7 +13702,7 @@
     "name": "차라쿠",
     "image": "https://wind01.net/info/img/102692.gif",
     "grade": "일반",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13736,7 +13741,7 @@
     "name": "칼란라쿠",
     "image": "https://wind01.net/info/img/102695.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13775,7 +13780,7 @@
     "name": "차란라쿠",
     "image": "https://wind01.net/info/img/102696.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13814,7 +13819,7 @@
     "name": "킹라쿠",
     "image": "https://wind01.net/info/img/102697.gif",
     "grade": "1등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "경험치 복권",
     "attr": {
@@ -13853,7 +13858,7 @@
     "name": "금도니",
     "image": "https://wind01.net/info/img/300453.gif",
     "grade": "1등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "복덩이레이드 (헬)",
     "attr": {
@@ -13903,7 +13908,7 @@
     "name": "스켈타이즈",
     "image": "https://wind01.net/info/img/300547.gif",
     "grade": "2등급",
-    "mount": false,
+    "mount": true,
     "rebirth": false,
     "obtain": "꼬마요리사 고과 보상",
     "attr": {
@@ -13979,6 +13984,675 @@
       {
         "title": "외형 1",
         "image": "https://wind01.net/info/img/300294_1_19900.gif",
+        "vp": 19900
+      }
+    ]
+  },
+  {
+    "name": "절망",
+    "image": "https://wind01.net/info/img/301069.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 0,
+      "수": 5,
+      "화": 5,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 62.58,
+      "atk": 13.797,
+      "def": 8.504,
+      "agi": 7.14
+    },
+    "sg": {
+      "hp": 10.616,
+      "atk": 2.34,
+      "def": 1.442,
+      "agi": 1.211
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "혐오",
+    "image": "https://wind01.net/info/img/301068.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 0,
+      "수": 10,
+      "화": 0,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 64.539,
+      "atk": 13.572,
+      "def": 8.532,
+      "agi": 7.14
+    },
+    "sg": {
+      "hp": 10.948,
+      "atk": 2.302,
+      "def": 1.447,
+      "agi": 1.211
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "슬픔",
+    "image": "https://wind01.net/info/img/301067.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 5,
+      "수": 5,
+      "화": 0,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 62.86,
+      "atk": 13.572,
+      "def": 9.036,
+      "agi": 7.14
+    },
+    "sg": {
+      "hp": 10.663,
+      "atk": 2.302,
+      "def": 1.533,
+      "agi": 1.211
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "질투",
+    "image": "https://wind01.net/info/img/301066.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 10,
+      "수": 0,
+      "화": 0,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 61.18,
+      "atk": 13.572,
+      "def": 9.54,
+      "agi": 7.14
+    },
+    "sg": {
+      "hp": 10.378,
+      "atk": 2.302,
+      "def": 1.618,
+      "agi": 1.211
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "오만",
+    "image": "https://wind01.net/info/img/301065.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 5,
+      "수": 0,
+      "화": 0,
+      "풍": 5
+    },
+    "ic": {
+      "hp": 61.18,
+      "atk": 13.544,
+      "def": 9.009,
+      "agi": 7.7
+    },
+    "sg": {
+      "hp": 10.378,
+      "atk": 2.297,
+      "def": 1.528,
+      "agi": 1.306
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "탐욕",
+    "image": "https://wind01.net/info/img/301064.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 0,
+      "풍": 10
+    },
+    "ic": {
+      "hp": 61.18,
+      "atk": 13.502,
+      "def": 8.211,
+      "agi": 8.54
+    },
+    "sg": {
+      "hp": 10.378,
+      "atk": 2.29,
+      "def": 1.392,
+      "agi": 1.448
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "증오",
+    "image": "https://wind01.net/info/img/301063.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 5,
+      "풍": 5
+    },
+    "ic": {
+      "hp": 61.18,
+      "atk": 14.035,
+      "def": 8.239,
+      "agi": 7.98
+    },
+    "sg": {
+      "hp": 10.378,
+      "atk": 2.38,
+      "def": 1.397,
+      "agi": 1.353
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "분노",
+    "image": "https://wind01.net/info/img/301062.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "자신의 페트병",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 10,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 61.18,
+      "atk": 14.035,
+      "def": 8.239,
+      "agi": 7.98
+    },
+    "sg": {
+      "hp": 10.378,
+      "atk": 2.38,
+      "def": 1.397,
+      "agi": 1.353
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "샌드골램",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "골렘레이드(헬)",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 0,
+      "풍": 10
+    },
+    "ic": {
+      "hp": 68.125,
+      "atk": 11.093,
+      "def": 11.093,
+      "agi": 2.875
+    },
+    "sg": {
+      "hp": 12.943,
+      "atk": 2.107,
+      "def": 2.107,
+      "agi": 0.546
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "카르투스",
+    "image": "https://wind01.net/info/img/300402.gif",
+    "grade": "2등급",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "골렘레이드(헬)",
+    "attr": {
+      "지": 10,
+      "수": 0,
+      "화": 0,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 68.125,
+      "atk": 11.131,
+      "def": 11.806,
+      "agi": 2.125
+    },
+    "sg": {
+      "hp": 12.943,
+      "atk": 2.114,
+      "def": 2.243,
+      "agi": 0.403
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "타우루스",
+    "image": "https://wind01.net/info/img/103165.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥문1 페트병",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 7,
+      "풍": 3
+    },
+    "ic": {
+      "hp": 57.24,
+      "atk": 12.042,
+      "def": 9.882,
+      "agi": 3.24
+    },
+    "sg": {
+      "hp": 11.328,
+      "atk": 2.383,
+      "def": 1.955,
+      "agi": 0.641
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "바이론",
+    "image": "https://wind01.net/info/img/103212.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥문1 페트병",
+    "attr": {
+      "지": 0,
+      "수": 2,
+      "화": 8,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 59.16,
+      "atk": 11.85,
+      "def": 10.122,
+      "agi": 2.28
+    },
+    "sg": {
+      "hp": 11.708,
+      "atk": 2.345,
+      "def": 2.003,
+      "agi": 0.451
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "헬베로스",
+    "image": "https://wind01.net/info/img/103145.gif",
+    "grade": "2등급",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥문1 페트병",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 10,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 51.125,
+      "atk": 11.956,
+      "def": 6.781,
+      "agi": 8.625
+    },
+    "sg": {
+      "hp": 9.713,
+      "atk": 2.271,
+      "def": 1.288,
+      "agi": 1.638
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "베로스",
+    "image": "https://wind01.net/info/img/301051.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥던전 통로 (헬 타루우스 방)",
+    "attr": {
+      "지": 0,
+      "수": 3,
+      "화": 7,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 49.105,
+      "atk": 11.275,
+      "def": 6.721,
+      "agi": 6.555
+    },
+    "sg": {
+      "hp": 10.141,
+      "atk": 2.328,
+      "def": 1.388,
+      "agi": 1.353
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "다크론",
+    "image": "https://wind01.net/info/img/160115.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥던전 통로 (헬 바이론 방)",
+    "attr": {
+      "지": 0,
+      "수": 5,
+      "화": 5,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 47.85,
+      "atk": 10.796,
+      "def": 6.242,
+      "agi": 6.49
+    },
+    "sg": {
+      "hp": 10.331,
+      "atk": 2.331,
+      "def": 1.347,
+      "agi": 1.401
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "롤프",
+    "image": "https://wind01.net/info/img/103116.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥던전 통로 (지옥문 수호자 방)",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 6,
+      "풍": 4
+    },
+    "ic": {
+      "hp": 48.415,
+      "atk": 10.585,
+      "def": 6.238,
+      "agi": 7.935
+    },
+    "sg": {
+      "hp": 9.998,
+      "atk": 2.186,
+      "def": 1.288,
+      "agi": 1.638
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": []
+  },
+  {
+    "name": "적풍",
+    "image": "https://wind01.net/info/img/300469.gif",
+    "grade": "일반",
+    "mount": true,
+    "rebirth": false,
+    "obtain": "지옥문 수호자의 방 (골드볼라)",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 10,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 49.8,
+      "atk": 11.01,
+      "def": 6.042,
+      "agi": 9.0
+    },
+    "sg": {
+      "hp": 9.856,
+      "atk": 2.179,
+      "def": 1.195,
+      "agi": 1.781
+    },
+    "rebirth_ic": {
+      "hp": 56.52,
+      "atk": 11.13,
+      "def": 9.618,
+      "agi": 5.64
+    },
+    "rebirth_sg": {
+      "hp": 11.186,
+      "atk": 2.202,
+      "def": 1.903,
+      "agi": 1.116
+    },
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/300469_1_19900.gif",
         "vp": 19900
       }
     ]
