@@ -45,6 +45,27 @@
     border-bottom: 1.5px solid var(--border) !important;
   }
 
+  /* 다크 테마용 nav 오버라이드 */
+  #global-nav {
+    background: var(--panel) !important;
+    border-bottom: 1.5px solid var(--border) !important;
+  }
+  #global-nav a {
+    background: var(--bg2) !important;
+    border-color: var(--border) !important;
+    color: var(--text-2) !important;
+  }
+  #global-nav a:hover {
+    border-color: var(--accent) !important;
+    color: var(--accent) !important;
+    background: var(--panel2) !important;
+  }
+  #global-nav a.nav-active {
+    background: linear-gradient(135deg, var(--accent), var(--gold)) !important;
+    color: var(--bg) !important;
+    border-color: transparent !important;
+  }
+
   .wrap {
     max-width: 1320px;
     margin: 0 auto;
@@ -570,6 +591,100 @@
   .target-upside.up { color: var(--green); }
   .target-upside.down { color: var(--red); }
 
+  /* 기술적 분석 그리드 (한국 종목용) */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .tech-cell {
+    text-align: center;
+  }
+  .tech-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .tech-grade {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .tech-sublabel {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .tech-bar {
+    height: 6px;
+    background: var(--bg2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 6px 0;
+  }
+  .tech-bar-fill {
+    height: 100%;
+    transition: width .3s;
+  }
+
+  /* 디테일 행 */
+  .tech-detail {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tech-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .tdr-label {
+    width: 80px;
+    color: var(--text-muted);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .tdr-val {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    color: var(--text);
+    margin-left: auto;
+  }
+  .tdr-val.up { color: var(--green); }
+  .tdr-val.down { color: var(--red); }
+  .tdr-val.neutral { color: var(--gold); }
+  .tdr-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--gold) 50%, var(--green) 100%);
+    position: relative;
+    margin: 0 4px;
+  }
+  .tdr-bar-bg { display: none; }
+  .tdr-bar-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  }
+
   /* 분석 섹션 */
   .rc-analysis {
     padding: 14px 20px;
@@ -1006,7 +1121,89 @@ async function fetchSummary(symbol) {
   };
 }
 
-/* 분석가 데이터 (Yahoo quoteSummary) */
+/* 자체 기술적 분석 점수 (한국 종목용 + 미국 종목 보조) */
+function calcTechScore(summary) {
+  let score = 50; // 기본 50점
+  // 일별 변동
+  if (summary.pctDay > 5) score += 8;
+  else if (summary.pctDay > 2) score += 5;
+  else if (summary.pctDay > 0) score += 2;
+  else if (summary.pctDay > -2) score -= 1;
+  else if (summary.pctDay > -5) score -= 5;
+  else score -= 10;
+  // 주간
+  if (summary.pctWeek > 10) score += 10;
+  else if (summary.pctWeek > 5) score += 6;
+  else if (summary.pctWeek > 0) score += 2;
+  else if (summary.pctWeek > -5) score -= 3;
+  else score -= 8;
+  // 월간
+  if (summary.pctMonth > 15) score += 12;
+  else if (summary.pctMonth > 5) score += 7;
+  else if (summary.pctMonth > 0) score += 3;
+  else if (summary.pctMonth > -10) score -= 4;
+  else score -= 12;
+  // 연간
+  if (summary.pctYear > 30) score += 10;
+  else if (summary.pctYear > 10) score += 5;
+  else if (summary.pctYear > 0) score += 2;
+  else if (summary.pctYear > -20) score -= 3;
+  else score -= 10;
+  // 이동평균
+  if (summary.maTrend > 5) score += 8;
+  else if (summary.maTrend > 0) score += 3;
+  else if (summary.maTrend > -5) score -= 3;
+  else score -= 8;
+  // 변동성 (낮을수록 좋음)
+  if (summary.volatility < 2) score += 5;
+  else if (summary.volatility < 4) score += 2;
+  else if (summary.volatility > 7) score -= 5;
+  // 52주 위치 (너무 고점/저점은 페널티)
+  if (summary.yearPos > 90) score -= 3; // 고점 부담
+  else if (summary.yearPos > 60) score += 5; // 좋은 위치
+  else if (summary.yearPos < 20) score -= 5; // 저점
+
+  score = Math.max(0, Math.min(100, score));
+  return score;
+}
+
+function scoreToGrade(score) {
+  if (score >= 80) return { grade: 'A+', color: 'var(--green)', label: '매우 강세' };
+  if (score >= 70) return { grade: 'A',  color: 'var(--green)', label: '강세' };
+  if (score >= 60) return { grade: 'B+', color: 'var(--accent)', label: '양호' };
+  if (score >= 50) return { grade: 'B',  color: 'var(--accent)', label: '중립' };
+  if (score >= 40) return { grade: 'C+', color: 'var(--gold)', label: '약세' };
+  if (score >= 30) return { grade: 'C',  color: 'var(--gold)', label: '부진' };
+  return { grade: 'D', color: 'var(--red)', label: '매우 약세' };
+}
+
+function calcMomentumScore(summary) {
+  // 모멘텀: 단기/중기 추세
+  let s = 50;
+  if (summary.pctDay > 0) s += 5;
+  if (summary.pctWeek > 0) s += 10;
+  if (summary.pctMonth > 0) s += 10;
+  if (summary.maTrend > 0) s += 10;
+  if (summary.pctDay < 0) s -= 5;
+  if (summary.pctWeek < 0) s -= 10;
+  if (summary.pctMonth < 0) s -= 10;
+  if (summary.maTrend < 0) s -= 10;
+  return Math.max(0, Math.min(100, s));
+}
+
+function calcRiskScore(summary) {
+  // 위험도 (높을수록 위험)
+  let r = 30;
+  if (summary.volatility > 7) r += 30;
+  else if (summary.volatility > 5) r += 20;
+  else if (summary.volatility > 3) r += 10;
+  if (summary.maTrend < -5) r += 15;
+  if (summary.yearPos < 20) r += 15;
+  if (summary.yearPos > 90) r += 10;
+  if (summary.pctMonth < -10) r += 20;
+  if (summary.pctYear < -20) r += 15;
+  return Math.max(0, Math.min(100, r));
+}
 async function fetchAnalystData(symbol) {
   const modules = 'financialData,recommendationTrend,upgradeDowngradeHistory';
   const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${symbol}?modules=${modules}`;
@@ -1329,18 +1526,16 @@ function recKeyLabel(key) {
   }[key] || { label: 'N/A', cls: 'none', kr: '데이터 없음' };
 }
 
-function renderAnalystBlock(analyst, summary, isKR) {
-  if (!analyst || !analyst.numAnalysts) {
-    return `
-      <div class="analyst-block">
-        <div class="ab-header">
-          <div class="ab-title">📊 월가 애널리스트</div>
-          <div class="ab-count">데이터 없음</div>
-        </div>
-        <div style="font-size:12px; color: var(--text-muted);">분석가 데이터 제공 안 됨</div>
-      </div>
-    `;
+function renderAnalystBlock(analyst, summary, isKR, t) {
+  // 분석가 데이터 있으면 표시
+  if (analyst && analyst.numAnalysts) {
+    return renderYahooAnalyst(analyst, summary, isKR);
   }
+  // 없으면 자체 기술적 분석 점수
+  return renderTechAnalysis(summary, t);
+}
+
+function renderYahooAnalyst(analyst, summary, isKR) {
   const key = recKeyLabel(analyst.recKey);
   const counts = analyst.counts;
   let barHtml = '', countsHtml = '';
@@ -1354,7 +1549,7 @@ function renderAnalystBlock(analyst, summary, isKR) {
         { cls:'sell',       n:counts.sell,       label:'매도'    },
         { cls:'strong-sell',n:counts.strongSell, label:'적극매도'},
       ];
-      barHtml = `<div class="rec-bar-wrap">${segs.map(s => 
+      barHtml = `<div class="rec-bar-wrap">${segs.map(s =>
         s.n > 0 ? `<div class="rec-bar ${s.cls}" style="width:${(s.n/total*100).toFixed(2)}%"></div>` : ''
       ).join('')}</div>`;
       countsHtml = `<div class="rec-counts">${segs.filter(s=>s.n>0).map(s => `<span>${s.label} ${s.n}</span>`).join('')}</div>`;
@@ -1396,6 +1591,74 @@ function renderAnalystBlock(analyst, summary, isKR) {
       ${barHtml}
       ${countsHtml}
       ${targetHtml}
+    </div>
+  `;
+}
+
+/* 자체 기술적 분석 (애널리스트 데이터 없는 경우) */
+function renderTechAnalysis(summary, t) {
+  const techScore = calcTechScore(summary);
+  const momentum = calcMomentumScore(summary);
+  const risk = calcRiskScore(summary);
+  const techGrade = scoreToGrade(techScore);
+
+  // 종합 의견 키
+  let recCls, recLabel, recKr;
+  if (techScore >= 70) { recCls = 'strong-buy'; recLabel = 'STRONG BUY'; recKr = '강력 매수'; }
+  else if (techScore >= 60) { recCls = 'buy'; recLabel = 'BUY'; recKr = '매수'; }
+  else if (techScore >= 45) { recCls = 'hold'; recLabel = 'HOLD'; recKr = '보유'; }
+  else if (techScore >= 30) { recCls = 'sell'; recLabel = 'SELL'; recKr = '매도 권고'; }
+  else { recCls = 'strong-sell'; recLabel = 'STRONG SELL'; recKr = '강력 매도'; }
+
+  return `
+    <div class="analyst-block">
+      <div class="ab-header">
+        <div class="ab-title">📊 기술적 분석 점수</div>
+        <div class="ab-count">자체 산출 · 데이터 기반</div>
+      </div>
+      <span class="recommend-key ${recCls}">${recLabel} · ${recKr}</span>
+
+      <div class="tech-grid">
+        <div class="tech-cell">
+          <div class="tech-label">종합 등급</div>
+          <div class="tech-grade" style="color: ${techGrade.color};">${techGrade.grade}</div>
+          <div class="tech-sublabel">${techGrade.label}</div>
+        </div>
+        <div class="tech-cell">
+          <div class="tech-label">기술점수</div>
+          <div class="tech-bar"><div class="tech-bar-fill" style="width:${techScore}%; background: ${techGrade.color};"></div></div>
+          <div class="tech-sublabel">${techScore}/100</div>
+        </div>
+        <div class="tech-cell">
+          <div class="tech-label">모멘텀</div>
+          <div class="tech-bar"><div class="tech-bar-fill" style="width:${momentum}%; background: ${momentum > 60 ? 'var(--green)' : momentum > 40 ? 'var(--accent)' : 'var(--red)'};"></div></div>
+          <div class="tech-sublabel">${momentum}/100</div>
+        </div>
+        <div class="tech-cell">
+          <div class="tech-label">위험도</div>
+          <div class="tech-bar"><div class="tech-bar-fill" style="width:${risk}%; background: ${risk > 60 ? 'var(--red)' : risk > 40 ? 'var(--gold)' : 'var(--green)'};"></div></div>
+          <div class="tech-sublabel">${risk}/100</div>
+        </div>
+      </div>
+
+      <div class="tech-detail">
+        <div class="tech-detail-row">
+          <span class="tdr-label">52주 위치</span>
+          <span class="tdr-bar">
+            <span class="tdr-bar-bg"></span>
+            <span class="tdr-bar-marker" style="left:${summary.yearPos.toFixed(1)}%;"></span>
+          </span>
+          <span class="tdr-val">${summary.yearPos.toFixed(0)}%</span>
+        </div>
+        <div class="tech-detail-row">
+          <span class="tdr-label">변동성(30일)</span>
+          <span class="tdr-val ${summary.volatility > 5 ? 'down' : summary.volatility > 3 ? 'neutral' : 'up'}">${summary.volatility.toFixed(2)}%</span>
+        </div>
+        <div class="tech-detail-row">
+          <span class="tdr-label">5/20일선</span>
+          <span class="tdr-val ${summary.maTrend > 0 ? 'up' : 'down'}">${summary.maTrend > 0 ? '정배열' : '역배열'} (${summary.maTrend > 0 ? '+' : ''}${summary.maTrend.toFixed(2)}%)</span>
+        </div>
+      </div>
     </div>
   `;
 }
@@ -1517,7 +1780,7 @@ function renderRecCard(t, type) {
         ${periodItem('1년', summary.pctYear)}
       </div>
 
-      ${renderAnalystBlock(analyst, summary, isKR)}
+      ${renderAnalystBlock(analyst, summary, isKR, t)}
 
       <div class="rc-analysis">
         ${analysisInner}
