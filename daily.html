@@ -1082,58 +1082,116 @@ async function corsProxyFetch(url) {
   return null;
 }
 
-/* 한국 종목 실시간 시세 (네이버 금융 API) */
+/* 한국 종목 실시간 시세 - 다중 소스 시도 */
 async function fetchNaverKRSummary(symbol) {
   const code = symbol.replace('.KS', '').replace('.KQ', '');
   if (!/^\d{6}$/.test(code)) return null;
 
+  // 시도 1: 네이버 폴링 API (신버전)
+  let priceData = await tryNaverPolling(code);
+  // 시도 2: 네이버 종목 페이지 시세 JSON
+  if (!priceData) priceData = await tryNaverItemSise(code);
+  // 시도 3: Yahoo (지연됨, 하지만 안 막힘)
+
+  if (!priceData) return null;
+
+  const { close, yesterday, open, high, low, volume } = priceData;
+  if (!close || !yesterday) return null;
+  const pctDay = ((close - yesterday) / yesterday) * 100;
+
+  // 차트(주간/월간) 데이터는 Yahoo로 보강
+  let extras = {
+    pctWeek: null, pctMonth: null, pct3Month: null, pctYear: null,
+    volatility: 0, maTrend: 0,
+    yearHigh: high || close, yearLow: low || close, yearPos: 50,
+  };
   try {
-    // 네이버 폴링 API (실시간) - 다중 프록시 폴백
-    const naverUrl = `https://polling.finance.naver.com/api/realtime/domestic/stock/${code}`;
-    const realtimeData = await corsProxyFetch(naverUrl);
-    if (!realtimeData) return null;
-    const dt = realtimeData?.datas?.[0];
-    if (!dt) return null;
+    const yh = await fetchYahooSummary(symbol);
+    if (yh) {
+      // Yahoo의 close를 네이버 실시간 close로 대체 후 변동률 재계산
+      const realClose = close;
+      extras = {
+        pctWeek: yh.wAgoClose ? ((realClose - yh.wAgoClose) / yh.wAgoClose) * 100 : yh.pctWeek,
+        pctMonth: yh.mAgoClose ? ((realClose - yh.mAgoClose) / yh.mAgoClose) * 100 : yh.pctMonth,
+        pct3Month: yh.m3AgoClose ? ((realClose - yh.m3AgoClose) / yh.m3AgoClose) * 100 : yh.pct3Month,
+        pctYear: yh.yAgoClose ? ((realClose - yh.yAgoClose) / yh.yAgoClose) * 100 : yh.pctYear,
+        volatility: yh.volatility,
+        maTrend: yh.maTrend,
+        yearHigh: yh.yearHigh,
+        yearLow: yh.yearLow,
+        yearPos: ((realClose - yh.yearLow) / (yh.yearHigh - yh.yearLow)) * 100,
+      };
+    }
+  } catch(e) {}
 
-    const close = parseFloat(String(dt.closePrice || '').replace(/,/g, ''));
-    const yesterday = parseFloat(String(dt.yesterdayClosePrice || '').replace(/,/g, ''));
-    const open = parseFloat(String(dt.openPrice || '').replace(/,/g, ''));
-    const high = parseFloat(String(dt.highPrice || '').replace(/,/g, ''));
-    const low = parseFloat(String(dt.lowPrice || '').replace(/,/g, ''));
-    const volume = parseFloat(dt.accumulatedTradingVolume || 0);
-    if (!close || !yesterday) return null;
-    const pctDay = ((close - yesterday) / yesterday) * 100;
+  return {
+    close, yesterday, pctDay,
+    open, high, low, volume,
+    currency: 'KRW',
+    ...extras,
+  };
+}
 
-    // 차트 데이터는 Yahoo로 보강
-    let extras = { pctWeek: null, pctMonth: null, pct3Month: null, pctYear: null,
-                   volatility: 0, maTrend: 0, yearHigh: high || close, yearLow: low || close, yearPos: 50 };
-    try {
-      const yh = await fetchYahooSummary(symbol);
-      if (yh) {
-        extras = {
-          pctWeek: yh.pctWeek,
-          pctMonth: yh.pctMonth,
-          pct3Month: yh.pct3Month,
-          pctYear: yh.pctYear,
-          volatility: yh.volatility,
-          maTrend: yh.maTrend,
-          yearHigh: yh.yearHigh,
-          yearLow: yh.yearLow,
-          yearPos: ((close - yh.yearLow) / (yh.yearHigh - yh.yearLow)) * 100,
-        };
-      }
-    } catch(e) {}
+async function tryNaverPolling(code) {
+  // 신버전 폴링 API
+  const url = `https://polling.finance.naver.com/api/realtime/domestic/stock/${code}`;
+  const data = await corsProxyFetch(url);
+  if (!data?.datas?.[0]) return null;
+  const d = data.datas[0];
+  const num = (s) => parseFloat(String(s || '').replace(/,/g, ''));
+  return {
+    close:     num(d.closePrice),
+    yesterday: num(d.yesterdayClosePrice || d.compareToPreviousClosePrice ? num(d.closePrice) - num(d.compareToPreviousClosePrice) : 0),
+    open:      num(d.openPrice),
+    high:      num(d.highPrice),
+    low:       num(d.lowPrice),
+    volume:    num(d.accumulatedTradingVolume),
+  };
+}
 
+async function tryNaverItemSise(code) {
+  // finance.naver.com/item/sise.naver?code=051910 → HTML에서 시세 파싱
+  // 또는 sise_time.naver?code=051910&page=1 → JSON 비슷
+  // 가장 안정적: Quote API (주식 일별 시세) 또는 종목 메인 페이지의 Stock Object
+  // 실은 main.naver?code=XXX 의 HTML에 시세 데이터 박혀있음. 파싱해보자
+  try {
+    const url = `https://finance.naver.com/item/main.naver?code=${code}`;
+    // 다중 프록시 통해서 HTML 가져오기
+    let html = null;
+    for (const proxyFn of PROXIES) {
+      try {
+        const proxyUrl = proxyFn(url);
+        const r = await fetch(proxyUrl);
+        if (!r.ok) continue;
+        html = await r.text();
+        if (html && html.length > 1000) break;
+      } catch(e) {}
+    }
+    if (!html) return null;
+
+    // <span class="num">409,500</span> 같은 패턴 찾기
+    // 더 확실한 건 dl.blind 안의 데이터
+    // <dt>현재가</dt><dd>409,500 ...</dd>
+    // 또는 <strong id="_nowVal" class="...">409,500</strong>
+    const matchNow = html.match(/<strong[^>]*id="_nowVal"[^>]*>([\d,]+)<\/strong>/);
+    const matchPrev = html.match(/전일<\/dt>\s*<dd>([\d,]+)<\/dd>/);
+    const matchOpen = html.match(/시가<\/dt>\s*<dd>([\d,]+)<\/dd>/);
+    const matchHigh = html.match(/고가<\/dt>\s*<dd>[^<]*?([\d,]+)\s*[^<]*?<\/dd>/);
+    const matchLow = html.match(/저가<\/dt>\s*<dd>[^<]*?([\d,]+)\s*[^<]*?<\/dd>/);
+    const matchVol = html.match(/거래량<\/dt>\s*<dd>([\d,]+)<\/dd>/);
+
+    const num = (m) => m ? parseFloat(m[1].replace(/,/g, '')) : 0;
+    const close = num(matchNow);
+    if (!close) return null;
     return {
-      close, yesterday, pctDay,
-      open, high, low, volume,
-      currency: 'KRW',
-      ...extras,
+      close,
+      yesterday: num(matchPrev),
+      open: num(matchOpen),
+      high: num(matchHigh),
+      low: num(matchLow),
+      volume: num(matchVol),
     };
-  } catch(e) {
-    console.warn(`naver fetch ${code} fail`, e);
-    return null;
-  }
+  } catch(e) { return null; }
 }
 
 /* Yahoo 기반 summary (백업/보조) */
@@ -1190,6 +1248,10 @@ async function fetchYahooSummary(symbol) {
     pctMonth: calcPct(mAgo),
     pct3Month: calcPct(m3Ago),
     pctYear: calcPct(yAgo),
+    wAgoClose: wAgo ? wAgo.c : null,
+    mAgoClose: mAgo ? mAgo.c : null,
+    m3AgoClose: m3Ago ? m3Ago.c : null,
+    yAgoClose: yAgo ? yAgo.c : null,
     volatility,
     maTrend,
     yearHigh,
