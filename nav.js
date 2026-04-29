@@ -11,57 +11,74 @@
     { href: 'daily.html',        label: '📈 STOCK·WIND' },
   ];
 
-  // 현재 페이지 파악
-  const current = location.pathname.split('/').pop() || 'index.html';
+  function injectNav() {
+    // 이미 삽입됐으면 스킵
+    if (document.getElementById('global-nav')) return;
 
-  // 스타일 삽입
-  const style = document.createElement('style');
-  style.textContent = `
-    #global-nav {
-      display: flex;
-      justify-content: center;
-      gap: 7px;
-      flex-wrap: wrap;
-      padding: 10px 16px;
-      background: #fff;
-      border-bottom: 1.5px solid #e8e3ff;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    #global-nav a {
-      text-decoration: none;
-      background: #f7f5ff;
-      border: 1.5px solid #e8e3ff;
-      border-radius: 99px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #7b72a8;
-      font-family: 'Noto Sans KR', sans-serif;
-      transition: all .15s;
-      white-space: nowrap;
-    }
-    #global-nav a:hover {
-      border-color: #9b87f5;
-      color: #6c5ce7;
-      background: #ede9ff;
-    }
-    #global-nav a.nav-active {
-      background: linear-gradient(135deg, #9b87f5, #f587b8);
-      color: #fff;
-      border-color: transparent;
-    }
-  `;
-  document.head.appendChild(style);
+    // 현재 페이지 파악
+    const current = location.pathname.split('/').pop() || 'index.html';
 
-  // nav 렌더
-  const nav = document.createElement('div');
-  nav.id = 'global-nav';
-  nav.innerHTML = MENUS.map(m =>
-    `<a href="${m.href}"${m.href === current ? ' class="nav-active"' : ''}>${m.label}</a>`
-  ).join('');
+    // 스타일 삽입
+    if (!document.getElementById('global-nav-style')) {
+      const style = document.createElement('style');
+      style.id = 'global-nav-style';
+      style.textContent = `
+        #global-nav {
+          display: flex;
+          justify-content: center;
+          gap: 7px;
+          flex-wrap: wrap;
+          padding: 10px 16px;
+          background: #fff;
+          border-bottom: 1.5px solid #e8e3ff;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+        }
+        #global-nav a {
+          text-decoration: none;
+          background: #f7f5ff;
+          border: 1.5px solid #e8e3ff;
+          border-radius: 99px;
+          padding: 6px 14px;
+          font-size: 12px;
+          font-weight: 700;
+          color: #7b72a8;
+          font-family: 'Noto Sans KR', sans-serif;
+          transition: all .15s;
+          white-space: nowrap;
+        }
+        #global-nav a:hover {
+          border-color: #9b87f5;
+          color: #6c5ce7;
+          background: #ede9ff;
+        }
+        #global-nav a.nav-active {
+          background: linear-gradient(135deg, #9b87f5, #f587b8);
+          color: #fff;
+          border-color: transparent;
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
-  // body 맨 앞에 삽입
-  document.body.insertBefore(nav, document.body.firstChild);
+    // nav 렌더
+    const nav = document.createElement('div');
+    nav.id = 'global-nav';
+    nav.innerHTML = MENUS.map(m =>
+      `<a href="${m.href}"${m.href === current ? ' class="nav-active"' : ''}>${m.label}</a>`
+    ).join('');
+
+    // body 맨 앞에 삽입
+    if (document.body) {
+      document.body.insertBefore(nav, document.body.firstChild);
+    }
+  }
+
+  // DOM이 준비된 시점에 실행
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectNav);
+  } else {
+    injectNav();
+  }
 })();
