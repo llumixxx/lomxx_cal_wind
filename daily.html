@@ -1049,42 +1049,64 @@ const INDICES = [
 ];
 
 /* ════════════════════════════════════════════════
-   Yahoo Finance fetch
+   Yahoo Finance fetch (다중 프록시 폴백)
 ════════════════════════════════════════════════ */
+const PROXIES = [
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
 async function corsProxyFetch(url) {
-  try {
-    const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
-    if (!r.ok) return null;
-    return await r.json();
-  } catch(e) { return null; }
+  for (let i = 0; i < PROXIES.length; i++) {
+    try {
+      const proxyUrl = PROXIES[i](url);
+      const r = await fetch(proxyUrl, {
+        signal: AbortSignal.timeout ? AbortSignal.timeout(15000) : undefined,
+      });
+      if (!r.ok) continue;
+      const text = await r.text();
+      if (!text) continue;
+      try {
+        return JSON.parse(text);
+      } catch(e) {
+        // JSON 파싱 실패 시 다음 프록시
+        continue;
+      }
+    } catch(e) {
+      // 다음 프록시 시도
+      continue;
+    }
+  }
+  console.warn('모든 프록시 실패:', url.slice(0, 80));
+  return null;
 }
 
 /* 한국 종목 실시간 시세 (네이버 금융 API) */
 async function fetchNaverKRSummary(symbol) {
-  // symbol: '051910.KS' → '051910' 추출
   const code = symbol.replace('.KS', '').replace('.KQ', '');
   if (!/^\d{6}$/.test(code)) return null;
 
   try {
-    // 네이버 폴링 API (실시간)
-    const realtimeUrl = `https://corsproxy.io/?${encodeURIComponent(`https://polling.finance.naver.com/api/realtime/domestic/stock/${code}`)}`;
-    const realtimeRes = await fetch(realtimeUrl);
-    if (!realtimeRes.ok) return null;
-    const realtimeData = await realtimeRes.json();
+    // 네이버 폴링 API (실시간) - 다중 프록시 폴백
+    const naverUrl = `https://polling.finance.naver.com/api/realtime/domestic/stock/${code}`;
+    const realtimeData = await corsProxyFetch(naverUrl);
+    if (!realtimeData) return null;
     const dt = realtimeData?.datas?.[0];
     if (!dt) return null;
 
-    const close = parseFloat(dt.closePrice?.replace(/,/g, '') || 0);
-    const yesterday = parseFloat(dt.yesterdayClosePrice?.replace(/,/g, '') || 0);
-    const open = parseFloat(dt.openPrice?.replace(/,/g, '') || 0);
-    const high = parseFloat(dt.highPrice?.replace(/,/g, '') || 0);
-    const low = parseFloat(dt.lowPrice?.replace(/,/g, '') || 0);
+    const close = parseFloat(String(dt.closePrice || '').replace(/,/g, ''));
+    const yesterday = parseFloat(String(dt.yesterdayClosePrice || '').replace(/,/g, ''));
+    const open = parseFloat(String(dt.openPrice || '').replace(/,/g, ''));
+    const high = parseFloat(String(dt.highPrice || '').replace(/,/g, ''));
+    const low = parseFloat(String(dt.lowPrice || '').replace(/,/g, ''));
     const volume = parseFloat(dt.accumulatedTradingVolume || 0);
-    const pctDay = yesterday > 0 ? ((close - yesterday) / yesterday) * 100 : 0;
+    if (!close || !yesterday) return null;
+    const pctDay = ((close - yesterday) / yesterday) * 100;
 
-    // 차트(주간/월간) 데이터는 Yahoo로 보강
+    // 차트 데이터는 Yahoo로 보강
     let extras = { pctWeek: null, pctMonth: null, pct3Month: null, pctYear: null,
-                   volatility: 0, maTrend: 0, yearHigh: high, yearLow: low, yearPos: 50 };
+                   volatility: 0, maTrend: 0, yearHigh: high || close, yearLow: low || close, yearPos: 50 };
     try {
       const yh = await fetchYahooSummary(symbol);
       if (yh) {
@@ -1103,15 +1125,13 @@ async function fetchNaverKRSummary(symbol) {
     } catch(e) {}
 
     return {
-      close,
-      yesterday,
-      pctDay,
+      close, yesterday, pctDay,
       open, high, low, volume,
       currency: 'KRW',
       ...extras,
     };
   } catch(e) {
-    console.warn(`naver KR fetch ${code} fail`, e);
+    console.warn(`naver fetch ${code} fail`, e);
     return null;
   }
 }
@@ -1920,9 +1940,16 @@ async function renderMain() {
 
   if (withData.length === 0) {
     cont.innerHTML = `
-      <div class="loading">
-        시장 데이터를 가져올 수 없습니다 ㅠㅠ<br>
-        <small>장 마감 후 또는 API 일시 차단일 수 있어요. 잠시 후 다시 시도해보세요.</small>
+      <div class="loading" style="padding: 40px 20px;">
+        <div style="font-size: 16px; color: var(--text); margin-bottom: 8px;">⚠️ 시장 데이터를 가져올 수 없습니다</div>
+        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.7; margin-top: 12px;">
+          가능한 원인:<br>
+          • CORS 프록시 일시 차단 (몇 분 후 다시 시도)<br>
+          • Yahoo Finance 일시 장애<br>
+          • 네트워크 문제<br><br>
+          브라우저 개발자도구(F12) > Console 에서 자세한 에러 확인 가능
+        </div>
+        <button class="refresh-btn" onclick="location.reload()" style="margin-top: 18px;">🔄 페이지 새로고침</button>
       </div>
     `;
     return;
