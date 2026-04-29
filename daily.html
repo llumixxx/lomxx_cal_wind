@@ -1059,7 +1059,65 @@ async function corsProxyFetch(url) {
   } catch(e) { return null; }
 }
 
-async function fetchSummary(symbol) {
+/* 한국 종목 실시간 시세 (네이버 금융 API) */
+async function fetchNaverKRSummary(symbol) {
+  // symbol: '051910.KS' → '051910' 추출
+  const code = symbol.replace('.KS', '').replace('.KQ', '');
+  if (!/^\d{6}$/.test(code)) return null;
+
+  try {
+    // 네이버 폴링 API (실시간)
+    const realtimeUrl = `https://corsproxy.io/?${encodeURIComponent(`https://polling.finance.naver.com/api/realtime/domestic/stock/${code}`)}`;
+    const realtimeRes = await fetch(realtimeUrl);
+    if (!realtimeRes.ok) return null;
+    const realtimeData = await realtimeRes.json();
+    const dt = realtimeData?.datas?.[0];
+    if (!dt) return null;
+
+    const close = parseFloat(dt.closePrice?.replace(/,/g, '') || 0);
+    const yesterday = parseFloat(dt.yesterdayClosePrice?.replace(/,/g, '') || 0);
+    const open = parseFloat(dt.openPrice?.replace(/,/g, '') || 0);
+    const high = parseFloat(dt.highPrice?.replace(/,/g, '') || 0);
+    const low = parseFloat(dt.lowPrice?.replace(/,/g, '') || 0);
+    const volume = parseFloat(dt.accumulatedTradingVolume || 0);
+    const pctDay = yesterday > 0 ? ((close - yesterday) / yesterday) * 100 : 0;
+
+    // 차트(주간/월간) 데이터는 Yahoo로 보강
+    let extras = { pctWeek: null, pctMonth: null, pct3Month: null, pctYear: null,
+                   volatility: 0, maTrend: 0, yearHigh: high, yearLow: low, yearPos: 50 };
+    try {
+      const yh = await fetchYahooSummary(symbol);
+      if (yh) {
+        extras = {
+          pctWeek: yh.pctWeek,
+          pctMonth: yh.pctMonth,
+          pct3Month: yh.pct3Month,
+          pctYear: yh.pctYear,
+          volatility: yh.volatility,
+          maTrend: yh.maTrend,
+          yearHigh: yh.yearHigh,
+          yearLow: yh.yearLow,
+          yearPos: ((close - yh.yearLow) / (yh.yearHigh - yh.yearLow)) * 100,
+        };
+      }
+    } catch(e) {}
+
+    return {
+      close,
+      yesterday,
+      pctDay,
+      open, high, low, volume,
+      currency: 'KRW',
+      ...extras,
+    };
+  } catch(e) {
+    console.warn(`naver KR fetch ${code} fail`, e);
+    return null;
+  }
+}
+
+/* Yahoo 기반 summary (백업/보조) */
+async function fetchYahooSummary(symbol) {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1y`;
   const data = await corsProxyFetch(url);
   const result = data?.chart?.result?.[0];
@@ -1107,7 +1165,7 @@ async function fetchSummary(symbol) {
   return {
     close,
     yesterday: yesterday ? yesterday.c : null,
-    pctDay:  calcPct(yesterday),
+    pctDay: calcPct(yesterday),
     pctWeek: calcPct(wAgo),
     pctMonth: calcPct(mAgo),
     pct3Month: calcPct(m3Ago),
@@ -1119,6 +1177,16 @@ async function fetchSummary(symbol) {
     yearPos,
     currency: meta.currency,
   };
+}
+
+async function fetchSummary(symbol) {
+  // 한국 종목은 네이버 우선
+  if (isKRSym(symbol)) {
+    const naverData = await fetchNaverKRSummary(symbol);
+    if (naverData && naverData.close > 0) return naverData;
+    // 네이버 실패 시 Yahoo 폴백
+  }
+  return await fetchYahooSummary(symbol);
 }
 
 /* 자체 기술적 분석 점수 (한국 종목용 + 미국 종목 보조) */
