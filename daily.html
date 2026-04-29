@@ -315,6 +315,9 @@
   .section-h.warning .title .badge {
     background: var(--red);
   }
+  .section-h.value .title .badge {
+    background: var(--purple);
+  }
   .section-h .desc {
     font-size: 12px;
     color: var(--text-muted);
@@ -354,6 +357,9 @@
   }
   .rec-card.caution {
     border-left: 4px solid var(--red);
+  }
+  .rec-card.value {
+    border-left: 4px solid var(--purple);
   }
 
   /* 카드 헤더 */
@@ -427,6 +433,11 @@
     background: var(--red-bg);
     color: var(--red);
     border: 1px solid var(--red);
+  }
+  .rc-tag.value {
+    background: rgba(156,39,176,0.15);
+    color: var(--purple);
+    border: 1px solid var(--purple);
   }
 
   /* 가격 영역 */
@@ -1354,6 +1365,55 @@ function calcRiskScore(summary) {
   if (summary.pctYear < -20) r += 15;
   return Math.max(0, Math.min(100, r));
 }
+
+/* 가치 점수 (저점 매수 후보용)
+   - 장기 추세는 좋은데 단기적으로 조정받은 종목 우대
+   - "좋은 종목이 싸게 나왔다" 시그널
+*/
+function calcValueScore(summary) {
+  let score = 0;
+
+  // 장기 추세는 양호해야 함 (떨어지는 칼날 잡지 마라)
+  if (summary.pctYear === null) return 0;
+  if (summary.pctYear < -15) return 0; // 1년간 -15% 이상 빠진 건 가치주 후보 아님
+  if (summary.pctYear > 30) score += 25; // 장기 강세
+  else if (summary.pctYear > 10) score += 18;
+  else if (summary.pctYear > 0) score += 10;
+  else score += 3;
+
+  // 단기 조정 (1개월 마이너스가 더 큰 가치)
+  if (summary.pctMonth !== null) {
+    if (summary.pctMonth < -10) score += 25; // 큰 단기 조정 - 큰 기회
+    else if (summary.pctMonth < -5) score += 20;
+    else if (summary.pctMonth < 0) score += 15;
+    else if (summary.pctMonth < 5) score += 8;
+    // 1개월 +5% 이상이면 이미 반등 시작 = 가치 매수 시점 지남
+  }
+
+  // 1주 변화 (조정 진행 중인지)
+  if (summary.pctWeek !== null) {
+    if (summary.pctWeek < -5) score += 15; // 강한 단기 조정
+    else if (summary.pctWeek < 0) score += 10;
+    else if (summary.pctWeek > 5) score -= 5; // 이미 반등
+  }
+
+  // 52주 위치 - 중간~하단이 좋음
+  if (summary.yearPos > 80) score -= 10; // 고점에서 매수하지 마라
+  else if (summary.yearPos > 60) score += 5;
+  else if (summary.yearPos > 40) score += 15; // 적당히 떨어진 게 좋음
+  else if (summary.yearPos > 20) score += 12;
+  else score += 2; // 너무 떨어진 건 위험
+
+  // 변동성 - 너무 변동성 큰 건 가치주 안됨
+  if (summary.volatility < 3) score += 10; // 안정적
+  else if (summary.volatility < 5) score += 5;
+  else if (summary.volatility > 7) score -= 10; // 너무 위험
+
+  // 이동평균 데드크로스인데 1년이 좋다 → 단기 조정 명확
+  if (summary.maTrend < -3 && summary.pctYear > 10) score += 10;
+
+  return Math.max(0, Math.min(100, score));
+}
 async function fetchAnalystData(symbol) {
   const modules = 'financialData,recommendationTrend,upgradeDowngradeHistory';
   const url = `https://query1.finance.yahoo.com/v10/finance/quoteSummary/${symbol}?modules=${modules}`;
@@ -1501,14 +1561,59 @@ async function translateToKr(text) {
    분석문 자동 생성
 ════════════════════════════════════════════════ */
 function generateAnalysis(t, summary, analyst, type) {
-  // type: 'buy' | 'watch' | 'caution'
+  // type: 'buy' | 'watch' | 'value' | 'caution'
   const isCaution = type === 'caution';
+  const isValue = type === 'value';
 
   const reasons = [];
   const outlook = [];
   const risks = [];
 
-  // === 추천 종목 (buy/watch)인 경우 - 상세 추천 이유 ===
+  // === 가치 추천 (저점 매수) ===
+  if (isValue) {
+    if (summary.pctYear > 30) reasons.push(`연간 <strong>+${summary.pctYear.toFixed(0)}%</strong> 상승한 우량주가 단기 조정 받음`);
+    else if (summary.pctYear > 10) reasons.push(`연간 +${summary.pctYear.toFixed(0)}% 장기 상승세 유지 중`);
+    else if (summary.pctYear > 0) reasons.push(`연간 안정적 흐름`);
+
+    if (summary.pctMonth < -10) reasons.push(`<strong>월간 ${summary.pctMonth.toFixed(1)}% 큰 조정</strong>으로 매수 기회 발생`);
+    else if (summary.pctMonth < -5) reasons.push(`월간 ${summary.pctMonth.toFixed(1)}% 단기 조정 진행 중`);
+    else if (summary.pctMonth < 0) reasons.push(`월간 ${summary.pctMonth.toFixed(1)}% 약한 조정 - 매수 타이밍`);
+
+    if (summary.pctWeek < -5) reasons.push(`<strong>1주간 ${summary.pctWeek.toFixed(1)}%</strong> 강한 단기 매도세, 저점 근접 가능`);
+    else if (summary.pctWeek < 0) reasons.push(`최근 1주 ${summary.pctWeek.toFixed(1)}% 하락 - 진입 가능 구간`);
+
+    if (summary.yearPos > 30 && summary.yearPos < 60) reasons.push(`52주 중간(${summary.yearPos.toFixed(0)}%) - <strong>적정 매수 위치</strong>`);
+    else if (summary.yearPos < 30) reasons.push(`52주 저점권(${summary.yearPos.toFixed(0)}%) - 위험하지만 큰 반등 여력`);
+
+    if (summary.volatility < 4) reasons.push(`변동성 ${summary.volatility.toFixed(1)}%로 안정적 - 보유 위험 낮음`);
+
+    if (analyst?.targetMean && summary.close) {
+      const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
+      if (upside > 20) reasons.push(`<strong>애널리스트 목표가까지 +${upside.toFixed(1)}%</strong> 큰 여력`);
+      else if (upside > 0) reasons.push(`애널리스트 목표가까지 +${upside.toFixed(1)}% 여력`);
+    }
+
+    // 가치 매수 전망
+    outlook.push(`<strong>저점 매수 관점</strong>: 단기 추가 하락 가능하나, 중장기 회복 가능성 높음`);
+    if (summary.maTrend < 0) outlook.push(`이동평균선 역배열 진행 중 - 추세 전환 신호 확인 후 진입 권장`);
+    if (summary.pctYear > 10) outlook.push(`장기 추세는 상승 → 단기 조정은 일시적 가능성 ↑`);
+    if (analyst?.targetMean) {
+      const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
+      if (upside > 0) outlook.push(`애널리스트 평균 목표가 도달 시 <strong>+${upside.toFixed(0)}%</strong> 상승 기대`);
+    }
+
+    // 가치 매수 리스크
+    risks.push(`단기 추가 하락 가능 - <strong>분할 매수</strong> 전략 권장`);
+    risks.push(`바닥 확인 전 진입 시 손실 가능, 손절 라인 미리 설정 필수`);
+    if (summary.pctYear < 0) risks.push(`장기 추세도 약함 - 추세 회복 불확실`);
+    if (summary.volatility > 5) risks.push(`변동성 ${summary.volatility.toFixed(1)}%로 높음 - 가격 출렁임 클 수 있음`);
+    if (summary.pctMonth < -15) risks.push(`<strong>월간 ${summary.pctMonth.toFixed(1)}% 폭락</strong> - 펀더멘털 이슈 점검 필요`);
+    if (t.sector === '바이오' || t.sector === 'EV') risks.push(`섹터 특성상 변동성 큼 - 신중 접근`);
+
+    return { reasons, outlook, risks };
+  }
+
+  // === 추천 종목 (buy/watch) ===
   if (!isCaution) {
     if (summary.pctDay > 5) reasons.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 급등</strong>으로 강한 매수세 유입`);
     else if (summary.pctDay > 2) reasons.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 상승</strong>하며 양호한 흐름`);
@@ -1534,39 +1639,31 @@ function generateAnalysis(t, summary, analyst, type) {
     }
   }
 
-  // === 주의 종목 (caution)인 경우 - 상세 리스크 ===
+  // === 주의 종목 ===
   if (isCaution) {
-    // 오늘
     if (summary.pctDay < -5) risks.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 폭락</strong>, 강한 매도 압력 발생`);
     else if (summary.pctDay < -3) risks.push(`<strong>오늘 ${summary.pctDay.toFixed(2)}% 급락</strong>으로 단기 약세 신호`);
     else if (summary.pctDay < 0) risks.push(`오늘 ${summary.pctDay.toFixed(2)}% 하락하며 부진한 흐름`);
 
-    // 주간
     if (summary.pctWeek < -10) risks.push(`최근 1주간 <strong>${summary.pctWeek.toFixed(1)}% 급락</strong>으로 단기 추세 매우 약함`);
     else if (summary.pctWeek < -5) risks.push(`주간 <strong>${summary.pctWeek.toFixed(1)}%</strong> 하락으로 단기 매도세 우세`);
     else if (summary.pctWeek < 0) risks.push(`주간 ${summary.pctWeek.toFixed(1)}% 하락, 단기 약세 지속`);
 
-    // 월간
     if (summary.pctMonth < -15) risks.push(`<strong>월간 ${summary.pctMonth.toFixed(1)}% 폭락</strong>으로 중기 추세 크게 훼손`);
     else if (summary.pctMonth < -5) risks.push(`월간 <strong>${summary.pctMonth.toFixed(1)}% 하락</strong>, 중기 추세 약화`);
 
-    // 변동성
     if (summary.volatility > 7) risks.push(`<strong>최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 매우 높음</strong>, 손절 라인 필수`);
     else if (summary.volatility > 5) risks.push(`최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 높은 편, 위험 관리 필요`);
 
-    // 위치
     if (summary.yearPos < 20) risks.push(`<strong>52주 저가권(${summary.yearPos.toFixed(0)}%)</strong>에서 거래, 바닥 확인 전 진입 위험 큼`);
     else if (summary.yearPos < 40) risks.push(`52주 중하단(${summary.yearPos.toFixed(0)}%)에서 거래, 약세 구간`);
 
-    // 이동평균선
     if (summary.maTrend < -5) risks.push(`<strong>이동평균선 데드크로스 진행</strong>, 단기/중기 모두 약세 신호`);
     else if (summary.maTrend < -3) risks.push(`이동평균선 역배열, 추가 약세 가능성`);
 
-    // 연간
     if (summary.pctYear < -30) risks.push(`<strong>연간 ${summary.pctYear.toFixed(0)}% 하락</strong>으로 장기 추세 매우 약함`);
     else if (summary.pctYear < -10) risks.push(`연간 ${summary.pctYear.toFixed(0)}% 하락, 장기 회복 어려움`);
 
-    // 분석가 의견
     if (analyst) {
       if (analyst.recKey === 'sell' || analyst.recKey === 'strong_sell' || analyst.recKey === 'underperform') {
         risks.push(`<strong>월가 애널리스트 ${analyst.numAnalysts || ''}명이 매도/부진 의견</strong>, 시장 전망 부정적`);
@@ -1579,7 +1676,6 @@ function generateAnalysis(t, summary, analyst, type) {
       }
     }
 
-    // 섹터별
     if (t.sector === 'EV') risks.push(`전기차 시장 경쟁 심화로 마진 압박, 중국 BYD 등 경쟁자 부상`);
     if (t.sector === 'Fintech') risks.push(`암호화폐 시세에 직접 노출, 코인 시장 변동성 영향 큼`);
     if (t.sector === 'Media' || t.sector === '엔터') risks.push(`구독자/콘텐츠 성과에 의존하는 변동성 큰 섹터`);
@@ -1595,35 +1691,37 @@ function generateAnalysis(t, summary, analyst, type) {
     }
   }
 
-  // === 전망 (양쪽 다) ===
-  if (summary.pctMonth > 0 && summary.pctWeek > 0 && summary.pctDay > 0) {
-    outlook.push(`<strong>단기/중기 모두 우상향</strong>. 현재 흐름 지속 가능성`);
-  } else if (summary.pctMonth > 0 && summary.pctWeek < 0) {
-    outlook.push(`중기 상승 추세 유효, 1주 단기 조정 진행 중. 조정 끝나면 재상승 가능`);
-  } else if (summary.pctMonth < 0 && summary.pctWeek > 0) {
-    outlook.push(`중기 하락 후 단기 반등 시도. 추세 전환 여부 주시 필요`);
-  } else if (summary.pctMonth < 0 && summary.pctWeek < 0) {
-    outlook.push(`<strong>단기/중기 모두 하락세</strong>. 바닥 확인 신호 나오기 전 신중`);
-  }
-  if (summary.maTrend > 5) outlook.push(`이동평균선 정배열 강세, 추가 상승 여력 있음`);
-  else if (summary.maTrend < -5) outlook.push(`이동평균선 역배열, 단기 반등은 어려울 수 있음`);
+  // === 전망 (양쪽 다 - value 제외) ===
+  if (!isValue) {
+    if (summary.pctMonth > 0 && summary.pctWeek > 0 && summary.pctDay > 0) {
+      outlook.push(`<strong>단기/중기 모두 우상향</strong>. 현재 흐름 지속 가능성`);
+    } else if (summary.pctMonth > 0 && summary.pctWeek < 0) {
+      outlook.push(`중기 상승 추세 유효, 1주 단기 조정 진행 중. 조정 끝나면 재상승 가능`);
+    } else if (summary.pctMonth < 0 && summary.pctWeek > 0) {
+      outlook.push(`중기 하락 후 단기 반등 시도. 추세 전환 여부 주시 필요`);
+    } else if (summary.pctMonth < 0 && summary.pctWeek < 0) {
+      outlook.push(`<strong>단기/중기 모두 하락세</strong>. 바닥 확인 신호 나오기 전 신중`);
+    }
+    if (summary.maTrend > 5) outlook.push(`이동평균선 정배열 강세, 추가 상승 여력 있음`);
+    else if (summary.maTrend < -5) outlook.push(`이동평균선 역배열, 단기 반등은 어려울 수 있음`);
 
-  if (analyst?.targetMean && summary.close) {
-    const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
-    if (upside > 15) outlook.push(`애널리스트 평균 목표가 대비 <strong>+${upside.toFixed(1)}% 상승 여력</strong>`);
-    else if (upside > 0) outlook.push(`애널리스트 평균 목표가까지 +${upside.toFixed(1)}% 여력`);
-    else if (upside < -10) outlook.push(`현재가가 평균 목표가를 ${Math.abs(upside).toFixed(1)}% 상회, <strong>고평가 가능성</strong>`);
-  }
+    if (analyst?.targetMean && summary.close) {
+      const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
+      if (upside > 15) outlook.push(`애널리스트 평균 목표가 대비 <strong>+${upside.toFixed(1)}% 상승 여력</strong>`);
+      else if (upside > 0) outlook.push(`애널리스트 평균 목표가까지 +${upside.toFixed(1)}% 여력`);
+      else if (upside < -10) outlook.push(`현재가가 평균 목표가를 ${Math.abs(upside).toFixed(1)}% 상회, <strong>고평가 가능성</strong>`);
+    }
 
-  if (t.sector?.includes('AI') || t.sector?.includes('Big Tech') || t.sector === '반도체') {
-    outlook.push(`AI/반도체 섹터는 ${isCaution ? '단기 조정 가능하나 ' : ''}장기 성장 동력 유효`);
-  }
-  if (outlook.length === 0) {
-    outlook.push(`현재 데이터로는 뚜렷한 방향성 제시 어려움. 시장 분위기 따라 판단 필요`);
+    if (t.sector?.includes('AI') || t.sector?.includes('Big Tech') || t.sector === '반도체') {
+      outlook.push(`AI/반도체 섹터는 ${isCaution ? '단기 조정 가능하나 ' : ''}장기 성장 동력 유효`);
+    }
+    if (outlook.length === 0) {
+      outlook.push(`현재 데이터로는 뚜렷한 방향성 제시 어려움. 시장 분위기 따라 판단 필요`);
+    }
   }
 
   // === 추천 카드의 리스크 (간단히만) ===
-  if (!isCaution) {
+  if (!isCaution && !isValue) {
     if (summary.volatility > 5) risks.push(`최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 손절 라인 설정 권장`);
     if (summary.yearPos > 90) risks.push(`52주 최고가 근처에서 거래 중, <strong>고점 부담</strong> 존재`);
     if (analyst?.targetMean && summary.close) {
@@ -1845,7 +1943,7 @@ function renderNewsBlock(news, stockName) {
   `;
 }
 
-function renderRecCard(t, type) {
+function renderRecCard(t, type, category) {
   const isKR = isKRSym(t.sym);
   const summary = t.summary;
   const analyst = t.analyst;
@@ -1859,9 +1957,20 @@ function renderRecCard(t, type) {
   const diff = summary.close - (summary.yesterday || summary.close);
   const diffStr = (diff >= 0 ? '+' : '') + fmtPrice(Math.abs(diff), isKR);
 
-  const tagText = type === 'buy' ? 'STRONG BUY · 강력 추천'
-                : type === 'watch' ? 'WATCH · 관심 종목'
-                : 'CAUTION · 매수 자제';
+  let tagText, cardClass;
+  if (type === 'value') {
+    tagText = '💎 VALUE BUY · 저점 매수';
+    cardClass = 'value';
+  } else if (type === 'buy') {
+    tagText = 'STRONG BUY · 강력 추천';
+    cardClass = 'buy';
+  } else if (type === 'watch') {
+    tagText = 'WATCH · 관심 종목';
+    cardClass = 'watch';
+  } else {
+    tagText = 'CAUTION · 매수 자제';
+    cardClass = 'caution';
+  }
 
   const analysis = generateAnalysis(t, summary, analyst, type);
   const reasonsHtml = analysis.reasons.map(r => `<li>${r}</li>`).join('');
@@ -1870,12 +1979,10 @@ function renderRecCard(t, type) {
 
   const tickerDisplay = t.sym.replace('.KS','').replace('.KQ','').replace('^','');
 
-  // 비추 카드는 리스크 먼저, 그 다음 전망, 마지막에 (혹시 모를) 긍정 요소 안 보여줌
   const isCaution = type === 'caution';
 
   let analysisInner;
   if (isCaution) {
-    // 비추: 리스크 (대) → 전망 → 추천이유는 안 보여줌
     analysisInner = `
       <div class="analysis-block risk">
         <div class="analysis-label">⚠️ 매수 자제 사유 / 리스크</div>
@@ -1887,7 +1994,6 @@ function renderRecCard(t, type) {
       </div>
     `;
   } else {
-    // 추천: 추천이유 (대) → 전망 → 리스크 (소)
     analysisInner = `
       <div class="analysis-block reason">
         <div class="analysis-label">💡 추천 이유</div>
@@ -1905,7 +2011,7 @@ function renderRecCard(t, type) {
   }
 
   return `
-    <div class="rec-card ${type}">
+    <div class="rec-card ${cardClass}">
       <div class="rc-top">
         <div class="rc-info">
           <div class="rc-symbol-row">
@@ -1914,7 +2020,7 @@ function renderRecCard(t, type) {
             <span class="rc-ticker">${tickerDisplay}</span>
           </div>
           <div class="rc-meta">${t.country}<span class="sep">·</span>${t.sector}</div>
-          <span class="rc-tag ${type}">${tagText}</span>
+          <span class="rc-tag ${cardClass}">${tagText}</span>
         </div>
         <div class="rc-price">
           <div class="rc-price-now ${upDown}">${priceStr}</div>
@@ -2017,11 +2123,41 @@ async function renderMain() {
     return;
   }
 
-  // 2단계: 정렬해서 TOP 5씩 추출
-  const sorted = [...withData].sort((a, b) => b.summary.pctDay - a.summary.pctDay);
-  const topGainers = sorted.slice(0, 5);
-  const topLosers = sorted.slice(-5).reverse();
-  const topPicks = [...topGainers, ...topLosers];
+  // 2단계: 종합 점수 + 가치점수 계산
+  withData.forEach(t => {
+    t.techScore = calcTechScore(t.summary);
+    t.valueScore = calcValueScore(t.summary);
+  });
+
+  // 🔥 모멘텀 추천: 종합 점수 높음 + 오늘 양봉
+  const momentumCandidates = withData
+    .filter(t => t.techScore >= 50 && t.summary.pctDay >= 0)
+    .sort((a, b) => b.techScore - a.techScore);
+  const topGainers = momentumCandidates.slice(0, 5);
+
+  // 💎 가치 추천: 장기는 좋은데 단기 조정 받은 종목
+  const valueCandidates = withData
+    .filter(t =>
+      t.valueScore >= 60 &&  // 가치 점수 높음
+      !topGainers.some(g => g.sym === t.sym)  // 모멘텀 추천이랑 중복 제거
+    )
+    .sort((a, b) => b.valueScore - a.valueScore);
+  const valuePicks = valueCandidates.slice(0, 5);
+
+  // ⚠️ 주의: 점수 낮음
+  const sellCandidates = withData
+    .filter(t =>
+      t.techScore < 45 || t.summary.pctDay < -2 ||
+      (t.summary.pctMonth !== null && t.summary.pctMonth < -10)
+    )
+    .filter(t =>
+      !topGainers.some(g => g.sym === t.sym) &&
+      !valuePicks.some(v => v.sym === t.sym)
+    )
+    .sort((a, b) => a.techScore - b.techScore);
+  const topLosers = sellCandidates.slice(0, 5);
+
+  const topPicks = [...topGainers, ...valuePicks, ...topLosers];
 
   // 분석가 데이터 + 뉴스 fetch (이 10개에 대해서만)
   for (const t of topPicks) {
@@ -2046,32 +2182,57 @@ async function renderMain() {
   cachedPicks = topPicks;
 
   // 렌더
-  renderPicks(topGainers, topLosers);
+  renderPicks(topGainers, valuePicks, topLosers);
 }
 
 /* topPicks을 받아서 화면에 렌더 */
-function renderPicks(topGainers, topLosers) {
+function renderPicks(topGainers, valuePicks, topLosers) {
   const cont = $('main-container');
+
+  // 🔥 모멘텀 추천
   let html = `
     <div class="section-h">
-      <div class="title">🔥 오늘의 추천 종목 TOP 5 <span class="badge">RECOMMEND</span></div>
-      <div class="desc">상승률 상위 + 월가 평가 + 종목 뉴스 종합</div>
+      <div class="title">🔥 모멘텀 추천 TOP 5 <span class="badge">MOMENTUM</span></div>
+      <div class="desc">흐름 좋은 종목 따라 타기 · 종합 점수 + 오늘 상승</div>
     </div>
     <div class="rec-grid">
   `;
+  if (topGainers.length === 0) {
+    html += `<div class="loading" style="grid-column: 1/-1;">현재 모멘텀 추천 종목 없음 (시장 약세)</div>`;
+  }
   topGainers.forEach(t => {
-    const type = t.summary.pctDay > 5 ? 'buy' : 'watch';
-    html += renderRecCard(t, type);
+    const type = t.techScore >= 70 ? 'buy' : t.techScore >= 60 ? 'buy' : 'watch';
+    html += renderRecCard(t, type, 'momentum');
   });
   html += '</div>';
 
+  // 💎 가치 추천 (저점 매수)
   html += `
-    <div class="section-h warning">
-      <div class="title">⚠️ 주의 종목 TOP 5 <span class="badge">CAUTION</span></div>
-      <div class="desc">하락률 상위 · 신중한 접근 권장</div>
+    <div class="section-h value">
+      <div class="title">💎 가치 추천 TOP 5 <span class="badge value">VALUE BUY</span></div>
+      <div class="desc">좋은 종목인데 단기 조정 받음 · 저점 매수 기회</div>
     </div>
     <div class="rec-grid">
   `;
+  if (valuePicks.length === 0) {
+    html += `<div class="loading" style="grid-column: 1/-1;">현재 가치 추천 종목 없음</div>`;
+  }
+  valuePicks.forEach(t => {
+    html += renderRecCard(t, 'value', 'value');
+  });
+  html += '</div>';
+
+  // ⚠️ 주의
+  html += `
+    <div class="section-h warning">
+      <div class="title">⚠️ 주의 종목 TOP 5 <span class="badge">CAUTION</span></div>
+      <div class="desc">종합 점수 낮음 · 매수 자제 권장</div>
+    </div>
+    <div class="rec-grid">
+  `;
+  if (topLosers.length === 0) {
+    html += `<div class="loading" style="grid-column: 1/-1;">현재 주의 종목 없음 (시장 호조)</div>`;
+  }
   topLosers.forEach(t => {
     html += renderRecCard(t, 'caution');
   });
@@ -2117,13 +2278,27 @@ async function refreshFast() {
       const summaryPromises = cachedPicks.map(t => fetchSummary(t.sym));
       const summaries = await Promise.all(summaryPromises);
       cachedPicks.forEach((t, i) => {
-        if (summaries[i]) t.summary = summaries[i];
+        if (summaries[i]) {
+          t.summary = summaries[i];
+          t.techScore = calcTechScore(summaries[i]);
+          t.valueScore = calcValueScore(summaries[i]);
+        }
       });
-      // 다시 정렬해서 렌더 (TOP 5씩)
-      const sorted = [...cachedPicks].sort((a, b) => b.summary.pctDay - a.summary.pctDay);
-      const topGainers = sorted.slice(0, 5);
-      const topLosers = sorted.slice(-5).reverse();
-      renderPicks(topGainers, topLosers);
+      // 모멘텀 / 가치 / 주의 다시 분류
+      const momentumCandidates = cachedPicks
+        .filter(t => t.techScore >= 50 && t.summary.pctDay >= 0)
+        .sort((a, b) => b.techScore - a.techScore);
+      const topGainers = momentumCandidates.slice(0, 5);
+      const valueCandidates = cachedPicks
+        .filter(t => t.valueScore >= 60 && !topGainers.some(g => g.sym === t.sym))
+        .sort((a, b) => b.valueScore - a.valueScore);
+      const valuePicks = valueCandidates.slice(0, 5);
+      const sellCandidates = cachedPicks
+        .filter(t => (t.techScore < 45 || t.summary.pctDay < -2 || (t.summary.pctMonth !== null && t.summary.pctMonth < -10)))
+        .filter(t => !topGainers.some(g => g.sym === t.sym) && !valuePicks.some(v => v.sym === t.sym))
+        .sort((a, b) => a.techScore - b.techScore);
+      const topLosers = sellCandidates.slice(0, 5);
+      renderPicks(topGainers, valuePicks, topLosers);
     }
     // 10분 지났으면 슬로우 갱신도 트리거
     if (Date.now() - lastSlowRefresh > SLOW_REFRESH_MS) {
