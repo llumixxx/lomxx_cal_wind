@@ -8,7 +8,7 @@
     { href: 'pet_recommend.html',label: '✨ 펫 추천' },
     { href: 'windrogue.html',    label: '⚔️ 윈드로그' },
     { href: 'raise.html',        label: '👑 프린세스 펫 메이커' },
-    { href: 'daily.html',        label: '📊 데일리 윈드' },
+    { href: 'daily.html',        label: '📈 STOCK·WIND' },
   ];
 
   // 현재 페이지 파악
