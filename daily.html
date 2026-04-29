@@ -117,6 +117,66 @@
   }
   .market-state.closed { color: var(--text-muted); }
   .market-state.closed .dot { background: var(--text-muted); animation: none; }
+
+  .last-updated {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+  .last-updated .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.5s ease-in-out infinite;
+    display: inline-block;
+  }
+  .last-updated.stale .live-dot { background: var(--gold); animation: none; }
+
+  .auto-refresh-btn {
+    background: var(--green-bg);
+    border: 1.5px solid var(--green);
+    color: var(--green);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: all .15s;
+  }
+  .auto-refresh-btn:hover { filter: brightness(1.2); }
+  .auto-refresh-btn.off {
+    background: var(--bg2);
+    border-color: var(--text-muted);
+    color: var(--text-muted);
+  }
+
+  /* 새로고침 인디케이터 */
+  .refreshing-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: refreshSlide 1.5s linear infinite;
+    z-index: 1000;
+    display: none;
+  }
+  .refreshing-bar.show { display: block; }
+  @keyframes refreshSlide {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
   .refresh-btn {
     background: var(--panel2);
     border: 1.5px solid var(--border);
@@ -533,6 +593,19 @@
   .analysis-block.reason .analysis-label { color: var(--green); }
   .analysis-block.outlook .analysis-label { color: var(--accent); }
   .analysis-block.risk .analysis-label { color: var(--red); }
+
+  /* 비추 카드의 리스크 블록은 더 강조 */
+  .rec-card.caution .analysis-block.risk {
+    background: rgba(255,71,87,0.06);
+    border: 1px solid rgba(255,71,87,0.2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: -2px -2px 14px;
+  }
+  .rec-card.caution .analysis-block.risk .analysis-content {
+    color: var(--text);
+    font-weight: 600;
+  }
   .analysis-content {
     font-size: 12.5px;
     color: var(--text-2);
@@ -684,6 +757,8 @@
 </head>
 <body>
 
+<div class="refreshing-bar" id="refreshing-bar"></div>
+
 <div class="wrap">
   <!-- 상단 헤더 -->
   <div class="top-header">
@@ -695,7 +770,9 @@
       <div class="date-block">
         <div class="date" id="today-date"></div>
         <div class="market-state" id="market-state"><span class="dot"></span>Loading...</div>
+        <div class="last-updated" id="last-updated"></div>
       </div>
+      <button class="auto-refresh-btn" id="auto-refresh-btn" title="자동 갱신 켜고 끄기">⏱ AUTO ON</button>
       <button class="refresh-btn" id="refresh-btn">🔄 REFRESH</button>
     </div>
   </div>
@@ -734,6 +811,9 @@
 ════════════════════════════════════════════════ */
 const state = {
   petData: [],
+  lastUpdated: null,
+  autoRefresh: true,
+  refreshIntervalId: null,
 };
 const $ = id => document.getElementById(id);
 
@@ -755,6 +835,26 @@ function updateDate() {
       stateEl.className = 'market-state closed';
     }
   }
+  updateLastUpdatedLabel();
+}
+
+function updateLastUpdatedLabel() {
+  const el = $('last-updated');
+  if (!el) return;
+  if (!state.lastUpdated) {
+    el.innerHTML = '';
+    return;
+  }
+  const ago = Math.floor((Date.now() - state.lastUpdated) / 1000);
+  let txt;
+  if (ago < 5) txt = '방금 업데이트';
+  else if (ago < 60) txt = `${ago}초 전 업데이트`;
+  else if (ago < 3600) txt = `${Math.floor(ago/60)}분 전 업데이트`;
+  else txt = `${Math.floor(ago/3600)}시간 전 업데이트`;
+  el.innerHTML = `<span class="live-dot"></span>${txt}`;
+  // 5분 넘었으면 stale
+  if (ago > 300) el.classList.add('stale');
+  else el.classList.remove('stale');
 }
 
 async function loadPets() {
@@ -936,11 +1036,48 @@ async function fetchAnalystData(symbol) {
 }
 
 /* 종목 뉴스 (Yahoo Finance Search) */
-async function fetchStockNews(symbol) {
-  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${symbol}&newsCount=3&quotesCount=0`;
+async function fetchStockNews(symbol, companyName) {
+  // 한국 종목은 회사명으로 검색하는 게 정확함 (티커는 6자리 숫자라 다른 결과 나옴)
+  const isKR = isKRSym(symbol);
+  let query = symbol;
+  if (isKR && companyName) {
+    // .KS 떼고 검색해도 됨, 또는 회사명 영문 매핑
+    const krCompanyEn = {
+      '삼성전자': 'Samsung Electronics',
+      'SK하이닉스': 'SK Hynix',
+      '네이버': 'Naver',
+      '카카오': 'Kakao',
+      '현대차': 'Hyundai Motor',
+      'LG화학': 'LG Chem',
+      '삼성SDI': 'Samsung SDI',
+      '삼성바이오': 'Samsung Biologics',
+      '포스코홀딩스': 'POSCO',
+      '셀트리온': 'Celltrion',
+      '신한지주': 'Shinhan Financial',
+      'KB금융': 'KB Financial',
+      '하이브': 'HYBE',
+      'LG전자': 'LG Electronics',
+      '기아': 'Kia',
+    };
+    query = krCompanyEn[companyName] || companyName;
+  }
+  const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&newsCount=8&quotesCount=0`;
   const data = await corsProxyFetch(url);
   const news = data?.news || [];
-  return news.slice(0, 3).map(n => ({
+  // 관련성 필터: 제목에 회사명이나 티커가 포함된 것만 (대소문자 무관)
+  const checkTokens = [];
+  if (companyName) checkTokens.push(companyName.toLowerCase());
+  if (query !== symbol) checkTokens.push(query.toLowerCase());
+  const usTicker = !isKR ? symbol.toLowerCase() : null;
+  if (usTicker) checkTokens.push(usTicker);
+  const filtered = news.filter(n => {
+    const title = (n.title || '').toLowerCase();
+    if (checkTokens.length === 0) return true;
+    return checkTokens.some(tok => title.includes(tok));
+  });
+  // 필터 결과가 너무 적으면 원본 사용
+  const finalNews = filtered.length >= 2 ? filtered : news;
+  return finalNews.slice(0, 3).map(n => ({
     title: n.title,
     publisher: n.publisher,
     link: n.link,
@@ -966,34 +1103,102 @@ async function translateToKr(text) {
 /* ════════════════════════════════════════════════
    분석문 자동 생성
 ════════════════════════════════════════════════ */
-function generateAnalysis(t, summary, analyst) {
+function generateAnalysis(t, summary, analyst, type) {
+  // type: 'buy' | 'watch' | 'caution'
+  const isCaution = type === 'caution';
+
   const reasons = [];
-  if (summary.pctDay > 5) reasons.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 급등</strong>으로 강한 매수세 유입`);
-  else if (summary.pctDay > 2) reasons.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 상승</strong>하며 양호한 흐름`);
-  else if (summary.pctDay > 0) reasons.push(`오늘 ${summary.pctDay.toFixed(2)}% 소폭 상승`);
+  const outlook = [];
+  const risks = [];
 
-  if (summary.pctWeek > 10) reasons.push(`최근 1주간 <strong>+${summary.pctWeek.toFixed(1)}%</strong>로 강한 단기 모멘텀`);
-  else if (summary.pctWeek > 3) reasons.push(`주간 +${summary.pctWeek.toFixed(1)}% 상승세 유지`);
+  // === 추천 종목 (buy/watch)인 경우 - 상세 추천 이유 ===
+  if (!isCaution) {
+    if (summary.pctDay > 5) reasons.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 급등</strong>으로 강한 매수세 유입`);
+    else if (summary.pctDay > 2) reasons.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 상승</strong>하며 양호한 흐름`);
+    else if (summary.pctDay > 0) reasons.push(`오늘 ${summary.pctDay.toFixed(2)}% 소폭 상승`);
 
-  if (summary.pctMonth > 15) reasons.push(`월간 <strong>+${summary.pctMonth.toFixed(1)}%</strong>로 중기 추세 매우 강함`);
-  else if (summary.pctMonth > 5) reasons.push(`월간 +${summary.pctMonth.toFixed(1)}% 안정적 상승`);
+    if (summary.pctWeek > 10) reasons.push(`최근 1주간 <strong>+${summary.pctWeek.toFixed(1)}%</strong>로 강한 단기 모멘텀`);
+    else if (summary.pctWeek > 3) reasons.push(`주간 +${summary.pctWeek.toFixed(1)}% 상승세 유지`);
 
-  if (summary.pctYear > 30) reasons.push(`연간 <strong>+${summary.pctYear.toFixed(0)}%</strong>의 장기 우상향 추세`);
-  else if (summary.pctYear > 10) reasons.push(`연간 +${summary.pctYear.toFixed(0)}% 상승, 장기 성장 종목`);
+    if (summary.pctMonth > 15) reasons.push(`월간 <strong>+${summary.pctMonth.toFixed(1)}%</strong>로 중기 추세 매우 강함`);
+    else if (summary.pctMonth > 5) reasons.push(`월간 +${summary.pctMonth.toFixed(1)}% 안정적 상승`);
 
-  if (summary.maTrend > 3) reasons.push(`5일선이 20일선 위 정배열, <strong>골든크로스 추세</strong>`);
-  if (summary.yearPos > 80) reasons.push(`52주 최고가 근처(${summary.yearPos.toFixed(0)}%)에서 강력한 모멘텀`);
-  else if (summary.yearPos > 60) reasons.push(`52주 고점권 진입(${summary.yearPos.toFixed(0)}%)`);
+    if (summary.pctYear > 30) reasons.push(`연간 <strong>+${summary.pctYear.toFixed(0)}%</strong>의 장기 우상향 추세`);
+    else if (summary.pctYear > 10) reasons.push(`연간 +${summary.pctYear.toFixed(0)}% 상승, 장기 성장 종목`);
 
-  // 분석가 점수 기반
-  if (analyst) {
-    if (analyst.recKey === 'strong_buy' || analyst.recKey === 'buy') {
-      reasons.push(`<strong>월가 애널리스트 ${analyst.numAnalysts || ''}명이 매수 의견</strong>${analyst.targetMean ? `, 평균 목표가 도달 시 +${(((analyst.targetMean - summary.close) / summary.close) * 100).toFixed(1)}% 여력` : ''}`);
+    if (summary.maTrend > 3) reasons.push(`5일선이 20일선 위 정배열, <strong>골든크로스 추세</strong>`);
+    if (summary.yearPos > 80) reasons.push(`52주 최고가 근처(${summary.yearPos.toFixed(0)}%)에서 강력한 모멘텀`);
+    else if (summary.yearPos > 60) reasons.push(`52주 고점권 진입(${summary.yearPos.toFixed(0)}%)`);
+
+    if (analyst) {
+      if (analyst.recKey === 'strong_buy' || analyst.recKey === 'buy') {
+        reasons.push(`<strong>월가 애널리스트 ${analyst.numAnalysts || ''}명이 매수 의견</strong>${analyst.targetMean ? `, 평균 목표가 도달 시 +${(((analyst.targetMean - summary.close) / summary.close) * 100).toFixed(1)}% 여력` : ''}`);
+      }
     }
   }
 
-  // === 전망 ===
-  const outlook = [];
+  // === 주의 종목 (caution)인 경우 - 상세 리스크 ===
+  if (isCaution) {
+    // 오늘
+    if (summary.pctDay < -5) risks.push(`오늘 <strong>${summary.pctDay.toFixed(2)}% 폭락</strong>, 강한 매도 압력 발생`);
+    else if (summary.pctDay < -3) risks.push(`<strong>오늘 ${summary.pctDay.toFixed(2)}% 급락</strong>으로 단기 약세 신호`);
+    else if (summary.pctDay < 0) risks.push(`오늘 ${summary.pctDay.toFixed(2)}% 하락하며 부진한 흐름`);
+
+    // 주간
+    if (summary.pctWeek < -10) risks.push(`최근 1주간 <strong>${summary.pctWeek.toFixed(1)}% 급락</strong>으로 단기 추세 매우 약함`);
+    else if (summary.pctWeek < -5) risks.push(`주간 <strong>${summary.pctWeek.toFixed(1)}%</strong> 하락으로 단기 매도세 우세`);
+    else if (summary.pctWeek < 0) risks.push(`주간 ${summary.pctWeek.toFixed(1)}% 하락, 단기 약세 지속`);
+
+    // 월간
+    if (summary.pctMonth < -15) risks.push(`<strong>월간 ${summary.pctMonth.toFixed(1)}% 폭락</strong>으로 중기 추세 크게 훼손`);
+    else if (summary.pctMonth < -5) risks.push(`월간 <strong>${summary.pctMonth.toFixed(1)}% 하락</strong>, 중기 추세 약화`);
+
+    // 변동성
+    if (summary.volatility > 7) risks.push(`<strong>최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 매우 높음</strong>, 손절 라인 필수`);
+    else if (summary.volatility > 5) risks.push(`최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 높은 편, 위험 관리 필요`);
+
+    // 위치
+    if (summary.yearPos < 20) risks.push(`<strong>52주 저가권(${summary.yearPos.toFixed(0)}%)</strong>에서 거래, 바닥 확인 전 진입 위험 큼`);
+    else if (summary.yearPos < 40) risks.push(`52주 중하단(${summary.yearPos.toFixed(0)}%)에서 거래, 약세 구간`);
+
+    // 이동평균선
+    if (summary.maTrend < -5) risks.push(`<strong>이동평균선 데드크로스 진행</strong>, 단기/중기 모두 약세 신호`);
+    else if (summary.maTrend < -3) risks.push(`이동평균선 역배열, 추가 약세 가능성`);
+
+    // 연간
+    if (summary.pctYear < -30) risks.push(`<strong>연간 ${summary.pctYear.toFixed(0)}% 하락</strong>으로 장기 추세 매우 약함`);
+    else if (summary.pctYear < -10) risks.push(`연간 ${summary.pctYear.toFixed(0)}% 하락, 장기 회복 어려움`);
+
+    // 분석가 의견
+    if (analyst) {
+      if (analyst.recKey === 'sell' || analyst.recKey === 'strong_sell' || analyst.recKey === 'underperform') {
+        risks.push(`<strong>월가 애널리스트 ${analyst.numAnalysts || ''}명이 매도/부진 의견</strong>, 시장 전망 부정적`);
+      } else if (analyst.recKey === 'hold') {
+        risks.push(`애널리스트들이 보유 의견으로 적극 매수 추천 없음`);
+      }
+      if (analyst.targetMean && summary.close) {
+        const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
+        if (upside < -10) risks.push(`현재가가 애널리스트 평균 목표가를 <strong>${Math.abs(upside).toFixed(1)}% 상회</strong>하여 고평가 상태 가능`);
+      }
+    }
+
+    // 섹터별
+    if (t.sector === 'EV') risks.push(`전기차 시장 경쟁 심화로 마진 압박, 중국 BYD 등 경쟁자 부상`);
+    if (t.sector === 'Fintech') risks.push(`암호화폐 시세에 직접 노출, 코인 시장 변동성 영향 큼`);
+    if (t.sector === 'Media' || t.sector === '엔터') risks.push(`구독자/콘텐츠 성과에 의존하는 변동성 큰 섹터`);
+    if (t.sector === '바이오') risks.push(`임상 결과/FDA 승인 등 이벤트 리스크 큰 섹터`);
+    if (t.sector === '배터리') risks.push(`전기차 수요 둔화 + 중국 배터리 업체 경쟁 심화`);
+    if (t.sector === '반도체' || t.sector === 'Chip' || t.sector === 'AI/Chip') risks.push(`반도체 사이클 둔화 시 수익성 빠르게 악화 가능`);
+    if (t.sector === '자동차') risks.push(`경기 둔화 시 자동차 수요 직접 타격`);
+    if (t.sector === '철강') risks.push(`경기 사이클에 민감, 중국 수요 둔화 시 가격 하락`);
+
+    if (risks.length < 3) {
+      risks.push(`개별 종목은 거시 경제 변화(금리 인상, 환율 변동, 지정학적 이슈)에 영향`);
+      risks.push(`단기 반등 노린 매수보다는 명확한 추세 전환 후 진입 권장`);
+    }
+  }
+
+  // === 전망 (양쪽 다) ===
   if (summary.pctMonth > 0 && summary.pctWeek > 0 && summary.pctDay > 0) {
     outlook.push(`<strong>단기/중기 모두 우상향</strong>. 현재 흐름 지속 가능성`);
   } else if (summary.pctMonth > 0 && summary.pctWeek < 0) {
@@ -1001,12 +1206,11 @@ function generateAnalysis(t, summary, analyst) {
   } else if (summary.pctMonth < 0 && summary.pctWeek > 0) {
     outlook.push(`중기 하락 후 단기 반등 시도. 추세 전환 여부 주시 필요`);
   } else if (summary.pctMonth < 0 && summary.pctWeek < 0) {
-    outlook.push(`단기/중기 모두 하락세. 바닥 확인 신호 필요`);
+    outlook.push(`<strong>단기/중기 모두 하락세</strong>. 바닥 확인 신호 나오기 전 신중`);
   }
-  if (summary.maTrend > 5) outlook.push(`이동평균선 정배열 강세, <strong>추가 상승 여력</strong> 있음`);
+  if (summary.maTrend > 5) outlook.push(`이동평균선 정배열 강세, 추가 상승 여력 있음`);
   else if (summary.maTrend < -5) outlook.push(`이동평균선 역배열, 단기 반등은 어려울 수 있음`);
 
-  // 분석가 목표가 기반 전망
   if (analyst?.targetMean && summary.close) {
     const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
     if (upside > 15) outlook.push(`애널리스트 평균 목표가 대비 <strong>+${upside.toFixed(1)}% 상승 여력</strong>`);
@@ -1014,48 +1218,25 @@ function generateAnalysis(t, summary, analyst) {
     else if (upside < -10) outlook.push(`현재가가 평균 목표가를 ${Math.abs(upside).toFixed(1)}% 상회, <strong>고평가 가능성</strong>`);
   }
 
-  // 섹터별
   if (t.sector?.includes('AI') || t.sector?.includes('Big Tech') || t.sector === '반도체') {
-    outlook.push(`AI/반도체 섹터 호황 흐름과 동행, 섹터 수혜 가능성`);
-  }
-  if (t.sector === '바이오') {
-    outlook.push(`바이오 섹터는 임상 결과/FDA 승인 등 이벤트에 변동성 큼`);
-  }
-  if (t.sector === '배터리' || t.sector === 'EV') {
-    outlook.push(`전기차/배터리 시장은 중국 경쟁 변수 존재`);
-  }
-  if (t.sector === 'Fintech' || t.sector === '엔터') {
-    outlook.push(`이 섹터는 거시 변수에 민감한 편`);
+    outlook.push(`AI/반도체 섹터는 ${isCaution ? '단기 조정 가능하나 ' : ''}장기 성장 동력 유효`);
   }
   if (outlook.length === 0) {
     outlook.push(`현재 데이터로는 뚜렷한 방향성 제시 어려움. 시장 분위기 따라 판단 필요`);
   }
 
-  // === 리스크 ===
-  const risks = [];
-  if (summary.pctDay < -3) risks.push(`<strong>오늘 ${summary.pctDay.toFixed(2)}% 급락</strong>, 추가 하락 가능성`);
-  if (summary.pctWeek < -5) risks.push(`주간 ${summary.pctWeek.toFixed(1)}% 하락으로 단기 약세`);
-  if (summary.pctMonth < -10) risks.push(`<strong>월간 ${summary.pctMonth.toFixed(1)}% 하락</strong>, 중기 추세 훼손`);
-  if (summary.volatility > 5) risks.push(`최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 <strong>높은 편</strong>, 손절 라인 설정 권장`);
-  if (summary.yearPos < 30) risks.push(`52주 저가권(${summary.yearPos.toFixed(0)}%)에서 거래, 바닥 확인 전 진입 위험`);
-  if (summary.maTrend < -3) risks.push(`이동평균선 데드크로스, 추가 약세 가능성`);
-  if (summary.pctYear < -20) risks.push(`연간 ${summary.pctYear.toFixed(0)}% 하락, 장기 추세 약함`);
-
-  if (analyst?.recKey === 'sell' || analyst?.recKey === 'strong_sell') {
-    risks.push(`<strong>월가 애널리스트 매도 의견 우세</strong>, 신중 접근`);
-  }
-  if (analyst?.targetMean && summary.close) {
-    const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
-    if (upside < -15) risks.push(`현재가가 애널리스트 평균 목표가를 ${Math.abs(upside).toFixed(1)}% <strong>크게 상회</strong>`);
-  }
-
-  if (t.sector === 'EV' && summary.pctMonth < 0) risks.push(`전기차 시장 경쟁 심화, 마진 압박 우려`);
-  if (t.sector === 'Fintech') risks.push(`암호화폐 시세 변동에 따른 영향 큼`);
-  if (t.sector === 'Media' || t.sector === '엔터') risks.push(`구독자 추이/콘텐츠 성과 따라 변동성 큰 섹터`);
-
-  if (risks.length === 0) {
-    risks.push(`현재 뚜렷한 약점은 보이지 않으나, 일반적 시장 리스크는 항상 존재`);
-    risks.push(`개별 종목은 거시 경제 변화(금리, 환율 등) 영향 받음`);
+  // === 추천 카드의 리스크 (간단히만) ===
+  if (!isCaution) {
+    if (summary.volatility > 5) risks.push(`최근 30일 변동성 ${summary.volatility.toFixed(1)}%로 손절 라인 설정 권장`);
+    if (summary.yearPos > 90) risks.push(`52주 최고가 근처에서 거래 중, <strong>고점 부담</strong> 존재`);
+    if (analyst?.targetMean && summary.close) {
+      const upside = ((analyst.targetMean - summary.close) / summary.close) * 100;
+      if (upside < -5) risks.push(`애널리스트 목표가를 ${Math.abs(upside).toFixed(1)}% 상회, 단기 차익 실현 매물 가능`);
+    }
+    if (risks.length === 0) {
+      risks.push(`거시 경제 변화(금리, 환율, 지정학) 영향은 항상 존재`);
+      risks.push(`개별 종목 리스크 외에 시장 전체 조정 시 동반 하락 가능`);
+    }
   }
 
   return {
@@ -1169,12 +1350,12 @@ function renderAnalystBlock(analyst, summary, isKR) {
   `;
 }
 
-function renderNewsBlock(news) {
+function renderNewsBlock(news, stockName) {
   if (!news || news.length === 0) {
     return `
       <div class="news-block">
-        <div class="ab-title">📰 최근 관련 뉴스</div>
-        <div style="font-size:12px; color: var(--text-muted);">관련 뉴스가 없습니다</div>
+        <div class="ab-title">📰 ${stockName || ''} 관련 뉴스</div>
+        <div style="font-size:12px; color: var(--text-muted);">관련 뉴스를 찾을 수 없습니다</div>
       </div>
     `;
   }
@@ -1190,7 +1371,7 @@ function renderNewsBlock(news) {
   }).join('');
   return `
     <div class="news-block">
-      <div class="ab-title">📰 최근 관련 뉴스</div>
+      <div class="ab-title">📰 ${stockName ? stockName + ' ' : ''}관련 뉴스</div>
       ${itemsHtml}
     </div>
   `;
@@ -1212,14 +1393,48 @@ function renderRecCard(t, type) {
 
   const tagText = type === 'buy' ? 'STRONG BUY · 강력 추천'
                 : type === 'watch' ? 'WATCH · 관심 종목'
-                : 'CAUTION · 주의';
+                : 'CAUTION · 매수 자제';
 
-  const analysis = generateAnalysis(t, summary, analyst);
+  const analysis = generateAnalysis(t, summary, analyst, type);
   const reasonsHtml = analysis.reasons.map(r => `<li>${r}</li>`).join('');
   const outlookHtml = analysis.outlook.map(r => `<li>${r}</li>`).join('');
   const risksHtml = analysis.risks.map(r => `<li>${r}</li>`).join('');
 
   const tickerDisplay = t.sym.replace('.KS','').replace('.KQ','').replace('^','');
+
+  // 비추 카드는 리스크 먼저, 그 다음 전망, 마지막에 (혹시 모를) 긍정 요소 안 보여줌
+  const isCaution = type === 'caution';
+
+  let analysisInner;
+  if (isCaution) {
+    // 비추: 리스크 (대) → 전망 → 추천이유는 안 보여줌
+    analysisInner = `
+      <div class="analysis-block risk">
+        <div class="analysis-label">⚠️ 매수 자제 사유 / 리스크</div>
+        <div class="analysis-content"><ul>${risksHtml}</ul></div>
+      </div>
+      <div class="analysis-block outlook">
+        <div class="analysis-label">🔭 앞으로 전망</div>
+        <div class="analysis-content"><ul>${outlookHtml}</ul></div>
+      </div>
+    `;
+  } else {
+    // 추천: 추천이유 (대) → 전망 → 리스크 (소)
+    analysisInner = `
+      <div class="analysis-block reason">
+        <div class="analysis-label">💡 추천 이유</div>
+        <div class="analysis-content"><ul>${reasonsHtml}</ul></div>
+      </div>
+      <div class="analysis-block outlook">
+        <div class="analysis-label">🔭 앞으로 전망</div>
+        <div class="analysis-content"><ul>${outlookHtml}</ul></div>
+      </div>
+      <div class="analysis-block risk">
+        <div class="analysis-label">⚠️ 불안 요소 / 리스크</div>
+        <div class="analysis-content"><ul>${risksHtml}</ul></div>
+      </div>
+    `;
+  }
 
   return `
     <div class="rec-card ${type}">
@@ -1250,21 +1465,10 @@ function renderRecCard(t, type) {
       ${renderAnalystBlock(analyst, summary, isKR)}
 
       <div class="rc-analysis">
-        <div class="analysis-block reason">
-          <div class="analysis-label">💡 추천 이유</div>
-          <div class="analysis-content"><ul>${reasonsHtml}</ul></div>
-        </div>
-        <div class="analysis-block outlook">
-          <div class="analysis-label">🔭 앞으로 전망</div>
-          <div class="analysis-content"><ul>${outlookHtml}</ul></div>
-        </div>
-        <div class="analysis-block risk">
-          <div class="analysis-label">⚠️ 불안 요소 / 리스크</div>
-          <div class="analysis-content"><ul>${risksHtml}</ul></div>
-        </div>
+        ${analysisInner}
       </div>
 
-      ${renderNewsBlock(news)}
+      ${renderNewsBlock(news, t.name)}
 
       <div class="rc-pet-row">
         ${pet ? `<img class="rc-pet-img" src="${pet.image}" alt="" onerror="this.style.visibility='hidden'">` : ''}
@@ -1306,12 +1510,14 @@ async function renderIndices() {
 ════════════════════════════════════════════════ */
 async function renderMain() {
   const cont = $('main-container');
-  cont.innerHTML = `
-    <div class="loading" id="main-loading">
-      시장 분석 중 (월가 애널리스트 데이터 + 시세 + 뉴스 종합)
-      <div class="loading-progress"><div class="loading-progress-fill" id="loading-progress" style="width:0%"></div></div>
-    </div>
-  `;
+  if (!cachedPicks.length) {
+    cont.innerHTML = `
+      <div class="loading" id="main-loading">
+        시장 분석 중 (월가 애널리스트 데이터 + 시세 + 뉴스 종합)
+        <div class="loading-progress"><div class="loading-progress-fill" id="loading-progress" style="width:0%"></div></div>
+      </div>
+    `;
+  }
 
   // 1단계: 모든 종목의 summary fetch
   const total = TARGETS.length;
@@ -1336,34 +1542,41 @@ async function renderMain() {
     return;
   }
 
-  // 2단계: 정렬해서 TOP 5씩 추출 (뉴스/분석가 데이터는 이 10개만 가져옴 - 효율)
+  // 2단계: 정렬해서 TOP 5씩 추출
   const sorted = [...withData].sort((a, b) => b.summary.pctDay - a.summary.pctDay);
   const topGainers = sorted.slice(0, 5);
   const topLosers = sorted.slice(-5).reverse();
   const topPicks = [...topGainers, ...topLosers];
 
-  // 분석가 데이터 + 뉴스 fetch
+  // 분석가 데이터 + 뉴스 fetch (이 10개에 대해서만)
   for (const t of topPicks) {
     const [analyst, news] = await Promise.all([
       fetchAnalystData(t.sym),
-      fetchStockNews(t.sym),
+      fetchStockNews(t.sym, t.name),
     ]);
     t.analyst = analyst;
     t.news = news;
     updateProgress();
-    // 진행도 표시 갱신
-    const remaining = topPicks.length - topPicks.filter(p => p.analyst !== undefined).length;
   }
 
-  // 뉴스 번역 (영문 종목만)
+  // 뉴스 번역 (한국 종목은 영문 사명으로 검색했으니 영문 뉴스가 나옴 → 다 번역)
   for (const t of topPicks) {
-    if (!isKRSym(t.sym) && t.news?.length > 0) {
+    if (t.news?.length > 0) {
       const translations = await Promise.all(t.news.map(n => translateToKr(n.title)));
       t.news = t.news.map((n, i) => ({ ...n, koTitle: translations[i] }));
     }
   }
 
+  // 캐시 저장
+  cachedPicks = topPicks;
+
   // 렌더
+  renderPicks(topGainers, topLosers);
+}
+
+/* topPicks을 받아서 화면에 렌더 */
+function renderPicks(topGainers, topLosers) {
+  const cont = $('main-container');
   let html = `
     <div class="section-h">
       <div class="title">🔥 오늘의 추천 종목 TOP 5 <span class="badge">RECOMMEND</span></div>
@@ -1393,12 +1606,96 @@ async function renderMain() {
 }
 
 /* ════════════════════════════════════════════════
+   자동 갱신
+   - 1분마다: 시세만 빠르게 갱신 (가벼움)
+   - 10분마다: 분석가 데이터 + 뉴스 갱신 (무거움)
+════════════════════════════════════════════════ */
+const FAST_REFRESH_MS = 60 * 1000;      // 1분
+const SLOW_REFRESH_MS = 10 * 60 * 1000; // 10분
+
+let lastSlowRefresh = 0;
+let cachedPicks = []; // 추천 종목 캐시 (시세만 업데이트)
+
+function startAutoRefresh() {
+  if (state.refreshIntervalId) clearInterval(state.refreshIntervalId);
+  state.refreshIntervalId = setInterval(async () => {
+    if (!state.autoRefresh) return;
+    await refreshFast();
+  }, FAST_REFRESH_MS);
+}
+
+function stopAutoRefresh() {
+  if (state.refreshIntervalId) {
+    clearInterval(state.refreshIntervalId);
+    state.refreshIntervalId = null;
+  }
+}
+
+/* 빠른 갱신: 시세 + 지수 (분석가/뉴스는 캐시) */
+async function refreshFast() {
+  $('refreshing-bar').classList.add('show');
+  try {
+    // 지수 갱신
+    await renderIndices();
+    // 추천 종목 시세만 다시 fetch
+    if (cachedPicks.length > 0) {
+      const summaryPromises = cachedPicks.map(t => fetchSummary(t.sym));
+      const summaries = await Promise.all(summaryPromises);
+      cachedPicks.forEach((t, i) => {
+        if (summaries[i]) t.summary = summaries[i];
+      });
+      // 다시 정렬해서 렌더 (TOP 5씩)
+      const sorted = [...cachedPicks].sort((a, b) => b.summary.pctDay - a.summary.pctDay);
+      const topGainers = sorted.slice(0, 5);
+      const topLosers = sorted.slice(-5).reverse();
+      renderPicks(topGainers, topLosers);
+    }
+    // 10분 지났으면 슬로우 갱신도 트리거
+    if (Date.now() - lastSlowRefresh > SLOW_REFRESH_MS) {
+      await refreshSlow();
+    }
+    state.lastUpdated = Date.now();
+    updateLastUpdatedLabel();
+  } catch(e) { console.warn('갱신 실패', e); }
+  setTimeout(() => $('refreshing-bar').classList.remove('show'), 400);
+}
+
+/* 느린 갱신: 전체 종목 분석 + 분석가 + 뉴스 (10분마다) */
+async function refreshSlow() {
+  await renderMain();
+  lastSlowRefresh = Date.now();
+}
+
+/* 수동 새로고침 = 풀 갱신 */
+async function manualRefresh() {
+  $('refreshing-bar').classList.add('show');
+  try {
+    await Promise.all([renderIndices(), renderMain()]);
+    state.lastUpdated = Date.now();
+    lastSlowRefresh = Date.now();
+    updateLastUpdatedLabel();
+  } catch(e) { console.warn('수동 갱신 실패', e); }
+  setTimeout(() => $('refreshing-bar').classList.remove('show'), 400);
+}
+
+/* ════════════════════════════════════════════════
    이벤트
 ════════════════════════════════════════════════ */
 $('refresh-btn').addEventListener('click', () => {
   updateDate();
-  renderIndices();
-  renderMain();
+  manualRefresh();
+});
+
+$('auto-refresh-btn').addEventListener('click', () => {
+  state.autoRefresh = !state.autoRefresh;
+  const btn = $('auto-refresh-btn');
+  if (state.autoRefresh) {
+    btn.classList.remove('off');
+    btn.textContent = '⏱ AUTO ON';
+  } else {
+    btn.classList.add('off');
+    btn.textContent = '⏸ AUTO OFF';
+  }
 });
 
 /* ════════════════════════════════════════════════
@@ -1407,9 +1704,10 @@ $('refresh-btn').addEventListener('click', () => {
 (async () => {
   updateDate();
   await loadPets();
-  renderIndices();
-  renderMain();
-  setInterval(updateDate, 60000);
+  await manualRefresh();
+  startAutoRefresh();
+  // 1초마다 시계 + last-updated 카운터
+  setInterval(updateDate, 1000);
 })();
 </script>
 
