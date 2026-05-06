@@ -1,8 +1,8 @@
 [
   {
-    "timestamp": "2026-05-06T11:30:27.541260",
+    "timestamp": "2026-05-06T12:09:49.314005",
     "date": "2026-05-06",
-    "time": "11:30:27",
+    "time": "12:09:49",
     "total_pets": 361,
     "pets": [
       {
@@ -183,7 +183,18 @@
             "score": "122.478"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "다희",
+            "level": "139",
+            "exp": "1434 (10.18)",
+            "attack": "274 (1.95)",
+            "defense": "314 (2.23)",
+            "speed": "153 (1.09)",
+            "score": "146.813"
+          }
+        ]
       },
       {
         "name": "실버우리",
@@ -199,18 +210,7 @@
             "score": "107.465"
           }
         ],
-        "rebirth_ranking": [
-          {
-            "rank": 1,
-            "nickname": "다희",
-            "level": "139",
-            "exp": "1434 (10.18)",
-            "attack": "274 (1.95)",
-            "defense": "314 (2.23)",
-            "speed": "153 (1.09)",
-            "score": "146.813"
-          }
-        ]
+        "rebirth_ranking": []
       },
       {
         "name": "불그리",
@@ -268,7 +268,28 @@
             "score": "126.345"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "겐샤이",
+            "level": "140",
+            "exp": "1509 (10.58)",
+            "attack": "319 (2.24)",
+            "defense": "208 (1.46)",
+            "speed": "219 (1.54)",
+            "score": "147.881"
+          },
+          {
+            "rank": 2,
+            "nickname": "chidgeot",
+            "level": "140",
+            "exp": "1508 (10.57)",
+            "attack": "318 (2.23)",
+            "defense": "209 (1.47)",
+            "speed": "218 (1.53)",
+            "score": "147.872"
+          }
+        ]
       },
       {
         "name": "푸우리",
@@ -463,7 +484,28 @@
             "score": "116.808"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "박광덕",
+            "level": "140",
+            "exp": "2042 (14.16)",
+            "attack": "340 (2.36)",
+            "defense": "211 (1.47)",
+            "speed": "118 (0.82)",
+            "score": "148.187"
+          },
+          {
+            "rank": 2,
+            "nickname": "아임이",
+            "level": "134",
+            "exp": "1955 (14.14)",
+            "attack": "328 (2.38)",
+            "defense": "204 (1.48)",
+            "speed": "112 (0.81)",
+            "score": "142.205"
+          }
+        ]
       },
       {
         "name": "부이",
@@ -571,11 +613,7 @@
             "score": "142.877"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "꼬미",
-        "general_ranking": [
+        "rebirth_ranking": [
           {
             "rank": 1,
             "nickname": "아임이",
@@ -586,11 +624,10 @@
             "speed": "105 (0.78)",
             "score": "140.292"
           }
-        ],
-        "rebirth_ranking": []
+        ]
       },
       {
-        "name": "꼬비",
+        "name": "꼬미",
         "general_ranking": [
           {
             "rank": 1,
@@ -634,6 +671,43 @@
           }
         ],
         "rebirth_ranking": []
+      },
+      {
+        "name": "꼬비",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "쿠댁",
+            "level": "140",
+            "exp": "1396 (9.77)",
+            "attack": "264 (1.85)",
+            "defense": "227 (1.59)",
+            "speed": "231 (1.62)",
+            "score": "147.5"
+          },
+          {
+            "rank": 2,
+            "nickname": "레드온",
+            "level": "140",
+            "exp": "1402 (9.81)",
+            "attack": "265 (1.86)",
+            "defense": "225 (1.58)",
+            "speed": "230 (1.61)",
+            "score": "147.496"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "뉴핫",
+            "level": "136",
+            "exp": "1432 (10.31)",
+            "attack": "273 (1.97)",
+            "defense": "221 (1.59)",
+            "speed": "231 (1.67)",
+            "score": "143.807"
+          }
+        ]
       },
       {
         "name": "꼬비오",
@@ -736,15 +810,21 @@
             "score": "136.418"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "의지",
+            "level": "100",
+            "exp": "1054 (10.32)",
+            "attack": "205 (2.01)",
+            "defense": "147 (1.44)",
+            "speed": "176 (1.73)",
+            "score": "107.763"
+          }
+        ]
       },
       {
         "name": "푸푸",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "우푸",
         "general_ranking": [
           {
             "rank": 1,
@@ -800,18 +880,28 @@
         "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "의지",
-            "level": "100",
-            "exp": "1054 (10.32)",
-            "attack": "205 (2.01)",
-            "defense": "147 (1.44)",
-            "speed": "176 (1.73)",
-            "score": "107.763"
+            "nickname": "내사별",
+            "level": "125",
+            "exp": "1255 (9.94)",
+            "attack": "239 (1.9)",
+            "defense": "162 (1.29)",
+            "speed": "263 (2.09)",
+            "score": "132.76"
+          },
+          {
+            "rank": 2,
+            "nickname": "이루아기",
+            "level": "105",
+            "exp": "1054 (9.92)",
+            "attack": "202 (1.9)",
+            "defense": "136 (1.29)",
+            "speed": "224 (2.12)",
+            "score": "112.788"
           }
         ]
       },
       {
-        "name": "투투",
+        "name": "우푸",
         "general_ranking": [
           {
             "rank": 1,
@@ -867,23 +957,130 @@
         "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "내사별",
-            "level": "125",
-            "exp": "1255 (9.94)",
-            "attack": "239 (1.9)",
-            "defense": "162 (1.29)",
-            "speed": "263 (2.09)",
-            "score": "132.76"
+            "nickname": "미친개",
+            "level": "140",
+            "exp": "1433 (10.12)",
+            "attack": "277 (1.96)",
+            "defense": "158 (1.12)",
+            "speed": "305 (2.16)",
+            "score": "147.768"
           },
           {
             "rank": 2,
-            "nickname": "이루아기",
-            "level": "105",
-            "exp": "1054 (9.92)",
-            "attack": "202 (1.9)",
-            "defense": "136 (1.29)",
-            "speed": "224 (2.12)",
-            "score": "112.788"
+            "nickname": "피피아",
+            "level": "134",
+            "exp": "1374 (10.14)",
+            "attack": "264 (1.95)",
+            "defense": "151 (1.12)",
+            "speed": "291 (2.15)",
+            "score": "141.752"
+          },
+          {
+            "rank": 3,
+            "nickname": "헤파이토스",
+            "level": "123",
+            "exp": "1261 (10.12)",
+            "attack": "246 (1.98)",
+            "defense": "141 (1.14)",
+            "speed": "269 (2.16)",
+            "score": "130.809"
+          }
+        ]
+      },
+      {
+        "name": "투투",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "허스키",
+            "level": "140",
+            "exp": "1439 (10.12)",
+            "attack": "247 (1.74)",
+            "defense": "170 (1.2)",
+            "speed": "285 (2.01)",
+            "score": "147.48"
+          },
+          {
+            "rank": 2,
+            "nickname": "포획",
+            "level": "140",
+            "exp": "1433 (10.08)",
+            "attack": "247 (1.74)",
+            "defense": "171 (1.21)",
+            "speed": "284 (2)",
+            "score": "147.469"
+          },
+          {
+            "rank": 3,
+            "nickname": "미라클",
+            "level": "140",
+            "exp": "1428 (10.04)",
+            "attack": "246 (1.73)",
+            "defense": "172 (1.22)",
+            "speed": "284 (2)",
+            "score": "147.46"
+          },
+          {
+            "rank": 4,
+            "nickname": "깐도루",
+            "level": "135",
+            "exp": "1367 (9.96)",
+            "attack": "237 (1.73)",
+            "defense": "164 (1.2)",
+            "speed": "273 (1.99)",
+            "score": "142.416"
+          },
+          {
+            "rank": 5,
+            "nickname": "허밋",
+            "level": "126",
+            "exp": "1300 (10.14)",
+            "attack": "223 (1.74)",
+            "defense": "156 (1.22)",
+            "speed": "257 (2.01)",
+            "score": "133.512"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "디노",
+            "level": "140",
+            "exp": "1533 (10.78)",
+            "attack": "273 (1.92)",
+            "defense": "175 (1.24)",
+            "speed": "292 (2.06)",
+            "score": "147.912"
+          },
+          {
+            "rank": 2,
+            "nickname": "아담",
+            "level": "130",
+            "exp": "1424 (10.78)",
+            "attack": "252 (1.91)",
+            "defense": "164 (1.25)",
+            "speed": "272 (2.06)",
+            "score": "137.911"
+          },
+          {
+            "rank": 3,
+            "nickname": "중랑",
+            "level": "124",
+            "exp": "1357 (10.76)",
+            "attack": "242 (1.92)",
+            "defense": "156 (1.24)",
+            "speed": "260 (2.07)",
+            "score": "131.917"
+          },
+          {
+            "rank": 4,
+            "nickname": "chidgeot",
+            "level": "123",
+            "exp": "1355 (10.83)",
+            "attack": "240 (1.92)",
+            "defense": "154 (1.24)",
+            "speed": "259 (2.07)",
+            "score": "130.936"
           }
         ]
       },
@@ -1540,7 +1737,38 @@
             "score": "147.628"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "동전",
+            "level": "138",
+            "exp": "1594 (11.33)",
+            "attack": "322 (2.29)",
+            "defense": "216 (1.54)",
+            "speed": "186 (1.33)",
+            "score": "145.993"
+          },
+          {
+            "rank": 2,
+            "nickname": "엠페러",
+            "level": "133",
+            "exp": "1530 (11.27)",
+            "attack": "309 (2.28)",
+            "defense": "210 (1.55)",
+            "speed": "176 (1.3)",
+            "score": "140.955"
+          },
+          {
+            "rank": 3,
+            "nickname": "한여름밤의꿈",
+            "level": "122",
+            "exp": "1403 (11.25)",
+            "attack": "284 (2.28)",
+            "defense": "192 (1.55)",
+            "speed": "163 (1.31)",
+            "score": "129.952"
+          }
+        ]
       },
       {
         "name": "보크곤",
@@ -1599,33 +1827,23 @@
         "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "동전",
-            "level": "138",
-            "exp": "1594 (11.33)",
-            "attack": "322 (2.29)",
-            "defense": "216 (1.54)",
-            "speed": "186 (1.33)",
-            "score": "145.993"
+            "nickname": "마이클",
+            "level": "132",
+            "exp": "1430 (10.61)",
+            "attack": "308 (2.29)",
+            "defense": "213 (1.58)",
+            "speed": "190 (1.41)",
+            "score": "139.935"
           },
           {
             "rank": 2,
-            "nickname": "엠페러",
-            "level": "133",
-            "exp": "1530 (11.27)",
-            "attack": "309 (2.28)",
-            "defense": "210 (1.55)",
-            "speed": "176 (1.3)",
-            "score": "140.955"
-          },
-          {
-            "rank": 3,
-            "nickname": "한여름밤의꿈",
-            "level": "122",
-            "exp": "1403 (11.25)",
-            "attack": "284 (2.28)",
-            "defense": "192 (1.55)",
-            "speed": "163 (1.31)",
-            "score": "129.952"
+            "nickname": "유피테르",
+            "level": "115",
+            "exp": "1236 (10.49)",
+            "attack": "269 (2.29)",
+            "defense": "187 (1.59)",
+            "speed": "164 (1.39)",
+            "score": "122.895"
           }
         ]
       },
@@ -1961,12 +2179,12 @@
           {
             "rank": 2,
             "nickname": "부엉이",
-            "level": "113",
-            "exp": "1269 (10.9)",
-            "attack": "221 (1.9)",
-            "defense": "312 (2.69)",
-            "speed": "72 (0.63)",
-            "score": "120.94"
+            "level": "114",
+            "exp": "1280 (10.9)",
+            "attack": "223 (1.9)",
+            "defense": "315 (2.69)",
+            "speed": "73 (0.63)",
+            "score": "121.947"
           }
         ]
       },
@@ -2266,7 +2484,58 @@
             "score": "147.568"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "작룡",
+            "level": "140",
+            "exp": "1601 (11.06)",
+            "attack": "354 (2.45)",
+            "defense": "214 (1.48)",
+            "speed": "183 (1.27)",
+            "score": "147.959"
+          },
+          {
+            "rank": 2,
+            "nickname": "아건",
+            "level": "140",
+            "exp": "1598 (11.04)",
+            "attack": "353 (2.44)",
+            "defense": "212 (1.47)",
+            "speed": "183 (1.27)",
+            "score": "147.932"
+          },
+          {
+            "rank": 3,
+            "nickname": "인천대장",
+            "level": "140",
+            "exp": "1601 (11.06)",
+            "attack": "352 (2.43)",
+            "defense": "212 (1.47)",
+            "speed": "182 (1.26)",
+            "score": "147.923"
+          },
+          {
+            "rank": 4,
+            "nickname": "전두환",
+            "level": "140",
+            "exp": "1603 (11.07)",
+            "attack": "351 (2.42)",
+            "defense": "210 (1.45)",
+            "speed": "183 (1.27)",
+            "score": "147.912"
+          },
+          {
+            "rank": 5,
+            "nickname": "Unknown",
+            "level": "140",
+            "exp": "1595 (11.01)",
+            "attack": "354 (2.45)",
+            "defense": "210 (1.45)",
+            "speed": "182 (1.26)",
+            "score": "147.912"
+          }
+        ]
       },
       {
         "name": "반보로",
@@ -2325,61 +2594,6 @@
         "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "작룡",
-            "level": "140",
-            "exp": "1601 (11.06)",
-            "attack": "354 (2.45)",
-            "defense": "214 (1.48)",
-            "speed": "183 (1.27)",
-            "score": "147.959"
-          },
-          {
-            "rank": 2,
-            "nickname": "아건",
-            "level": "140",
-            "exp": "1598 (11.04)",
-            "attack": "353 (2.44)",
-            "defense": "212 (1.47)",
-            "speed": "183 (1.27)",
-            "score": "147.932"
-          },
-          {
-            "rank": 3,
-            "nickname": "인천대장",
-            "level": "140",
-            "exp": "1601 (11.06)",
-            "attack": "352 (2.43)",
-            "defense": "212 (1.47)",
-            "speed": "182 (1.26)",
-            "score": "147.923"
-          },
-          {
-            "rank": 4,
-            "nickname": "전두환",
-            "level": "140",
-            "exp": "1603 (11.07)",
-            "attack": "351 (2.42)",
-            "defense": "210 (1.45)",
-            "speed": "183 (1.27)",
-            "score": "147.912"
-          },
-          {
-            "rank": 5,
-            "nickname": "Unknown",
-            "level": "140",
-            "exp": "1595 (11.01)",
-            "attack": "354 (2.45)",
-            "defense": "210 (1.45)",
-            "speed": "182 (1.26)",
-            "score": "147.912"
-          }
-        ]
-      },
-      {
-        "name": "반기노",
-        "general_ranking": [
-          {
-            "rank": 1,
             "nickname": "유피테르",
             "level": "140",
             "exp": "1544 (10.69)",
@@ -2428,8 +2642,114 @@
             "speed": "190 (1.32)",
             "score": "147.865"
           }
+        ]
+      },
+      {
+        "name": "반기노",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "딸기초코바닐라",
+            "level": "140",
+            "exp": "1434 (9.94)",
+            "attack": "348 (2.42)",
+            "defense": "205 (1.42)",
+            "speed": "175 (1.22)",
+            "score": "147.543"
+          },
+          {
+            "rank": 2,
+            "nickname": "겐샤이",
+            "level": "140",
+            "exp": "1436 (9.96)",
+            "attack": "347 (2.41)",
+            "defense": "204 (1.42)",
+            "speed": "175 (1.22)",
+            "score": "147.532"
+          },
+          {
+            "rank": 3,
+            "nickname": "배찌",
+            "level": "140",
+            "exp": "1436 (9.96)",
+            "attack": "347 (2.41)",
+            "defense": "205 (1.42)",
+            "speed": "174 (1.21)",
+            "score": "147.532"
+          },
+          {
+            "rank": 4,
+            "nickname": "로이",
+            "level": "140",
+            "exp": "1435 (9.95)",
+            "attack": "347 (2.41)",
+            "defense": "204 (1.42)",
+            "speed": "175 (1.22)",
+            "score": "147.531"
+          },
+          {
+            "rank": 5,
+            "nickname": "흑호",
+            "level": "140",
+            "exp": "1435 (9.95)",
+            "attack": "347 (2.41)",
+            "defense": "204 (1.42)",
+            "speed": "175 (1.22)",
+            "score": "147.531"
+          }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "작룡",
+            "level": "140",
+            "exp": "1531 (10.62)",
+            "attack": "366 (2.54)",
+            "defense": "209 (1.45)",
+            "speed": "181 (1.26)",
+            "score": "147.906"
+          },
+          {
+            "rank": 2,
+            "nickname": "양파까지",
+            "level": "140",
+            "exp": "1523 (10.56)",
+            "attack": "363 (2.52)",
+            "defense": "211 (1.47)",
+            "speed": "184 (1.28)",
+            "score": "147.906"
+          },
+          {
+            "rank": 3,
+            "nickname": "돈까쓰",
+            "level": "140",
+            "exp": "1520 (10.54)",
+            "attack": "364 (2.53)",
+            "defense": "210 (1.46)",
+            "speed": "182 (1.27)",
+            "score": "147.887"
+          },
+          {
+            "rank": 4,
+            "nickname": "교만",
+            "level": "140",
+            "exp": "1523 (10.56)",
+            "attack": "365 (2.53)",
+            "defense": "208 (1.45)",
+            "speed": "182 (1.27)",
+            "score": "147.885"
+          },
+          {
+            "rank": 5,
+            "nickname": "그",
+            "level": "140",
+            "exp": "1519 (10.53)",
+            "attack": "364 (2.53)",
+            "defense": "209 (1.45)",
+            "speed": "183 (1.27)",
+            "score": "147.885"
+          }
+        ]
       },
       {
         "name": "부르돈",
@@ -2488,53 +2808,53 @@
         "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "작룡",
+            "nickname": "세종대왕",
             "level": "140",
-            "exp": "1531 (10.62)",
-            "attack": "366 (2.54)",
-            "defense": "209 (1.45)",
-            "speed": "181 (1.26)",
-            "score": "147.906"
+            "exp": "1546 (10.74)",
+            "attack": "342 (2.38)",
+            "defense": "194 (1.35)",
+            "speed": "213 (1.48)",
+            "score": "147.901"
           },
           {
             "rank": 2,
-            "nickname": "양파까지",
+            "nickname": "샤넬",
             "level": "140",
-            "exp": "1523 (10.56)",
-            "attack": "363 (2.52)",
-            "defense": "211 (1.47)",
-            "speed": "184 (1.28)",
-            "score": "147.906"
+            "exp": "1541 (10.71)",
+            "attack": "342 (2.38)",
+            "defense": "195 (1.36)",
+            "speed": "212 (1.47)",
+            "score": "147.892"
           },
           {
             "rank": 3,
-            "nickname": "돈까쓰",
+            "nickname": "닉네임S",
             "level": "140",
-            "exp": "1520 (10.54)",
-            "attack": "364 (2.53)",
-            "defense": "210 (1.46)",
-            "speed": "182 (1.27)",
-            "score": "147.887"
+            "exp": "1540 (10.7)",
+            "attack": "342 (2.38)",
+            "defense": "194 (1.35)",
+            "speed": "212 (1.47)",
+            "score": "147.883"
           },
           {
             "rank": 4,
-            "nickname": "교만",
+            "nickname": "괴안동다람쥐",
             "level": "140",
-            "exp": "1523 (10.56)",
-            "attack": "365 (2.53)",
-            "defense": "208 (1.45)",
-            "speed": "182 (1.27)",
-            "score": "147.885"
+            "exp": "1541 (10.71)",
+            "attack": "343 (2.39)",
+            "defense": "194 (1.35)",
+            "speed": "210 (1.46)",
+            "score": "147.878"
           },
           {
             "rank": 5,
-            "nickname": "그",
+            "nickname": "광렙해라",
             "level": "140",
-            "exp": "1519 (10.53)",
-            "attack": "364 (2.53)",
-            "defense": "209 (1.45)",
-            "speed": "183 (1.27)",
-            "score": "147.885"
+            "exp": "1540 (10.7)",
+            "attack": "342 (2.38)",
+            "defense": "194 (1.35)",
+            "speed": "211 (1.47)",
+            "score": "147.876"
           }
         ]
       },
@@ -2720,8 +3040,60 @@
       },
       {
         "name": "골드카비트",
-        "general_ranking": [],
-        "rebirth_ranking": []
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "부이",
+            "level": "134",
+            "exp": "1208 (8.86)",
+            "attack": "228 (1.68)",
+            "defense": "200 (1.47)",
+            "speed": "247 (1.81)",
+            "score": "141.169"
+          },
+          {
+            "rank": 2,
+            "nickname": "초원공주",
+            "level": "102",
+            "exp": "920 (8.81)",
+            "attack": "175 (1.68)",
+            "defense": "153 (1.47)",
+            "speed": "186 (1.78)",
+            "score": "109.134"
+          },
+          {
+            "rank": 3,
+            "nickname": "선우",
+            "level": "100",
+            "exp": "901 (8.8)",
+            "attack": "171 (1.68)",
+            "defense": "151 (1.47)",
+            "speed": "183 (1.79)",
+            "score": "107.139"
+          },
+          {
+            "rank": 4,
+            "nickname": "초구쟁이",
+            "level": "100",
+            "exp": "903 (8.82)",
+            "attack": "169 (1.66)",
+            "defense": "151 (1.47)",
+            "speed": "184 (1.8)",
+            "score": "107.134"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "salt",
+            "level": "134",
+            "exp": "1322 (9.69)",
+            "attack": "250 (1.83)",
+            "defense": "206 (1.51)",
+            "speed": "253 (1.86)",
+            "score": "141.626"
+          }
+        ]
       },
       {
         "name": "고르돈",
@@ -2864,7 +3236,18 @@
             "score": "112.637"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "고죠",
+            "level": "100",
+            "exp": "1152 (11.1)",
+            "attack": "222 (2.14)",
+            "defense": "188 (1.82)",
+            "speed": "122 (1.18)",
+            "score": "107.917"
+          }
+        ]
       },
       {
         "name": "투르돈",
@@ -3230,11 +3613,7 @@
             "score": "147.372"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "바우",
-        "general_ranking": [
+        "rebirth_ranking": [
           {
             "rank": 1,
             "nickname": "도키오우",
@@ -3245,11 +3624,10 @@
             "speed": "193 (1.63)",
             "score": "123.763"
           }
-        ],
-        "rebirth_ranking": []
+        ]
       },
       {
-        "name": "카우",
+        "name": "바우",
         "general_ranking": [
           {
             "rank": 1,
@@ -3303,6 +3681,73 @@
           }
         ],
         "rebirth_ranking": []
+      },
+      {
+        "name": "카우",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "ICON",
+            "level": "140",
+            "exp": "1243 (8.71)",
+            "attack": "285 (2)",
+            "defense": "229 (1.6)",
+            "speed": "232 (1.63)",
+            "score": "147.408"
+          },
+          {
+            "rank": 2,
+            "nickname": "진돗개",
+            "level": "138",
+            "exp": "1223 (8.69)",
+            "attack": "280 (1.99)",
+            "defense": "225 (1.6)",
+            "speed": "230 (1.64)",
+            "score": "145.4"
+          },
+          {
+            "rank": 3,
+            "nickname": "진돗개",
+            "level": "134",
+            "exp": "1194 (8.74)",
+            "attack": "271 (1.98)",
+            "defense": "220 (1.61)",
+            "speed": "222 (1.62)",
+            "score": "141.402"
+          },
+          {
+            "rank": 4,
+            "nickname": "슬픔",
+            "level": "130",
+            "exp": "1150 (8.67)",
+            "attack": "265 (2)",
+            "defense": "205 (1.54)",
+            "speed": "210 (1.58)",
+            "score": "137.291"
+          },
+          {
+            "rank": 5,
+            "nickname": "즈마",
+            "level": "105",
+            "exp": "929 (8.63)",
+            "attack": "206 (1.91)",
+            "defense": "173 (1.61)",
+            "speed": "175 (1.63)",
+            "score": "112.3"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "절망",
+            "level": "112",
+            "exp": "1086 (9.47)",
+            "attack": "242 (2.12)",
+            "defense": "188 (1.64)",
+            "speed": "188 (1.64)",
+            "score": "119.764"
+          }
+        ]
       },
       {
         "name": "베르가",
@@ -3639,7 +4084,48 @@
             "score": "107.432"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "닉네임S",
+            "level": "140",
+            "exp": "1501 (10.41)",
+            "attack": "312 (2.17)",
+            "defense": "213 (1.48)",
+            "speed": "245 (1.71)",
+            "score": "147.955"
+          },
+          {
+            "rank": 2,
+            "nickname": "전두환",
+            "level": "140",
+            "exp": "1495 (10.37)",
+            "attack": "312 (2.17)",
+            "defense": "213 (1.48)",
+            "speed": "243 (1.69)",
+            "score": "147.93"
+          },
+          {
+            "rank": 3,
+            "nickname": "피피아",
+            "level": "139",
+            "exp": "1483 (10.36)",
+            "attack": "307 (2.14)",
+            "defense": "212 (1.49)",
+            "speed": "241 (1.69)",
+            "score": "146.908"
+          },
+          {
+            "rank": 4,
+            "nickname": "단짠",
+            "level": "132",
+            "exp": "1415 (10.39)",
+            "attack": "294 (2.16)",
+            "defense": "202 (1.49)",
+            "speed": "231 (1.7)",
+            "score": "139.948"
+          }
+        ]
       },
       {
         "name": "토리노프스",
@@ -3793,32 +4279,27 @@
       },
       {
         "name": "토르프스",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "고반케스",
         "general_ranking": [
           {
             "rank": 1,
-            "nickname": "일격에주님곁으로",
+            "nickname": "레솔시",
             "level": "140",
-            "exp": "1520 (10.66)",
-            "attack": "273 (1.91)",
-            "defense": "369 (2.59)",
-            "speed": "100 (0.71)",
-            "score": "147.874"
+            "exp": "1526 (10.7)",
+            "attack": "325 (2.28)",
+            "defense": "224 (1.58)",
+            "speed": "143 (1.01)",
+            "score": "147.538"
           }
         ],
         "rebirth_ranking": []
       },
       {
-        "name": "고반케스",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
         "name": "쟈그라",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "쟈그",
         "general_ranking": [
           {
             "rank": 1,
@@ -3844,7 +4325,7 @@
         "rebirth_ranking": []
       },
       {
-        "name": "판지",
+        "name": "쟈그",
         "general_ranking": [
           {
             "rank": 1,
@@ -3897,57 +4378,7 @@
             "score": "147.484"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "기가로스",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "메가로스",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "비트로스",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "레솔시",
-            "level": "140",
-            "exp": "1544 (10.86)",
-            "attack": "325 (2.29)",
-            "defense": "209 (1.47)",
-            "speed": "141 (0.99)",
-            "score": "147.469"
-          },
-          {
-            "rank": 2,
-            "nickname": "백미",
-            "level": "130",
-            "exp": "1430 (10.81)",
-            "attack": "302 (2.29)",
-            "defense": "201 (1.53)",
-            "speed": "132 (1)",
-            "score": "137.517"
-          },
-          {
-            "rank": 3,
-            "nickname": "한라산",
-            "level": "111",
-            "exp": "1232 (10.88)",
-            "attack": "257 (2.27)",
-            "defense": "172 (1.53)",
-            "speed": "115 (1.02)",
-            "score": "118.539"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "가가로스",
-        "general_ranking": [
+        "rebirth_ranking": [
           {
             "rank": 1,
             "nickname": "오이소박이",
@@ -3988,11 +4419,139 @@
             "speed": "136 (1.06)",
             "score": "132.881"
           }
+        ]
+      },
+      {
+        "name": "판지",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "레솔시",
+            "level": "140",
+            "exp": "1544 (10.86)",
+            "attack": "325 (2.29)",
+            "defense": "209 (1.47)",
+            "speed": "141 (0.99)",
+            "score": "147.469"
+          },
+          {
+            "rank": 2,
+            "nickname": "백미",
+            "level": "130",
+            "exp": "1430 (10.81)",
+            "attack": "302 (2.29)",
+            "defense": "201 (1.53)",
+            "speed": "132 (1)",
+            "score": "137.517"
+          },
+          {
+            "rank": 3,
+            "nickname": "한라산",
+            "level": "111",
+            "exp": "1232 (10.88)",
+            "attack": "257 (2.27)",
+            "defense": "172 (1.53)",
+            "speed": "115 (1.02)",
+            "score": "118.539"
+          }
         ],
         "rebirth_ranking": []
       },
       {
-        "name": "루이",
+        "name": "기가로스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "인천대장",
+            "level": "140",
+            "exp": "1556 (10.74)",
+            "attack": "303 (2.09)",
+            "defense": "291 (2.01)",
+            "speed": "120 (0.83)",
+            "score": "147.628"
+          },
+          {
+            "rank": 2,
+            "nickname": "강챙이",
+            "level": "140",
+            "exp": "1554 (10.73)",
+            "attack": "304 (2.1)",
+            "defense": "290 (2.01)",
+            "speed": "119 (0.83)",
+            "score": "147.617"
+          },
+          {
+            "rank": 3,
+            "nickname": "구찌",
+            "level": "140",
+            "exp": "1553 (10.72)",
+            "attack": "303 (2.09)",
+            "defense": "290 (2.01)",
+            "speed": "120 (0.83)",
+            "score": "147.615"
+          },
+          {
+            "rank": 4,
+            "nickname": "광해군",
+            "level": "140",
+            "exp": "1549 (10.69)",
+            "attack": "302 (2.09)",
+            "defense": "292 (2.02)",
+            "speed": "119 (0.83)",
+            "score": "147.608"
+          },
+          {
+            "rank": 5,
+            "nickname": "양비",
+            "level": "131",
+            "exp": "1452 (10.68)",
+            "attack": "284 (2.09)",
+            "defense": "272 (2.01)",
+            "speed": "111 (0.82)",
+            "score": "138.594"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "칠흑",
+            "level": "117",
+            "exp": "1384 (11.36)",
+            "attack": "269 (2.21)",
+            "defense": "254 (2.09)",
+            "speed": "108 (0.89)",
+            "score": "125.022"
+          },
+          {
+            "rank": 2,
+            "nickname": "만년동안",
+            "level": "111",
+            "exp": "1318 (11.38)",
+            "attack": "256 (2.21)",
+            "defense": "243 (2.1)",
+            "speed": "99 (0.85)",
+            "score": "119.009"
+          }
+        ]
+      },
+      {
+        "name": "메가로스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "우르곳",
+            "level": "140",
+            "exp": "1643 (11.41)",
+            "attack": "292 (2.03)",
+            "defense": "299 (2.08)",
+            "speed": "105 (0.73)",
+            "score": "147.694"
+          }
+        ],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "비트로스",
         "general_ranking": [
           {
             "rank": 1,
@@ -4035,15 +4594,118 @@
             "score": "122.496"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "복귀아닙니다",
+            "level": "123",
+            "exp": "1440 (11.32)",
+            "attack": "298 (2.34)",
+            "defense": "253 (1.99)",
+            "speed": "103 (0.81)",
+            "score": "130.977"
+          }
+        ]
       },
       {
-        "name": "무이",
-        "general_ranking": [],
-        "rebirth_ranking": []
+        "name": "가가로스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "양비",
+            "level": "140",
+            "exp": "1577 (10.92)",
+            "attack": "331 (2.29)",
+            "defense": "272 (1.88)",
+            "speed": "104 (0.72)",
+            "score": "147.63"
+          },
+          {
+            "rank": 2,
+            "nickname": "인천대장",
+            "level": "140",
+            "exp": "1568 (10.86)",
+            "attack": "328 (2.27)",
+            "defense": "273 (1.89)",
+            "speed": "106 (0.73)",
+            "score": "147.613"
+          },
+          {
+            "rank": 3,
+            "nickname": "쿠로미",
+            "level": "140",
+            "exp": "1573 (10.89)",
+            "attack": "329 (2.28)",
+            "defense": "270 (1.87)",
+            "speed": "104 (0.72)",
+            "score": "147.594"
+          },
+          {
+            "rank": 4,
+            "nickname": "채쁨",
+            "level": "140",
+            "exp": "1564 (10.83)",
+            "attack": "328 (2.27)",
+            "defense": "272 (1.88)",
+            "speed": "98 (0.68)",
+            "score": "147.541"
+          },
+          {
+            "rank": 5,
+            "nickname": "제갈짜오",
+            "level": "139",
+            "exp": "1562 (10.89)",
+            "attack": "327 (2.28)",
+            "defense": "271 (1.89)",
+            "speed": "105 (0.73)",
+            "score": "146.629"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "한여름밤의꿈",
+            "level": "135",
+            "exp": "1603 (11.5)",
+            "attack": "334 (2.4)",
+            "defense": "274 (1.97)",
+            "speed": "109 (0.78)",
+            "score": "143.024"
+          },
+          {
+            "rank": 2,
+            "nickname": "튜나",
+            "level": "134",
+            "exp": "1594 (11.52)",
+            "attack": "332 (2.4)",
+            "defense": "270 (1.95)",
+            "speed": "108 (0.78)",
+            "score": "142.015"
+          },
+          {
+            "rank": 3,
+            "nickname": "멍꿀",
+            "level": "134",
+            "exp": "1583 (11.44)",
+            "attack": "331 (2.39)",
+            "defense": "270 (1.95)",
+            "speed": "106 (0.77)",
+            "score": "141.972"
+          },
+          {
+            "rank": 4,
+            "nickname": "김수발",
+            "level": "119",
+            "exp": "1418 (11.49)",
+            "attack": "296 (2.4)",
+            "defense": "242 (1.97)",
+            "speed": "96 (0.78)",
+            "score": "127.017"
+          }
+        ]
       },
       {
-        "name": "씨보스",
+        "name": "루이",
         "general_ranking": [
           {
             "rank": 1,
@@ -4096,31 +4758,61 @@
             "score": "147.838"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "투이",
-        "general_ranking": [
+        "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "복귀아닙니다",
-            "level": "123",
-            "exp": "1440 (11.32)",
-            "attack": "298 (2.34)",
-            "defense": "253 (1.99)",
-            "speed": "103 (0.81)",
-            "score": "130.977"
+            "nickname": "정령",
+            "level": "140",
+            "exp": "2063 (14.37)",
+            "attack": "292 (2.04)",
+            "defense": "268 (1.87)",
+            "speed": "98 (0.68)",
+            "score": "148.182"
+          },
+          {
+            "rank": 2,
+            "nickname": "순쇠고기패티",
+            "level": "140",
+            "exp": "2059 (14.34)",
+            "attack": "290 (2.02)",
+            "defense": "264 (1.84)",
+            "speed": "92 (0.64)",
+            "score": "148.088"
+          },
+          {
+            "rank": 3,
+            "nickname": "네이버",
+            "level": "136",
+            "exp": "2019 (14.47)",
+            "attack": "284 (2.04)",
+            "defense": "258 (1.85)",
+            "speed": "96 (0.69)",
+            "score": "144.194"
+          },
+          {
+            "rank": 4,
+            "nickname": "파죽지세",
+            "level": "113",
+            "exp": "1690 (14.5)",
+            "attack": "239 (2.05)",
+            "defense": "218 (1.88)",
+            "speed": "80 (0.69)",
+            "score": "121.241"
+          },
+          {
+            "rank": 5,
+            "nickname": "미네르바",
+            "level": "113",
+            "exp": "1685 (14.46)",
+            "attack": "236 (2.03)",
+            "defense": "216 (1.86)",
+            "speed": "80 (0.69)",
+            "score": "121.185"
           }
-        ],
-        "rebirth_ranking": []
+        ]
       },
       {
-        "name": "다이노",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "다이노스",
+        "name": "무이",
         "general_ranking": [
           {
             "rank": 1,
@@ -4173,10 +4865,61 @@
             "score": "147.998"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "루믹스",
+            "level": "140",
+            "exp": "2146 (14.99)",
+            "attack": "287 (2.01)",
+            "defense": "263 (1.84)",
+            "speed": "98 (0.69)",
+            "score": "148.288"
+          },
+          {
+            "rank": 2,
+            "nickname": "르르꾸",
+            "level": "140",
+            "exp": "2138 (14.94)",
+            "attack": "286 (2)",
+            "defense": "262 (1.83)",
+            "speed": "98 (0.69)",
+            "score": "148.259"
+          },
+          {
+            "rank": 3,
+            "nickname": "그놈",
+            "level": "140",
+            "exp": "2137 (14.93)",
+            "attack": "285 (1.99)",
+            "defense": "263 (1.84)",
+            "speed": "97 (0.68)",
+            "score": "148.25"
+          },
+          {
+            "rank": 4,
+            "nickname": "작룡",
+            "level": "140",
+            "exp": "2136 (14.92)",
+            "attack": "285 (1.99)",
+            "defense": "261 (1.83)",
+            "speed": "99 (0.7)",
+            "score": "148.248"
+          },
+          {
+            "rank": 5,
+            "nickname": "와사비",
+            "level": "140",
+            "exp": "2135 (14.91)",
+            "attack": "285 (1.99)",
+            "defense": "261 (1.83)",
+            "speed": "99 (0.7)",
+            "score": "148.246"
+          }
+        ]
       },
       {
-        "name": "프라키토스",
+        "name": "씨보스",
         "general_ranking": [
           {
             "rank": 1,
@@ -4229,66 +4972,61 @@
             "score": "147.932"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "스텐토스",
-        "general_ranking": [
+        "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "정령",
+            "nickname": "부엉이",
             "level": "140",
-            "exp": "2063 (14.37)",
-            "attack": "292 (2.04)",
-            "defense": "268 (1.87)",
-            "speed": "98 (0.68)",
-            "score": "148.182"
+            "exp": "2082 (14.53)",
+            "attack": "285 (1.99)",
+            "defense": "279 (1.95)",
+            "speed": "94 (0.66)",
+            "score": "148.236"
           },
           {
             "rank": 2,
-            "nickname": "순쇠고기패티",
+            "nickname": "신구우",
             "level": "140",
-            "exp": "2059 (14.34)",
-            "attack": "290 (2.02)",
-            "defense": "264 (1.84)",
-            "speed": "92 (0.64)",
-            "score": "148.088"
+            "exp": "2077 (14.49)",
+            "attack": "286 (2)",
+            "defense": "280 (1.96)",
+            "speed": "90 (0.63)",
+            "score": "148.212"
           },
           {
             "rank": 3,
-            "nickname": "네이버",
-            "level": "136",
-            "exp": "2019 (14.47)",
-            "attack": "284 (2.04)",
-            "defense": "258 (1.85)",
-            "speed": "96 (0.69)",
-            "score": "144.194"
+            "nickname": "신불짬뽕",
+            "level": "140",
+            "exp": "2073 (14.46)",
+            "attack": "284 (1.99)",
+            "defense": "280 (1.96)",
+            "speed": "91 (0.64)",
+            "score": "148.198"
           },
           {
             "rank": 4,
-            "nickname": "파죽지세",
-            "level": "113",
-            "exp": "1690 (14.5)",
-            "attack": "239 (2.05)",
-            "defense": "218 (1.88)",
-            "speed": "80 (0.69)",
-            "score": "121.241"
+            "nickname": "자춘",
+            "level": "140",
+            "exp": "2064 (14.4)",
+            "attack": "285 (1.99)",
+            "defense": "278 (1.94)",
+            "speed": "89 (0.63)",
+            "score": "148.16"
           },
           {
             "rank": 5,
-            "nickname": "미네르바",
-            "level": "113",
-            "exp": "1685 (14.46)",
-            "attack": "236 (2.03)",
-            "defense": "216 (1.86)",
-            "speed": "80 (0.69)",
-            "score": "121.185"
+            "nickname": "하린",
+            "level": "140",
+            "exp": "2054 (14.32)",
+            "attack": "285 (1.99)",
+            "defense": "279 (1.95)",
+            "speed": "89 (0.63)",
+            "score": "148.149"
           }
-        ],
-        "rebirth_ranking": []
+        ]
       },
       {
-        "name": "프리토스",
+        "name": "투이",
         "general_ranking": [
           {
             "rank": 1,
@@ -4312,6 +5050,339 @@
           }
         ],
         "rebirth_ranking": []
+      },
+      {
+        "name": "다이노",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "미쯔",
+            "level": "140",
+            "exp": "1721 (11.93)",
+            "attack": "275 (1.91)",
+            "defense": "331 (2.29)",
+            "speed": "72 (0.5)",
+            "score": "147.687"
+          },
+          {
+            "rank": 2,
+            "nickname": "강챙이",
+            "level": "140",
+            "exp": "1721 (11.93)",
+            "attack": "273 (1.89)",
+            "defense": "332 (2.3)",
+            "speed": "71 (0.5)",
+            "score": "147.673"
+          },
+          {
+            "rank": 3,
+            "nickname": "카멜",
+            "level": "140",
+            "exp": "1724 (11.95)",
+            "attack": "274 (1.9)",
+            "defense": "330 (2.29)",
+            "speed": "71 (0.5)",
+            "score": "147.671"
+          },
+          {
+            "rank": 4,
+            "nickname": "달모아",
+            "level": "140",
+            "exp": "1722 (11.94)",
+            "attack": "268 (1.86)",
+            "defense": "332 (2.3)",
+            "speed": "71 (0.5)",
+            "score": "147.638"
+          },
+          {
+            "rank": 5,
+            "nickname": "강챙이",
+            "level": "140",
+            "exp": "1718 (11.91)",
+            "attack": "276 (1.91)",
+            "defense": "331 (2.29)",
+            "speed": "65 (0.45)",
+            "score": "147.638"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "S",
+            "level": "140",
+            "exp": "1825 (12.65)",
+            "attack": "303 (2.11)",
+            "defense": "350 (2.43)",
+            "speed": "71 (0.5)",
+            "score": "148.2"
+          },
+          {
+            "rank": 2,
+            "nickname": "치킨",
+            "level": "140",
+            "exp": "1824 (12.65)",
+            "attack": "300 (2.09)",
+            "defense": "352 (2.45)",
+            "speed": "71 (0.5)",
+            "score": "148.191"
+          },
+          {
+            "rank": 3,
+            "nickname": "코리아맨",
+            "level": "140",
+            "exp": "1824 (12.65)",
+            "attack": "301 (2.09)",
+            "defense": "350 (2.43)",
+            "speed": "71 (0.5)",
+            "score": "148.183"
+          },
+          {
+            "rank": 4,
+            "nickname": "구찌",
+            "level": "140",
+            "exp": "1820 (12.62)",
+            "attack": "301 (2.09)",
+            "defense": "349 (2.42)",
+            "speed": "71 (0.5)",
+            "score": "148.169"
+          },
+          {
+            "rank": 5,
+            "nickname": "참치",
+            "level": "140",
+            "exp": "1820 (12.62)",
+            "attack": "300 (2.09)",
+            "defense": "348 (2.42)",
+            "speed": "72 (0.5)",
+            "score": "148.162"
+          }
+        ]
+      },
+      {
+        "name": "다이노스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "큰곰",
+            "level": "140",
+            "exp": "1801 (12.47)",
+            "attack": "268 (1.86)",
+            "defense": "304 (2.11)",
+            "speed": "78 (0.55)",
+            "score": "147.628"
+          },
+          {
+            "rank": 2,
+            "nickname": "낭만",
+            "level": "136",
+            "exp": "1766 (12.58)",
+            "attack": "261 (1.86)",
+            "defense": "297 (2.12)",
+            "speed": "77 (0.56)",
+            "score": "143.678"
+          },
+          {
+            "rank": 3,
+            "nickname": "샴푸",
+            "level": "130",
+            "exp": "1686 (12.54)",
+            "attack": "250 (1.86)",
+            "defense": "279 (2.08)",
+            "speed": "73 (0.55)",
+            "score": "137.624"
+          },
+          {
+            "rank": 4,
+            "nickname": "샤샤",
+            "level": "130",
+            "exp": "1672 (12.43)",
+            "attack": "248 (1.84)",
+            "defense": "284 (2.12)",
+            "speed": "58 (0.43)",
+            "score": "137.504"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "궁수",
+            "level": "140",
+            "exp": "1914 (13.25)",
+            "attack": "294 (2.04)",
+            "defense": "325 (2.25)",
+            "speed": "77 (0.54)",
+            "score": "148.14"
+          },
+          {
+            "rank": 2,
+            "nickname": "파괴살",
+            "level": "140",
+            "exp": "1911 (13.23)",
+            "attack": "294 (2.04)",
+            "defense": "324 (2.24)",
+            "speed": "78 (0.55)",
+            "score": "148.135"
+          },
+          {
+            "rank": 3,
+            "nickname": "일격에주님곁으로",
+            "level": "123",
+            "exp": "1683 (13.2)",
+            "attack": "258 (2.02)",
+            "defense": "285 (2.24)",
+            "speed": "69 (0.55)",
+            "score": "131.113"
+          },
+          {
+            "rank": 4,
+            "nickname": "탱자",
+            "level": "117",
+            "exp": "1595 (13.13)",
+            "attack": "246 (2.03)",
+            "defense": "272 (2.24)",
+            "speed": "65 (0.54)",
+            "score": "125.093"
+          }
+        ]
+      },
+      {
+        "name": "프라키토스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "카멜",
+            "level": "140",
+            "exp": "1704 (11.83)",
+            "attack": "332 (2.31)",
+            "defense": "281 (1.96)",
+            "speed": "72 (0.5)",
+            "score": "147.728"
+          },
+          {
+            "rank": 2,
+            "nickname": "한여름밤의꿈",
+            "level": "140",
+            "exp": "1707 (11.86)",
+            "attack": "331 (2.3)",
+            "defense": "283 (1.97)",
+            "speed": "70 (0.49)",
+            "score": "147.727"
+          },
+          {
+            "rank": 3,
+            "nickname": "아몬드빼빼로",
+            "level": "140",
+            "exp": "1705 (11.84)",
+            "attack": "332 (2.31)",
+            "defense": "282 (1.96)",
+            "speed": "70 (0.49)",
+            "score": "147.723"
+          },
+          {
+            "rank": 4,
+            "nickname": "화난가",
+            "level": "140",
+            "exp": "1705 (11.84)",
+            "attack": "332 (2.31)",
+            "defense": "281 (1.96)",
+            "speed": "71 (0.5)",
+            "score": "147.723"
+          },
+          {
+            "rank": 5,
+            "nickname": "등용문",
+            "level": "140",
+            "exp": "1704 (11.83)",
+            "attack": "331 (2.3)",
+            "defense": "282 (1.96)",
+            "speed": "71 (0.5)",
+            "score": "147.721"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "S",
+            "level": "140",
+            "exp": "1789 (12.42)",
+            "attack": "348 (2.42)",
+            "defense": "299 (2.08)",
+            "speed": "74 (0.52)",
+            "score": "148.12"
+          },
+          {
+            "rank": 2,
+            "nickname": "라엘",
+            "level": "140",
+            "exp": "1793 (12.45)",
+            "attack": "348 (2.42)",
+            "defense": "298 (2.07)",
+            "speed": "72 (0.5)",
+            "score": "148.106"
+          },
+          {
+            "rank": 3,
+            "nickname": "톰보이",
+            "level": "140",
+            "exp": "1793 (12.45)",
+            "attack": "347 (2.41)",
+            "defense": "298 (2.07)",
+            "speed": "73 (0.51)",
+            "score": "148.106"
+          },
+          {
+            "rank": 4,
+            "nickname": "웅지",
+            "level": "140",
+            "exp": "1789 (12.42)",
+            "attack": "349 (2.42)",
+            "defense": "299 (2.08)",
+            "speed": "71 (0.5)",
+            "score": "148.106"
+          },
+          {
+            "rank": 5,
+            "nickname": "강호동",
+            "level": "140",
+            "exp": "1792 (12.45)",
+            "attack": "348 (2.42)",
+            "defense": "300 (2.09)",
+            "speed": "69 (0.48)",
+            "score": "148.097"
+          }
+        ]
+      },
+      {
+        "name": "스텐토스",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "프리토스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "무릎",
+            "level": "140",
+            "exp": "1692 (11.68)",
+            "attack": "306 (2.12)",
+            "defense": "274 (1.89)",
+            "speed": "78 (0.53)",
+            "score": "147.459"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "산신",
+            "level": "135",
+            "exp": "1734 (12.4)",
+            "attack": "318 (2.28)",
+            "defense": "282 (2.02)",
+            "speed": "94 (0.67)",
+            "score": "143.069"
+          }
+        ]
       },
       {
         "name": "만모",
@@ -4367,26 +5438,61 @@
             "score": "147.802"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "한여름밤의꿈",
+            "level": "140",
+            "exp": "2107 (14.57)",
+            "attack": "303 (2.1)",
+            "defense": "284 (1.96)",
+            "speed": "85 (0.59)",
+            "score": "148.297"
+          },
+          {
+            "rank": 2,
+            "nickname": "무웅",
+            "level": "140",
+            "exp": "2092 (14.46)",
+            "attack": "302 (2.09)",
+            "defense": "285 (1.97)",
+            "speed": "86 (0.6)",
+            "score": "148.277"
+          },
+          {
+            "rank": 3,
+            "nickname": "뚜기두부",
+            "level": "140",
+            "exp": "2092 (14.46)",
+            "attack": "302 (2.09)",
+            "defense": "283 (1.96)",
+            "speed": "87 (0.6)",
+            "score": "148.27"
+          },
+          {
+            "rank": 4,
+            "nickname": "여행",
+            "level": "140",
+            "exp": "2097 (14.5)",
+            "attack": "302 (2.09)",
+            "defense": "284 (1.96)",
+            "speed": "83 (0.58)",
+            "score": "148.257"
+          },
+          {
+            "rank": 5,
+            "nickname": "뉴핫",
+            "level": "140",
+            "exp": "2092 (14.46)",
+            "attack": "302 (2.09)",
+            "defense": "282 (1.95)",
+            "speed": "86 (0.6)",
+            "score": "148.255"
+          }
+        ]
       },
       {
         "name": "만모르",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "산신",
-            "level": "135",
-            "exp": "1734 (12.4)",
-            "attack": "318 (2.28)",
-            "defense": "282 (2.02)",
-            "speed": "94 (0.67)",
-            "score": "143.069"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "마모나스",
         "general_ranking": [
           {
             "rank": 1,
@@ -4439,10 +5545,61 @@
             "score": "147.939"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "한여름밤의꿈",
+            "level": "140",
+            "exp": "2105 (14.62)",
+            "attack": "329 (2.29)",
+            "defense": "249 (1.73)",
+            "speed": "99 (0.69)",
+            "score": "148.367"
+          },
+          {
+            "rank": 2,
+            "nickname": "괴물",
+            "level": "140",
+            "exp": "2094 (14.54)",
+            "attack": "327 (2.27)",
+            "defense": "253 (1.76)",
+            "speed": "97 (0.68)",
+            "score": "148.347"
+          },
+          {
+            "rank": 3,
+            "nickname": "고죠",
+            "level": "140",
+            "exp": "2092 (14.53)",
+            "attack": "327 (2.27)",
+            "defense": "252 (1.76)",
+            "speed": "98 (0.68)",
+            "score": "148.344"
+          },
+          {
+            "rank": 4,
+            "nickname": "퀴즈왕",
+            "level": "140",
+            "exp": "2097 (14.56)",
+            "attack": "324 (2.25)",
+            "defense": "252 (1.76)",
+            "speed": "98 (0.68)",
+            "score": "148.331"
+          },
+          {
+            "rank": 5,
+            "nickname": "사루비욧",
+            "level": "140",
+            "exp": "2097 (14.56)",
+            "attack": "325 (2.26)",
+            "defense": "251 (1.75)",
+            "speed": "98 (0.68)",
+            "score": "148.331"
+          }
+        ]
       },
       {
-        "name": "만모로스",
+        "name": "마모나스",
         "general_ranking": [
           {
             "rank": 1,
@@ -4478,17 +5635,94 @@
         "rebirth_ranking": []
       },
       {
+        "name": "만모로스",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "엠버",
+            "level": "140",
+            "exp": "2074 (14.38)",
+            "attack": "290 (2.01)",
+            "defense": "235 (1.63)",
+            "speed": "106 (0.74)",
+            "score": "147.984"
+          },
+          {
+            "rank": 2,
+            "nickname": "광렙해라",
+            "level": "140",
+            "exp": "2062 (14.29)",
+            "attack": "283 (1.96)",
+            "defense": "232 (1.61)",
+            "speed": "105 (0.73)",
+            "score": "147.883"
+          },
+          {
+            "rank": 3,
+            "nickname": "가온",
+            "level": "135",
+            "exp": "1987 (14.27)",
+            "attack": "278 (2)",
+            "defense": "221 (1.59)",
+            "speed": "101 (0.73)",
+            "score": "142.888"
+          },
+          {
+            "rank": 4,
+            "nickname": "산신",
+            "level": "133",
+            "exp": "1984 (14.46)",
+            "attack": "276 (2.02)",
+            "defense": "224 (1.64)",
+            "speed": "102 (0.75)",
+            "score": "141.017"
+          },
+          {
+            "rank": 5,
+            "nickname": "허스키",
+            "level": "114",
+            "exp": "1684 (14.24)",
+            "attack": "237 (2.01)",
+            "defense": "193 (1.64)",
+            "speed": "87 (0.74)",
+            "score": "121.949"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "전두환",
+            "level": "139",
+            "exp": "2130 (14.87)",
+            "attack": "312 (2.18)",
+            "defense": "251 (1.75)",
+            "speed": "105 (0.74)",
+            "score": "147.391"
+          },
+          {
+            "rank": 2,
+            "nickname": "하루미치",
+            "level": "111",
+            "exp": "1706 (14.8)",
+            "attack": "251 (2.18)",
+            "defense": "200 (1.74)",
+            "speed": "83 (0.73)",
+            "score": "119.345"
+          }
+        ]
+      },
+      {
         "name": "테라곤",
         "general_ranking": [
           {
             "rank": 1,
             "nickname": "불카누스",
-            "level": "108",
-            "exp": "1146 (10.18)",
-            "attack": "244 (2.17)",
-            "defense": "166 (1.48)",
-            "speed": "191 (1.7)",
-            "score": "115.89"
+            "level": "109",
+            "exp": "1156 (10.18)",
+            "attack": "247 (2.18)",
+            "defense": "167 (1.47)",
+            "speed": "193 (1.7)",
+            "score": "116.896"
           }
         ],
         "rebirth_ranking": []
@@ -5065,7 +6299,58 @@
             "score": "147.446"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "카인",
+            "level": "140",
+            "exp": "1408 (9.88)",
+            "attack": "289 (2.03)",
+            "defense": "179 (1.26)",
+            "speed": "299 (2.1)",
+            "score": "147.858"
+          },
+          {
+            "rank": 2,
+            "nickname": "부평팔콘펀치",
+            "level": "140",
+            "exp": "1404 (9.85)",
+            "attack": "288 (2.02)",
+            "defense": "179 (1.26)",
+            "speed": "300 (2.11)",
+            "score": "147.851"
+          },
+          {
+            "rank": 3,
+            "nickname": "오이소박이",
+            "level": "140",
+            "exp": "1400 (9.82)",
+            "attack": "289 (2.03)",
+            "defense": "179 (1.26)",
+            "speed": "299 (2.1)",
+            "score": "147.844"
+          },
+          {
+            "rank": 4,
+            "nickname": "고죠",
+            "level": "140",
+            "exp": "1401 (9.83)",
+            "attack": "285 (2)",
+            "defense": "181 (1.27)",
+            "speed": "299 (2.1)",
+            "score": "147.831"
+          },
+          {
+            "rank": 5,
+            "nickname": "타르타초",
+            "level": "140",
+            "exp": "1406 (9.86)",
+            "attack": "287 (2.01)",
+            "defense": "179 (1.26)",
+            "speed": "297 (2.09)",
+            "score": "147.826"
+          }
+        ]
       },
       {
         "name": "오가로스",
@@ -5124,53 +6409,53 @@
         "rebirth_ranking": [
           {
             "rank": 1,
-            "nickname": "카인",
+            "nickname": "유피테르",
             "level": "140",
-            "exp": "1408 (9.88)",
-            "attack": "289 (2.03)",
-            "defense": "179 (1.26)",
-            "speed": "299 (2.1)",
-            "score": "147.858"
+            "exp": "1545 (10.71)",
+            "attack": "328 (2.28)",
+            "defense": "262 (1.82)",
+            "speed": "168 (1.17)",
+            "score": "147.944"
           },
           {
             "rank": 2,
-            "nickname": "부평팔콘펀치",
+            "nickname": "핵",
             "level": "140",
-            "exp": "1404 (9.85)",
-            "attack": "288 (2.02)",
-            "defense": "179 (1.26)",
-            "speed": "300 (2.11)",
-            "score": "147.851"
+            "exp": "1542 (10.69)",
+            "attack": "327 (2.27)",
+            "defense": "262 (1.82)",
+            "speed": "167 (1.16)",
+            "score": "147.924"
           },
           {
             "rank": 3,
-            "nickname": "오이소박이",
+            "nickname": "김수발",
             "level": "140",
-            "exp": "1400 (9.82)",
-            "attack": "289 (2.03)",
-            "defense": "179 (1.26)",
-            "speed": "299 (2.1)",
-            "score": "147.844"
+            "exp": "1537 (10.65)",
+            "attack": "328 (2.28)",
+            "defense": "259 (1.8)",
+            "speed": "166 (1.15)",
+            "score": "147.894"
           },
           {
             "rank": 4,
-            "nickname": "고죠",
+            "nickname": "아이겔",
             "level": "140",
-            "exp": "1401 (9.83)",
-            "attack": "285 (2)",
-            "defense": "181 (1.27)",
-            "speed": "299 (2.1)",
-            "score": "147.831"
+            "exp": "1528 (10.59)",
+            "attack": "326 (2.27)",
+            "defense": "258 (1.79)",
+            "speed": "167 (1.16)",
+            "score": "147.863"
           },
           {
             "rank": 5,
-            "nickname": "타르타초",
+            "nickname": "산머슴",
             "level": "140",
-            "exp": "1406 (9.86)",
-            "attack": "287 (2.01)",
-            "defense": "179 (1.26)",
-            "speed": "297 (2.09)",
-            "score": "147.826"
+            "exp": "1533 (10.63)",
+            "attack": "328 (2.28)",
+            "defense": "253 (1.76)",
+            "speed": "167 (1.16)",
+            "score": "147.851"
           }
         ]
       },
@@ -5648,12 +6933,12 @@
           {
             "rank": 1,
             "nickname": "게토",
-            "level": "131",
-            "exp": "1921 (14.32)",
-            "attack": "288 (2.15)",
-            "defense": "185 (1.38)",
-            "speed": "149 (1.12)",
-            "score": "139.225"
+            "level": "132",
+            "exp": "1935 (14.31)",
+            "attack": "290 (2.15)",
+            "defense": "186 (1.38)",
+            "speed": "150 (1.11)",
+            "score": "140.219"
           }
         ]
       },
@@ -8298,12 +9583,12 @@
           {
             "rank": 1,
             "nickname": "탱자",
-            "level": "122",
-            "exp": "1376 (10.92)",
-            "attack": "298 (2.37)",
-            "defense": "199 (1.58)",
-            "speed": "151 (1.2)",
-            "score": "129.878"
+            "level": "123",
+            "exp": "1387 (10.92)",
+            "attack": "301 (2.38)",
+            "defense": "201 (1.58)",
+            "speed": "152 (1.2)",
+            "score": "130.885"
           }
         ]
       },
@@ -8367,7 +9652,18 @@
             "score": "114.571"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "강철",
+            "level": "108",
+            "exp": "1324 (11.78)",
+            "attack": "247 (2.2)",
+            "defense": "204 (1.82)",
+            "speed": "109 (0.97)",
+            "score": "115.935"
+          }
+        ]
       },
       {
         "name": "바라쿠스",
@@ -8423,18 +9719,7 @@
             "score": "147.549"
           }
         ],
-        "rebirth_ranking": [
-          {
-            "rank": 1,
-            "nickname": "강철",
-            "level": "108",
-            "exp": "1324 (11.78)",
-            "attack": "247 (2.2)",
-            "defense": "204 (1.82)",
-            "speed": "109 (0.97)",
-            "score": "115.935"
-          }
-        ]
+        "rebirth_ranking": []
       },
       {
         "name": "테로노돈",
@@ -8547,7 +9832,38 @@
             "score": "112.596"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "넵투누스",
+            "level": "140",
+            "exp": "1553 (10.8)",
+            "attack": "338 (2.35)",
+            "defense": "208 (1.45)",
+            "speed": "202 (1.41)",
+            "score": "147.908"
+          },
+          {
+            "rank": 2,
+            "nickname": "이승만",
+            "level": "132",
+            "exp": "1468 (10.81)",
+            "attack": "319 (2.35)",
+            "defense": "202 (1.49)",
+            "speed": "191 (1.41)",
+            "score": "139.954"
+          },
+          {
+            "rank": 3,
+            "nickname": "웅지",
+            "level": "112",
+            "exp": "1262 (10.9)",
+            "attack": "272 (2.35)",
+            "defense": "174 (1.5)",
+            "speed": "161 (1.4)",
+            "score": "119.977"
+          }
+        ]
       },
       {
         "name": "라이쿠스",
@@ -11137,7 +12453,48 @@
             "score": "147.543"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "만년동안",
+            "level": "128",
+            "exp": "1377 (10.46)",
+            "attack": "288 (2.19)",
+            "defense": "182 (1.39)",
+            "speed": "228 (1.74)",
+            "score": "135.931"
+          },
+          {
+            "rank": 2,
+            "nickname": "아폴로",
+            "level": "126",
+            "exp": "1353 (10.44)",
+            "attack": "282 (2.18)",
+            "defense": "180 (1.39)",
+            "speed": "221 (1.71)",
+            "score": "133.89"
+          },
+          {
+            "rank": 3,
+            "nickname": "절망",
+            "level": "111",
+            "exp": "1189 (10.37)",
+            "attack": "251 (2.19)",
+            "defense": "158 (1.38)",
+            "speed": "197 (1.73)",
+            "score": "118.893"
+          },
+          {
+            "rank": 4,
+            "nickname": "괴안동다람쥐",
+            "level": "103",
+            "exp": "1109 (10.4)",
+            "attack": "233 (2.19)",
+            "defense": "148 (1.39)",
+            "speed": "185 (1.75)",
+            "score": "110.924"
+          }
+        ]
       },
       {
         "name": "진주토로스",
@@ -11619,22 +12976,6 @@
             "score": "146.951"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "미르",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "안톤",
-            "level": "140",
-            "exp": "1503 (10.43)",
-            "attack": "274 (1.91)",
-            "defense": "151 (1.05)",
-            "speed": "296 (2.06)",
-            "score": "147.622"
-          }
-        ],
         "rebirth_ranking": [
           {
             "rank": 1,
@@ -11685,6 +13026,33 @@
             "defense": "233 (1.74)",
             "speed": "85 (0.64)",
             "score": "137.326"
+          }
+        ]
+      },
+      {
+        "name": "미르",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "안톤",
+            "level": "140",
+            "exp": "1503 (10.43)",
+            "attack": "274 (1.91)",
+            "defense": "151 (1.05)",
+            "speed": "296 (2.06)",
+            "score": "147.622"
+          }
+        ],
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "안톤",
+            "level": "140",
+            "exp": "1587 (11.02)",
+            "attack": "292 (2.03)",
+            "defense": "168 (1.17)",
+            "speed": "298 (2.07)",
+            "score": "148.029"
           }
         ]
       },
@@ -11845,11 +13213,7 @@
             "score": "124.619"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "가스트",
-        "general_ranking": [
+        "rebirth_ranking": [
           {
             "rank": 1,
             "nickname": "강철",
@@ -11870,6 +13234,21 @@
             "speed": "234 (1.7)",
             "score": "142"
           }
+        ]
+      },
+      {
+        "name": "가스트",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "넵투누스",
+            "level": "137",
+            "exp": "1420 (10.05)",
+            "attack": "309 (2.19)",
+            "defense": "189 (1.34)",
+            "speed": "258 (1.83)",
+            "score": "144.873"
+          }
         ],
         "rebirth_ranking": []
       },
@@ -11887,7 +13266,11 @@
             "score": "139.584"
           }
         ],
-        "rebirth_ranking": [
+        "rebirth_ranking": []
+      },
+      {
+        "name": "배모티스",
+        "general_ranking": [
           {
             "rank": 1,
             "nickname": "산신",
@@ -11918,10 +13301,11 @@
             "speed": "156 (1.26)",
             "score": "127.905"
           }
-        ]
+        ],
+        "rebirth_ranking": []
       },
       {
-        "name": "배모티스",
+        "name": "노리노스",
         "general_ranking": [
           {
             "rank": 1,
@@ -11972,6 +13356,32 @@
             "defense": "325 (2.28)",
             "speed": "111 (0.78)",
             "score": "147.042"
+          }
+        ],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "헤머드",
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "콕콕콕이",
+            "level": "132",
+            "exp": "1771 (13.02)",
+            "attack": "299 (2.2)",
+            "defense": "170 (1.25)",
+            "speed": "163 (1.2)",
+            "score": "139.905"
+          },
+          {
+            "rank": 2,
+            "nickname": "궁수",
+            "level": "120",
+            "exp": "1609 (12.97)",
+            "attack": "270 (2.18)",
+            "defense": "154 (1.24)",
+            "speed": "147 (1.18)",
+            "score": "127.849"
           }
         ],
         "rebirth_ranking": [
@@ -12028,33 +13438,12 @@
         ]
       },
       {
-        "name": "노리노스",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "콕콕콕이",
-            "level": "132",
-            "exp": "1771 (13.02)",
-            "attack": "299 (2.2)",
-            "defense": "170 (1.25)",
-            "speed": "163 (1.2)",
-            "score": "139.905"
-          },
-          {
-            "rank": 2,
-            "nickname": "궁수",
-            "level": "120",
-            "exp": "1609 (12.97)",
-            "attack": "270 (2.18)",
-            "defense": "154 (1.24)",
-            "speed": "147 (1.18)",
-            "score": "127.849"
-          }
-        ],
+        "name": "테라죠",
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
-        "name": "헤머드",
+        "name": "메가죠",
         "general_ranking": [
           {
             "rank": 1,
@@ -12070,7 +13459,7 @@
         "rebirth_ranking": []
       },
       {
-        "name": "테라죠",
+        "name": "메가로돈",
         "general_ranking": [
           {
             "rank": 1,
@@ -12086,12 +13475,12 @@
         "rebirth_ranking": []
       },
       {
-        "name": "메가죠",
+        "name": "테라로돈",
         "general_ranking": [],
         "rebirth_ranking": []
       },
       {
-        "name": "메가로돈",
+        "name": "메라로돈",
         "general_ranking": [
           {
             "rank": 1,
@@ -12117,28 +13506,17 @@
         "rebirth_ranking": []
       },
       {
-        "name": "테라로돈",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "만년동안",
-            "level": "127",
-            "exp": "1380 (10.52)",
-            "attack": "313 (2.39)",
-            "defense": "207 (1.58)",
-            "speed": "171 (1.31)",
-            "score": "134.907"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "메라로돈",
+        "name": "분마",
         "general_ranking": [],
         "rebirth_ranking": []
       },
       {
-        "name": "분마",
+        "name": "주작",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "흑갈푸스",
         "general_ranking": [
           {
             "rank": 1,
@@ -12194,61 +13572,8 @@
         "rebirth_ranking": []
       },
       {
-        "name": "주작",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "닉네임S",
-            "level": "132",
-            "exp": "1281 (9.4)",
-            "attack": "295 (2.17)",
-            "defense": "161 (1.18)",
-            "speed": "234 (1.72)",
-            "score": "139.418"
-          }
-        ],
-        "rebirth_ranking": [
-          {
-            "rank": 1,
-            "nickname": "이승만",
-            "level": "131",
-            "exp": "1362 (10.08)",
-            "attack": "309 (2.28)",
-            "defense": "169 (1.25)",
-            "speed": "249 (1.85)",
-            "score": "138.904"
-          },
-          {
-            "rank": 2,
-            "nickname": "단짠",
-            "level": "108",
-            "exp": "1118 (9.96)",
-            "attack": "255 (2.27)",
-            "defense": "135 (1.21)",
-            "speed": "204 (1.82)",
-            "score": "115.79"
-          }
-        ]
-      },
-      {
-        "name": "흑갈푸스",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
         "name": "핑베로스",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "웅지",
-            "level": "140",
-            "exp": "1538 (10.68)",
-            "attack": "352 (2.45)",
-            "defense": "196 (1.37)",
-            "speed": "208 (1.45)",
-            "score": "147.93"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
@@ -12268,6 +13593,11 @@
       },
       {
         "name": "샤베르",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "바로스",
         "general_ranking": [
           {
             "rank": 1,
@@ -12278,22 +13608,6 @@
             "defense": "187 (1.37)",
             "speed": "224 (1.64)",
             "score": "140.979"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "바로스",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "산신",
-            "level": "102",
-            "exp": "1113 (10.52)",
-            "attack": "249 (2.36)",
-            "defense": "158 (1.5)",
-            "speed": "152 (1.44)",
-            "score": "109.918"
           }
         ],
         "rebirth_ranking": []
@@ -12341,6 +13655,11 @@
       },
       {
         "name": "노라돈",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "푸비토스",
         "general_ranking": [
           {
             "rank": 1,
@@ -12366,7 +13685,12 @@
         "rebirth_ranking": []
       },
       {
-        "name": "푸비토스",
+        "name": "포포",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "만모드",
         "general_ranking": [
           {
             "rank": 1,
@@ -12422,63 +13746,7 @@
         "rebirth_ranking": []
       },
       {
-        "name": "포포",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "하비스트",
-            "level": "140",
-            "exp": "1359 (9.55)",
-            "attack": "277 (1.95)",
-            "defense": "166 (1.17)",
-            "speed": "299 (2.1)",
-            "score": "147.61"
-          },
-          {
-            "rank": 2,
-            "nickname": "고죠",
-            "level": "140",
-            "exp": "1358 (9.54)",
-            "attack": "275 (1.94)",
-            "defense": "166 (1.17)",
-            "speed": "298 (2.09)",
-            "score": "147.586"
-          },
-          {
-            "rank": 3,
-            "nickname": "안톤",
-            "level": "140",
-            "exp": "1342 (9.42)",
-            "attack": "276 (1.94)",
-            "defense": "166 (1.17)",
-            "speed": "301 (2.12)",
-            "score": "147.586"
-          },
-          {
-            "rank": 4,
-            "nickname": "파괴살",
-            "level": "137",
-            "exp": "1328 (9.53)",
-            "attack": "269 (1.93)",
-            "defense": "163 (1.18)",
-            "speed": "292 (2.1)",
-            "score": "144.588"
-          },
-          {
-            "rank": 5,
-            "nickname": "salt",
-            "level": "107",
-            "exp": "1038 (9.49)",
-            "attack": "210 (1.92)",
-            "defense": "123 (1.13)",
-            "speed": "231 (2.11)",
-            "score": "114.542"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "만모드",
+        "name": "골드로비",
         "general_ranking": [
           {
             "rank": 1,
@@ -12504,44 +13772,8 @@
         "rebirth_ranking": []
       },
       {
-        "name": "골드로비",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
         "name": "헬노스",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "우뢰뫼",
-            "level": "122",
-            "exp": "1220 (9.71)",
-            "attack": "261 (2.07)",
-            "defense": "153 (1.22)",
-            "speed": "204 (1.63)",
-            "score": "129.353"
-          },
-          {
-            "rank": 2,
-            "nickname": "한여름밤의꿈",
-            "level": "105",
-            "exp": "1060 (9.76)",
-            "attack": "243 (2.24)",
-            "defense": "136 (1.26)",
-            "speed": "169 (1.56)",
-            "score": "112.498"
-          },
-          {
-            "rank": 3,
-            "nickname": "이만기",
-            "level": "104",
-            "exp": "1046 (9.72)",
-            "attack": "238 (2.21)",
-            "defense": "124 (1.16)",
-            "speed": "174 (1.62)",
-            "score": "111.42"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
@@ -12720,6 +13952,11 @@
       },
       {
         "name": "판그라",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "타로아",
         "general_ranking": [
           {
             "rank": 1,
@@ -12755,7 +13992,12 @@
         "rebirth_ranking": []
       },
       {
-        "name": "타로아",
+        "name": "자라북",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "화이트링",
         "general_ranking": [
           {
             "rank": 1,
@@ -12811,78 +14053,6 @@
         "rebirth_ranking": []
       },
       {
-        "name": "자라북",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "겐샤이",
-            "level": "138",
-            "exp": "1430 (10.22)",
-            "attack": "253 (1.81)",
-            "defense": "347 (2.48)",
-            "speed": "77 (0.55)",
-            "score": "145.401"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "화이트링",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "이만기",
-            "level": "140",
-            "exp": "1483 (10.3)",
-            "attack": "243 (1.69)",
-            "defense": "286 (1.99)",
-            "speed": "195 (1.36)",
-            "score": "147.612"
-          },
-          {
-            "rank": 2,
-            "nickname": "마이키",
-            "level": "140",
-            "exp": "1483 (10.3)",
-            "attack": "243 (1.69)",
-            "defense": "285 (1.98)",
-            "speed": "195 (1.36)",
-            "score": "147.604"
-          },
-          {
-            "rank": 3,
-            "nickname": "란토",
-            "level": "140",
-            "exp": "1479 (10.27)",
-            "attack": "242 (1.68)",
-            "defense": "287 (1.99)",
-            "speed": "195 (1.36)",
-            "score": "147.604"
-          },
-          {
-            "rank": 4,
-            "nickname": "특별한소스",
-            "level": "140",
-            "exp": "1481 (10.29)",
-            "attack": "243 (1.69)",
-            "defense": "286 (1.99)",
-            "speed": "194 (1.35)",
-            "score": "147.601"
-          },
-          {
-            "rank": 5,
-            "nickname": "그래",
-            "level": "140",
-            "exp": "1482 (10.29)",
-            "attack": "242 (1.68)",
-            "defense": "285 (1.98)",
-            "speed": "194 (1.35)",
-            "score": "147.588"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
         "name": "뇌호",
         "general_ranking": [
           {
@@ -12910,6 +14080,11 @@
       },
       {
         "name": "푸모나스",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "기비노",
         "general_ranking": [
           {
             "rank": 1,
@@ -12932,43 +14107,6 @@
             "score": "135.087"
           }
         ],
-        "rebirth_ranking": [
-          {
-            "rank": 1,
-            "nickname": "상돌",
-            "level": "136",
-            "exp": "2150 (15.29)",
-            "attack": "319 (2.27)",
-            "defense": "255 (1.81)",
-            "speed": "83 (0.59)",
-            "score": "144.504"
-          }
-        ]
-      },
-      {
-        "name": "기비노",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "부평팔콘펀치",
-            "level": "128",
-            "exp": "1344 (10.15)",
-            "attack": "320 (2.42)",
-            "defense": "184 (1.39)",
-            "speed": "166 (1.26)",
-            "score": "135.608"
-          },
-          {
-            "rank": 2,
-            "nickname": "란토",
-            "level": "126",
-            "exp": "1322 (10.14)",
-            "attack": "314 (2.41)",
-            "defense": "180 (1.38)",
-            "speed": "165 (1.27)",
-            "score": "133.598"
-          }
-        ],
         "rebirth_ranking": []
       },
       {
@@ -12985,46 +14123,31 @@
             "score": "147.561"
           }
         ],
-        "rebirth_ranking": []
+        "rebirth_ranking": [
+          {
+            "rank": 1,
+            "nickname": "상돌",
+            "level": "136",
+            "exp": "2150 (15.29)",
+            "attack": "319 (2.27)",
+            "defense": "255 (1.81)",
+            "speed": "83 (0.59)",
+            "score": "144.504"
+          }
+        ]
       },
       {
         "name": "독호",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "라몽",
-            "level": "138",
-            "exp": "1415 (9.95)",
-            "attack": "309 (2.18)",
-            "defense": "184 (1.29)",
-            "speed": "224 (1.58)",
-            "score": "145.531"
-          },
-          {
-            "rank": 2,
-            "nickname": "눈아",
-            "level": "127",
-            "exp": "1310 (9.98)",
-            "attack": "286 (2.18)",
-            "defense": "173 (1.32)",
-            "speed": "208 (1.59)",
-            "score": "134.583"
-          },
-          {
-            "rank": 3,
-            "nickname": "xXx",
-            "level": "123",
-            "exp": "1261 (9.91)",
-            "attack": "277 (2.18)",
-            "defense": "161 (1.26)",
-            "speed": "201 (1.58)",
-            "score": "130.502"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
         "name": "마우",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "암풍",
         "general_ranking": [
           {
             "rank": 1,
@@ -13037,21 +14160,10 @@
             "score": "128.702"
           }
         ],
-        "rebirth_ranking": [
-          {
-            "rank": 1,
-            "nickname": "권진아",
-            "level": "113",
-            "exp": "1337 (11.38)",
-            "attack": "283 (2.41)",
-            "defense": "167 (1.43)",
-            "speed": "164 (1.4)",
-            "score": "121.087"
-          }
-        ]
+        "rebirth_ranking": []
       },
       {
-        "name": "암풍",
+        "name": "메카비스",
         "general_ranking": [
           {
             "rank": 1,
@@ -13087,6 +14199,21 @@
         "rebirth_ranking": [
           {
             "rank": 1,
+            "nickname": "권진아",
+            "level": "114",
+            "exp": "1348 (11.38)",
+            "attack": "285 (2.41)",
+            "defense": "169 (1.43)",
+            "speed": "165 (1.4)",
+            "score": "122.084"
+          }
+        ]
+      },
+      {
+        "name": "메카카키",
+        "general_ranking": [
+          {
+            "rank": 1,
             "nickname": "비디",
             "level": "135",
             "exp": "1532 (11.02)",
@@ -13115,41 +14242,16 @@
             "speed": "210 (1.64)",
             "score": "132.055"
           }
-        ]
-      },
-      {
-        "name": "메카비스",
-        "general_ranking": [],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "메카카키",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "루믹스",
-            "level": "140",
-            "exp": "1394 (9.78)",
-            "attack": "288 (2.02)",
-            "defense": "148 (1.04)",
-            "speed": "292 (2.05)",
-            "score": "147.559"
-          },
-          {
-            "rank": 2,
-            "nickname": "마틴",
-            "level": "140",
-            "exp": "1397 (9.8)",
-            "attack": "287 (2.01)",
-            "defense": "149 (1.05)",
-            "speed": "291 (2.04)",
-            "score": "147.558"
-          }
         ],
         "rebirth_ranking": []
       },
       {
         "name": "그리프스",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "아마란스",
         "general_ranking": [
           {
             "rank": 1,
@@ -13184,12 +14286,12 @@
           {
             "rank": 4,
             "nickname": "이봉걸",
-            "level": "112",
-            "exp": "1140 (9.78)",
-            "attack": "248 (2.14)",
-            "defense": "138 (1.18)",
-            "speed": "207 (1.78)",
-            "score": "119.545"
+            "level": "113",
+            "exp": "1150 (9.79)",
+            "attack": "250 (2.13)",
+            "defense": "139 (1.18)",
+            "speed": "209 (1.79)",
+            "score": "120.545"
           },
           {
             "rank": 5,
@@ -13205,23 +14307,12 @@
         "rebirth_ranking": []
       },
       {
-        "name": "아마란스",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "미친개",
-            "level": "140",
-            "exp": "1521 (10.53)",
-            "attack": "323 (2.24)",
-            "defense": "193 (1.34)",
-            "speed": "222 (1.54)",
-            "score": "147.748"
-          }
-        ],
+        "name": "물범",
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
-        "name": "물범",
+        "name": "메카타이혼",
         "general_ranking": [
           {
             "rank": 1,
@@ -13277,52 +14368,6 @@
         "rebirth_ranking": []
       },
       {
-        "name": "메카타이혼",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "너굴히셈",
-            "level": "140",
-            "exp": "1497 (10.33)",
-            "attack": "298 (2.06)",
-            "defense": "206 (1.42)",
-            "speed": "237 (1.64)",
-            "score": "147.705"
-          },
-          {
-            "rank": 2,
-            "nickname": "은빠",
-            "level": "140",
-            "exp": "1481 (10.22)",
-            "attack": "277 (1.91)",
-            "defense": "205 (1.42)",
-            "speed": "237 (1.64)",
-            "score": "147.518"
-          },
-          {
-            "rank": 3,
-            "nickname": "최예나",
-            "level": "136",
-            "exp": "1438 (10.2)",
-            "attack": "291 (2.07)",
-            "defense": "200 (1.42)",
-            "speed": "230 (1.64)",
-            "score": "143.676"
-          },
-          {
-            "rank": 4,
-            "nickname": "닭",
-            "level": "114",
-            "exp": "1226 (10.31)",
-            "attack": "239 (2.01)",
-            "defense": "166 (1.4)",
-            "speed": "195 (1.65)",
-            "score": "121.631"
-          }
-        ],
-        "rebirth_ranking": []
-      },
-      {
         "name": "핑크토끼",
         "general_ranking": [
           {
@@ -13365,6 +14410,11 @@
       },
       {
         "name": "아이스카스",
+        "general_ranking": [],
+        "rebirth_ranking": []
+      },
+      {
+        "name": "벨로",
         "general_ranking": [
           {
             "rank": 1,
@@ -13420,7 +14470,7 @@
         "rebirth_ranking": []
       },
       {
-        "name": "벨로",
+        "name": "기란",
         "general_ranking": [
           {
             "rank": 1,
@@ -13473,11 +14523,6 @@
             "score": "121.697"
           }
         ],
-        "rebirth_ranking": []
-      },
-      {
-        "name": "기란",
-        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
@@ -13688,28 +14733,7 @@
       },
       {
         "name": "골드드래곤",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "백돌",
-            "level": "140",
-            "exp": "1384 (9.6)",
-            "attack": "312 (2.17)",
-            "defense": "177 (1.23)",
-            "speed": "249 (1.73)",
-            "score": "147.522"
-          },
-          {
-            "rank": 2,
-            "nickname": "강철",
-            "level": "138",
-            "exp": "1373 (9.66)",
-            "attack": "309 (2.18)",
-            "defense": "174 (1.23)",
-            "speed": "246 (1.73)",
-            "score": "145.546"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
@@ -13719,18 +14743,7 @@
       },
       {
         "name": "우마왕",
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "박근혜",
-            "level": "136",
-            "exp": "1392 (9.93)",
-            "attack": "335 (2.39)",
-            "defense": "179 (1.28)",
-            "speed": "196 (1.4)",
-            "score": "143.556"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": []
       },
       {
