@@ -298,6 +298,7 @@
     [data-theme="dark"] .user-card.rank-bronze .rank-comment { color:#c08848; }
     .user-name { font-size:17px; font-weight:800; color:var(--t1); margin-bottom:8px; }
     .user-card.rank-hero .user-name { font-size:20px; }
+    .user-name-sub { font-size:0.72em; font-weight:600; color:var(--t3); margin-left:6px; letter-spacing:-0.3px; }
 
     /* 통계 칩 */
     .user-stat-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
@@ -717,6 +718,41 @@ const PRODON_DATA = {
 
 let lastTimestamp = null; // 렌더링 중복 방지용
 
+// ── 본캐/부캐 매핑 ──
+// aliasToMain: { '캐논': '루믹스', '루믹스': '루믹스' } - 모든 닉을 본캐로 정규화
+// mainToAliases: { '루믹스': ['캐논'] } - 본캐 → 부캐 목록 (표시용)
+let aliasToMain = {};
+let mainToAliases = {};
+
+async function loadAliases() {
+  try {
+    const r = await fetch('aliases.txt?t=' + Date.now()); // 캐시 무시
+    if (!r.ok) return false;
+    const text = await r.text();
+    const newAliasToMain = {};
+    const newMainToAliases = {};
+    text.split(/\r?\n/).forEach(line => {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) return;
+      const parts = t.split('/').map(s => s.trim()).filter(Boolean);
+      if (parts.length < 2) return;
+      const main = parts[0];
+      const subs = parts.slice(1);
+      newAliasToMain[main] = main;
+      subs.forEach(sub => { newAliasToMain[sub] = main; });
+      newMainToAliases[main] = subs;
+    });
+    // 이전과 다른지 확인 (변경되면 true 반환 → 강제 리렌더용)
+    const changed = JSON.stringify(aliasToMain) !== JSON.stringify(newAliasToMain);
+    aliasToMain = newAliasToMain;
+    mainToAliases = newMainToAliases;
+    return changed;
+  } catch(e) {
+    console.warn('aliases.txt 로드 실패 (무시):', e);
+    return false;
+  }
+}
+
 async function loadData() {
   try {
     const r = await fetch('pet_ranking_data.json');
@@ -779,6 +815,8 @@ function denseRank(arr, getScore) {
 }
 
 // ── 유저 집계 ──
+// aliases.txt 로 본캐/부캐를 묶어서 합산. 본캐로 정규화한 키를 사용하고,
+// 어떤 부캐 닉으로 등록되었는지(usedSubs)도 추적해 표시에 사용.
 function buildUserStats(pets) {
   const userMap = {};
   pets.forEach(pet => {
@@ -792,11 +830,17 @@ function buildUserStats(pets) {
       const ranked = denseRank(list, r => parseFloat(r.score));
       ranked.forEach(r => {
         if (!r.nickname) return;
-        if (!userMap[r.nickname]) userMap[r.nickname] = { total: 0, first: 0, top3: 0, pets: [] };
-        userMap[r.nickname].total++;
-        if (r.displayRank === 1) userMap[r.nickname].first++;
-        if (r.displayRank <= 3) userMap[r.nickname].top3++;
-        userMap[r.nickname].pets.push({
+        // 본캐로 정규화 (매핑 없으면 자기 자신)
+        const mainName = aliasToMain[r.nickname] || r.nickname;
+        if (!userMap[mainName]) userMap[mainName] = {
+          total: 0, first: 0, top3: 0, pets: [], usedSubs: new Set()
+        };
+        // 사용된 부캐 닉 추적 (본캐와 다를 때만)
+        if (r.nickname !== mainName) userMap[mainName].usedSubs.add(r.nickname);
+        userMap[mainName].total++;
+        if (r.displayRank === 1) userMap[mainName].first++;
+        if (r.displayRank <= 3) userMap[mainName].top3++;
+        userMap[mainName].pets.push({
           petName: pet.name,
           type,
           rank: r.displayRank,
@@ -805,11 +849,14 @@ function buildUserStats(pets) {
           attack: r.attack,
           defense: r.defense,
           speed: r.speed,
-          exp: r.exp
+          exp: r.exp,
+          nickname: r.nickname // 어떤 닉으로 올린건지 보존
         });
       });
     });
   });
+  // Set → Array 로 변환
+  Object.values(userMap).forEach(u => { u.usedSubs = [...u.usedSubs]; });
   return userMap;
 }
 
@@ -860,20 +907,24 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       rankText = `${displayRank}위`;
     }
     const comment = RANK_COMMENTS[displayRank] || '';
+    const subsHTML = (user.usedSubs && user.usedSubs.length > 0)
+      ? `<span class="user-name-sub">(${user.usedSubs.join(', ')})</span>` : '';
     return `<div class="user-card ${cardClass}">
       <div class="rank-label-row">
         <span class="rank-emoji">${emoji}</span>
         <span class="rank-num-badge ${badgeClass}">${rankText}</span>
       </div>
       <div class="rank-comment">${comment}</div>
-      <div class="user-name">${user.name}</div>
+      <div class="user-name">${user.name}${subsHTML}</div>
       ${statChips}${badges}${detailBtn}
     </div>`;
   } else {
+    const subsHTML = (user.usedSubs && user.usedSubs.length > 0)
+      ? `<span class="user-name-sub">(${user.usedSubs.join(', ')})</span>` : '';
     return `<div class="rest-item">
       <div class="rest-rank">${displayRank}위</div>
       <div style="flex:1;min-width:0;">
-        <div class="rest-name">${user.name}</div>
+        <div class="rest-name">${user.name}${subsHTML}</div>
         <div class="rest-stats">전체 ${user.total}개 · 1등 ${user.first}개 · TOP3 ${user.top3}개</div>
       </div>
       <button class="rest-detail-btn" onclick="openDetailModal('${user.name}','${user.pets.length}개 랭킹','${petsJson}')">상세 ↗</button>
@@ -1026,7 +1077,12 @@ function filterGrid(gridId, storeKey, q) {
   }
 
   // 매칭 유저만 표시 (등수는 전체 기준 유지)
-  const matched = sorted.filter(u => u.name.toLowerCase().includes(keyword));
+  // 본캐 이름 또는 부캐 이름 어느 쪽으로 검색해도 매칭
+  const matched = sorted.filter(u => {
+    if (u.name.toLowerCase().includes(keyword)) return true;
+    if (u.usedSubs && u.usedSubs.some(s => s.toLowerCase().includes(keyword))) return true;
+    return false;
+  });
   if (matched.length === 0) {
     container.innerHTML = `<div class="empty-state">"${q}"와 일치하는 유저가 없습니다.</div>`;
     return;
@@ -1244,8 +1300,14 @@ function toggleDark(){
 // ── Init ──
 (async () => {
   await loadPetImages();
+  await loadAliases();      // 본캐/부캐 매핑 먼저 로드
   await loadData();
-  setInterval(loadData, 15000);
+  // 15초마다 데이터 새로고침. aliases.txt도 같이 다시 읽어서 변경사항 반영
+  setInterval(async () => {
+    const aliasesChanged = await loadAliases();
+    if (aliasesChanged) lastTimestamp = null; // 강제 리렌더
+    await loadData();
+  }, 15000);
 })();
 
 // URL 파라미터로 특정 펫 바로 열기 (pokedex에서 넘어온 경우)
