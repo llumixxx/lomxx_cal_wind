@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>환각 시뮬레이터 · 윈드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #faf9ff; --bg2: #f3f0ff; --white: #ffffff;
+  --s1: #f8f7ff; --s2: #f0eeff;
+  --border: #e8e3ff; --border2: #d4cbff;
+  --a1: #9b87f5; --a2: #f587b8; --a3: #87d4f5; --a4: #f5c887; --a5: #87f5c0;
+  --t1: #3d3560; --t2: #7b72a8; --t3: #b0a8d4; --t4: #d4cff0;
+  --ok: #6dd5a0; --err: #f57878;
+  --gold: #f5a623; --gold2: #fdd835;
+  --shadow: 0 4px 24px rgba(155,135,245,0.12);
+  --shadow2: 0 8px 32px rgba(155,135,245,0.18);
+}
+[data-theme="dark"] {
+  --bg: #0f0f1a; --bg2: #1a1a2e; --white: #252540;
+  --s1: #2a2a45; --s2: #353555;
+  --border: #404060; --border2: #505080;
+  --t1: #e8e8f0; --t2: #b0b0c8; --t3: #8080a0; --t4: #606080;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow2: 0 8px 32px rgba(0,0,0,0.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(155,135,245,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 80%, rgba(245,135,184,0.07) 0%, transparent 50%);
+}
+.main-inner { max-width: 1100px; margin: 0 auto; padding: 20px 20px 80px; }
+
+/* ── header ── */
+.page-head { text-align: center; padding: 18px 0 26px; }
+.wind-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #f0eeff, #ffeef6);
+  border: 1.5px solid var(--border2); border-radius: 99px;
+  padding: 4px 14px; font-size: 11px; font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  color: var(--a1); letter-spacing: 1px; margin-bottom: 12px;
+}
+.wind-badge-dot { width: 6px; height: 6px; background: var(--a2); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(2)} }
+.page-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 34px; font-weight: 900; letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--a1) 0%, var(--a2) 60%, var(--a4) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.15; margin-bottom: 6px;
+}
+.page-sub { font-size: 12px; color: var(--t3); font-family: 'Nunito', sans-serif; font-weight: 600; letter-spacing: 0.5px; }
+
+/* ── card ── */
+.card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 20px; margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--t3); margin-bottom: 14px;
+  font-family: 'Nunito', sans-serif; font-weight: 800;
+  display: flex; align-items: center; gap: 7px;
+}
+.card-title::before {
+  content: ''; display: block; width: 10px; height: 10px;
+  border-radius: 50%; background: linear-gradient(135deg, var(--a1), var(--a2));
+}
+
+/* ── input row ── */
+.setup-grid {
+  display: grid; grid-template-columns: 1.2fr 1fr;
+  gap: 14px;
+}
+@media(max-width:760px){ .setup-grid { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: 12px; position: relative; }
+.field-label {
+  font-size: 12px; font-weight: 700; color: var(--t2);
+  margin-bottom: 5px; display: block;
+}
+.field-input {
+  width: 100%; padding: 11px 14px;
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 12px; color: var(--t1); font-size: 15px;
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.field-input:focus { outline: none; border-color: var(--a1); background: var(--white); box-shadow: 0 0 0 4px rgba(155,135,245,.1); }
+
+/* suggestions */
+.sugg-wrap { position: relative; }
+.suggestions {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+  background: var(--white); border: 1.5px solid var(--a1);
+  border-top: none; border-radius: 0 0 14px 14px;
+  max-height: 180px; overflow-y: auto;
+  box-shadow: 0 12px 32px rgba(155,135,245,.15);
+}
+.sugg-item { padding: 10px 14px; cursor: pointer; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--t1); }
+.sugg-item:last-child { border-bottom: none; }
+.sugg-item:hover { background: var(--s1); color: var(--a1); }
+
+/* stat grid */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat-field-new { display: flex; flex-direction: column; gap: 6px; }
+.sfn-header { display: flex; align-items: baseline; justify-content: space-between; }
+.sfn-label { font-size: 12px; font-weight: 700; color: var(--t2); }
+.sfn-row { display: flex; align-items: center; gap: 0; overflow: hidden; border-radius: 10px; }
+.sfn-btn { width: 36px; height: 44px; border: 1.5px solid var(--border2); background: var(--s2); cursor: pointer; font-size: 18px; font-weight: 700; color: var(--a1); transition: all .12s; flex-shrink: 0; font-family: 'Nunito', sans-serif; line-height: 1; }
+.sfn-m { border-right: none; }
+.sfn-p { border-left: none; }
+.sfn-btn:hover { background: var(--a1); color: #fff; border-color: var(--a1); }
+.sfn-input { flex: 1; min-width: 0; width: 0; height: 44px; border: 1.5px solid var(--border2); text-align: center; font-size: 18px; font-weight: 900; font-family: 'Nunito', sans-serif; color: var(--t1); background: var(--white); outline: none; -moz-appearance: textfield; }
+.sfn-input::-webkit-outer-spin-button, .sfn-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.sfn-input:focus { border-color: var(--a1); background: var(--s1); }
+
+/* ── 구슬 가격 grid ── */
+.orb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.orb-input { padding: 9px 12px; font-size: 14px; }
+
+/* ═══ 의사결정 카드 (5번 후, 10번 후) ═══ */
+.decision-card {
+  background: var(--white); border: 2px solid var(--a1);
+  border-radius: 20px; padding: 20px; margin-top: 14px;
+  box-shadow: var(--shadow2);
+  animation: fadeUp .3s ease;
+}
+.decision-card.hard {
+  border-color: var(--err);
+}
+.decision-strip {
+  height: 4px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--a1), var(--a2));
+  margin-bottom: 14px;
+}
+.decision-card.hard .decision-strip {
+  background: linear-gradient(90deg, var(--err), var(--a2));
+}
+.decision-title {
+  font-size: 16px; font-weight: 900; color: var(--t1);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+}
+.decision-sub {
+  font-size: 12px; color: var(--t2); margin-bottom: 12px;
+  line-height: 1.6;
+}
+.decision-compare {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px;
+  align-items: center; margin-bottom: 14px;
+}
+@media(max-width:500px){ .decision-compare { grid-template-columns: 1fr; } .decision-vs { display: none; } }
+.compare-cell {
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 12px;
+  text-align: center;
+}
+.compare-cell.recommend {
+  border-color: var(--ok); background: linear-gradient(135deg, #e8f8ee, #f0f9ff);
+  position: relative;
+}
+[data-theme="dark"] .compare-cell.recommend {
+  background: linear-gradient(135deg, #1a2a1f, #1a2a35);
+}
+.compare-cell.recommend::before {
+  content: '👍 추천';
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--ok); color: #fff;
+  font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 99px;
+  font-family: 'Nunito', sans-serif; letter-spacing: .5px;
+}
+.compare-label {
+  font-size: 11px; font-weight: 800; color: var(--t3);
+  letter-spacing: 1px; font-family: 'Nunito', sans-serif;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.compare-val {
+  font-size: 20px; font-weight: 900; font-family: 'Nunito', sans-serif;
+  color: var(--t1);
+}
+.compare-detail {
+  font-size: 10px; color: var(--t3); margin-top: 4px;
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+}
+.decision-vs {
+  font-size: 14px; font-weight: 900; color: var(--t3);
+  font-family: 'Nunito', sans-serif;
+}
+.decision-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+@media(max-width:500px){ .decision-actions { grid-template-columns: 1fr; } }
+.btn-decision {
+  padding: 14px; border-radius: 12px;
+  font-size: 14px; font-weight: 800;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer; transition: all .15s;
+  border: 2px solid transparent;
+}
+.btn-decision-life {
+  background: linear-gradient(135deg, var(--a1), var(--a2));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(155,135,245,.25);
+}
+.btn-decision-life:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(155,135,245,.4); }
+.btn-decision-newpet {
+  background: var(--white); color: var(--a1);
+  border-color: var(--a1);
+}
+.btn-decision-newpet:hover { background: var(--a1); color: #fff; }
+.btn-decision-giveup {
+  background: var(--white); color: var(--t3);
+  border-color: var(--border2);
+}
+.btn-decision-giveup:hover { background: var(--s2); color: var(--t2); }
+
+/* ── opt-row ── */
+.opt-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.opt-check {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; color: var(--t2);
+  padding: 8px 12px; background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer; user-select: none;
+  transition: all .15s;
+}
+.opt-check:hover { border-color: var(--a1); color: var(--a1); }
+.opt-check input { cursor: pointer; accent-color: var(--a1); }
+.opt-check.active { border-color: var(--a1); background: #f5f0ff; color: var(--a1); }
+[data-theme="dark"] .opt-check.active { background: #2a2a45; }
+
+/* ── action btns ── */
+.act-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 12px; }
+.btn-go {
+  padding: 16px;
+  background: linear-gradient(135deg, var(--a1) 0%, var(--a2) 100%);
+  color: #fff; border: none; border-radius: 16px;
+  font-size: 16px; font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer; transition: all .2s; letter-spacing: .5px;
+  box-shadow: 0 4px 20px rgba(155,135,245,.3);
+}
+.btn-go:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(155,135,245,.42); }
+.btn-go:active { transform: scale(.99); }
+.btn-go:disabled { opacity: .55; cursor: not-allowed; }
+.btn-stop {
+  padding: 16px 20px; background: var(--white);
+  color: var(--err); border: 1.5px solid var(--err);
+  border-radius: 16px; font-size: 14px; font-weight: 800;
+  font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
+  transition: all .15s;
+}
+.btn-stop:hover { background: var(--err); color: #fff; }
+
+/* ── 정보 박스 ── */
+.info-box {
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 12px 14px; margin-top: 10px;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.info-prob {
+  font-size: 22px; font-weight: 900; font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, var(--a1), var(--a2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.info-prob.gold { background: linear-gradient(135deg, var(--gold), var(--gold2)); -webkit-background-clip: text; background-clip: text; }
+.info-label { font-size: 11px; color: var(--t3); font-weight: 700; letter-spacing: 1px; font-family: 'Nunito', sans-serif; text-transform: uppercase; }
+
+/* ── 시뮬 디스플레이 ── */
+.sim-display {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 24px;
+  box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+  min-height: 260px;
+  display: flex; flex-direction: column;
+}
+.sim-tries-big {
+  text-align: center;
+  font-family: 'Nunito', sans-serif;
+  margin-bottom: 14px;
+}
+.sim-tries-num {
+  font-size: 64px; font-weight: 900; line-height: 1;
+  color: var(--a1);
+  display: inline-block; min-width: 80px;
+}
+.sim-tries-unit { font-size: 22px; color: var(--t2); font-weight: 800; margin-left: 4px; }
+.sim-tries-label { font-size: 11px; color: var(--t3); font-weight: 700; letter-spacing: 2px; margin-top: 6px; }
+
+/* 등급 결과 한 줄 */
+.sim-rolling {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px; font-weight: 900;
+  min-height: 60px;
+  transition: all .15s;
+}
+.sim-grade-pop {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 22px;
+  background: var(--s1); border: 2px solid var(--border);
+  border-radius: 99px;
+  animation: gradePop .25s ease-out;
+}
+@keyframes gradePop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.sim-grade-num { font-size: 26px; font-weight: 900; }
+.sim-grade-text { font-size: 14px; font-weight: 700; color: var(--t2); }
+
+/* 등급별 색상 */
+.g-pos1 { color: #b8aef5; }
+.g-pos2 { color: #9b87f5; }
+.g-pos3 { color: #f587b8; }
+.g-zero { color: var(--t3); }
+.g-neg { color: var(--t4); }
+.g-hall {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* 환각 떴을 때 카드 */
+.sim-display.hall-mode {
+  background: linear-gradient(135deg, #fff9ee 0%, #fff3d4 50%, #ffeef6 100%);
+  border-color: var(--gold);
+  animation: hallShake .5s ease;
+}
+[data-theme="dark"] .sim-display.hall-mode {
+  background: linear-gradient(135deg, #2a2515 0%, #3a3020 50%, #2a1f2e 100%);
+}
+@keyframes hallShake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+/* 비용 표시 작은거 */
+.sim-cost-small { text-align: center; font-size: 12px; color: var(--t3); margin-top: 8px; font-family: 'Nunito', sans-serif; font-weight: 700; }
+
+/* 로그 */
+.sim-log {
+  margin-top: 14px; max-height: 100px;
+  overflow-y: auto;
+  background: var(--s1); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 12px;
+  font-family: 'Nunito', sans-serif; font-size: 11px;
+  color: var(--t3);
+  display: none;
+}
+.sim-log.show { display: block; }
+.sim-log-line { padding: 1px 0; }
+.sim-log-line.hall { color: var(--gold); font-weight: 900; }
+.sim-log::-webkit-scrollbar { width: 4px; }
+.sim-log::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* ── 결과 카드 ── */
+.result-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 24px;
+  box-shadow: var(--shadow);
+  animation: fadeUp .3s ease;
+  margin-top: 14px;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.result-strip {
+  height: 4px; border-radius: 99px;
+  background: linear-gradient(90deg, var(--gold), var(--gold2), var(--a2));
+  margin-bottom: 18px;
+}
+.result-grand {
+  text-align: center; margin-bottom: 18px;
+}
+.result-grand-tries {
+  font-size: 56px; font-weight: 900; font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1;
+}
+.result-grand-tries-unit { font-size: 22px; color: var(--t2); font-weight: 800; margin-left: 4px; -webkit-text-fill-color: var(--t2); }
+.result-grand-label { font-size: 13px; color: var(--t2); font-weight: 700; margin-top: 8px; }
+.result-grand-cost {
+  display: inline-block; margin-top: 10px;
+  padding: 6px 16px; background: linear-gradient(135deg, #fff5cc, #ffe988);
+  border: 1.5px solid var(--gold); border-radius: 99px;
+  font-size: 14px; font-weight: 900; color: #c87800;
+  font-family: 'Nunito', sans-serif;
+}
+[data-theme="dark"] .result-grand-cost { background: linear-gradient(135deg, #3a3020, #4a3825); color: var(--gold); }
+
+/* 이론값 비교 */
+.theory-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-top: 16px;
+}
+@media(max-width:500px){ .theory-grid { grid-template-columns: 1fr; } }
+.theory-cell {
+  padding: 12px 10px; background: var(--s1);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  text-align: center;
+}
+.theory-cell.highlight { border-color: var(--a1); background: #f5f0ff; }
+[data-theme="dark"] .theory-cell.highlight { background: #2a2a45; }
+.theory-label { font-size: 10px; font-weight: 800; color: var(--t3); letter-spacing: 1px; font-family: 'Nunito', sans-serif; text-transform: uppercase; margin-bottom: 4px; }
+.theory-val { font-size: 20px; font-weight: 900; font-family: 'Nunito', sans-serif; color: var(--a1); }
+.theory-sub { font-size: 10px; color: var(--t3); font-family: 'Nunito', sans-serif; font-weight: 700; margin-top: 2px; }
+
+/* 운빨 멘트 */
+.luck-msg {
+  margin-top: 14px; padding: 12px 16px; border-radius: 12px;
+  background: var(--s1); border: 1.5px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  text-align: left;
+}
+.luck-emoji { font-size: 26px; flex-shrink: 0; }
+.luck-text { font-size: 13px; font-weight: 700; color: var(--t1); line-height: 1.5; }
+.luck-msg.lucky { background: linear-gradient(135deg, #fff5cc, #ffe988); border-color: var(--gold); }
+[data-theme="dark"] .luck-msg.lucky { background: linear-gradient(135deg, #3a3020, #2a2a45); }
+.luck-msg.unlucky { background: linear-gradient(135deg, #ffeef6, #fff0f0); border-color: var(--a2); }
+[data-theme="dark"] .luck-msg.unlucky { background: linear-gradient(135deg, #2a1f2e, #2a2a45); }
+
+/* 누적 통계 */
+.stats-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 18px 20px; margin-top: 14px;
+  box-shadow: var(--shadow);
+}
+.stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+@media(max-width:600px){ .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-cell { text-align: center; padding: 8px; background: var(--s1); border-radius: 10px; }
+.stat-cell-num { font-size: 20px; font-weight: 900; font-family: 'Nunito', sans-serif; color: var(--a1); }
+.stat-cell-lbl { font-size: 10px; font-weight: 700; color: var(--t3); margin-top: 2px; letter-spacing: .5px; }
+
+.stats-actions { display: flex; justify-content: flex-end; margin-top: 10px; }
+.btn-reset {
+  background: transparent; border: 1.5px solid var(--border2);
+  color: var(--t3); padding: 5px 12px; border-radius: 99px;
+  font-size: 11px; font-weight: 700; cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: all .15s;
+}
+.btn-reset:hover { border-color: var(--err); color: var(--err); }
+
+/* 펫 정보 미리보기 */
+.pet-preview {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; background: var(--s1);
+  border: 1.5px solid var(--border); border-radius: 12px;
+  margin-top: 8px;
+}
+.pet-preview-img {
+  width: 44px; height: 44px; flex-shrink: 0;
+  background: var(--white); border-radius: 8px;
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.pet-preview-img img { width: 36px; height: 36px; object-fit: contain; image-rendering: pixelated; }
+.pet-preview-info { flex: 1; min-width: 0; }
+.pet-preview-name { font-size: 14px; font-weight: 800; color: var(--t1); }
+.pet-preview-grade { font-size: 11px; color: var(--t3); font-weight: 600; margin-top: 2px; }
+
+/* float dark btn */
+.float-btns {
+  position: fixed; top: 14px; right: 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  z-index: 9999;
+}
+.dark-toggle {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid var(--border2); background: var(--white);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(155,135,245,.18);
+  font-size: 1.1rem;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), border-color .2s, box-shadow .2s;
+}
+.dark-toggle:hover { transform: scale(1.18) rotate(22deg); border-color: var(--a1); }
+[data-theme="dark"] .dark-toggle { background: #2a2a45; border-color: #505080; }
+[data-theme="dark"] .toggle-moon { display: inline !important; }
+[data-theme="dark"] .toggle-sun { display: none !important; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--a1); }
+[data-theme="dark"] ::-webkit-scrollbar-track { background: #1a1a2e; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #404060; }
+</style>
+</head>
+<body>
+
+<!-- 다크모드 토글 -->
+<div class="float-btns">
+  <button class="dark-toggle" onclick="toggleDarkMode()" aria-label="다크모드 토글">
+    <span class="toggle-sun">☀️</span>
+    <span class="toggle-moon" style="display:none;">🌙</span>
+  </button>
+</div>
+
+<!-- 글로벌 nav -->
+<script src="nav.js"></script>
+
+<div class="main-inner">
+
+  <!-- 헤더 -->
+  <div class="page-head">
+    <div class="wind-badge">
+      <span class="wind-badge-dot"></span>
+      WIND · SIMULATOR
+    </div>
+    <h1 class="page-title">🎰 환각 시뮬레이터</h1>
+    <div class="page-sub">실제로 굴려보자, 8등급 뜰 때까지!</div>
+  </div>
+
+  <!-- 셋업 카드 -->
+  <div class="card">
+    <div class="card-title">시뮬 셋업</div>
+
+    <div class="setup-grid">
+      <!-- 좌: 펫 + 옵션 -->
+      <div>
+        <div class="field">
+          <label class="field-label">펫 선택</label>
+          <div class="sugg-wrap">
+            <input type="text" class="field-input" id="pet-input" placeholder="펫 이름 검색 (예: 우리)" autocomplete="off" />
+            <div class="suggestions" id="suggestions" style="display:none;"></div>
+          </div>
+          <div class="pet-preview" id="pet-preview" style="display:none;">
+            <div class="pet-preview-img" id="pet-preview-img"></div>
+            <div class="pet-preview-info">
+              <div class="pet-preview-name" id="pet-preview-name">-</div>
+              <div class="pet-preview-grade" id="pet-preview-grade">-</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">펫 가격 (vip) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 비워두면 손익 계산 안 함</span></label>
+          <input type="number" class="field-input" id="pet-price" placeholder="예: 20000" min="0" />
+        </div>
+
+        <div class="orb-grid">
+          <div>
+            <label class="field-label">초기화 구슬 (vip)</label>
+            <input type="number" class="field-input orb-input" id="orb-reset" value="1000" min="0" />
+          </div>
+          <div>
+            <label class="field-label">생명의 구슬 (vip)</label>
+            <input type="number" class="field-input orb-input" id="orb-life" value="10000" min="0" />
+          </div>
+        </div>
+
+        <div class="opt-row">
+          <label class="opt-check" id="skip-check-label">
+            <input type="checkbox" id="skip-check" />
+            <span>⏯️ 일반 등급 스킵</span>
+          </label>
+          <label class="opt-check" id="log-check-label">
+            <input type="checkbox" id="log-check" />
+            <span>📋 로그 보기</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 우: 스탯 -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;">목표 스탯 (공·방·민·체)</div>
+        <div class="stat-grid">
+          <div class="stat-field-new">
+            <div class="sfn-header"><span class="sfn-label">공격</span></div>
+            <div class="sfn-row">
+              <button class="sfn-btn sfn-m" onclick="adjustStat('s-atk',-1)">−</button>
+              <input class="sfn-input" type="number" id="s-atk" placeholder="0" />
+              <button class="sfn-btn sfn-p" onclick="adjustStat('s-atk',1)">+</button>
+            </div>
+          </div>
+          <div class="stat-field-new">
+            <div class="sfn-header"><span class="sfn-label">방어</span></div>
+            <div class="sfn-row">
+              <button class="sfn-btn sfn-m" onclick="adjustStat('s-def',-1)">−</button>
+              <input class="sfn-input" type="number" id="s-def" placeholder="0" />
+              <button class="sfn-btn sfn-p" onclick="adjustStat('s-def',1)">+</button>
+            </div>
+          </div>
+          <div class="stat-field-new">
+            <div class="sfn-header"><span class="sfn-label">민첩</span></div>
+            <div class="sfn-row">
+              <button class="sfn-btn sfn-m" onclick="adjustStat('s-agi',-1)">−</button>
+              <input class="sfn-input" type="number" id="s-agi" placeholder="0" />
+              <button class="sfn-btn sfn-p" onclick="adjustStat('s-agi',1)">+</button>
+            </div>
+          </div>
+          <div class="stat-field-new">
+            <div class="sfn-header"><span class="sfn-label">체력</span></div>
+            <div class="sfn-row">
+              <button class="sfn-btn sfn-m" onclick="adjustStat('s-hp',-1)">−</button>
+              <input class="sfn-input" type="number" id="s-hp" placeholder="0" />
+              <button class="sfn-btn sfn-p" onclick="adjustStat('s-hp',1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 확률 미리보기 -->
+    <div class="info-box" id="prob-box" style="display:none;">
+      <div>
+        <div class="info-label">8등급 확률</div>
+        <div class="info-prob" id="prob-display">-</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="info-label">기대 시도</div>
+        <div style="font-size:18px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t2);" id="expect-display">-</div>
+      </div>
+    </div>
+
+    <!-- 액션 버튼 -->
+    <div class="act-row">
+      <button class="btn-go" id="btn-go" disabled>🎰 시뮬 시작!</button>
+      <button class="btn-stop" id="btn-stop" style="display:none;">⏸ 중지</button>
+    </div>
+  </div>
+
+  <!-- 시뮬 디스플레이 -->
+  <div class="sim-display" id="sim-display" style="display:none;">
+    <div class="sim-tries-big">
+      <div>
+        <span class="sim-tries-num" id="sim-tries-num">0</span><span class="sim-tries-unit">회</span>
+      </div>
+      <div class="sim-tries-label">TRIES</div>
+    </div>
+    <div class="sim-rolling" id="sim-rolling">
+      <span style="color:var(--t4);font-size:14px;font-weight:700;">시작을 기다리는 중...</span>
+    </div>
+    <div class="sim-cost-small" id="sim-cost-small"></div>
+    <div class="sim-log" id="sim-log"></div>
+  </div>
+
+  <!-- 의사결정 카드 (5번 후 / 10번 후) -->
+  <div id="decision-area"></div>
+
+  <!-- 결과 카드 -->
+  <div id="result-area"></div>
+
+  <!-- 누적 통계 -->
+  <div class="stats-card" id="stats-card" style="display:none;">
+    <div class="card-title">📊 내 누적 통계</div>
+    <div class="stats-grid">
+      <div class="stat-cell">
+        <div class="stat-cell-num" id="st-runs">0</div>
+        <div class="stat-cell-lbl">실행 횟수</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num" id="st-total-tries">0</div>
+        <div class="stat-cell-lbl">총 시도</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num" id="st-avg">0</div>
+        <div class="stat-cell-lbl">평균 시도</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-cell-num" id="st-best">-</div>
+        <div class="stat-cell-lbl">최고 기록</div>
+      </div>
+    </div>
+    <div class="stats-actions">
+      <button class="btn-reset" onclick="resetStats()">통계 초기화</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   계산 로직 (index.html과 동일)
+   ═══════════════════════════════════════════════════════════ */
+
+function calcIdeal(pet) {
+  const ic = pet.initialCoefficient;
+  const iA = (pet.attackCoefficient + 4.5) * ic / 100;
+  const iD = (pet.defenseCoefficient + 4.5) * ic / 100;
+  const iG = (pet.agilityCoefficient + 4.5) * ic / 100;
+  const iH = (pet.healthCoefficient + 4.5) * ic / 100;
+  const rAtk = iH * 0.1 + iA + iD * 0.1 + iG * 0.05;
+  const rDef = iH * 0.1 + iA * 0.1 + iD + iG * 0.05;
+  const rAgi = iG;
+  const rHp = iH * 4 + iA + iD + iG;
+  return {
+    atk: Math.floor(rAtk), def: Math.floor(rDef),
+    agi: Math.floor(rAgi), hp: Math.floor(rHp)
+  };
+}
+
+function runCalc(pet, dAtk, dDef, dAgi, dHp) {
+  let totalCases = 0, hallCases = 0, exactCount = 0, totalPossible = 0, gradeDist = {};
+  for (let ar = -2; ar <= 2; ar++)
+    for (let dr = -2; dr <= 2; dr++)
+      for (let gr = -2; gr <= 2; gr++)
+        for (let hr = -2; hr <= 2; hr++)
+          for (let ab = 0; ab <= 10; ab++)
+            for (let db = 0; db <= 10; db++)
+              for (let gb = 0; gb <= 10; gb++) {
+                const hb = 10 - ab - db - gb;
+                if (hb < 0 || hb > 10) continue;
+                const bA = pet.attackCoefficient + ar + ab;
+                const bD = pet.defenseCoefficient + dr + db;
+                const bG = pet.agilityCoefficient + gr + gb;
+                const bH = pet.healthCoefficient + hr + hb;
+                const ic = pet.initialCoefficient;
+                const iA = bA * ic / 100, iD = bD * ic / 100, iG = bG * ic / 100, iH = bH * ic / 100;
+                const cA = Math.floor(iH * 0.1 + iA + iD * 0.1 + iG * 0.05);
+                const cD = Math.floor(iH * 0.1 + iA * 0.1 + iD + iG * 0.05);
+                const cG = Math.floor(iG);
+                const cH = Math.floor(iH * 4 + iA + iD + iG);
+                totalPossible++;
+                if (cA === dAtk && cD === dDef && cG === dAgi && cH === dHp) {
+                  exactCount++; totalCases++;
+                  const signed = ar + dr + gr + hr;
+                  gradeDist[signed] = (gradeDist[signed] || 0) + 1;
+                  if (ar === 2 && dr === 2 && gr === 2 && hr === 2) hallCases++;
+                }
+              }
+  return { totalCases, hallCases, exactCount, totalPossible, gradeDist };
+}
+
+/* 계수 역산 (펫 데이터 변환용) */
+function _tryCoeff(fH, fA, fD, fG, tol) {
+  for (let ic = 10; ic <= 100; ic++) {
+    const agi = (fG * 100 / ic) - 4.5;
+    if (agi <= 0 || Math.abs(agi - Math.round(agi)) > tol) continue;
+    const e1 = fH - fG, e2 = fA - 0.05 * fG, e3 = fD - 0.05 * fG, e4 = e2 - e1, e5 = e3 - 0.1 * e1;
+    const mul = 3 / 3.9;
+    const C = (e5 * 10 - e4 * mul) / (9 + 0.9 * mul);
+    const A = (e5 - 0.9 * C) / -0.3, B = e1 - 4 * A - C;
+    if (A < 0 || B < 0 || C < 0) continue;
+    const hc = (A * 100 / ic) - 4.5, ac = (B * 100 / ic) - 4.5, dc = (C * 100 / ic) - 4.5;
+    if (Math.abs(hc - Math.round(hc)) > tol || Math.abs(ac - Math.round(ac)) > tol || Math.abs(dc - Math.round(dc)) > tol) continue;
+    return {
+      initialCoefficient: ic,
+      healthCoefficient: Math.round(hc),
+      attackCoefficient: Math.round(ac),
+      defenseCoefficient: Math.round(dc),
+      agilityCoefficient: Math.round(agi)
+    };
+  }
+  return null;
+}
+
+function _convertPetInfo(p) {
+  let coeffs = null;
+  if (p.ic && p.ic.hp != null && p.ic.atk != null && p.ic.def != null && p.ic.agi != null) {
+    coeffs = _tryCoeff(p.ic.hp, p.ic.atk, p.ic.def, p.ic.agi, 0.01);
+  }
+  if (!coeffs) {
+    coeffs = { initialCoefficient: 20, healthCoefficient: 0, attackCoefficient: 0, defenseCoefficient: 0, agilityCoefficient: 0 };
+  }
+  return {
+    ...coeffs,
+    grade: p.grade || "일반",
+    obtain: p.obtain || "",
+    image: p.image || ""
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   펫 데이터 로드
+   ═══════════════════════════════════════════════════════════ */
+let petData = {};
+let petImages = {};
+
+async function loadPets() {
+  try {
+    const res = await fetch('pet_info_data.json');
+    if (!res.ok) throw new Error('fetch failed');
+    const arr = await res.json();
+    arr.forEach(p => {
+      if (!p.name) return;
+      petData[p.name] = _convertPetInfo(p);
+      if (p.image) petImages[p.name] = p.image;
+    });
+    console.log('펫 데이터 로드 완료:', Object.keys(petData).length, '마리');
+  } catch (e) {
+    console.error('펫 데이터 로드 실패:', e);
+    alert('펫 데이터를 불러오지 못했습니다. pet_info_data.json 파일을 확인해주세요.');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UI 헬퍼
+   ═══════════════════════════════════════════════════════════ */
+
+const $ = id => document.getElementById(id);
+
+function adjustStat(id, delta) {
+  const el = $(id);
+  const v = parseInt(el.value) || 0;
+  el.value = Math.max(0, v + delta);
+  el.dispatchEvent(new Event('input'));
+}
+
+let selectedPetName = '';
+let currentProbResult = null; // runCalc 결과 캐시
+
+/* 펫 자동완성 */
+function setupPetSearch() {
+  const input = $('pet-input');
+  const sugg = $('suggestions');
+
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    if (!q) { sugg.style.display = 'none'; return; }
+    const matches = Object.keys(petData)
+      .filter(n => n.toLowerCase().includes(q))
+      .sort((a, b) => a.localeCompare(b, 'ko-KR'))
+      .slice(0, 12);
+    if (matches.length === 0) { sugg.style.display = 'none'; return; }
+    sugg.innerHTML = matches.map(n => `<div class="sugg-item" data-name="${n}">${n}</div>`).join('');
+    sugg.style.display = 'block';
+  });
+
+  sugg.addEventListener('click', e => {
+    const item = e.target.closest('.sugg-item');
+    if (!item) return;
+    selectPet(item.dataset.name);
+  });
+
+  document.addEventListener('click', e => {
+    if (!sugg.contains(e.target) && e.target !== input) sugg.style.display = 'none';
+  });
+
+  // 첫 매칭이 정확히 일치하면 자동 선택 (Enter)
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const q = input.value.trim();
+      if (petData[q]) { selectPet(q); return; }
+      const first = sugg.querySelector('.sugg-item');
+      if (first) selectPet(first.dataset.name);
+    }
+  });
+}
+
+function selectPet(name) {
+  if (!petData[name]) return;
+  selectedPetName = name;
+  $('pet-input').value = name;
+  $('suggestions').style.display = 'none';
+
+  // 미리보기
+  const pet = petData[name];
+  const img = petImages[name];
+  const preview = $('pet-preview');
+  $('pet-preview-name').textContent = name;
+  $('pet-preview-grade').textContent = `${pet.grade} · ${pet.obtain || '획득처 정보 없음'}`;
+  const imgBox = $('pet-preview-img');
+  imgBox.innerHTML = img ? `<img src="${img}" alt="${name}">` : '<span style="font-size:20px;">🐾</span>';
+  preview.style.display = 'flex';
+
+  // 이상 스탯 자동 입력
+  const ideal = calcIdeal(pet);
+  $('s-atk').value = ideal.atk;
+  $('s-def').value = ideal.def;
+  $('s-agi').value = ideal.agi;
+  $('s-hp').value = ideal.hp;
+
+  recalcProb();
+}
+
+/* 입력 변경시 확률 자동 재계산 */
+function recalcProb() {
+  if (!selectedPetName) return;
+  const pet = petData[selectedPetName];
+  const dAtk = parseInt($('s-atk').value);
+  const dDef = parseInt($('s-def').value);
+  const dAgi = parseInt($('s-agi').value);
+  const dHp = parseInt($('s-hp').value);
+
+  if ([dAtk, dDef, dAgi, dHp].some(isNaN)) {
+    $('prob-box').style.display = 'none';
+    $('btn-go').disabled = true;
+    return;
+  }
+
+  const r = runCalc(pet, dAtk, dDef, dAgi, dHp);
+  currentProbResult = r;
+
+  if (r.totalCases === 0 || r.hallCases === 0) {
+    $('prob-box').style.display = 'flex';
+    $('prob-display').textContent = '0%';
+    $('prob-display').classList.remove('gold');
+    $('expect-display').textContent = '환각 불가';
+    $('btn-go').disabled = true;
+    return;
+  }
+
+  const prob = (r.hallCases / r.totalCases) * 100;
+  const probShow = Math.min(prob, 99.99).toFixed(4);
+  $('prob-display').textContent = probShow + '%';
+  $('prob-display').classList.toggle('gold', prob >= 50);
+  $('expect-display').textContent = '약 ' + (1 / (prob / 100)).toFixed(1) + '회';
+  $('prob-box').style.display = 'flex';
+  $('btn-go').disabled = false;
+}
+
+['s-atk', 's-def', 's-agi', 's-hp'].forEach(id => {
+  $(id).addEventListener('input', recalcProb);
+});
+
+/* 옵션 체크 시각효과 */
+['skip-check', 'log-check'].forEach(id => {
+  const cb = $(id);
+  const lb = $(id + '-label');
+  cb.addEventListener('change', () => {
+    lb.classList.toggle('active', cb.checked);
+    if (id === 'log-check') {
+      $('sim-log').classList.toggle('show', cb.checked);
+    }
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════
+   시뮬레이션 엔진
+   ═══════════════════════════════════════════════════════════ */
+
+const GRADE_NAMES = {
+  8: '8등급', 7: '7등급', 6: '6등급', 5: '5등급', 4: '4등급', 3: '3등급', 2: '2등급', 1: '1등급',
+  0: '0등급', '-1': '-1등급', '-2': '-2등급', '-3': '-3등급', '-4': '-4등급', '-5': '-5등급', '-6': '-6등급', '-7': '-7등급', '-8': '-8등급'
+};
+
+const GRADE_TEXT = {
+  8: '환각!', 7: '대박', 6: '훌륭', 5: '좋음', 4: '괜찮', 3: '보통', 2: '평범', 1: '평범',
+  0: '평범', '-1': '아쉬움', '-2': '아쉬움', '-3': '꽝', '-4': '꽝', '-5': '꽝', '-6': '꽝', '-7': '꽝', '-8': '꽝'
+};
+
+function gradeColorClass(g) {
+  if (g === 8) return 'g-hall';
+  if (g >= 5) return 'g-pos3';
+  if (g >= 3) return 'g-pos2';
+  if (g >= 1) return 'g-pos1';
+  if (g === 0) return 'g-zero';
+  return 'g-neg';
+}
+
+/* gradeDist에서 가중 추첨 */
+function pickGrade(gradeDist, totalCases) {
+  let r = Math.random() * totalCases;
+  for (const g of Object.keys(gradeDist)) {
+    r -= gradeDist[g];
+    if (r <= 0) return parseInt(g);
+  }
+  // fallback
+  const keys = Object.keys(gradeDist);
+  return parseInt(keys[keys.length - 1]);
+}
+
+/* 이론값 계산 */
+function calcTheory(p) {
+  // p = 8등급 확률 (0~1)
+  if (p <= 0) return null;
+  const avg = 1 / p;                    // 기대값
+  const median = Math.log(0.5) / Math.log(1 - p);  // 50% 누적
+  const p99 = Math.log(0.01) / Math.log(1 - p);    // 99%
+  return { avg, median: Math.ceil(median), p99: Math.ceil(p99) };
+}
+
+/* 운빨 메시지 */
+function getLuckMsg(actual, theory) {
+  if (!theory) return null;
+  const ratio = actual / theory.avg;
+  if (ratio <= 0.1) return { kind: 'lucky', emoji: '👑', text: `평균의 ${(ratio*100).toFixed(0)}%! 미친 운빨이에요. 로또 사세요!` };
+  if (ratio <= 0.3) return { kind: 'lucky', emoji: '🍀', text: `평균보다 훨씬 빨랐어요! 운이 좋네요 ✨` };
+  if (ratio <= 0.7) return { kind: 'lucky', emoji: '🌟', text: `평균보다 빨랐어요! 잘했어요!` };
+  if (ratio <= 1.3) return { kind: 'normal', emoji: '🙂', text: `평균 정도의 운빨이에요. 무난하네요.` };
+  if (ratio <= 2.5) return { kind: 'unlucky', emoji: '😅', text: `평균보다 좀 늦었어요... 다음엔 더 잘 풀리길!` };
+  if (ratio <= 5) return { kind: 'unlucky', emoji: '😭', text: `평균의 ${ratio.toFixed(1)}배... 오늘은 운이 별로네요.` };
+  return { kind: 'unlucky', emoji: '💀', text: `${actual}회... 평균의 ${ratio.toFixed(1)}배! 이건 좀 가혹하네요...` };
+}
+
+let simRunning = false;
+let simAbort = false;
+
+// 시뮬 진행 상태 (전역, 의사결정 후 이어가기 위해)
+let simState = null;
+
+async function runSimulation() {
+  if (!currentProbResult || currentProbResult.hallCases === 0) return;
+  if (simRunning) return;
+
+  // 새로 시작
+  simState = {
+    totalTries: 0,           // 누적 환각 시도 횟수 (모든 펫 포함)
+    petsBought: 1,           // 사용한 펫 마릿수 (시작 펫 포함)
+    resetOrbsUsed: 0,        // 사용한 초기화 구슬 개수
+    lifeOrbsUsed: 0,         // 사용한 생명의 구슬 개수
+    currentPetTries: 0,      // 현재 펫에서 시도한 횟수 (0~10)
+  };
+
+  $('result-area').innerHTML = '';
+  $('decision-area').innerHTML = '';
+  $('sim-display').style.display = 'flex';
+  $('sim-display').classList.remove('hall-mode');
+
+  // 로그 초기화 (새 시뮬 시작이므로)
+  $('sim-log').innerHTML = '';
+
+  await runCycle();
+}
+
+/**
+ * 한 사이클(5번)을 실행한다.
+ * 환각 뜨면 → 결과 카드
+ * 5번 다 했는데 못뜨면 → 결정 카드 (생명 쓸지 / 새 펫 살지)
+ */
+async function runCycle() {
+  simRunning = true;
+  simAbort = false;
+  $('btn-go').style.display = 'none';
+  $('btn-stop').style.display = 'block';
+  $('decision-area').innerHTML = ''; // 이전 결정 카드 지우기
+
+  const skip = $('skip-check').checked;
+  const showLog = $('log-check').checked;
+  const r = currentProbResult;
+
+  // 로그 (계속 누적)
+  const logEl = $('sim-log');
+  logEl.classList.toggle('show', showLog);
+
+  // 이번 사이클에서 몇 번 더 할 수 있는지 (남은 시도)
+  // 펫당 최대 10번이지만 5번 단위로 끊어서 진행
+  const startInPet = simState.currentPetTries;
+  const targetInPet = Math.min(startInPet + 5, 10); // 5번 더 (또는 10까지)
+  const remainingInThisCycle = targetInPet - startInPet;
+
+  let success = false;
+
+  for (let i = 0; i < remainingInThisCycle; i++) {
+    if (simAbort) break;
+
+    simState.totalTries++;
+    simState.currentPetTries++;
+    simState.resetOrbsUsed++;
+
+    const grade = pickGrade(r.gradeDist, r.totalCases);
+    const isHall = (grade === 8);
+
+    updateSimDisplay(grade, isHall);
+
+    // 로그
+    if (showLog) {
+      const line = document.createElement('div');
+      line.className = 'sim-log-line' + (isHall ? ' hall' : '');
+      const petTag = simState.petsBought > 1 ? `[펫${simState.petsBought}] ` : '';
+      line.textContent = `${petTag}${simState.totalTries}회 · ${GRADE_NAMES[grade]}${isHall ? ' ✨ 환각!' : ''}`;
+      logEl.insertBefore(line, logEl.firstChild);
+      while (logEl.children.length > 100) logEl.removeChild(logEl.lastChild);
+    }
+
+    if (isHall) {
+      success = true;
+      $('sim-display').classList.add('hall-mode');
+      await sleep(700);
+      break;
+    }
+
+    // 딜레이
+    const delay = computeDelay(simState.totalTries, skip);
+    if (delay > 0) await sleep(delay);
+  }
+
+  simRunning = false;
+  $('btn-go').style.display = 'none'; // 결정 안 끝났으면 시작 버튼 숨김
+  $('btn-stop').style.display = 'none';
+
+  // 결과 분기
+  if (success) {
+    showSuccessResult();
+    saveStats(simState.totalTries);
+    renderStats();
+    $('btn-go').style.display = 'block';
+    return;
+  }
+
+  if (simAbort) {
+    showAbortResult();
+    $('btn-go').style.display = 'block';
+    return;
+  }
+
+  // 5번 또는 10번 다 했는데 환각 못 뜸 → 의사결정 카드
+  if (simState.currentPetTries === 5) {
+    showDecisionAt5();
+  } else if (simState.currentPetTries === 10) {
+    showDecisionAt10();
+  }
+}
+
+function updateSimDisplay(grade, isHall) {
+  const totalCost = calcRunningCost(simState);
+  $('sim-tries-num').textContent = simState.totalTries.toLocaleString();
+
+  const petLineFull = simState.petsBought > 1
+    ? `🐾 펫 ${simState.petsBought}마리째 · 현재 펫에서 ${simState.currentPetTries}/10번`
+    : `🐾 현재 펫에서 ${simState.currentPetTries}/10번 시도`;
+
+  $('sim-cost-small').innerHTML = totalCost > 0
+    ? `<div>${petLineFull}</div><div style="margin-top:3px;">💰 누적 비용: ${totalCost.toLocaleString()} vip</div>`
+    : `<div>${petLineFull}</div>`;
+
+  const rolling = $('sim-rolling');
+  const colorClass = gradeColorClass(grade);
+  rolling.innerHTML = `
+    <div class="sim-grade-pop">
+      <span class="sim-grade-num ${colorClass}">${GRADE_NAMES[grade]}</span>
+      <span class="sim-grade-text">${GRADE_TEXT[grade]}${isHall ? ' ✨' : ''}</span>
+    </div>
+  `;
+}
+
+function computeDelay(tries, skip) {
+  if (skip) {
+    if (tries < 20) return 30;
+    if (tries < 100) return 12;
+    if (tries < 1000) return 4;
+    return 0;
+  }
+  if (tries < 5) return 280;
+  if (tries < 20) return 180;
+  if (tries < 50) return 100;
+  if (tries < 200) return 50;
+  if (tries < 1000) return 18;
+  return 4;
+}
+
+/**
+ * 현재까지 든 비용 계산 (펫값 + 구슬값)
+ */
+function calcRunningCost(s) {
+  const petPrice = parseInt($('pet-price').value) || 0;
+  const orbReset = parseInt($('orb-reset').value) || 0;
+  const orbLife = parseInt($('orb-life').value) || 0;
+  return s.petsBought * petPrice
+       + s.resetOrbsUsed * orbReset
+       + s.lifeOrbsUsed * orbLife;
+}
+
+/**
+ * 5번 끝났는데 환각 못 뜬 경우 - 생명 쓸지 / 새 펫 살지
+ */
+function showDecisionAt5() {
+  const petPrice = parseInt($('pet-price').value) || 0;
+  const orbReset = parseInt($('orb-reset').value) || 0;
+  const orbLife = parseInt($('orb-life').value) || 0;
+
+  // 다음 5번 (생명 사용) 비용 = 생명 1개 + 초기화 5개
+  const useLifeCost = orbLife + orbReset * 5;
+  // 새 펫 사기 비용
+  const newPetCost = petPrice;
+
+  // 추천 결정
+  // 펫값을 입력 안 했으면 (= 0) 자동 추천 못함
+  let recommendation = null;
+  if (petPrice > 0) {
+    recommendation = newPetCost > useLifeCost ? 'life' : 'newpet';
+  }
+
+  const html = `
+    <div class="decision-card">
+      <div class="decision-strip"></div>
+      <div class="decision-title">🤔 5번 시도 끝, 환각 못 떴어요</div>
+      <div class="decision-sub">
+        생명의 구슬을 써서 5번 더 도전할 수 있어요. 아니면 새 펫을 사서 처음부터 다시 시작하는 방법도 있어요.
+      </div>
+      <div class="decision-compare">
+        <div class="compare-cell ${recommendation === 'life' ? 'recommend' : ''}">
+          <div class="compare-label">생명 쓰기 (5번 더)</div>
+          <div class="compare-val">${useLifeCost.toLocaleString()} vip</div>
+          <div class="compare-detail">생명 1 + 초기화 5</div>
+        </div>
+        <div class="decision-vs">VS</div>
+        <div class="compare-cell ${recommendation === 'newpet' ? 'recommend' : ''}">
+          <div class="compare-label">새 펫 사기</div>
+          <div class="compare-val">${petPrice > 0 ? petPrice.toLocaleString() + ' vip' : '?'}</div>
+          <div class="compare-detail">${petPrice > 0 ? '처음부터 다시' : '펫값을 입력하면 비교 가능'}</div>
+        </div>
+      </div>
+      <div class="decision-actions">
+        <button class="btn-decision btn-decision-life" onclick="useLifeOrb()">💎 생명의 구슬 쓰기</button>
+        <button class="btn-decision btn-decision-newpet" onclick="buyNewPet()">🛒 새 펫 사기</button>
+      </div>
+      <div style="text-align:center;margin-top:10px;">
+        <button class="btn-decision btn-decision-giveup" style="padding:8px 18px;font-size:12px;border-width:1.5px;" onclick="giveUp()">🏳️ 여기서 그만 (포기)</button>
+      </div>
+    </div>
+  `;
+  $('decision-area').innerHTML = html;
+  $('decision-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * 10번 끝났는데도 환각 못 뜬 경우 - 강제 새 펫 또는 포기
+ */
+function showDecisionAt10() {
+  const petPrice = parseInt($('pet-price').value) || 0;
+  const totalCost = calcRunningCost(simState);
+
+  const html = `
+    <div class="decision-card hard">
+      <div class="decision-strip"></div>
+      <div class="decision-title">💀 10번 다 썼는데 환각 못 떴어요</div>
+      <div class="decision-sub">
+        이 펫은 더 이상 도전할 수 없어요 (펫당 최대 10회).<br>
+        새 펫을 사서 처음부터 다시 시작하거나, 여기서 멈출 수 있어요.<br>
+        <span style="color:var(--t3);font-size:11px;">지금까지 누적 ${simState.totalTries}회 시도 · ${totalCost.toLocaleString()} vip 사용</span>
+      </div>
+      <div class="decision-actions">
+        <button class="btn-decision btn-decision-life" onclick="buyNewPet()">🛒 새 펫 사기 ${petPrice > 0 ? '(' + petPrice.toLocaleString() + ' vip)' : ''}</button>
+        <button class="btn-decision btn-decision-giveup" onclick="giveUp()">🏳️ 여기서 그만</button>
+      </div>
+    </div>
+  `;
+  $('decision-area').innerHTML = html;
+  $('decision-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/**
+ * 의사결정 1: 생명의 구슬 사용 → 사이클 2 진행
+ */
+function useLifeOrb() {
+  if (simState.currentPetTries !== 5) return;
+  simState.lifeOrbsUsed++;
+  $('decision-area').innerHTML = '';
+  runCycle();
+}
+
+/**
+ * 의사결정: 새 펫 사기 → 카운터 초기화하고 사이클 1 다시
+ */
+function buyNewPet() {
+  simState.petsBought++;
+  simState.currentPetTries = 0;
+  $('decision-area').innerHTML = '';
+  $('sim-display').classList.remove('hall-mode');
+  runCycle();
+}
+
+/**
+ * 포기 → 결과로 마무리 (실패)
+ */
+function giveUp() {
+  showGiveUpResult();
+  $('btn-go').style.display = 'block';
+  $('btn-stop').style.display = 'none';
+}
+
+/* ─── 성공 결과 ─── */
+function showSuccessResult() {
+  const r = currentProbResult;
+  const probSucc = r.hallCases / r.totalCases;
+  const totalCost = calcRunningCost(simState);
+  const theory = calcTheory(probSucc);
+  const luck = getLuckMsg(simState.totalTries, theory);
+
+  const theoryHTML = theory ? `
+    <div class="theory-grid">
+      <div class="theory-cell ${simState.totalTries < theory.avg ? 'highlight' : ''}">
+        <div class="theory-label">평균</div>
+        <div class="theory-val">${theory.avg.toFixed(1)}</div>
+        <div class="theory-sub">기대값</div>
+      </div>
+      <div class="theory-cell ${simState.totalTries < theory.median ? 'highlight' : ''}">
+        <div class="theory-label">50% 확률</div>
+        <div class="theory-val">${theory.median}</div>
+        <div class="theory-sub">번이면 절반은 성공</div>
+      </div>
+      <div class="theory-cell ${simState.totalTries < theory.p99 ? 'highlight' : ''}">
+        <div class="theory-label">99% 확률</div>
+        <div class="theory-val">${theory.p99}</div>
+        <div class="theory-sub">번이면 거의 확정</div>
+      </div>
+    </div>` : '';
+
+  const luckHTML = luck ? `
+    <div class="luck-msg ${luck.kind === 'lucky' ? 'lucky' : (luck.kind === 'unlucky' ? 'unlucky' : '')}">
+      <span class="luck-emoji">${luck.emoji}</span>
+      <span class="luck-text">${luck.text}</span>
+    </div>` : '';
+
+  const breakdownHTML = totalCost > 0 ? `
+    <div style="margin-top:14px;padding:12px 14px;background:var(--s1);border:1.5px solid var(--border);border-radius:12px;">
+      <div style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">💰 비용 상세</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2);padding:3px 0;">
+        <span>펫 ${simState.petsBought}마리</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;">${(simState.petsBought * (parseInt($('pet-price').value)||0)).toLocaleString()} vip</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2);padding:3px 0;">
+        <span>초기화 구슬 ${simState.resetOrbsUsed}개</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;">${(simState.resetOrbsUsed * (parseInt($('orb-reset').value)||0)).toLocaleString()} vip</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2);padding:3px 0;">
+        <span>생명의 구슬 ${simState.lifeOrbsUsed}개</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;">${(simState.lifeOrbsUsed * (parseInt($('orb-life').value)||0)).toLocaleString()} vip</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:var(--t1);padding-top:6px;margin-top:6px;border-top:1px solid var(--border);font-family:'Nunito',sans-serif;">
+        <span>총합</span>
+        <span style="color:#c87800;">${totalCost.toLocaleString()} vip</span>
+      </div>
+    </div>
+  ` : '';
+
+  $('result-area').innerHTML = `
+    <div class="result-card">
+      <div class="result-strip"></div>
+      <div class="result-grand">
+        <div>
+          <span class="result-grand-tries">${simState.totalTries.toLocaleString()}</span><span class="result-grand-tries-unit">회</span>
+        </div>
+        <div class="result-grand-label">만에 환각 성공! ✨</div>
+        ${simState.petsBought > 1 ? `<div style="font-size:11px;color:var(--t3);margin-top:4px;font-weight:700;">펫 ${simState.petsBought}마리 사용</div>` : ''}
+        ${totalCost > 0 ? `<div class="result-grand-cost">💰 ${totalCost.toLocaleString()} vip 사용</div>` : ''}
+      </div>
+      ${theoryHTML}
+      ${luckHTML}
+      ${breakdownHTML}
+      <div style="text-align:center;margin-top:14px;">
+        <button class="btn-go" style="padding:12px 28px;font-size:14px;" onclick="runSimulation()">🔁 다시 돌리기</button>
+      </div>
+    </div>
+  `;
+  $('decision-area').innerHTML = '';
+  $('result-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ─── 포기 결과 ─── */
+function showGiveUpResult() {
+  const totalCost = calcRunningCost(simState);
+  $('result-area').innerHTML = `
+    <div class="result-card">
+      <div style="text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:var(--t2);margin-bottom:8px;">🏳️ 포기</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;">
+          누적 <strong>${simState.totalTries}회</strong> 시도<br>
+          ${totalCost > 0 ? `사용한 vip: <strong style="color:#c87800;">${totalCost.toLocaleString()}</strong>` : ''}
+        </div>
+        <div style="margin-top:14px;">
+          <button class="btn-go" style="padding:12px 28px;font-size:14px;" onclick="runSimulation()">🔁 다시 돌리기</button>
+        </div>
+      </div>
+    </div>
+  `;
+  $('decision-area').innerHTML = '';
+}
+
+/* ─── 중지 결과 ─── */
+function showAbortResult() {
+  $('result-area').innerHTML = `
+    <div class="result-card">
+      <div style="text-align:center;color:var(--t2);font-size:14px;font-weight:700;">⏸ 중지됨 — ${simState.totalTries.toLocaleString()}회 시도</div>
+    </div>`;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+$('btn-go').addEventListener('click', runSimulation);
+$('btn-stop').addEventListener('click', () => { simAbort = true; });
+
+/* ═══════════════════════════════════════════════════════════
+   누적 통계 (localStorage)
+   ═══════════════════════════════════════════════════════════ */
+
+const STATS_KEY = 'wind_sim_stats_v1';
+
+function loadStats() {
+  try {
+    const raw = localStorage.getItem(STATS_KEY);
+    if (!raw) return { runs: 0, totalTries: 0, best: null };
+    return JSON.parse(raw);
+  } catch (e) { return { runs: 0, totalTries: 0, best: null }; }
+}
+function saveStatsRaw(s) {
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(s)); } catch (e) {}
+}
+function saveStats(tries) {
+  const s = loadStats();
+  s.runs++;
+  s.totalTries += tries;
+  if (s.best === null || tries < s.best) s.best = tries;
+  saveStatsRaw(s);
+}
+function resetStats() {
+  if (!confirm('누적 통계를 초기화할까요?')) return;
+  saveStatsRaw({ runs: 0, totalTries: 0, best: null });
+  renderStats();
+}
+function renderStats() {
+  const s = loadStats();
+  if (s.runs === 0) { $('stats-card').style.display = 'none'; return; }
+  $('stats-card').style.display = 'block';
+  $('st-runs').textContent = s.runs.toLocaleString();
+  $('st-total-tries').textContent = s.totalTries.toLocaleString();
+  $('st-avg').textContent = (s.totalTries / s.runs).toFixed(1);
+  $('st-best').textContent = s.best === null ? '-' : s.best.toLocaleString() + '회';
+}
+
+/* ═══════════════════════════════════════════════════════════
+   다크모드
+   ═══════════════════════════════════════════════════════════ */
+function toggleDarkMode() {
+  const html = document.documentElement;
+  const cur = html.getAttribute('data-theme') || 'light';
+  const next = cur === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  try { localStorage.setItem('theme', next); } catch (e) {}
+}
+(function () {
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   초기화
+   ═══════════════════════════════════════════════════════════ */
+
+(async () => {
+  await loadPets();
+  setupPetSearch();
+  renderStats();
+
+  // URL 파라미터로 펫 자동 선택
+  const params = new URLSearchParams(location.search);
+  const petParam = decodeURIComponent(params.get('pet') || '');
+  if (petParam && petData[petParam]) selectPet(petParam);
+})();
+</script>
+</body>
+</html>
