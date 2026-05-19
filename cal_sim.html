@@ -515,6 +515,125 @@ body {
   border: 1.5px solid var(--border); border-radius: 12px;
   margin-top: 8px;
 }
+
+/* ═══ 모드 탭 ═══ */
+.mode-tabs {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 16px;
+}
+.mode-tab {
+  padding: 16px 14px;
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all .2s;
+  text-align: left;
+  display: flex; align-items: center; gap: 12px;
+}
+.mode-tab:hover {
+  border-color: var(--a1);
+}
+.mode-tab.active {
+  border-color: var(--a1);
+  background: linear-gradient(135deg, #f5f0ff, #fff0f8);
+  box-shadow: 0 4px 14px rgba(155,135,245,.18);
+}
+[data-theme="dark"] .mode-tab.active {
+  background: linear-gradient(135deg, #2a2a45, #353555);
+}
+.mode-tab-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.mode-tab-body { flex: 1; min-width: 0; }
+.mode-tab-title {
+  font-size: 14px; font-weight: 900;
+  color: var(--t1);
+  margin-bottom: 2px;
+}
+.mode-tab.active .mode-tab-title { color: var(--a1); }
+.mode-tab-desc {
+  font-size: 11px;
+  color: var(--t3);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
+
+/* ═══ 스탯 입력 그리드 (환각 도전 모드용) ═══ */
+.stat-input-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 8px; margin-top: 10px;
+}
+.stat-input-cell {
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 8px 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.stat-input-cell label {
+  font-size: 11px; font-weight: 800; color: var(--t2);
+  letter-spacing: 1px; font-family: 'Nunito', sans-serif;
+  min-width: 38px;
+}
+.stat-input-cell input {
+  flex: 1; min-width: 0;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 6px 8px;
+  font-size: 13px; font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  color: var(--t1);
+  text-align: right;
+}
+.stat-input-cell input:focus { outline: none; border-color: var(--a1); }
+
+/* ═══ 목표 확률 슬라이더 ═══ */
+.target-row {
+  display: flex; align-items: center; gap: 10px;
+  margin: 8px 0;
+}
+.target-row input[type="number"] {
+  width: 80px; padding: 8px 10px;
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px; font-weight: 900; text-align: right;
+  font-family: 'Nunito', sans-serif;
+  color: var(--a1);
+}
+.target-row input[type="number"]:focus { outline: none; border-color: var(--a1); background: var(--white); }
+.target-row .pct-mark {
+  font-size: 18px; font-weight: 900; color: var(--a1);
+  font-family: 'Nunito', sans-serif;
+}
+
+/* 분포 미리보기 */
+.dist-preview {
+  margin-top: 10px;
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 12px;
+  font-size: 11px; color: var(--t3); line-height: 1.6;
+}
+.dist-preview-title {
+  font-size: 10px; font-weight: 800; color: var(--t3);
+  letter-spacing: 1px; font-family: 'Nunito', sans-serif;
+  margin-bottom: 4px;
+}
+.dist-bar-row {
+  display: grid; grid-template-columns: 70px 1fr 60px;
+  gap: 6px; align-items: center;
+  padding: 2px 0;
+  font-size: 11px;
+}
+.dist-bar-label { color: var(--t2); font-weight: 700; }
+.dist-bar-track { background: var(--white); border-radius: 4px; height: 6px; overflow: hidden; border: 1px solid var(--border); }
+.dist-bar-fill { background: linear-gradient(90deg, var(--a1), var(--a2)); height: 100%; }
+.dist-bar-pct { text-align: right; color: var(--t2); font-weight: 700; font-family: 'Nunito', sans-serif; font-size: 10px; }
+.dist-bar-row.highlight .dist-bar-fill { background: linear-gradient(90deg, var(--gold), var(--gold2)); }
+.dist-bar-row.highlight .dist-bar-pct { color: #c87800; font-weight: 900; }
+.dist-bar-row.highlight .dist-bar-label { color: var(--t1); font-weight: 800; }
+
 .pet-preview-img {
   width: 44px; height: 44px; flex-shrink: 0;
   background: var(--white); border-radius: 8px;
@@ -579,10 +698,28 @@ body {
 
   <!-- 셋업 카드 -->
   <div class="card">
-    <div class="card-title">시뮬 셋업</div>
+    <div class="card-title">시뮬 모드 선택</div>
+
+    <!-- 모드 탭 -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" data-mode="catch" onclick="setMode('catch')">
+        <div class="mode-tab-icon">🎣</div>
+        <div class="mode-tab-body">
+          <div class="mode-tab-title">초구 돌리기</div>
+          <div class="mode-tab-desc">펫을 잡아서 좋은 1레벨 스탯이 나올 때까지</div>
+        </div>
+      </button>
+      <button class="mode-tab" data-mode="hall" onclick="setMode('hall')">
+        <div class="mode-tab-icon">🎰</div>
+        <div class="mode-tab-body">
+          <div class="mode-tab-title">환각 도전</div>
+          <div class="mode-tab-desc">잡은 펫으로 8등급 환각이 나올 때까지</div>
+        </div>
+      </button>
+    </div>
 
     <div class="setup-grid">
-      <!-- 좌: 펫 + 옵션 -->
+      <!-- 좌: 펫 선택 (공통) -->
       <div>
         <div class="field">
           <label class="field-label">펫 선택</label>
@@ -599,26 +736,71 @@ body {
           </div>
         </div>
 
-        <div class="field">
-          <label class="field-label">펫 가격 (vip) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 비워두면 손익 계산 안 함</span></label>
-          <input type="number" class="field-input" id="pet-price" placeholder="예: 20000" min="0" />
+        <!-- 모드 1: 초구 돌리기 - 펫값 + 목표확률 -->
+        <div class="mode-panel active" id="panel-catch">
+          <div class="field">
+            <label class="field-label">초구 1회당 비용 (vip) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 펫 1마리 잡는 비용</span></label>
+            <input type="number" class="field-input" id="catch-price" placeholder="예: 5000" min="0" />
+          </div>
+
+          <div class="field">
+            <label class="field-label">목표 환각 확률 (이상)</label>
+            <div class="target-row">
+              <input type="number" id="target-prob" value="5" min="0.01" max="99.99" step="0.1" />
+              <span class="pct-mark">%</span>
+              <span style="font-size:12px;color:var(--t3);font-weight:600;">이상 나올 때까지 잡기</span>
+            </div>
+          </div>
         </div>
 
-        <div class="orb-grid">
-          <div>
-            <label class="field-label">초기화 구슬 (vip)</label>
-            <input type="number" class="field-input orb-input" id="orb-reset" value="1000" min="0" />
+        <!-- 모드 2: 환각 도전 - 현재 스탯 + 구슬값 -->
+        <div class="mode-panel" id="panel-hall">
+          <div class="field">
+            <label class="field-label">현재 펫 스탯 (4개) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 현재 레벨의 스탯</span></label>
+            <div class="stat-input-grid">
+              <div class="stat-input-cell">
+                <label>공격</label>
+                <input type="number" id="stat-atk" placeholder="0" min="0" />
+              </div>
+              <div class="stat-input-cell">
+                <label>방어</label>
+                <input type="number" id="stat-def" placeholder="0" min="0" />
+              </div>
+              <div class="stat-input-cell">
+                <label>민첩</label>
+                <input type="number" id="stat-agi" placeholder="0" min="0" />
+              </div>
+              <div class="stat-input-cell">
+                <label>체력</label>
+                <input type="number" id="stat-hp" placeholder="0" min="0" />
+              </div>
+            </div>
+            <div style="margin-top:6px;">
+              <button class="opt-check" style="width:100%;justify-content:center;cursor:pointer;" onclick="useIdealStats()">✨ 이상 스탯 자동 입력</button>
+            </div>
           </div>
-          <div>
-            <label class="field-label">생명의 구슬 (vip)</label>
-            <input type="number" class="field-input orb-input" id="orb-life" value="10000" min="0" />
+
+          <div class="field">
+            <label class="field-label">펫 가격 (vip) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 비워두면 손익 계산 안 함</span></label>
+            <input type="number" class="field-input" id="pet-price" placeholder="예: 20000" min="0" />
+          </div>
+
+          <div class="orb-grid">
+            <div>
+              <label class="field-label">초기화 구슬 (vip)</label>
+              <input type="number" class="field-input orb-input" id="orb-reset" value="1000" min="0" />
+            </div>
+            <div>
+              <label class="field-label">생명의 구슬 (vip)</label>
+              <input type="number" class="field-input orb-input" id="orb-life" value="10000" min="0" />
+            </div>
           </div>
         </div>
 
-        <div class="opt-row">
+        <div class="opt-row" style="margin-top:12px;">
           <label class="opt-check" id="skip-check-label">
             <input type="checkbox" id="skip-check" />
-            <span>⏯️ 일반 등급 스킵</span>
+            <span>⏯️ 스킵 (빠르게)</span>
           </label>
           <label class="opt-check" id="log-check-label">
             <input type="checkbox" id="log-check" />
@@ -636,7 +818,7 @@ body {
         <div id="prob-info" style="display:none;">
           <div style="background:var(--s1);border:1.5px solid var(--border);border-radius:12px;padding:14px;">
             <div style="text-align:center;margin-bottom:10px;">
-              <div class="info-label">8등급 환각 확률</div>
+              <div class="info-label" id="prob-info-label">현재 스탯의 8등급 환각 확률</div>
               <div class="info-prob" id="prob-display" style="font-size:32px;">-</div>
             </div>
             <div style="display:flex;justify-content:space-around;border-top:1px solid var(--border);padding-top:10px;">
@@ -654,16 +836,19 @@ body {
               </div>
             </div>
           </div>
-          <div style="margin-top:8px;font-size:11px;color:var(--t3);text-align:center;line-height:1.5;">
+          <!-- 초구 모드: 분포 미리보기 -->
+          <div id="catch-dist-preview" class="dist-preview" style="display:none;">
+            <div class="dist-preview-title">📊 이 펫의 초구 환각 확률 분포</div>
+            <div id="dist-bars"></div>
+          </div>
+          <!-- 환각 모드: 간단 안내 -->
+          <div id="hall-info-text" style="margin-top:8px;font-size:11px;color:var(--t3);text-align:center;line-height:1.5;display:none;">
             매 시도마다 4개 스탯 각각 −2~+2 사이 랜덤<br>
-            모두 +2가 나오면 8등급 환각 (1/625)
+            모두 +2가 나오면 8등급 환각
           </div>
         </div>
       </div>
     </div>
-
-    <!-- (구) 확률 미리보기 박스는 위로 통합 -->
-    <div id="prob-box" style="display:none;"></div>
 
     <!-- 액션 버튼 -->
     <div class="act-row">
@@ -851,9 +1036,64 @@ const $ = id => document.getElementById(id);
 
 let selectedPetName = '';
 
-// 환각 확률은 펫과 무관하게 1/625로 고정 (4스탯 각각 -2~+2 균등 추첨)
-const HALL_PROB = 1 / 625;
-const HALL_PCT = (HALL_PROB * 100); // 0.16
+// 환각 확률 - 모드/스탯에 따라 다름
+const HALL_BASE_PROB = 1 / 625; // 모든 +2 환각 (4스탯 균등 가정)
+const HALL_BASE_PCT = (HALL_BASE_PROB * 100);
+
+// 현재 모드
+let currentMode = 'catch'; // 'catch' | 'hall'
+
+// 현재 펫의 모든 가능한 1레벨 4스탯 조합 캐시
+// [{ atk, def, agi, hp, total, hall, prob }, ...]
+// total = 같은 4스탯이 나오는 (등급,보너스) 조합 수
+// hall = 그 중 환각(모든 +2) 조합 수
+// prob = hall/total (이 스탯에서 환각 도전했을 때 확률)
+let currentPetStatPool = null;
+let currentPetTotalCombos = 0; // 모든 조합 합 (보통 178750)
+
+/**
+ * 펫의 모든 가능한 1레벨 4스탯 조합과 각 스탯의 환각 확률 계산
+ * runCalc와 동일 로직이지만 한 번에 모든 결과를 그룹화
+ */
+function buildPetStatPool(pet) {
+  const map = {}; // "atk,def,agi,hp" → {atk, def, agi, hp, total, hall}
+  for (let ar = -2; ar <= 2; ar++)
+    for (let dr = -2; dr <= 2; dr++)
+      for (let gr = -2; gr <= 2; gr++)
+        for (let hr = -2; hr <= 2; hr++)
+          for (let ab = 0; ab <= 10; ab++)
+            for (let db = 0; db <= 10; db++)
+              for (let gb = 0; gb <= 10; gb++) {
+                const hb = 10 - ab - db - gb;
+                if (hb < 0 || hb > 10) continue;
+                const bA = pet.attackCoefficient + ar + ab;
+                const bD = pet.defenseCoefficient + dr + db;
+                const bG = pet.agilityCoefficient + gr + gb;
+                const bH = pet.healthCoefficient + hr + hb;
+                const ic = pet.initialCoefficient;
+                const iA = bA * ic / 100, iD = bD * ic / 100, iG = bG * ic / 100, iH = bH * ic / 100;
+                const cA = Math.floor(iH * 0.1 + iA + iD * 0.1 + iG * 0.05);
+                const cD = Math.floor(iH * 0.1 + iA * 0.1 + iD + iG * 0.05);
+                const cG = Math.floor(iG);
+                const cH = Math.floor(iH * 4 + iA + iD + iG);
+                const key = `${cA},${cD},${cG},${cH}`;
+                if (!map[key]) {
+                  map[key] = { atk: cA, def: cD, agi: cG, hp: cH, total: 0, hall: 0 };
+                }
+                map[key].total++;
+                if (ar === 2 && dr === 2 && gr === 2 && hr === 2) map[key].hall++;
+              }
+  // 배열로 변환, prob 계산
+  const arr = [];
+  let totalCombos = 0;
+  for (const k in map) {
+    const v = map[k];
+    v.prob = v.hall / v.total;
+    totalCombos += v.total;
+    arr.push(v);
+  }
+  return { pool: arr, totalCombos };
+}
 
 /* 펫 자동완성 */
 function setupPetSearch() {
@@ -908,24 +1148,232 @@ function selectPet(name) {
   imgBox.innerHTML = img ? `<img src="${img}" alt="${name}">` : '<span style="font-size:20px;">🐾</span>';
   preview.style.display = 'flex';
 
-  // 확률 정보 표시
-  showProbInfo();
-  $('btn-go').disabled = false;
+  // 펫 스탯 풀 빌드 (한 번만)
+  const built = buildPetStatPool(pet);
+  currentPetStatPool = built.pool;
+  currentPetTotalCombos = built.totalCombos;
+
+  // 모드에 맞게 확률 정보 갱신
+  refreshProbInfo();
+  updateGoButton();
 }
 
-function showProbInfo() {
+/* 모드 전환 */
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('[data-mode]').forEach(el => {
+    el.classList.toggle('active', el.dataset.mode === mode);
+  });
+  document.querySelectorAll('.mode-panel').forEach(el => {
+    el.classList.toggle('active', el.id === 'panel-' + mode);
+  });
+  refreshProbInfo();
+  updateGoButton();
+}
+
+/* 모드에 따라 확률 패널 다르게 표시 */
+function refreshProbInfo() {
+  if (!selectedPetName || !currentPetStatPool) {
+    $('prob-info-empty').style.display = 'block';
+    $('prob-info').style.display = 'none';
+    return;
+  }
   $('prob-info-empty').style.display = 'none';
   $('prob-info').style.display = 'block';
 
-  // 모든 펫 동일: 1/625 = 0.16%
-  $('prob-display').textContent = HALL_PCT.toFixed(2) + '%';
-
-  // 이론값
-  const t = calcTheory(HALL_PROB);
-  $('expect-display').textContent = t.avg.toFixed(0) + '회';
-  $('median-display').textContent = t.median + '회';
-  $('p99-display').textContent = t.p99 + '회';
+  if (currentMode === 'catch') {
+    showCatchProbInfo();
+  } else {
+    showHallProbInfo();
+  }
 }
+
+/* 초구 모드: 목표 확률 이상 뽑힐 비율 + 분포 표시 */
+function showCatchProbInfo() {
+  const targetPct = parseFloat($('target-prob').value) || 5;
+  const targetProb = targetPct / 100;
+
+  // 목표 이상 나오는 조합 수 / 전체 조합 수
+  let goodCombos = 0;
+  currentPetStatPool.forEach(s => {
+    if (s.prob >= targetProb - 1e-9) goodCombos += s.total;
+  });
+  const catchProb = goodCombos / currentPetTotalCombos;
+  const catchPct = catchProb * 100;
+
+  $('prob-info-label').textContent = `${targetPct}% 이상 나올 확률`;
+  if (catchProb === 0) {
+    $('prob-display').textContent = '0%';
+    $('expect-display').textContent = '불가능';
+    $('median-display').textContent = '-';
+    $('p99-display').textContent = '-';
+  } else {
+    $('prob-display').textContent = formatPct(catchPct);
+    const t = calcTheory(catchProb);
+    $('expect-display').textContent = formatTries(t.avg) + '회';
+    $('median-display').textContent = formatTries(t.median) + '회';
+    $('p99-display').textContent = formatTries(t.p99) + '회';
+  }
+
+  // 분포 미리보기 표시
+  $('catch-dist-preview').style.display = 'block';
+  $('hall-info-text').style.display = 'none';
+  renderDistPreview(targetProb);
+}
+
+/* 환각 모드: 현재 스탯 → 환각 확률 */
+function showHallProbInfo() {
+  $('catch-dist-preview').style.display = 'none';
+  $('hall-info-text').style.display = 'block';
+
+  const dAtk = parseInt($('stat-atk').value);
+  const dDef = parseInt($('stat-def').value);
+  const dAgi = parseInt($('stat-agi').value);
+  const dHp = parseInt($('stat-hp').value);
+
+  $('prob-info-label').textContent = '현재 스탯의 8등급 환각 확률';
+
+  if ([dAtk, dDef, dAgi, dHp].some(isNaN)) {
+    $('prob-display').textContent = '-';
+    $('expect-display').textContent = '-';
+    $('median-display').textContent = '-';
+    $('p99-display').textContent = '-';
+    return;
+  }
+
+  // 입력 스탯과 일치하는 풀 엔트리 찾기
+  const found = currentPetStatPool.find(s =>
+    s.atk === dAtk && s.def === dDef && s.agi === dAgi && s.hp === dHp);
+
+  if (!found) {
+    $('prob-display').textContent = '불가';
+    $('expect-display').textContent = '도달 불가능';
+    $('median-display').textContent = '-';
+    $('p99-display').textContent = '-';
+    return;
+  }
+
+  if (found.hall === 0) {
+    $('prob-display').textContent = '0%';
+    $('expect-display').textContent = '환각 불가';
+    $('median-display').textContent = '-';
+    $('p99-display').textContent = '-';
+    return;
+  }
+
+  const prob = found.prob;
+  const pct = prob * 100;
+  $('prob-display').textContent = formatPct(pct);
+  const t = calcTheory(prob);
+  $('expect-display').textContent = formatTries(t.avg) + '회';
+  $('median-display').textContent = formatTries(t.median) + '회';
+  $('p99-display').textContent = formatTries(t.p99) + '회';
+}
+
+function renderDistPreview(targetProb) {
+  // 확률 구간별로 묶기
+  const buckets = [
+    { label: '0%',         min: 0,    max: 0,     combos: 0 },
+    { label: '0~0.1%',    min: 0,    max: 0.001, combos: 0 },
+    { label: '0.1~1%',    min: 0.001,max: 0.01,  combos: 0 },
+    { label: '1~5%',      min: 0.01, max: 0.05,  combos: 0 },
+    { label: '5~10%',     min: 0.05, max: 0.10,  combos: 0 },
+    { label: '10~50%',    min: 0.10, max: 0.50,  combos: 0 },
+    { label: '50~99%',    min: 0.50, max: 0.99,  combos: 0 },
+    { label: '99% 이상',   min: 0.99, max: 1.001,combos: 0 },
+  ];
+  currentPetStatPool.forEach(s => {
+    if (s.prob === 0) buckets[0].combos += s.total;
+    else {
+      for (let i = 1; i < buckets.length; i++) {
+        if (s.prob >= buckets[i].min - 1e-9 && s.prob < buckets[i].max - 1e-9) {
+          buckets[i].combos += s.total;
+          break;
+        }
+      }
+    }
+  });
+  const total = currentPetTotalCombos;
+  // 0인 버킷은 숨김
+  const visible = buckets.filter(b => b.combos > 0);
+  const maxCombos = Math.max(...visible.map(b => b.combos), 1);
+
+  const html = visible.map(b => {
+    const pct = (b.combos / total) * 100;
+    const isHighlight = b.min >= targetProb - 1e-9; // 목표 이상 버킷
+    return `
+      <div class="dist-bar-row ${isHighlight ? 'highlight' : ''}">
+        <div class="dist-bar-label">${b.label}</div>
+        <div class="dist-bar-track"><div class="dist-bar-fill" style="width:${(b.combos / maxCombos * 100).toFixed(1)}%;"></div></div>
+        <div class="dist-bar-pct">${pct < 0.01 ? pct.toExponential(1) : pct.toFixed(2)}%</div>
+      </div>
+    `;
+  }).join('');
+  $('dist-bars').innerHTML = html;
+}
+
+function formatPct(p) {
+  if (p < 0.0001) return p.toExponential(2) + '%';
+  if (p < 0.01) return p.toFixed(4) + '%';
+  if (p < 1) return p.toFixed(3) + '%';
+  if (p < 10) return p.toFixed(2) + '%';
+  return Math.min(p, 99.99).toFixed(2) + '%';
+}
+
+function formatTries(n) {
+  if (!isFinite(n)) return '∞';
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 10000) return (n / 1000).toFixed(0) + 'K';
+  return Math.round(n).toLocaleString();
+}
+
+/* 이상 스탯 자동 입력 (환각 도전 모드) */
+function useIdealStats() {
+  if (!selectedPetName) return;
+  const pet = petData[selectedPetName];
+  const ideal = calcIdeal(pet);
+  $('stat-atk').value = ideal.atk;
+  $('stat-def').value = ideal.def;
+  $('stat-agi').value = ideal.agi;
+  $('stat-hp').value = ideal.hp;
+  refreshProbInfo();
+  updateGoButton();
+}
+
+function updateGoButton() {
+  if (!selectedPetName) {
+    $('btn-go').disabled = true;
+    return;
+  }
+  if (currentMode === 'catch') {
+    const t = parseFloat($('target-prob').value);
+    $('btn-go').disabled = !(t > 0 && t <= 100);
+    $('btn-go').textContent = '🎣 초구 시작!';
+  } else {
+    // hall 모드: 현재 스탯에 환각 케이스가 있어야 함
+    const dAtk = parseInt($('stat-atk').value);
+    const dDef = parseInt($('stat-def').value);
+    const dAgi = parseInt($('stat-agi').value);
+    const dHp = parseInt($('stat-hp').value);
+    if ([dAtk, dDef, dAgi, dHp].some(isNaN)) {
+      $('btn-go').disabled = true;
+      $('btn-go').textContent = '🎰 환각 도전!';
+      return;
+    }
+    const found = currentPetStatPool && currentPetStatPool.find(s =>
+      s.atk === dAtk && s.def === dDef && s.agi === dAgi && s.hp === dHp);
+    $('btn-go').disabled = !found || found.hall === 0;
+    $('btn-go').textContent = '🎰 환각 도전!';
+  }
+}
+
+// 모드 1 인풋 변경
+$('target-prob').addEventListener('input', () => { refreshProbInfo(); updateGoButton(); });
+
+// 모드 2 스탯 인풋 변경
+['stat-atk', 'stat-def', 'stat-agi', 'stat-hp'].forEach(id => {
+  $(id).addEventListener('input', () => { refreshProbInfo(); updateGoButton(); });
+});
 
 /* 옵션 체크 시각효과 */
 ['skip-check', 'log-check'].forEach(id => {
@@ -1016,24 +1464,232 @@ async function runSimulation() {
   if (!selectedPetName) return;
   if (simRunning) return;
 
-  // 새로 시작
-  simState = {
-    totalTries: 0,           // 누적 환각 시도 횟수 (모든 펫 포함)
-    petsBought: 1,           // 사용한 펫 마릿수 (시작 펫 포함)
-    resetOrbsUsed: 0,        // 사용한 초기화 구슬 개수
-    lifeOrbsUsed: 0,         // 사용한 생명의 구슬 개수
-    currentPetTries: 0,      // 현재 펫에서 시도한 횟수 (0~10)
-  };
-
   $('result-area').innerHTML = '';
   $('decision-area').innerHTML = '';
   $('sim-display').style.display = 'flex';
   $('sim-display').classList.remove('hall-mode');
   $('stat-rolls').style.display = 'grid';
   $('stat-rolls').classList.remove('all-max');
-
-  // 로그 초기화 (새 시뮬 시작이므로)
   $('sim-log').innerHTML = '';
+
+  if (currentMode === 'catch') {
+    await runCatchSim();
+  } else {
+    await runHallSim();
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   모드 1: 초구 돌리기
+   ═══════════════════════════════════════════════════════════ */
+
+async function runCatchSim() {
+  simRunning = true;
+  simAbort = false;
+  $('btn-go').style.display = 'none';
+  $('btn-stop').style.display = 'block';
+
+  const targetPct = parseFloat($('target-prob').value) || 5;
+  const targetProb = targetPct / 100;
+  const catchPrice = parseInt($('catch-price').value) || 0;
+  const skip = $('skip-check').checked;
+  const showLog = $('log-check').checked;
+  const logEl = $('sim-log');
+  logEl.classList.toggle('show', showLog);
+
+  // 초구마다 풀에서 균등 추첨 (각 조합의 가중치 = total)
+  // currentPetStatPool: [{atk, def, agi, hp, total, hall, prob}, ...]
+  // 가중치 합 = currentPetTotalCombos (178750)
+
+  let tries = 0;
+  let found = null;
+  const MAX_TRIES = 1000000;
+
+  while (!simAbort && tries < MAX_TRIES) {
+    tries++;
+    const picked = weightedPick(currentPetStatPool, currentPetTotalCombos);
+    const matched = picked.prob >= targetProb - 1e-9;
+
+    updateCatchDisplay(picked, tries, catchPrice);
+
+    if (showLog) {
+      const line = document.createElement('div');
+      line.className = 'sim-log-line' + (matched ? ' hall' : '');
+      const statStr = `공${picked.atk}/방${picked.def}/민${picked.agi}/체${picked.hp}`;
+      line.textContent = `${tries}회 · ${statStr} · 환각 ${formatPct(picked.prob * 100)}${matched ? ' ✨ 달성!' : ''}`;
+      logEl.insertBefore(line, logEl.firstChild);
+      while (logEl.children.length > 100) logEl.removeChild(logEl.lastChild);
+    }
+
+    if (matched) {
+      found = picked;
+      $('sim-display').classList.add('hall-mode');
+      $('stat-rolls').classList.add('all-max');
+      await sleep(900);
+      break;
+    }
+
+    const delay = computeDelay(tries, skip);
+    if (delay > 0) await sleep(delay);
+  }
+
+  simRunning = false;
+  $('btn-go').style.display = 'block';
+  $('btn-stop').style.display = 'none';
+
+  if (!found) {
+    if (simAbort) {
+      showAbortResult(tries);
+    }
+    return;
+  }
+
+  // 결과 표시
+  showCatchResult(tries, catchPrice, targetProb, found);
+}
+
+function weightedPick(pool, totalWeight) {
+  let r = Math.random() * totalWeight;
+  for (const s of pool) {
+    r -= s.total;
+    if (r <= 0) return s;
+  }
+  return pool[pool.length - 1]; // fallback
+}
+
+function updateCatchDisplay(stats, tries, catchPrice) {
+  $('sim-tries-num').textContent = tries.toLocaleString();
+
+  // 4개 스탯 셀 업데이트 (실제 스탯값)
+  const cells = [
+    { id: 'srl-atk', val: stats.atk },
+    { id: 'srl-def', val: stats.def },
+    { id: 'srl-agi', val: stats.agi },
+    { id: 'srl-hp',  val: stats.hp  }
+  ];
+  cells.forEach(c => {
+    const el = $(c.id);
+    el.textContent = c.val;
+    el.className = 'srl-val';
+    const cell = el.parentElement;
+    cell.classList.remove('flash');
+    void cell.offsetWidth;
+    cell.classList.add('flash');
+  });
+
+  const cost = tries * catchPrice;
+  $('sim-cost-small').innerHTML = catchPrice > 0
+    ? `<div>🎣 ${tries}마리 잡음</div><div style="margin-top:3px;">💰 누적 비용: ${cost.toLocaleString()} vip</div>`
+    : `<div>🎣 ${tries}마리 잡음</div>`;
+
+  // 결과 = 이번에 뽑힌 펫의 환각 확률
+  const pct = stats.prob * 100;
+  const probTxt = formatPct(pct);
+  const isGood = pct >= 5;
+  const isHall = pct >= 50;
+  let colorClass = 'g-neg';
+  if (pct >= 50) colorClass = 'g-hall';
+  else if (pct >= 10) colorClass = 'g-pos3';
+  else if (pct >= 1) colorClass = 'g-pos2';
+  else if (pct >= 0.1) colorClass = 'g-pos1';
+  else if (pct > 0) colorClass = 'g-zero';
+
+  const rolling = $('sim-rolling');
+  rolling.innerHTML = `
+    <div class="sim-grade-pop">
+      <span class="sim-grade-num ${colorClass}">환각 ${probTxt}</span>
+      <span class="sim-grade-text">${pct === 0 ? '꽝' : (pct < 1 ? '아쉬움' : (pct < 5 ? '쓸만함' : (pct < 50 ? '좋음!' : '대박!')))}</span>
+    </div>
+  `;
+}
+
+function showCatchResult(tries, catchPrice, targetProb, found) {
+  const totalCost = tries * catchPrice;
+  const theory = calcTheory(catchProbFromPool(targetProb));
+  const luck = getLuckMsg(tries, theory);
+
+  const theoryHTML = theory ? `
+    <div class="theory-grid">
+      <div class="theory-cell ${tries < theory.avg ? 'highlight' : ''}">
+        <div class="theory-label">평균</div>
+        <div class="theory-val">${formatTries(theory.avg)}</div>
+        <div class="theory-sub">기대값</div>
+      </div>
+      <div class="theory-cell ${tries < theory.median ? 'highlight' : ''}">
+        <div class="theory-label">50% 확률</div>
+        <div class="theory-val">${formatTries(theory.median)}</div>
+        <div class="theory-sub">번이면 절반은 성공</div>
+      </div>
+      <div class="theory-cell ${tries < theory.p99 ? 'highlight' : ''}">
+        <div class="theory-label">99% 확률</div>
+        <div class="theory-val">${formatTries(theory.p99)}</div>
+        <div class="theory-sub">번이면 거의 확정</div>
+      </div>
+    </div>` : '';
+
+  const luckHTML = luck ? `
+    <div class="luck-msg ${luck.kind === 'lucky' ? 'lucky' : (luck.kind === 'unlucky' ? 'unlucky' : '')}">
+      <span class="luck-emoji">${luck.emoji}</span>
+      <span class="luck-text">${luck.text}</span>
+    </div>` : '';
+
+  $('result-area').innerHTML = `
+    <div class="result-card">
+      <div class="result-strip"></div>
+      <div class="result-grand">
+        <div>
+          <span class="result-grand-tries">${tries.toLocaleString()}</span><span class="result-grand-tries-unit">마리</span>
+        </div>
+        <div class="result-grand-label">만에 목표 달성! ✨</div>
+        <div style="margin-top:10px;font-size:13px;color:var(--t2);font-weight:700;">
+          잡은 펫의 환각 확률: <strong style="color:var(--a1);">${formatPct(found.prob * 100)}</strong>
+        </div>
+        <div style="margin-top:4px;font-size:12px;color:var(--t3);font-weight:600;">
+          공${found.atk} · 방${found.def} · 민${found.agi} · 체${found.hp}
+        </div>
+        ${catchPrice > 0 ? `<div class="result-grand-cost">💰 ${totalCost.toLocaleString()} vip 사용</div>` : ''}
+      </div>
+      ${theoryHTML}
+      ${luckHTML}
+      <div style="text-align:center;margin-top:14px;">
+        <button class="btn-go" style="padding:12px 28px;font-size:14px;" onclick="runSimulation()">🔁 다시 돌리기</button>
+      </div>
+    </div>
+  `;
+  $('result-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function catchProbFromPool(targetProb) {
+  let good = 0;
+  currentPetStatPool.forEach(s => {
+    if (s.prob >= targetProb - 1e-9) good += s.total;
+  });
+  return good / currentPetTotalCombos;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   모드 2: 환각 도전 (기존 로직)
+   ═══════════════════════════════════════════════════════════ */
+
+async function runHallSim() {
+  // 현재 스탯에서 환각 확률 가져오기
+  const dAtk = parseInt($('stat-atk').value);
+  const dDef = parseInt($('stat-def').value);
+  const dAgi = parseInt($('stat-agi').value);
+  const dHp = parseInt($('stat-hp').value);
+  const found = currentPetStatPool.find(s =>
+    s.atk === dAtk && s.def === dDef && s.agi === dAgi && s.hp === dHp);
+  if (!found || found.hall === 0) return;
+
+  // 새로 시작
+  simState = {
+    totalTries: 0,
+    petsBought: 1,
+    resetOrbsUsed: 0,
+    lifeOrbsUsed: 0,
+    currentPetTries: 0,
+    hallProb: found.prob, // 이 펫의 환각 확률
+  };
 
   await runCycle();
 }
@@ -1073,10 +1729,21 @@ async function runCycle() {
     simState.currentPetTries++;
     simState.resetOrbsUsed++;
 
-    // 4개 스탯 각각 -2~+2 추첨
-    const stats = rollStats();
+    // 환각 모드: 이 펫의 환각 확률로 베르누이 시행
+    // 등급 표시는 시각적 효과로 별도 생성 (확률 분포와는 별개)
+    const isHall = Math.random() < simState.hallProb;
+    // 4스탯 시각용 (실제 게임 분포 아님, 화면용)
+    const stats = isHall
+      ? { atk: 2, def: 2, agi: 2, hp: 2 }
+      : (() => {
+          // 환각 아닌 결과: -2~+2 중 모두 +2가 아닌 조합 랜덤
+          let s;
+          do {
+            s = { atk: Math.floor(Math.random()*5)-2, def: Math.floor(Math.random()*5)-2, agi: Math.floor(Math.random()*5)-2, hp: Math.floor(Math.random()*5)-2 };
+          } while (s.atk === 2 && s.def === 2 && s.agi === 2 && s.hp === 2);
+          return s;
+        })();
     const signed = stats.atk + stats.def + stats.agi + stats.hp;
-    const isHall = (stats.atk === 2 && stats.def === 2 && stats.agi === 2 && stats.hp === 2);
     // 8등급 = 모두 +2 (sum=+8)
 
     updateSimDisplay(stats, signed, isHall);
@@ -1312,7 +1979,7 @@ function giveUp() {
 
 /* ─── 성공 결과 ─── */
 function showSuccessResult() {
-  const probSucc = HALL_PROB; // 고정 1/625
+  const probSucc = simState.hallProb || HALL_BASE_PROB;
   const totalCost = calcRunningCost(simState);
   const theory = calcTheory(probSucc);
   const luck = getLuckMsg(simState.totalTries, theory);
@@ -1408,10 +2075,11 @@ function showGiveUpResult() {
 }
 
 /* ─── 중지 결과 ─── */
-function showAbortResult() {
+function showAbortResult(tries) {
+  const n = tries !== undefined ? tries : (simState ? simState.totalTries : 0);
   $('result-area').innerHTML = `
     <div class="result-card">
-      <div style="text-align:center;color:var(--t2);font-size:14px;font-weight:700;">⏸ 중지됨 — ${simState.totalTries.toLocaleString()}회 시도</div>
+      <div style="text-align:center;color:var(--t2);font-size:14px;font-weight:700;">⏸ 중지됨 — ${n.toLocaleString()}회 시도</div>
     </div>`;
 }
 
