@@ -736,11 +736,25 @@ body {
           </div>
         </div>
 
-        <!-- 모드 1: 초구 돌리기 - 펫값 + 목표확률 -->
+        <!-- 모드 1: 초구 돌리기 - 펫값 + 구슬값 + 목표확률 -->
         <div class="mode-panel active" id="panel-catch">
           <div class="field">
-            <label class="field-label">초구 1회당 비용 (vip) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 펫 1마리 잡는 비용</span></label>
-            <input type="number" class="field-input" id="catch-price" placeholder="예: 5000" min="0" />
+            <label class="field-label">
+              <span>펫 가격 (vip)</span>
+              <span id="catch-vip-auto" style="font-weight:600;color:var(--ok);font-size:11px;display:none;">✨ 자동입력됨</span>
+            </label>
+            <input type="number" class="field-input" id="catch-pet-price" placeholder="예: 5500" min="0" />
+          </div>
+
+          <div class="orb-grid">
+            <div>
+              <label class="field-label">초기화 구슬 (vip)</label>
+              <input type="number" class="field-input orb-input" id="catch-orb-reset" value="1000" min="0" />
+            </div>
+            <div>
+              <label class="field-label">생명의 구슬 (vip)</label>
+              <input type="number" class="field-input orb-input" id="catch-orb-life" value="10000" min="0" />
+            </div>
           </div>
 
           <div class="field">
@@ -753,7 +767,7 @@ body {
           </div>
         </div>
 
-        <!-- 모드 2: 환각 도전 - 현재 스탯 + 구슬값 -->
+        <!-- 모드 2: 환각 도전 - 현재 스탯 + 펫값 + 구슬값 -->
         <div class="mode-panel" id="panel-hall">
           <div class="field">
             <label class="field-label">현재 펫 스탯 (4개) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 현재 레벨의 스탯</span></label>
@@ -781,7 +795,10 @@ body {
           </div>
 
           <div class="field">
-            <label class="field-label">펫 가격 (vip) <span style="font-weight:400;color:var(--t3);font-size:11px;">— 비워두면 손익 계산 안 함</span></label>
+            <label class="field-label">
+              <span>펫 가격 (vip)</span>
+              <span id="hall-vip-auto" style="font-weight:600;color:var(--ok);font-size:11px;display:none;">✨ 자동입력됨</span>
+            </label>
             <input type="number" class="field-input" id="pet-price" placeholder="예: 20000" min="0" />
           </div>
 
@@ -1153,9 +1170,36 @@ function selectPet(name) {
   currentPetStatPool = built.pool;
   currentPetTotalCombos = built.totalCombos;
 
+  // obtain 텍스트에서 자동 가격 추출 (예: "지원 페트(VP 5500)")
+  autoFillPetPrice(pet);
+
   // 모드에 맞게 확률 정보 갱신
   refreshProbInfo();
   updateGoButton();
+}
+
+/**
+ * obtain 텍스트에서 VP/VIP 가격 자동 추출해서 입력란에 채움
+ * 패턴: "VP 5500", "VIP 5500", "V P 5500" 등
+ */
+function autoFillPetPrice(pet) {
+  const obtain = pet.obtain || '';
+  const m = obtain.match(/V[\s]*[PI]P?[\s]*(\d{3,6})/i) || obtain.match(/(\d{3,6})\s*VP/i);
+  if (!m) {
+    // 자동 표시 숨김 (사용자가 직접 입력)
+    $('catch-vip-auto').style.display = 'none';
+    $('hall-vip-auto').style.display = 'none';
+    return;
+  }
+  const price = parseInt(m[1]);
+  // 두 모드 입력란 모두 채움
+  const catchInput = $('catch-pet-price');
+  const hallInput = $('pet-price');
+  // 사용자가 이미 직접 입력했어도 자동값으로 덮을지? → 일관성을 위해 덮음
+  catchInput.value = price;
+  hallInput.value = price;
+  $('catch-vip-auto').style.display = 'inline';
+  $('hall-vip-auto').style.display = 'inline';
 }
 
 /* 모드 전환 */
@@ -1370,6 +1414,14 @@ function updateGoButton() {
 // 모드 1 인풋 변경
 $('target-prob').addEventListener('input', () => { refreshProbInfo(); updateGoButton(); });
 
+// 펫값/구슬값 사용자 직접 수정 시 자동 입력 표시 끄기
+['catch-pet-price', 'pet-price'].forEach(id => {
+  $(id).addEventListener('input', () => {
+    $('catch-vip-auto').style.display = 'none';
+    $('hall-vip-auto').style.display = 'none';
+  });
+});
+
 // 모드 2 스탯 인풋 변경
 ['stat-atk', 'stat-def', 'stat-agi', 'stat-hp'].forEach(id => {
   $(id).addEventListener('input', () => { refreshProbInfo(); updateGoButton(); });
@@ -1480,43 +1532,75 @@ async function runSimulation() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   모드 1: 초구 돌리기
+   모드 1: 초구 돌리기 (펫당 5번 + 생명 후 5번, 펫 갈아탐)
    ═══════════════════════════════════════════════════════════ */
 
 async function runCatchSim() {
+  const targetPct = parseFloat($('target-prob').value) || 5;
+  const targetProb = targetPct / 100;
+
+  // 환각 모드와 같은 사이클 시스템 사용. simState에 catch 전용 필드 추가.
+  simState = {
+    totalTries: 0,
+    petsBought: 1,
+    resetOrbsUsed: 0,
+    lifeOrbsUsed: 0,
+    currentPetTries: 0,
+    mode: 'catch',
+    targetProb: targetProb,
+    bestProb: 0,        // 지금까지 잡힌 펫 중 최고 환각 확률
+    bestStats: null,    // 그 때의 스탯
+  };
+
+  await runCatchCycle();
+}
+
+/**
+ * 초구 사이클: 한 번에 5번 초구 → 그 중 목표 달성 못 했으면 결정 카드
+ */
+async function runCatchCycle() {
   simRunning = true;
   simAbort = false;
   $('btn-go').style.display = 'none';
   $('btn-stop').style.display = 'block';
+  $('decision-area').innerHTML = '';
+  $('stat-rolls').classList.remove('all-max');
 
-  const targetPct = parseFloat($('target-prob').value) || 5;
-  const targetProb = targetPct / 100;
-  const catchPrice = parseInt($('catch-price').value) || 0;
   const skip = $('skip-check').checked;
   const showLog = $('log-check').checked;
   const logEl = $('sim-log');
   logEl.classList.toggle('show', showLog);
 
-  // 초구마다 풀에서 균등 추첨 (각 조합의 가중치 = total)
-  // currentPetStatPool: [{atk, def, agi, hp, total, hall, prob}, ...]
-  // 가중치 합 = currentPetTotalCombos (178750)
+  const startInPet = simState.currentPetTries;
+  const targetInPet = Math.min(startInPet + 5, 10);
+  const remainingInThisCycle = targetInPet - startInPet;
 
-  let tries = 0;
   let found = null;
-  const MAX_TRIES = 1000000;
 
-  while (!simAbort && tries < MAX_TRIES) {
-    tries++;
+  for (let i = 0; i < remainingInThisCycle; i++) {
+    if (simAbort) break;
+
+    simState.totalTries++;
+    simState.currentPetTries++;
+    simState.resetOrbsUsed++;
+
     const picked = weightedPick(currentPetStatPool, currentPetTotalCombos);
-    const matched = picked.prob >= targetProb - 1e-9;
+    const matched = picked.prob >= simState.targetProb - 1e-9;
 
-    updateCatchDisplay(picked, tries, catchPrice);
+    // 최고 기록 갱신
+    if (picked.prob > simState.bestProb) {
+      simState.bestProb = picked.prob;
+      simState.bestStats = picked;
+    }
+
+    updateCatchDisplay(picked);
 
     if (showLog) {
       const line = document.createElement('div');
       line.className = 'sim-log-line' + (matched ? ' hall' : '');
+      const petTag = simState.petsBought > 1 ? `[펫${simState.petsBought}] ` : '';
       const statStr = `공${picked.atk}/방${picked.def}/민${picked.agi}/체${picked.hp}`;
-      line.textContent = `${tries}회 · ${statStr} · 환각 ${formatPct(picked.prob * 100)}${matched ? ' ✨ 달성!' : ''}`;
+      line.textContent = `${petTag}${simState.totalTries}회 · ${statStr} · 환각 ${formatPct(picked.prob * 100)}${matched ? ' ✨ 달성!' : ''}`;
       logEl.insertBefore(line, logEl.firstChild);
       while (logEl.children.length > 100) logEl.removeChild(logEl.lastChild);
     }
@@ -1529,38 +1613,38 @@ async function runCatchSim() {
       break;
     }
 
-    const delay = computeDelay(tries, skip);
+    const delay = computeDelay(simState.totalTries, skip);
     if (delay > 0) await sleep(delay);
   }
 
   simRunning = false;
-  $('btn-go').style.display = 'block';
+  $('btn-go').style.display = 'none';
   $('btn-stop').style.display = 'none';
 
-  if (!found) {
-    if (simAbort) {
-      showAbortResult(tries);
-    }
+  if (found) {
+    showCatchResult(found);
+    $('btn-go').style.display = 'block';
     return;
   }
 
-  // 결과 표시
-  showCatchResult(tries, catchPrice, targetProb, found);
-}
-
-function weightedPick(pool, totalWeight) {
-  let r = Math.random() * totalWeight;
-  for (const s of pool) {
-    r -= s.total;
-    if (r <= 0) return s;
+  if (simAbort) {
+    showAbortResult(simState.totalTries);
+    $('btn-go').style.display = 'block';
+    return;
   }
-  return pool[pool.length - 1]; // fallback
+
+  // 5번 또는 10번 후 의사결정
+  if (simState.currentPetTries === 5) {
+    showCatchDecisionAt5();
+  } else if (simState.currentPetTries === 10) {
+    showCatchDecisionAt10();
+  }
 }
 
-function updateCatchDisplay(stats, tries, catchPrice) {
-  $('sim-tries-num').textContent = tries.toLocaleString();
+function updateCatchDisplay(stats) {
+  $('sim-tries-num').textContent = simState.totalTries.toLocaleString();
 
-  // 4개 스탯 셀 업데이트 (실제 스탯값)
+  // 4개 스탯 셀 업데이트
   const cells = [
     { id: 'srl-atk', val: stats.atk },
     { id: 'srl-def', val: stats.def },
@@ -1577,16 +1661,20 @@ function updateCatchDisplay(stats, tries, catchPrice) {
     cell.classList.add('flash');
   });
 
-  const cost = tries * catchPrice;
-  $('sim-cost-small').innerHTML = catchPrice > 0
-    ? `<div>🎣 ${tries}마리 잡음</div><div style="margin-top:3px;">💰 누적 비용: ${cost.toLocaleString()} vip</div>`
-    : `<div>🎣 ${tries}마리 잡음</div>`;
+  const totalCost = calcRunningCost(simState);
+  const petLine = simState.petsBought > 1
+    ? `🐾 펫 ${simState.petsBought}마리째 · 현재 펫에서 ${simState.currentPetTries}/10번`
+    : `🐾 현재 펫에서 ${simState.currentPetTries}/10번 초기화`;
+  const bestLine = simState.bestProb > 0
+    ? `<div style="margin-top:3px;color:var(--a1);">⭐ 최고 기록: ${formatPct(simState.bestProb * 100)}</div>`
+    : '';
+  $('sim-cost-small').innerHTML = totalCost > 0
+    ? `<div>${petLine}</div><div style="margin-top:3px;">💰 누적 비용: ${totalCost.toLocaleString()} vip</div>${bestLine}`
+    : `<div>${petLine}</div>${bestLine}`;
 
-  // 결과 = 이번에 뽑힌 펫의 환각 확률
+  // 환각 확률 표시
   const pct = stats.prob * 100;
   const probTxt = formatPct(pct);
-  const isGood = pct >= 5;
-  const isHall = pct >= 50;
   let colorClass = 'g-neg';
   if (pct >= 50) colorClass = 'g-hall';
   else if (pct >= 10) colorClass = 'g-pos3';
@@ -1603,24 +1691,132 @@ function updateCatchDisplay(stats, tries, catchPrice) {
   `;
 }
 
-function showCatchResult(tries, catchPrice, targetProb, found) {
-  const totalCost = tries * catchPrice;
-  const theory = calcTheory(catchProbFromPool(targetProb));
-  const luck = getLuckMsg(tries, theory);
+/**
+ * 초구 5번 후 - 생명 쓸지 / 새 펫 살지
+ */
+function showCatchDecisionAt5() {
+  const petPrice = parseInt($('catch-pet-price').value) || 0;
+  const orbReset = parseInt($('catch-orb-reset').value) || 0;
+  const orbLife = parseInt($('catch-orb-life').value) || 0;
+
+  const useLifeCost = orbLife + orbReset * 5;
+  const newPetCost = petPrice + orbReset * 5; // 새 펫값 + 초구 5번 다시
+
+  let recommendation = null;
+  if (petPrice > 0) {
+    recommendation = newPetCost > useLifeCost ? 'life' : 'newpet';
+  }
+
+  const bestTxt = simState.bestProb > 0
+    ? `<div style="font-size:11px;color:var(--t3);margin-top:6px;">⭐ 지금까지 최고: ${formatPct(simState.bestProb * 100)} (목표 ${formatPct(simState.targetProb * 100)})</div>`
+    : '';
+
+  $('decision-area').innerHTML = `
+    <div class="decision-card">
+      <div class="decision-strip"></div>
+      <div class="decision-title">🤔 5번 초기화 끝, 목표 못 달성</div>
+      <div class="decision-sub">
+        생명의 구슬을 써서 5번 더 초기화하거나, 새 펫을 사서 처음부터 다시 도전할 수 있어요.
+      </div>
+      <div class="decision-compare">
+        <div class="compare-cell ${recommendation === 'life' ? 'recommend' : ''}">
+          <div class="compare-label">생명 쓰기 (5번 더)</div>
+          <div class="compare-val">${useLifeCost.toLocaleString()} vip</div>
+          <div class="compare-detail">생명 1 + 초기화 5</div>
+        </div>
+        <div class="decision-vs">VS</div>
+        <div class="compare-cell ${recommendation === 'newpet' ? 'recommend' : ''}">
+          <div class="compare-label">새 펫 + 초기화 5번</div>
+          <div class="compare-val">${petPrice > 0 ? newPetCost.toLocaleString() + ' vip' : '?'}</div>
+          <div class="compare-detail">${petPrice > 0 ? '펫값 + 초기화 5' : '펫값을 입력하면 비교 가능'}</div>
+        </div>
+      </div>
+      ${bestTxt}
+      <div class="decision-actions" style="margin-top:12px;">
+        <button class="btn-decision btn-decision-life" onclick="useLifeOrbCatch()">💎 생명의 구슬 쓰기</button>
+        <button class="btn-decision btn-decision-newpet" onclick="buyNewPetCatch()">🛒 새 펫 사기</button>
+      </div>
+      <div style="text-align:center;margin-top:10px;">
+        <button class="btn-decision btn-decision-giveup" style="padding:8px 18px;font-size:12px;border-width:1.5px;" onclick="giveUpCatch()">🏳️ 여기서 그만 (포기)</button>
+      </div>
+    </div>
+  `;
+  $('decision-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function showCatchDecisionAt10() {
+  const petPrice = parseInt($('catch-pet-price').value) || 0;
+  const totalCost = calcRunningCost(simState);
+
+  const bestTxt = simState.bestProb > 0
+    ? `⭐ 지금까지 최고: ${formatPct(simState.bestProb * 100)} (목표 ${formatPct(simState.targetProb * 100)})`
+    : '';
+
+  $('decision-area').innerHTML = `
+    <div class="decision-card hard">
+      <div class="decision-strip"></div>
+      <div class="decision-title">💀 10번 초기화 다 썼는데 목표 못 달성</div>
+      <div class="decision-sub">
+        이 펫은 더 이상 초기화할 수 없어요. 새 펫을 사서 처음부터 다시 도전할 수 있어요.<br>
+        <span style="color:var(--t3);font-size:11px;">누적 ${simState.totalTries}회 · ${totalCost.toLocaleString()} vip 사용</span><br>
+        <span style="color:var(--t3);font-size:11px;">${bestTxt}</span>
+      </div>
+      <div class="decision-actions">
+        <button class="btn-decision btn-decision-life" onclick="buyNewPetCatch()">🛒 새 펫 사기 ${petPrice > 0 ? '(' + petPrice.toLocaleString() + ' vip)' : ''}</button>
+        <button class="btn-decision btn-decision-giveup" onclick="giveUpCatch()">🏳️ 여기서 그만</button>
+      </div>
+    </div>
+  `;
+  $('decision-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function useLifeOrbCatch() {
+  if (simState.currentPetTries !== 5) return;
+  simState.lifeOrbsUsed++;
+  $('decision-area').innerHTML = '';
+  runCatchCycle();
+}
+
+function buyNewPetCatch() {
+  simState.petsBought++;
+  simState.currentPetTries = 0;
+  $('decision-area').innerHTML = '';
+  $('sim-display').classList.remove('hall-mode');
+  runCatchCycle();
+}
+
+function giveUpCatch() {
+  showCatchGiveUpResult();
+  $('btn-go').style.display = 'block';
+  $('btn-stop').style.display = 'none';
+}
+
+function showCatchResult(found) {
+  const totalCost = calcRunningCost(simState);
+  const targetProb = simState.targetProb;
+
+  // 이론값: catch 확률 = 풀에서 목표 이상 비율
+  let goodCombos = 0;
+  currentPetStatPool.forEach(s => {
+    if (s.prob >= targetProb - 1e-9) goodCombos += s.total;
+  });
+  const catchProb = goodCombos / currentPetTotalCombos;
+  const theory = catchProb > 0 ? calcTheory(catchProb) : null;
+  const luck = getLuckMsg(simState.totalTries, theory);
 
   const theoryHTML = theory ? `
     <div class="theory-grid">
-      <div class="theory-cell ${tries < theory.avg ? 'highlight' : ''}">
+      <div class="theory-cell ${simState.totalTries < theory.avg ? 'highlight' : ''}">
         <div class="theory-label">평균</div>
         <div class="theory-val">${formatTries(theory.avg)}</div>
         <div class="theory-sub">기대값</div>
       </div>
-      <div class="theory-cell ${tries < theory.median ? 'highlight' : ''}">
+      <div class="theory-cell ${simState.totalTries < theory.median ? 'highlight' : ''}">
         <div class="theory-label">50% 확률</div>
         <div class="theory-val">${formatTries(theory.median)}</div>
         <div class="theory-sub">번이면 절반은 성공</div>
       </div>
-      <div class="theory-cell ${tries < theory.p99 ? 'highlight' : ''}">
+      <div class="theory-cell ${simState.totalTries < theory.p99 ? 'highlight' : ''}">
         <div class="theory-label">99% 확률</div>
         <div class="theory-val">${formatTries(theory.p99)}</div>
         <div class="theory-sub">번이면 거의 확정</div>
@@ -1633,38 +1829,78 @@ function showCatchResult(tries, catchPrice, targetProb, found) {
       <span class="luck-text">${luck.text}</span>
     </div>` : '';
 
+  const breakdownHTML = totalCost > 0 ? `
+    <div style="margin-top:14px;padding:12px 14px;background:var(--s1);border:1.5px solid var(--border);border-radius:12px;">
+      <div style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">💰 비용 상세</div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2);padding:3px 0;">
+        <span>펫 ${simState.petsBought}마리</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;">${(simState.petsBought * (parseInt($('catch-pet-price').value)||0)).toLocaleString()} vip</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2);padding:3px 0;">
+        <span>초기화 구슬 ${simState.resetOrbsUsed}개</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;">${(simState.resetOrbsUsed * (parseInt($('catch-orb-reset').value)||0)).toLocaleString()} vip</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--t2);padding:3px 0;">
+        <span>생명의 구슬 ${simState.lifeOrbsUsed}개</span>
+        <span style="font-family:'Nunito',sans-serif;font-weight:700;">${(simState.lifeOrbsUsed * (parseInt($('catch-orb-life').value)||0)).toLocaleString()} vip</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;color:var(--t1);padding-top:6px;margin-top:6px;border-top:1px solid var(--border);font-family:'Nunito',sans-serif;">
+        <span>총합</span>
+        <span style="color:#c87800;">${totalCost.toLocaleString()} vip</span>
+      </div>
+    </div>
+  ` : '';
+
   $('result-area').innerHTML = `
     <div class="result-card">
       <div class="result-strip"></div>
       <div class="result-grand">
         <div>
-          <span class="result-grand-tries">${tries.toLocaleString()}</span><span class="result-grand-tries-unit">마리</span>
+          <span class="result-grand-tries">${simState.totalTries.toLocaleString()}</span><span class="result-grand-tries-unit">회</span>
         </div>
         <div class="result-grand-label">만에 목표 달성! ✨</div>
+        ${simState.petsBought > 1 ? `<div style="font-size:11px;color:var(--t3);margin-top:4px;font-weight:700;">펫 ${simState.petsBought}마리 사용</div>` : ''}
         <div style="margin-top:10px;font-size:13px;color:var(--t2);font-weight:700;">
           잡은 펫의 환각 확률: <strong style="color:var(--a1);">${formatPct(found.prob * 100)}</strong>
         </div>
         <div style="margin-top:4px;font-size:12px;color:var(--t3);font-weight:600;">
           공${found.atk} · 방${found.def} · 민${found.agi} · 체${found.hp}
         </div>
-        ${catchPrice > 0 ? `<div class="result-grand-cost">💰 ${totalCost.toLocaleString()} vip 사용</div>` : ''}
+        ${totalCost > 0 ? `<div class="result-grand-cost">💰 ${totalCost.toLocaleString()} vip 사용</div>` : ''}
       </div>
       ${theoryHTML}
       ${luckHTML}
+      ${breakdownHTML}
       <div style="text-align:center;margin-top:14px;">
         <button class="btn-go" style="padding:12px 28px;font-size:14px;" onclick="runSimulation()">🔁 다시 돌리기</button>
       </div>
     </div>
   `;
+  $('decision-area').innerHTML = '';
   $('result-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function catchProbFromPool(targetProb) {
-  let good = 0;
-  currentPetStatPool.forEach(s => {
-    if (s.prob >= targetProb - 1e-9) good += s.total;
-  });
-  return good / currentPetTotalCombos;
+function showCatchGiveUpResult() {
+  const totalCost = calcRunningCost(simState);
+  const bestTxt = simState.bestStats
+    ? `<div style="margin-top:6px;font-size:12px;color:var(--t3);">⭐ 최고 기록: ${formatPct(simState.bestProb * 100)} (공${simState.bestStats.atk}/방${simState.bestStats.def}/민${simState.bestStats.agi}/체${simState.bestStats.hp})</div>`
+    : '';
+  $('result-area').innerHTML = `
+    <div class="result-card">
+      <div style="text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:var(--t2);margin-bottom:8px;">🏳️ 포기</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;">
+          누적 <strong>${simState.totalTries}회</strong> · 펫 ${simState.petsBought}마리 사용<br>
+          ${totalCost > 0 ? `사용한 vip: <strong style="color:#c87800;">${totalCost.toLocaleString()}</strong>` : ''}
+        </div>
+        ${bestTxt}
+        <div style="margin-top:14px;">
+          <button class="btn-go" style="padding:12px 28px;font-size:14px;" onclick="runSimulation()">🔁 다시 돌리기</button>
+        </div>
+      </div>
+    </div>
+  `;
+  $('decision-area').innerHTML = '';
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1688,6 +1924,7 @@ async function runHallSim() {
     resetOrbsUsed: 0,
     lifeOrbsUsed: 0,
     currentPetTries: 0,
+    mode: 'hall',
     hallProb: found.prob, // 이 펫의 환각 확률
   };
 
@@ -1859,13 +2096,30 @@ function computeDelay(tries, skip) {
 /**
  * 현재까지 든 비용 계산 (펫값 + 구슬값)
  */
+/**
+ * 현재까지 든 비용 계산 (펫값 + 구슬값)
+ * 모드에 따라 다른 입력란 참조
+ */
 function calcRunningCost(s) {
-  const petPrice = parseInt($('pet-price').value) || 0;
-  const orbReset = parseInt($('orb-reset').value) || 0;
-  const orbLife = parseInt($('orb-life').value) || 0;
+  const isCatch = s && s.mode === 'catch';
+  const petPrice = parseInt($(isCatch ? 'catch-pet-price' : 'pet-price').value) || 0;
+  const orbReset = parseInt($(isCatch ? 'catch-orb-reset' : 'orb-reset').value) || 0;
+  const orbLife = parseInt($(isCatch ? 'catch-orb-life' : 'orb-life').value) || 0;
   return s.petsBought * petPrice
        + s.resetOrbsUsed * orbReset
        + s.lifeOrbsUsed * orbLife;
+}
+
+/**
+ * 가중치 랜덤 뽑기 (각 조합의 total을 가중치로 사용)
+ */
+function weightedPick(pool, totalWeight) {
+  let r = Math.random() * totalWeight;
+  for (const s of pool) {
+    r -= s.total;
+    if (r <= 0) return s;
+  }
+  return pool[pool.length - 1];
 }
 
 /**
