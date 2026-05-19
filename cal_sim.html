@@ -124,7 +124,57 @@ body {
 .sfn-input::-webkit-outer-spin-button, .sfn-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .sfn-input:focus { border-color: var(--a1); background: var(--s1); }
 
-/* ── 구슬 가격 grid ── */
+/* ── 4개 스탯 랜덤값 셀 ── */
+.stat-rolls {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; margin-bottom: 14px;
+}
+.stat-roll-cell {
+  background: var(--s1); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 10px 4px;
+  text-align: center;
+  transition: all .25s;
+}
+.srl-label {
+  font-size: 10px; font-weight: 800; color: var(--t3);
+  letter-spacing: 1px; font-family: 'Nunito', sans-serif;
+  margin-bottom: 4px;
+}
+.srl-val {
+  font-size: 22px; font-weight: 900; font-family: 'Nunito', sans-serif;
+  color: var(--t1);
+  transition: color .15s;
+}
+/* 스탯 값별 색상 */
+.srl-val.s-pos2 { color: #f5a623; }   /* +2 → 골드 (최대) */
+.srl-val.s-pos1 { color: #9b87f5; }
+.srl-val.s-zero { color: var(--t3); }
+.srl-val.s-neg1 { color: #b0a8d4; }
+.srl-val.s-neg2 { color: var(--err); }
+
+/* 모두 +2일 때 강조 */
+.stat-rolls.all-max .stat-roll-cell {
+  background: linear-gradient(135deg, #fff5cc, #ffe988);
+  border-color: var(--gold);
+  animation: gradePop .25s ease-out;
+}
+.stat-rolls.all-max .srl-val { color: #c87800; }
+[data-theme="dark"] .stat-rolls.all-max .stat-roll-cell {
+  background: linear-gradient(135deg, #3a3020, #4a3825);
+}
+[data-theme="dark"] .stat-rolls.all-max .srl-val { color: var(--gold); }
+
+/* 셀 팝 애니메이션 (매 시도마다) */
+.stat-roll-cell.flash {
+  animation: cellFlash .15s ease;
+}
+@keyframes cellFlash {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* ── 4개 스탯 랜덤값 셀 끝 ── */
 .orb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .orb-input { padding: 9px 12px; font-size: 14px; }
 
@@ -577,57 +627,43 @@ body {
         </div>
       </div>
 
-      <!-- 우: 스탯 -->
+      <!-- 우: 확률 정보 -->
       <div>
-        <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;">목표 스탯 (공·방·민·체)</div>
-        <div class="stat-grid">
-          <div class="stat-field-new">
-            <div class="sfn-header"><span class="sfn-label">공격</span></div>
-            <div class="sfn-row">
-              <button class="sfn-btn sfn-m" onclick="adjustStat('s-atk',-1)">−</button>
-              <input class="sfn-input" type="number" id="s-atk" placeholder="0" />
-              <button class="sfn-btn sfn-p" onclick="adjustStat('s-atk',1)">+</button>
+        <div style="font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px;">환각 확률</div>
+        <div id="prob-info-empty" style="padding:24px 12px;text-align:center;background:var(--s1);border:1.5px dashed var(--border);border-radius:12px;color:var(--t3);font-size:13px;">
+          ← 펫을 선택하면 확률이 표시돼요
+        </div>
+        <div id="prob-info" style="display:none;">
+          <div style="background:var(--s1);border:1.5px solid var(--border);border-radius:12px;padding:14px;">
+            <div style="text-align:center;margin-bottom:10px;">
+              <div class="info-label">8등급 환각 확률</div>
+              <div class="info-prob" id="prob-display" style="font-size:32px;">-</div>
+            </div>
+            <div style="display:flex;justify-content:space-around;border-top:1px solid var(--border);padding-top:10px;">
+              <div style="text-align:center;">
+                <div class="info-label">평균 시도</div>
+                <div style="font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t1);" id="expect-display">-</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="info-label">50% 확률</div>
+                <div style="font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t1);" id="median-display">-</div>
+              </div>
+              <div style="text-align:center;">
+                <div class="info-label">99% 확률</div>
+                <div style="font-size:16px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t1);" id="p99-display">-</div>
+              </div>
             </div>
           </div>
-          <div class="stat-field-new">
-            <div class="sfn-header"><span class="sfn-label">방어</span></div>
-            <div class="sfn-row">
-              <button class="sfn-btn sfn-m" onclick="adjustStat('s-def',-1)">−</button>
-              <input class="sfn-input" type="number" id="s-def" placeholder="0" />
-              <button class="sfn-btn sfn-p" onclick="adjustStat('s-def',1)">+</button>
-            </div>
-          </div>
-          <div class="stat-field-new">
-            <div class="sfn-header"><span class="sfn-label">민첩</span></div>
-            <div class="sfn-row">
-              <button class="sfn-btn sfn-m" onclick="adjustStat('s-agi',-1)">−</button>
-              <input class="sfn-input" type="number" id="s-agi" placeholder="0" />
-              <button class="sfn-btn sfn-p" onclick="adjustStat('s-agi',1)">+</button>
-            </div>
-          </div>
-          <div class="stat-field-new">
-            <div class="sfn-header"><span class="sfn-label">체력</span></div>
-            <div class="sfn-row">
-              <button class="sfn-btn sfn-m" onclick="adjustStat('s-hp',-1)">−</button>
-              <input class="sfn-input" type="number" id="s-hp" placeholder="0" />
-              <button class="sfn-btn sfn-p" onclick="adjustStat('s-hp',1)">+</button>
-            </div>
+          <div style="margin-top:8px;font-size:11px;color:var(--t3);text-align:center;line-height:1.5;">
+            매 시도마다 4개 스탯 각각 −2~+2 사이 랜덤<br>
+            모두 +2가 나오면 8등급 환각 (1/625)
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 확률 미리보기 -->
-    <div class="info-box" id="prob-box" style="display:none;">
-      <div>
-        <div class="info-label">8등급 확률</div>
-        <div class="info-prob" id="prob-display">-</div>
-      </div>
-      <div style="text-align:right;">
-        <div class="info-label">기대 시도</div>
-        <div style="font-size:18px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--t2);" id="expect-display">-</div>
-      </div>
-    </div>
+    <!-- (구) 확률 미리보기 박스는 위로 통합 -->
+    <div id="prob-box" style="display:none;"></div>
 
     <!-- 액션 버튼 -->
     <div class="act-row">
@@ -643,6 +679,13 @@ body {
         <span class="sim-tries-num" id="sim-tries-num">0</span><span class="sim-tries-unit">회</span>
       </div>
       <div class="sim-tries-label">TRIES</div>
+    </div>
+    <!-- 4개 스탯 랜덤값 표시 -->
+    <div class="stat-rolls" id="stat-rolls" style="display:none;">
+      <div class="stat-roll-cell"><div class="srl-label">공격</div><div class="srl-val" id="srl-atk">−</div></div>
+      <div class="stat-roll-cell"><div class="srl-label">방어</div><div class="srl-val" id="srl-def">−</div></div>
+      <div class="stat-roll-cell"><div class="srl-label">민첩</div><div class="srl-val" id="srl-agi">−</div></div>
+      <div class="stat-roll-cell"><div class="srl-label">체력</div><div class="srl-val" id="srl-hp">−</div></div>
     </div>
     <div class="sim-rolling" id="sim-rolling">
       <span style="color:var(--t4);font-size:14px;font-weight:700;">시작을 기다리는 중...</span>
@@ -806,15 +849,11 @@ async function loadPets() {
 
 const $ = id => document.getElementById(id);
 
-function adjustStat(id, delta) {
-  const el = $(id);
-  const v = parseInt(el.value) || 0;
-  el.value = Math.max(0, v + delta);
-  el.dispatchEvent(new Event('input'));
-}
-
 let selectedPetName = '';
-let currentProbResult = null; // runCalc 결과 캐시
+
+// 환각 확률은 펫과 무관하게 1/625로 고정 (4스탯 각각 -2~+2 균등 추첨)
+const HALL_PROB = 1 / 625;
+const HALL_PCT = (HALL_PROB * 100); // 0.16
 
 /* 펫 자동완성 */
 function setupPetSearch() {
@@ -843,7 +882,6 @@ function setupPetSearch() {
     if (!sugg.contains(e.target) && e.target !== input) sugg.style.display = 'none';
   });
 
-  // 첫 매칭이 정확히 일치하면 자동 선택 (Enter)
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       const q = input.value.trim();
@@ -870,55 +908,24 @@ function selectPet(name) {
   imgBox.innerHTML = img ? `<img src="${img}" alt="${name}">` : '<span style="font-size:20px;">🐾</span>';
   preview.style.display = 'flex';
 
-  // 이상 스탯 자동 입력
-  const ideal = calcIdeal(pet);
-  $('s-atk').value = ideal.atk;
-  $('s-def').value = ideal.def;
-  $('s-agi').value = ideal.agi;
-  $('s-hp').value = ideal.hp;
-
-  recalcProb();
-}
-
-/* 입력 변경시 확률 자동 재계산 */
-function recalcProb() {
-  if (!selectedPetName) return;
-  const pet = petData[selectedPetName];
-  const dAtk = parseInt($('s-atk').value);
-  const dDef = parseInt($('s-def').value);
-  const dAgi = parseInt($('s-agi').value);
-  const dHp = parseInt($('s-hp').value);
-
-  if ([dAtk, dDef, dAgi, dHp].some(isNaN)) {
-    $('prob-box').style.display = 'none';
-    $('btn-go').disabled = true;
-    return;
-  }
-
-  const r = runCalc(pet, dAtk, dDef, dAgi, dHp);
-  currentProbResult = r;
-
-  if (r.totalCases === 0 || r.hallCases === 0) {
-    $('prob-box').style.display = 'flex';
-    $('prob-display').textContent = '0%';
-    $('prob-display').classList.remove('gold');
-    $('expect-display').textContent = '환각 불가';
-    $('btn-go').disabled = true;
-    return;
-  }
-
-  const prob = (r.hallCases / r.totalCases) * 100;
-  const probShow = Math.min(prob, 99.99).toFixed(4);
-  $('prob-display').textContent = probShow + '%';
-  $('prob-display').classList.toggle('gold', prob >= 50);
-  $('expect-display').textContent = '약 ' + (1 / (prob / 100)).toFixed(1) + '회';
-  $('prob-box').style.display = 'flex';
+  // 확률 정보 표시
+  showProbInfo();
   $('btn-go').disabled = false;
 }
 
-['s-atk', 's-def', 's-agi', 's-hp'].forEach(id => {
-  $(id).addEventListener('input', recalcProb);
-});
+function showProbInfo() {
+  $('prob-info-empty').style.display = 'none';
+  $('prob-info').style.display = 'block';
+
+  // 모든 펫 동일: 1/625 = 0.16%
+  $('prob-display').textContent = HALL_PCT.toFixed(2) + '%';
+
+  // 이론값
+  const t = calcTheory(HALL_PROB);
+  $('expect-display').textContent = t.avg.toFixed(0) + '회';
+  $('median-display').textContent = t.median + '회';
+  $('p99-display').textContent = t.p99 + '회';
+}
 
 /* 옵션 체크 시각효과 */
 ['skip-check', 'log-check'].forEach(id => {
@@ -955,16 +962,25 @@ function gradeColorClass(g) {
   return 'g-neg';
 }
 
-/* gradeDist에서 가중 추첨 */
-function pickGrade(gradeDist, totalCases) {
-  let r = Math.random() * totalCases;
-  for (const g of Object.keys(gradeDist)) {
-    r -= gradeDist[g];
-    if (r <= 0) return parseInt(g);
-  }
-  // fallback
-  const keys = Object.keys(gradeDist);
-  return parseInt(keys[keys.length - 1]);
+/* 4개 스탯 각각 -2~+2 균등 추첨 */
+function rollStats() {
+  const r = () => Math.floor(Math.random() * 5) - 2; // -2~+2
+  return { atk: r(), def: r(), agi: r(), hp: r() };
+}
+
+/* 스탯 표시용 색상 클래스 */
+function statColorClass(v) {
+  if (v === 2) return 's-pos2';
+  if (v === 1) return 's-pos1';
+  if (v === 0) return 's-zero';
+  if (v === -1) return 's-neg1';
+  return 's-neg2';
+}
+
+/* 스탯 값 → "+1"/"-2"/"0" 표시 문자 */
+function fmtStat(v) {
+  if (v > 0) return '+' + v;
+  return String(v);
 }
 
 /* 이론값 계산 */
@@ -997,7 +1013,7 @@ let simAbort = false;
 let simState = null;
 
 async function runSimulation() {
-  if (!currentProbResult || currentProbResult.hallCases === 0) return;
+  if (!selectedPetName) return;
   if (simRunning) return;
 
   // 새로 시작
@@ -1013,6 +1029,8 @@ async function runSimulation() {
   $('decision-area').innerHTML = '';
   $('sim-display').style.display = 'flex';
   $('sim-display').classList.remove('hall-mode');
+  $('stat-rolls').style.display = 'grid';
+  $('stat-rolls').classList.remove('all-max');
 
   // 로그 초기화 (새 시뮬 시작이므로)
   $('sim-log').innerHTML = '';
@@ -1031,10 +1049,10 @@ async function runCycle() {
   $('btn-go').style.display = 'none';
   $('btn-stop').style.display = 'block';
   $('decision-area').innerHTML = ''; // 이전 결정 카드 지우기
+  $('stat-rolls').classList.remove('all-max');
 
   const skip = $('skip-check').checked;
   const showLog = $('log-check').checked;
-  const r = currentProbResult;
 
   // 로그 (계속 누적)
   const logEl = $('sim-log');
@@ -1055,17 +1073,21 @@ async function runCycle() {
     simState.currentPetTries++;
     simState.resetOrbsUsed++;
 
-    const grade = pickGrade(r.gradeDist, r.totalCases);
-    const isHall = (grade === 8);
+    // 4개 스탯 각각 -2~+2 추첨
+    const stats = rollStats();
+    const signed = stats.atk + stats.def + stats.agi + stats.hp;
+    const isHall = (stats.atk === 2 && stats.def === 2 && stats.agi === 2 && stats.hp === 2);
+    // 8등급 = 모두 +2 (sum=+8)
 
-    updateSimDisplay(grade, isHall);
+    updateSimDisplay(stats, signed, isHall);
 
     // 로그
     if (showLog) {
       const line = document.createElement('div');
       line.className = 'sim-log-line' + (isHall ? ' hall' : '');
       const petTag = simState.petsBought > 1 ? `[펫${simState.petsBought}] ` : '';
-      line.textContent = `${petTag}${simState.totalTries}회 · ${GRADE_NAMES[grade]}${isHall ? ' ✨ 환각!' : ''}`;
+      const statStr = `공${fmtStat(stats.atk)}/방${fmtStat(stats.def)}/민${fmtStat(stats.agi)}/체${fmtStat(stats.hp)}`;
+      line.textContent = `${petTag}${simState.totalTries}회 · ${statStr} (${signed >= 0 ? '+' : ''}${signed})${isHall ? ' ✨ 환각!' : ''}`;
       logEl.insertBefore(line, logEl.firstChild);
       while (logEl.children.length > 100) logEl.removeChild(logEl.lastChild);
     }
@@ -1073,7 +1095,8 @@ async function runCycle() {
     if (isHall) {
       success = true;
       $('sim-display').classList.add('hall-mode');
-      await sleep(700);
+      $('stat-rolls').classList.add('all-max');
+      await sleep(900);
       break;
     }
 
@@ -1109,9 +1132,27 @@ async function runCycle() {
   }
 }
 
-function updateSimDisplay(grade, isHall) {
+function updateSimDisplay(stats, signed, isHall) {
   const totalCost = calcRunningCost(simState);
   $('sim-tries-num').textContent = simState.totalTries.toLocaleString();
+
+  // 4개 스탯 셀 업데이트
+  const cells = [
+    { id: 'srl-atk', val: stats.atk },
+    { id: 'srl-def', val: stats.def },
+    { id: 'srl-agi', val: stats.agi },
+    { id: 'srl-hp',  val: stats.hp  }
+  ];
+  cells.forEach(c => {
+    const el = $(c.id);
+    el.textContent = fmtStat(c.val);
+    el.className = 'srl-val ' + statColorClass(c.val);
+    // 셀 flash
+    const cell = el.parentElement;
+    cell.classList.remove('flash');
+    void cell.offsetWidth; // reflow
+    cell.classList.add('flash');
+  });
 
   const petLineFull = simState.petsBought > 1
     ? `🐾 펫 ${simState.petsBought}마리째 · 현재 펫에서 ${simState.currentPetTries}/10번`
@@ -1121,6 +1162,8 @@ function updateSimDisplay(grade, isHall) {
     ? `<div>${petLineFull}</div><div style="margin-top:3px;">💰 누적 비용: ${totalCost.toLocaleString()} vip</div>`
     : `<div>${petLineFull}</div>`;
 
+  // 결과 등급 표시
+  const grade = signed; // -8 ~ +8
   const rolling = $('sim-rolling');
   const colorClass = gradeColorClass(grade);
   rolling.innerHTML = `
@@ -1269,8 +1312,7 @@ function giveUp() {
 
 /* ─── 성공 결과 ─── */
 function showSuccessResult() {
-  const r = currentProbResult;
-  const probSucc = r.hallCases / r.totalCases;
+  const probSucc = HALL_PROB; // 고정 1/625
   const totalCost = calcRunningCost(simState);
   const theory = calcTheory(probSucc);
   const luck = getLuckMsg(simState.totalTries, theory);
