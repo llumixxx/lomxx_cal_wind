@@ -57,7 +57,8 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
 
 /* ── 모드 선택 화면 ── */
 .mode-select-screen{max-width:600px;margin:60px auto;padding:0 20px;}
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;}
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;}
+@media(max-width:760px){ .mode-grid{grid-template-columns:1fr;} }
 .mode-card{
   background:var(--white);border:2px solid var(--border);
   border-radius:24px;padding:32px 20px;text-align:center;
@@ -67,12 +68,22 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
 .mode-card:hover{transform:translateY(-6px);box-shadow:var(--shadow2);}
 .mode-card.cube-mode:hover{border-color:var(--epic);}
 .mode-card.enhance-mode:hover{border-color:var(--unique);}
+.mode-card.hallu-mode:hover{border-color:#f5a623;}
+.mode-card.hallu-mode{position:relative;}
+.mode-card.hallu-mode::after{
+  content:'NEW';
+  position:absolute;top:10px;right:10px;
+  background:linear-gradient(135deg,#f587b8,#9b87f5);color:#fff;
+  font-size:9px;font-weight:900;padding:2px 7px;border-radius:99px;
+  font-family:'Nunito',sans-serif;letter-spacing:.5px;
+}
 .mode-card .mc-icon{font-size:52px;margin-bottom:14px;line-height:1;}
 .mode-card .mc-title{font-size:20px;font-weight:900;margin-bottom:6px;color:var(--t1);}
 .mode-card .mc-desc{font-size:12px;color:var(--t3);line-height:1.7;}
 .mode-card .mc-badge{display:inline-block;margin-top:12px;padding:4px 14px;border-radius:99px;font-size:11px;font-weight:800;}
 .cube-mode .mc-badge{background:#eedeff;color:var(--epic);border:1.5px solid #d4b8f8;}
 .enhance-mode .mc-badge{background:#fff4de;color:#d48800;border:1.5px solid #f8d890;}
+.hallu-mode .mc-badge{background:linear-gradient(135deg,#fff5cc,#ffe988);color:#c87800;border:1.5px solid #f5c842;}
 [data-theme="dark"] .mode-card{background:#252540;border-color:#404060;}
 [data-theme="dark"] .mode-card .mc-title{color:#e8e8f0;}
 
@@ -397,6 +408,12 @@ body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;
         <div class="mc-title">아이템 강화</div>
         <div class="mc-desc">장비 수치 강화<br>+0 → +10<br>스톤포스 지원</div>
         <div class="mc-badge">ITEM ENHANCE</div>
+      </div>
+      <div class="mode-card hallu-mode" onclick="location.href='cal_sim.html'">
+        <div class="mc-icon">🎰</div>
+        <div class="mc-title">환각 시뮬</div>
+        <div class="mc-desc">펫 환각 도전<br>구슬·생명 소비 계산<br>손익분기 추천</div>
+        <div class="mc-badge">PET HALLUCINATION</div>
       </div>
     </div>
   </div>
