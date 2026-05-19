@@ -130,48 +130,56 @@ body {
   gap: 8px; margin-bottom: 14px;
 }
 .stat-roll-cell {
-  background: var(--s1); border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 10px 4px;
+  background: rgba(0,0,0,.25);
+  border: 1.5px solid rgba(155,135,245,.3);
+  border-radius: 12px; padding: 12px 4px;
   text-align: center;
   transition: all .25s;
+  position: relative;
+}
+.sim-display .stat-roll-cell {
+  /* 게임풍 디스플레이 안의 셀 */
 }
 .srl-label {
-  font-size: 10px; font-weight: 800; color: var(--t3);
-  letter-spacing: 1px; font-family: 'Nunito', sans-serif;
-  margin-bottom: 4px;
+  font-size: 10px; font-weight: 800;
+  color: rgba(232,227,255,.55);
+  letter-spacing: 1.5px; font-family: 'Nunito', sans-serif;
+  margin-bottom: 6px;
+  text-transform: uppercase;
 }
 .srl-val {
-  font-size: 22px; font-weight: 900; font-family: 'Nunito', sans-serif;
-  color: var(--t1);
+  font-size: 28px; font-weight: 900; font-family: 'Nunito', sans-serif;
+  color: #fff;
   transition: color .15s;
+  text-shadow: 0 0 12px rgba(155,135,245,.4);
 }
-/* 스탯 값별 색상 */
-.srl-val.s-pos2 { color: #f5a623; }   /* +2 → 골드 (최대) */
-.srl-val.s-pos1 { color: #9b87f5; }
-.srl-val.s-zero { color: var(--t3); }
-.srl-val.s-neg1 { color: #b0a8d4; }
-.srl-val.s-neg2 { color: var(--err); }
+/* 스탯 값별 색상 (게임풍) */
+.srl-val.s-pos2 { color: #fdd835; text-shadow: 0 0 16px rgba(253,216,53,.7); }
+.srl-val.s-pos1 { color: #c5b3ff; text-shadow: 0 0 12px rgba(197,179,255,.6); }
+.srl-val.s-zero { color: rgba(232,227,255,.6); }
+.srl-val.s-neg1 { color: #a4a0c4; }
+.srl-val.s-neg2 { color: #ff7a8a; text-shadow: 0 0 12px rgba(255,122,138,.5); }
 
 /* 모두 +2일 때 강조 */
 .stat-rolls.all-max .stat-roll-cell {
-  background: linear-gradient(135deg, #fff5cc, #ffe988);
+  background: linear-gradient(135deg, rgba(245,166,35,.3), rgba(253,216,53,.25));
   border-color: var(--gold);
-  animation: gradePop .25s ease-out;
+  animation: gradePop .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 24px rgba(245,166,35,.4);
 }
-.stat-rolls.all-max .srl-val { color: #c87800; }
-[data-theme="dark"] .stat-rolls.all-max .stat-roll-cell {
-  background: linear-gradient(135deg, #3a3020, #4a3825);
+.stat-rolls.all-max .srl-val {
+  color: #fff;
+  text-shadow: 0 0 20px rgba(253,216,53,1), 0 0 8px rgba(255,255,255,.8);
 }
-[data-theme="dark"] .stat-rolls.all-max .srl-val { color: var(--gold); }
 
 /* 셀 팝 애니메이션 (매 시도마다) */
 .stat-roll-cell.flash {
-  animation: cellFlash .15s ease;
+  animation: cellFlash .25s ease;
 }
 @keyframes cellFlash {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(155,135,245,0); }
+  50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(155,135,245,.6); border-color: var(--a1); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(155,135,245,0); }
 }
 
 /* ── 4개 스탯 랜덤값 셀 끝 ── */
@@ -298,8 +306,11 @@ body {
   cursor: pointer; transition: all .2s; letter-spacing: .5px;
   box-shadow: 0 4px 20px rgba(155,135,245,.3);
 }
-.btn-go:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(155,135,245,.42); }
-.btn-go:active { transform: scale(.99); }
+.btn-go:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 32px rgba(155,135,245,.55), 0 0 24px rgba(245,135,184,.3);
+}
+.btn-go:active:not(:disabled) { transform: scale(.97); }
 .btn-go:disabled { opacity: .55; cursor: not-allowed; }
 .btn-stop {
   padding: 16px 20px; background: var(--white);
@@ -326,14 +337,80 @@ body {
 .info-label { font-size: 11px; color: var(--t3); font-weight: 700; letter-spacing: 1px; font-family: 'Nunito', sans-serif; text-transform: uppercase; }
 
 /* ── 시뮬 디스플레이 ── */
-.sim-display {
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: 20px; padding: 24px;
-  box-shadow: var(--shadow);
-  position: relative; overflow: hidden;
-  min-height: 260px;
-  display: flex; flex-direction: column;
+/* 상태바 (게임풍) */
+.sim-status-bar {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px dashed rgba(155,135,245,.25);
+  flex-wrap: wrap; gap: 10px;
 }
+.sim-status-label {
+  font-size: 10px; font-weight: 900;
+  color: rgba(232,227,255,.55);
+  letter-spacing: 2px;
+  font-family: 'Nunito', sans-serif;
+  margin-bottom: 4px;
+}
+.sim-status-value {
+  font-size: 22px; font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 14px rgba(255,255,255,.3);
+  letter-spacing: -0.5px;
+}
+.sim-status-counter {
+  font-size: 28px; font-weight: 900;
+  font-family: 'Nunito', sans-serif;
+  color: #fdd835;
+  text-shadow: 0 0 16px rgba(253,216,53,.5);
+}
+.sim-status-sub {
+  font-size: 11px;
+  color: rgba(232,227,255,.65);
+  font-weight: 700;
+  margin-top: 4px;
+}
+.sim-status-right { text-align: right; }
+
+/* 셀러 옵션 active */
+.opt-check.active {
+  background: linear-gradient(135deg, rgba(155,135,245,.15), rgba(245,135,184,.1));
+  border-color: var(--a1);
+  color: var(--a1);
+}
+
+.sim-display {
+  background: linear-gradient(135deg, #1a1a2e 0%, #2a1f3e 50%, #2a1a3e 100%);
+  border: 3px solid var(--a1);
+  border-radius: 24px; padding: 28px;
+  box-shadow:
+    0 12px 40px rgba(155,135,245,.35),
+    inset 0 0 60px rgba(155,135,245,.08),
+    inset 0 2px 0 rgba(255,255,255,.05);
+  position: relative; overflow: hidden;
+  min-height: 320px;
+  display: flex; flex-direction: column;
+  color: #e8e3ff;
+}
+.sim-display::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(155,135,245,.18), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(245,135,184,.15), transparent 35%);
+  pointer-events: none;
+}
+.sim-display > * { position: relative; z-index: 1; }
+
+/* 상단 상태 바 컬러 오버라이드 */
+.sim-display [style*="color:var(--t3)"],
+.sim-display [style*="color:var(--t2)"] {
+  color: rgba(232,227,255,.6) !important;
+}
+.sim-display [style*="color:var(--t1)"] {
+  color: #fff !important;
+}
+
 .sim-tries-big {
   text-align: center;
   font-family: 'Nunito', sans-serif;
@@ -344,52 +421,69 @@ body {
   color: var(--a1);
   display: inline-block; min-width: 80px;
 }
-.sim-tries-unit { font-size: 22px; color: var(--t2); font-weight: 800; margin-left: 4px; }
-.sim-tries-label { font-size: 11px; color: var(--t3); font-weight: 700; letter-spacing: 2px; margin-top: 6px; }
+.sim-tries-unit { font-size: 22px; color: rgba(232,227,255,.7); font-weight: 800; margin-left: 4px; }
+.sim-tries-label { font-size: 11px; color: rgba(232,227,255,.5); font-weight: 700; letter-spacing: 2px; margin-top: 6px; }
 
-/* 등급 결과 한 줄 */
+/* 등급 결과 한 줄 (게임풍) */
 .sim-rolling {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Nunito', sans-serif;
   font-size: 24px; font-weight: 900;
-  min-height: 60px;
+  min-height: 80px;
   transition: all .15s;
+  margin: 10px 0;
 }
 .sim-grade-pop {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 10px 22px;
-  background: var(--s1); border: 2px solid var(--border);
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, rgba(155,135,245,.2), rgba(245,135,184,.15));
+  border: 2px solid rgba(155,135,245,.5);
   border-radius: 99px;
-  animation: gradePop .25s ease-out;
+  animation: gradePop .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:
+    0 8px 24px rgba(155,135,245,.3),
+    inset 0 1px 0 rgba(255,255,255,.1);
+  backdrop-filter: blur(10px);
 }
 @keyframes gradePop {
-  0% { transform: scale(0.6); opacity: 0; }
-  60% { transform: scale(1.08); opacity: 1; }
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.12); opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
-.sim-grade-num { font-size: 26px; font-weight: 900; }
-.sim-grade-text { font-size: 14px; font-weight: 700; color: var(--t2); }
+.sim-grade-num { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; }
+.sim-grade-text { font-size: 14px; font-weight: 700; color: rgba(232,227,255,.85); }
 
-/* 등급별 색상 */
-.g-pos1 { color: #b8aef5; }
-.g-pos2 { color: #9b87f5; }
-.g-pos3 { color: #f587b8; }
-.g-zero { color: var(--t3); }
-.g-neg { color: var(--t4); }
+/* 등급별 색상 (게임풍 글로우) */
+.g-pos1 { color: #b8aef5; text-shadow: 0 0 12px rgba(184,174,245,.6); }
+.g-pos2 { color: #c5b3ff; text-shadow: 0 0 12px rgba(197,179,255,.7); }
+.g-pos3 { color: #ffa3d3; text-shadow: 0 0 14px rgba(255,163,211,.8); }
+.g-zero { color: rgba(232,227,255,.5); }
+.g-neg { color: rgba(232,227,255,.3); }
 .g-hall {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  background: linear-gradient(135deg, #ffe988, #f5a623, #ff6b9d);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 14px rgba(245,166,35,.7));
+  animation: hallGlow 1.5s ease infinite alternate;
+}
+@keyframes hallGlow {
+  from { filter: drop-shadow(0 0 10px rgba(245,166,35,.5)); }
+  to { filter: drop-shadow(0 0 22px rgba(253,216,53,.9)); }
 }
 
 /* 환각 떴을 때 카드 */
 .sim-display.hall-mode {
-  background: linear-gradient(135deg, #fff9ee 0%, #fff3d4 50%, #ffeef6 100%);
+  background: linear-gradient(135deg, #3a2515 0%, #4a3520 50%, #3a1f3e 100%);
   border-color: var(--gold);
   animation: hallShake .5s ease;
+  box-shadow:
+    0 12px 50px rgba(245,166,35,.5),
+    inset 0 0 80px rgba(253,216,53,.15);
 }
-[data-theme="dark"] .sim-display.hall-mode {
-  background: linear-gradient(135deg, #2a2515 0%, #3a3020 50%, #2a1f2e 100%);
+.sim-display.hall-mode::before {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(245,166,35,.25), transparent 35%),
+    radial-gradient(circle at 85% 85%, rgba(253,216,53,.20), transparent 35%);
 }
 @keyframes hallShake {
   0%,100% { transform: translateX(0); }
@@ -400,16 +494,27 @@ body {
 }
 
 /* 비용 표시 작은거 */
-.sim-cost-small { text-align: center; font-size: 12px; color: var(--t3); margin-top: 8px; font-family: 'Nunito', sans-serif; font-weight: 700; }
+.sim-cost-small {
+  text-align: center; font-size: 12px;
+  color: rgba(232,227,255,.7);
+  margin-top: 8px;
+  font-family: 'Nunito', sans-serif; font-weight: 700;
+  padding: 8px 12px;
+  background: rgba(0,0,0,.15);
+  border-radius: 99px;
+  display: inline-block;
+  align-self: center;
+}
 
-/* 로그 */
+/* 로그 (게임풍) */
 .sim-log {
   margin-top: 14px; max-height: 100px;
   overflow-y: auto;
-  background: var(--s1); border: 1px solid var(--border);
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(155,135,245,.2);
   border-radius: 10px; padding: 8px 12px;
   font-family: 'Nunito', sans-serif; font-size: 11px;
-  color: var(--t3);
+  color: rgba(232,227,255,.7);
   display: none;
 }
 .sim-log.show { display: block; }
@@ -738,6 +843,10 @@ body {
         </div>
 
         <div class="opt-row" style="margin-top:12px;">
+          <label class="opt-check active" id="sound-check-label">
+            <input type="checkbox" id="sound-check" checked />
+            <span>🔊 효과음</span>
+          </label>
           <label class="opt-check" id="log-check-label">
             <input type="checkbox" id="log-check" />
             <span>📋 로그 보기</span>
@@ -774,16 +883,16 @@ body {
   <!-- 시뮬 디스플레이 -->
   <div class="sim-display" id="sim-display" style="display:none;">
     <!-- 상단 상태 바 -->
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-      <div>
-        <div style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:1px;font-family:'Nunito',sans-serif;">현재 펫</div>
-        <div style="font-size:18px;font-weight:900;color:var(--t1);" id="sim-pet-name">-</div>
-        <div style="font-size:11px;color:var(--t2);margin-top:2px;" id="sim-pet-meta">-</div>
+    <div class="sim-status-bar">
+      <div class="sim-status-left">
+        <div class="sim-status-label">CURRENT PET</div>
+        <div class="sim-status-value" id="sim-pet-name">-</div>
+        <div class="sim-status-sub" id="sim-pet-meta">-</div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:1px;font-family:'Nunito',sans-serif;">초기화 사용</div>
-        <div style="font-size:24px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);" id="sim-reset-counter">0/10</div>
-        <div style="font-size:11px;color:var(--t2);margin-top:2px;" id="sim-life-status">생명 구슬 사용 가능</div>
+      <div class="sim-status-right">
+        <div class="sim-status-label">RESETS USED</div>
+        <div class="sim-status-counter" id="sim-reset-counter">0/10</div>
+        <div class="sim-status-sub" id="sim-life-status">생명 구슬 사용 가능</div>
       </div>
     </div>
 
@@ -801,16 +910,28 @@ body {
     </div>
 
     <!-- 비용 + 진행 -->
-    <div class="sim-cost-small" id="sim-cost-small" style="text-align:center;"></div>
+    <div style="text-align:center;">
+      <div class="sim-cost-small" id="sim-cost-small"></div>
+    </div>
 
     <!-- 행동 버튼 -->
-    <div id="sim-actions" style="display:none;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <button class="btn-go" id="btn-action-hall" style="padding:14px;font-size:14px;background:linear-gradient(135deg,#f5a623,#fdd835);" onclick="tryHallChallenge()">
-        🎰 환각 도전!
-      </button>
-      <button class="btn-go" id="btn-action-reset" style="padding:14px;font-size:14px;background:var(--white);color:var(--a1);border:1.5px solid var(--a1);box-shadow:none;" onclick="rerollStats()">
-        📊 다시 초기화
-      </button>
+    <div id="sim-actions" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;">
+        <button class="btn-go" id="btn-action-hall" style="padding:14px;font-size:14px;background:linear-gradient(135deg,#f5a623,#fdd835);" onclick="tryHallChallenge()">
+          🎰 환각 도전!
+        </button>
+        <button class="btn-go" id="btn-action-reset" style="padding:14px;font-size:14px;background:var(--white);color:var(--a1);border:1.5px solid var(--a1);box-shadow:none;" onclick="rerollStats()">
+          📊 다시 초기화
+        </button>
+      </div>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn-go" id="btn-action-reset5" style="padding:12px;font-size:13px;background:linear-gradient(135deg,#9b87f5,#f587b8);" onclick="rerollStats5()">
+          ⚡ 초기화 5번 한번에
+        </button>
+        <button class="btn-go" id="btn-action-newpet" style="padding:12px;font-size:13px;background:var(--white);color:var(--t2);border:1.5px solid var(--border2);box-shadow:none;" onclick="forceNewPet()">
+          🔄 새 펫으로 처음부터
+        </button>
+      </div>
     </div>
 
     <!-- 로그 -->
@@ -942,6 +1063,128 @@ function _convertPetInfo(p) {
     image: p.image || ""
   };
 }
+
+/* ═══════════════════════════════════════════════════════════
+   사운드 엔진 (Web Audio API 합성)
+   ═══════════════════════════════════════════════════════════ */
+let audioCtx = null;
+let soundOn = true;
+
+function ensureAudio() {
+  if (!soundOn) return null;
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch (e) { return null; }
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function tone(freq, dur, type = 'sine', vol = 0.15, fStart, fEnd) {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  if (fStart && fEnd) {
+    osc.frequency.setValueAtTime(fStart, t);
+    osc.frequency.exponentialRampToValueAtTime(fEnd, t + dur / 1000);
+  } else {
+    osc.frequency.setValueAtTime(freq, t);
+  }
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.001, t + dur / 1000);
+  osc.connect(g).connect(ctx.destination);
+  osc.start(t); osc.stop(t + dur / 1000 + 0.05);
+}
+
+// 초기화 클릭 (틱톡)
+function sfxReroll() { tone(880, 80, 'square', 0.08); setTimeout(() => tone(1320, 80, 'sine', 0.06), 30); }
+// 스탯 결정 (작은 띵)
+function sfxStatDecide() { tone(0, 250, 'triangle', 0.10, 660, 1320); }
+// 환각 도전 시작 (긴장)
+function sfxHallStart() {
+  const ctx = ensureAudio(); if (!ctx) return;
+  const t = ctx.currentTime;
+  const o = ctx.createOscillator(); const g = ctx.createGain();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(60, t);
+  o.frequency.linearRampToValueAtTime(220, t + 0.8);
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(0.12, t + 0.2);
+  g.gain.linearRampToValueAtTime(0, t + 0.85);
+  const lp = ctx.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = 800;
+  o.connect(lp).connect(g).connect(ctx.destination);
+  o.start(t); o.stop(t + 0.9);
+}
+// 환각 성공 (팡파레)
+function sfxHallSuccess() {
+  const ctx = ensureAudio(); if (!ctx) return;
+  const t0 = ctx.currentTime;
+  // 노이즈 펑
+  const bs = ctx.sampleRate * 0.25;
+  const buf = ctx.createBuffer(1, bs, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bs; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bs);
+  const n = ctx.createBufferSource(); n.buffer = buf;
+  const ng = ctx.createGain(); ng.gain.value = 0.2;
+  const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1200;
+  n.connect(hp).connect(ng).connect(ctx.destination);
+  n.start(t0);
+  // 팡파레 C-E-G-C
+  [
+    { f: 523, t: 0.05, d: 0.25 },
+    { f: 659, t: 0.18, d: 0.25 },
+    { f: 784, t: 0.30, d: 0.30 },
+    { f: 1047, t: 0.45, d: 1.00 },
+  ].forEach(n => {
+    [n.f, n.f * 2].forEach((freq, i) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = i === 0 ? 'sawtooth' : 'sine';
+      o.frequency.value = freq;
+      const t = t0 + n.t;
+      const vol = i === 0 ? 0.12 : 0.06;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.001, t + n.d);
+      o.connect(g).connect(ctx.destination);
+      o.start(t); o.stop(t + n.d + 0.1);
+    });
+  });
+}
+// 환각 실패 (다운)
+function sfxHallFail() { tone(0, 500, 'triangle', 0.12, 440, 110); }
+// 생명 구슬 (마법)
+function sfxLifeOrb() {
+  tone(523, 150, 'sine', 0.10);
+  setTimeout(() => tone(784, 150, 'sine', 0.10), 80);
+  setTimeout(() => tone(1047, 250, 'sine', 0.10), 160);
+}
+// 새 펫
+function sfxNewPet() {
+  tone(660, 100, 'triangle', 0.10);
+  setTimeout(() => tone(880, 150, 'triangle', 0.10), 80);
+}
+// 펫 잡기 (시작)
+function sfxCatch() {
+  const ctx = ensureAudio(); if (!ctx) return;
+  const t = ctx.currentTime;
+  [0, 0.08, 0.16].forEach((dt, i) => {
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.type = 'triangle';
+    o.frequency.value = 440 * Math.pow(1.5, i);
+    g.gain.setValueAtTime(0, t + dt);
+    g.gain.linearRampToValueAtTime(0.12, t + dt + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dt + 0.18);
+    o.connect(g).connect(ctx.destination);
+    o.start(t + dt); o.stop(t + dt + 0.25);
+  });
+}
+// 버튼 클릭
+function sfxClick() { tone(880, 40, 'square', 0.05); }
 
 /* ═══════════════════════════════════════════════════════════
    펫 데이터 로드
@@ -1202,16 +1445,34 @@ $('pet-price').addEventListener('input', () => {
 });
 
 /* 옵션 체크 시각효과 */
-['log-check'].forEach(id => {
+['log-check', 'sound-check'].forEach(id => {
   const cb = $(id);
   const lb = $(id + '-label');
+  if (!cb) return;
   cb.addEventListener('change', () => {
     lb.classList.toggle('active', cb.checked);
     if (id === 'log-check') {
       $('sim-log').classList.toggle('show', cb.checked);
     }
+    if (id === 'sound-check') {
+      soundOn = cb.checked;
+      try { localStorage.setItem('cal_sim_sound', cb.checked ? '1' : '0'); } catch (e) {}
+      if (soundOn) { ensureAudio(); sfxClick(); }
+    }
   });
 });
+
+// 사운드 설정 복원
+try {
+  const s = localStorage.getItem('cal_sim_sound');
+  if (s === '0') {
+    soundOn = false;
+    const cb = $('sound-check');
+    const lb = $('sound-check-label');
+    if (cb) cb.checked = false;
+    if (lb) lb.classList.remove('active');
+  }
+} catch (e) {}
 
 /* ═══════════════════════════════════════════════════════════
    유틸: 등급/스탯 표시
@@ -1275,6 +1536,9 @@ async function runSimulation() {
   if (!selectedPetName) return;
   if (simRunning) return;
 
+  ensureAudio();
+  sfxCatch();
+
   // 새로 시작 (모든 상태 초기화)
   simState = {
     petsBought: 1,
@@ -1328,12 +1592,14 @@ async function rollNewPetStats() {
       void cell.offsetWidth;
       cell.classList.add('flash');
     });
+    if (i % 2 === 0) sfxReroll();
     await sleep(60 + i * 12);
   }
 
   // 최종 결정
   const picked = weightedPick(pool, totalW);
   simState.currentStats = picked;
+  sfxStatDecide();
 
   // 표시
   $('srl-atk').textContent = picked.atk;
@@ -1383,19 +1649,18 @@ function updateMainDisplay() {
   // 생명 구슬 상태
   if (s.currentPetResets >= 10) {
     $('sim-life-status').textContent = '⛔ 이 펫 한계 도달';
-    $('sim-life-status').style.color = 'var(--err)';
+    $('sim-life-status').style.color = '#ff7a8a';
   } else if (s.currentPetResets >= 5) {
-    if (s.lifeOrbsUsed > simState.petsBought - 1) {
-      // 이 펫에 이미 생명 썼는데 현재 펫 카운트
+    if (s.lifeUsedThisPet) {
       $('sim-life-status').textContent = '💎 생명 구슬 사용 중';
-      $('sim-life-status').style.color = 'var(--a1)';
+      $('sim-life-status').style.color = '#c5b3ff';
     } else {
       $('sim-life-status').textContent = '⚠️ 생명 구슬 필요';
-      $('sim-life-status').style.color = 'var(--gold)';
+      $('sim-life-status').style.color = '#fdd835';
     }
   } else {
     $('sim-life-status').textContent = '✓ 초기화 가능';
-    $('sim-life-status').style.color = 'var(--ok)';
+    $('sim-life-status').style.color = '#87f5c0';
   }
 
   // 비용
@@ -1410,10 +1675,12 @@ function updateMainDisplay() {
  */
 function showActionButtons() {
   const s = simState;
-  $('sim-actions').style.display = 'grid';
+  $('sim-actions').style.display = 'block';
 
   const hallBtn = $('btn-action-hall');
   const resetBtn = $('btn-action-reset');
+  const reset5Btn = $('btn-action-reset5');
+  const newPetBtn = $('btn-action-newpet');
 
   // 환각 도전: 확률 0보다 크면 가능
   const canHall = s.currentStats && s.currentStats.prob > 0;
@@ -1422,25 +1689,35 @@ function showActionButtons() {
   hallBtn.style.cursor = canHall ? 'pointer' : 'not-allowed';
 
   // 초기화: 5번 이내면 가능, 5번 정확히 = 생명 필요, 10번 = 새 펫
-  if (s.currentPetResets < 5) {
-    resetBtn.disabled = false;
-    resetBtn.textContent = `📊 다시 초기화 (${s.currentPetResets + 1}/10)`;
-    resetBtn.style.opacity = '1';
-    resetBtn.style.cursor = 'pointer';
-  } else if (s.currentPetResets < 10) {
-    // 5~9: 생명 구슬 이미 썼다면 가능 (lifeOrbsUsed 체크는 이번 펫에서 썼는지가 핵심)
-    // 단순화: 이미 5번 넘어 9 이하면 생명을 쓴 상태 → 가능
+  if (s.currentPetResets < 10) {
     resetBtn.disabled = false;
     resetBtn.textContent = `📊 다시 초기화 (${s.currentPetResets + 1}/10)`;
     resetBtn.style.opacity = '1';
     resetBtn.style.cursor = 'pointer';
   } else {
-    // 10번 도달
     resetBtn.disabled = true;
     resetBtn.textContent = '⛔ 한계 도달';
     resetBtn.style.opacity = '0.45';
     resetBtn.style.cursor = 'not-allowed';
   }
+
+  // 5번 한번에: 10번 도달 안 했고 + 환각 확률 0인 경우만 의미있음
+  // (이미 환각 가능한 펫이면 5번 한번에 누르는 거 의미 없으니 약간 흐릿)
+  if (s.currentPetResets >= 10) {
+    reset5Btn.disabled = true;
+    reset5Btn.textContent = '⛔ 한계 도달';
+    reset5Btn.style.opacity = '0.45';
+    reset5Btn.style.cursor = 'not-allowed';
+  } else {
+    reset5Btn.disabled = false;
+    const remaining = Math.min(5, 10 - s.currentPetResets);
+    reset5Btn.textContent = `⚡ 초기화 ${remaining}번 연속`;
+    reset5Btn.style.opacity = '1';
+    reset5Btn.style.cursor = 'pointer';
+  }
+
+  // 새 펫으로 처음부터 - 항상 가능
+  newPetBtn.disabled = false;
 }
 
 /**
@@ -1449,6 +1726,7 @@ function showActionButtons() {
 async function rerollStats() {
   if (!simState) return;
   const s = simState;
+  sfxClick();
 
   // 5번 도달했고 아직 생명 안 쓴 상태 → 생명 결정 카드
   if (s.currentPetResets === 5 && !s.lifeUsedThisPet) {
@@ -1477,6 +1755,115 @@ async function rerollStats() {
 }
 
 /**
+ * ⚡ 초기화 5번 한번에 - 환각 확률 > 0 나오면 자동 정지
+ */
+async function rerollStats5() {
+  if (!simState) return;
+  const s = simState;
+
+  // 시작 조건 체크
+  if (s.currentPetResets >= 10) {
+    showNewPetDecision();
+    return;
+  }
+
+  $('sim-actions').style.display = 'none';
+
+  // 5번까지 또는 한계까지 (또는 환각 확률>0까지)
+  for (let i = 0; i < 5; i++) {
+    if (simAbort) break;
+
+    // 5번 끝, 생명 안 쓴 상태면 멈추고 카드
+    if (s.currentPetResets === 5 && !s.lifeUsedThisPet) {
+      showLifeDecision();
+      return;
+    }
+    // 10번 도달 멈춤
+    if (s.currentPetResets >= 10) {
+      showNewPetDecision();
+      return;
+    }
+
+    // 초기화 1번
+    s.currentPetResets++;
+    s.resetOrbsUsed++;
+    logSim(`📊 [⚡연속] 초기화 ${s.currentPetResets}/10 → 추첨 중...`);
+
+    // 빠른 추첨 (간단하게)
+    await rollNewPetStatsQuick();
+    logSim(`스탯: 공${s.currentStats.atk}/방${s.currentStats.def}/민${s.currentStats.agi}/체${s.currentStats.hp} · 환각 ${formatPct(s.currentStats.prob * 100)}`);
+
+    // 환각 확률 > 0 → 자동 정지
+    if (s.currentStats.prob > 0) {
+      logSim(`⏸ 환각 가능 확률 발견! 자동 정지`);
+      toast(`✨ ${formatPct(s.currentStats.prob * 100)} 확률 발견! 자동 정지`);
+      sfxStatDecide();
+      sfxStatDecide();
+      break;
+    }
+
+    await sleep(150);
+  }
+
+  updateMainDisplay();
+  showActionButtons();
+}
+
+/**
+ * 빠른 추첨 (5번 한번에용)
+ */
+async function rollNewPetStatsQuick() {
+  const pool = currentPetStatPool;
+  const totalW = currentPetTotalCombos;
+  const cells = ['srl-atk', 'srl-def', 'srl-agi', 'srl-hp'];
+
+  // 빠른 슬롯머신 (3틱)
+  for (let i = 0; i < 3; i++) {
+    if (simAbort) break;
+    const tempPick = weightedPick(pool, totalW);
+    $('srl-atk').textContent = tempPick.atk;
+    $('srl-def').textContent = tempPick.def;
+    $('srl-agi').textContent = tempPick.agi;
+    $('srl-hp').textContent = tempPick.hp;
+    cells.forEach(id => {
+      const cell = $(id).parentElement;
+      cell.classList.remove('flash');
+      void cell.offsetWidth;
+      cell.classList.add('flash');
+    });
+    if (i === 0) sfxReroll();
+    await sleep(50);
+  }
+
+  const picked = weightedPick(pool, totalW);
+  simState.currentStats = picked;
+  $('srl-atk').textContent = picked.atk;
+  $('srl-def').textContent = picked.def;
+  $('srl-agi').textContent = picked.agi;
+  $('srl-hp').textContent = picked.hp;
+  cells.forEach(id => {
+    const cell = $(id).parentElement;
+    cell.classList.remove('flash');
+    void cell.offsetWidth;
+    cell.classList.add('flash');
+  });
+  updateMainDisplay();
+  await sleep(80);
+}
+
+/**
+ * 🔄 새 펫으로 처음부터 - 전체 리셋
+ */
+function forceNewPet() {
+  if (!simState) return;
+  if (!confirm('지금까지의 진행을 모두 버리고 새 펫으로 처음부터 다시 시작할까요?')) return;
+  sfxNewPet();
+  toast('🔄 처음부터 다시 시작!');
+  // 새 시뮬레이션 시작
+  runSimulation();
+}
+
+/**
  * "환각 도전!" 클릭
  */
 async function tryHallChallenge() {
@@ -1487,6 +1874,7 @@ async function tryHallChallenge() {
 
   s.hallAttempts++;
   $('sim-actions').style.display = 'none';
+  sfxHallStart();
 
   // 도전 애니메이션 (간단하게)
   $('sim-display').classList.add('hall-mode');
@@ -1508,12 +1896,14 @@ async function tryHallChallenge() {
     $('stat-rolls').classList.add('all-max');
     rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-hall" style="font-size:32px;">✨ 8등급 환각! ✨</span></div>`;
     logSim(`✨ 환각 성공! (${formatPct(prob * 100)} 확률)`);
-    await sleep(1200);
+    sfxHallSuccess();
+    await sleep(1500);
     showSuccessResult();
   } else {
     // 실패
     $('sim-display').classList.remove('hall-mode');
     logSim(`❌ 환각 실패 (${formatPct(prob * 100)} → 실패)`);
+    sfxHallFail();
     rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-neg">😢 실패!</span><span class="sim-grade-text">다시 초기화 또는 도전</span></div>`;
     await sleep(800);
     updateMainDisplay();
@@ -1603,6 +1993,7 @@ async function useLifeOrb() {
   simState.lifeOrbsUsed++;
   simState.lifeUsedThisPet = true;
   $('decision-area').innerHTML = '';
+  sfxLifeOrb();
   toast('💎 생명의 구슬 사용! · 5번 더 초기화 가능');
   // 곧바로 초기화 1번 실행
   simState.currentPetResets++;
@@ -1622,6 +2013,7 @@ async function buyNewPet() {
   $('decision-area').innerHTML = '';
   $('sim-display').classList.remove('hall-mode');
   $('stat-rolls').classList.remove('all-max');
+  sfxNewPet();
   toast(`🛒 새 펫 구매! · 펫 ${simState.petsBought}마리째`);
   logSim(`🛒 새 펫 구매! 펫 ${simState.petsBought}마리째 (초기화 0/10)`);
   await rollNewPetStats();
