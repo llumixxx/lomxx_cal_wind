@@ -862,33 +862,6 @@
     [data-theme="dark"] .score-delta-up { background: #4a2528; color: #ff7080; }
     [data-theme="dark"] .score-delta-down { background: #1f3050; color: #6fa0ff; }
 
-    /* 📊 POWER 점수 표시 (게임 스코어 느낌) */
-    .charisma-score {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: 99px;
-      background: linear-gradient(135deg, #fff5cc, #ffd06f, #ffe988);
-      background-size: 200% 200%;
-      animation: powerShine 3s linear infinite;
-      border: 2px solid #f5a623;
-      font-size: 12px; font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      color: #6a3800; margin-top: 8px;
-      box-shadow:
-        0 4px 12px rgba(245,200,66,.4),
-        inset 0 1px 2px rgba(255,255,255,0.6);
-      letter-spacing: 0.5px;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.4);
-    }
-    @keyframes powerShine {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    [data-theme="dark"] .charisma-score {
-      background: linear-gradient(135deg, #4a3825, #6a5020, #4a3825);
-      background-size: 200% 200%;
-      color: #ffd070; border-color: #b08038;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.4);
-    }
 
     /* 🥚 오늘의 운세펫 - 다마고치 풍선 카드 */
     .fortune-pet-card {
@@ -1056,35 +1029,6 @@
     }
     .achievement-text { font-size: 14px; }
 
-    /* 🏅 트레이너 칭호 (메달 옆에) */
-    .trainer-title {
-      display: inline-block;
-      padding: 3px 10px; border-radius: 99px;
-      font-size: 10px; font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      margin-left: 8px;
-      vertical-align: middle;
-      letter-spacing: 0.5px;
-      border: 1.5px solid;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .tt-rookie { background: #f0fff8; color: #3a9a80; border-color: #90d4b8; }
-    .tt-apprentice { background: #e8f0ff; color: #4070c8; border-color: #a8c4f0; }
-    .tt-skilled { background: #f0eeff; color: var(--a1); border-color: var(--border2); }
-    .tt-veteran { background: #ffe8f0; color: #c84890; border-color: #f5b8d0; }
-    .tt-master { background: linear-gradient(135deg, #ffd87f, #ff9020); color: #fff; border-color: #fff; }
-    .tt-grandmaster {
-      background: linear-gradient(135deg, #87d4f5, #c8a8ff, #f587b8, #ffd87f);
-      background-size: 300% 300%;
-      animation: diamondShine 3s linear infinite;
-      color: #fff; border-color: #fff;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-    }
-    [data-theme="dark"] .tt-rookie { background:#1e2e26; color:#60ddb0; border-color:#3a6e58; }
-    [data-theme="dark"] .tt-apprentice { background:#1e2640; color:#6fa0ff; border-color:#4a6098; }
-    [data-theme="dark"] .tt-skilled { background:#27263e; color:#c4b0ff; border-color:#4e4c7a; }
-    [data-theme="dark"] .tt-veteran { background:#3a1e30; color:#ff9bc8; border-color:#8e4868; }
-
     /* 🥚 상위권 변화 알림 (페이지 상단) */
     .changes-banner {
       background:
@@ -1120,111 +1064,317 @@
     .changes-body { font-size: 13px; color: var(--t1); font-weight: 700; line-height: 1.4; }
     .changes-body strong { color: var(--a1); }
 
-    /* 🐣 떠다니는 미니 펫 친구들 */
-    .floating-pets {
-      position: fixed; bottom: 20px; left: 20px;
-      z-index: 999;
-      display: flex; gap: 8px; pointer-events: none;
+    /* 🥊 펫 대전 카드 */
+    .battle-card {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 50%),
+        linear-gradient(135deg, #fff, #fef0f8);
+      border: 3px solid #fff;
+      border-radius: 28px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow:
+        0 12px 32px rgba(245,135,184,0.22),
+        inset 0 -8px 0 rgba(245,135,184,0.08),
+        0 0 0 2px #f5c8de;
+      position: relative;
+      overflow: hidden;
     }
-    .floating-pet {
-      width: 56px; height: 56px; border-radius: 50%;
+    [data-theme="dark"] .battle-card {
+      background: linear-gradient(135deg, #2e1e2a, #1f1e33);
+      border-color: #2e1e2a;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.5), inset 0 -8px 0 rgba(245,135,184,0.12), 0 0 0 2px #6a3850;
+    }
+    .battle-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(90deg, #ff7a8a, #f5a623, #fdd835, #ff7a8a);
+      background-size: 200% 100%;
+      animation: gradShift 3s linear infinite;
+      border-radius: 28px 28px 0 0;
+    }
+    .battle-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .battle-title {
+      font-size: 20px; font-weight: 900; color: var(--t1);
+      font-family: 'Noto Sans KR', sans-serif;
+      background: linear-gradient(135deg, #ff7a8a, #f5a623);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .battle-sub {
+      font-size: 12px; color: var(--t3); font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    /* 입력 영역 */
+    .battle-input-grid {
+      display: grid; grid-template-columns: 2fr 1fr;
+      gap: 10px; margin-bottom: 12px;
+    }
+    @media(max-width:640px) { .battle-input-grid { grid-template-columns: 1fr; } }
+    .battle-pet-select {
+      padding: 10px 14px; border: 2.5px solid var(--border2);
+      border-radius: 14px;
+      background: var(--white); color: var(--t1);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; outline: none;
+      transition: border-color .2s;
+    }
+    .battle-pet-select:focus { border-color: var(--a1); }
+    [data-theme="dark"] .battle-pet-select { background: #1f1e33; border-color: #4e4c7a; color: #e4e2ff; }
+
+    .battle-stat-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-bottom: 12px;
+    }
+    .battle-stat-input {
+      display: flex; flex-direction: column;
+      gap: 4px;
+    }
+    .battle-stat-label {
+      font-size: 10px; font-weight: 900;
+      color: var(--t3); letter-spacing: 1px;
+      font-family: 'Nunito', sans-serif;
+      text-align: center; text-transform: uppercase;
+    }
+    .battle-stat-input input {
+      padding: 8px; border: 2px solid var(--border2);
+      border-radius: 12px; background: var(--white);
+      color: var(--t1); font-size: 14px; font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      text-align: center; outline: none;
+      width: 100%;
+    }
+    .battle-stat-input input:focus { border-color: var(--a1); }
+    [data-theme="dark"] .battle-stat-input input { background: #1f1e33; border-color: #4e4c7a; color: #e4e2ff; }
+
+    .battle-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #ff7a8a, #f5a623);
+      border: 3px solid #fff;
+      border-radius: 99px; color: #fff;
+      font-size: 15px; font-weight: 900;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:
+        0 6px 20px rgba(245,122,138,.4),
+        inset 0 -3px 0 rgba(0,0,0,0.1);
+      letter-spacing: 0.5px;
+    }
+    .battle-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 28px rgba(245,122,138,.5);
+    }
+    .battle-btn:disabled {
+      opacity: 0.5; cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+    .battle-btn.secondary {
+      background: var(--white); color: var(--a1);
+      border-color: var(--a1);
+      box-shadow: 0 4px 12px rgba(155,135,245,.2);
+    }
+    [data-theme="dark"] .battle-btn.secondary { background: #27263e; color: var(--a1); border-color: var(--a1); }
+
+    /* 🥊 전투 화면 */
+    .battle-arena {
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,0.6), transparent 60%),
+        linear-gradient(180deg, #fff5f8 0%, #fff 100%);
+      border: 3px solid #fff;
+      border-radius: 24px;
+      padding: 22px;
+      margin-top: 14px;
+      box-shadow:
+        0 10px 30px rgba(155,135,245,0.18),
+        inset 0 -6px 0 rgba(155,135,245,0.06),
+        0 0 0 2px var(--border2);
+    }
+    [data-theme="dark"] .battle-arena {
+      background: linear-gradient(180deg, #2e1e2a 0%, #1f1e33 100%);
+      border-color: #2e1e2a;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4), inset 0 -6px 0 rgba(155,135,245,0.1), 0 0 0 2px #4e4c7a;
+    }
+    .battle-vs-row {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 14px; align-items: center;
+      margin-bottom: 18px;
+    }
+    .battle-fighter {
+      text-align: center;
+    }
+    .battle-fighter-img {
+      width: 90px; height: 90px; border-radius: 50%;
       background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(248,247,255,.9));
       border: 3px solid #fff;
       display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 8px;
       box-shadow:
         0 6px 18px rgba(155,135,245,.3),
-        inset 0 -5px 0 rgba(155,135,245,.08);
-      animation: tamagoFloat 4s ease-in-out infinite;
+        inset 0 -6px 0 rgba(155,135,245,.08);
       overflow: hidden;
-      cursor: pointer;
-      pointer-events: auto;
-      transition: transform .2s;
-    }
-    .floating-pet:hover { transform: scale(1.2) rotate(10deg); }
-    .floating-pet img { width: 75%; height: 75%; object-fit: contain; }
-    .floating-pet:nth-child(2) { animation-delay: .8s; }
-    .floating-pet:nth-child(3) { animation-delay: 1.6s; }
-    @keyframes tamagoFloat {
-      0%, 100% { transform: translateY(0) rotate(-3deg); }
-      50% { transform: translateY(-10px) rotate(3deg); }
-    }
-    @media(max-width:768px) {
-      .floating-pets { display: none; }
-    }
-
-    /* 🎯 데일리 미션 위젯 */
-    .daily-missions {
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 50%),
-        linear-gradient(135deg, #fff, #f0fff8);
-      border: 2.5px solid #fff;
-      border-radius: 22px;
-      padding: 16px 20px;
-      margin-bottom: 22px;
-      box-shadow:
-        0 6px 20px rgba(135,245,192,0.2),
-        inset 0 -4px 0 rgba(135,245,192,0.08),
-        0 0 0 2px #b8e8c8;
-    }
-    [data-theme="dark"] .daily-missions {
-      background: linear-gradient(135deg, #1f1e33, #1e2e26);
-      border-color: #1f1e33;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 -4px 0 rgba(135,245,192,0.1), 0 0 0 2px #3a6e58;
-    }
-    .missions-header {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-    }
-    .missions-icon {
-      font-size: 22px; line-height: 1;
       animation: tamagoIdle 3s ease-in-out infinite;
     }
-    .missions-title {
-      font-size: 13px; font-weight: 900;
-      color: #3a9a80; letter-spacing: 0.5px;
+    .battle-fighter-img img { width: 75%; height: 75%; object-fit: contain; }
+    .battle-fighter-img.attacking { animation: attackBounce .4s ease; }
+    .battle-fighter-img.hit { animation: hitShake .4s ease; }
+    @keyframes attackBounce {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.2) rotate(-10deg); }
+    }
+    @keyframes hitShake {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-8px) rotate(-5deg); }
+      40% { transform: translateX(8px) rotate(5deg); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(5px); }
+    }
+    .battle-fighter-name {
+      font-size: 13px; font-weight: 900; color: var(--t1);
       font-family: 'Noto Sans KR', sans-serif;
+      margin-bottom: 6px;
     }
-    [data-theme="dark"] .missions-title { color: #60ddb0; }
-    .missions-progress {
-      margin-left: auto;
-      font-size: 11px; font-weight: 900;
-      font-family: 'Nunito', sans-serif; color: var(--t3);
-      background: var(--s1); padding: 3px 10px; border-radius: 99px;
-      border: 1.5px solid var(--border);
+    .battle-fighter-nick {
+      font-size: 10px; color: var(--t3); font-weight: 700;
+      margin-bottom: 6px;
     }
-    .mission-list { display: flex; flex-direction: column; gap: 6px; }
-    .mission-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 12px; border-radius: 14px;
-      background: var(--white); border: 1.5px solid var(--border);
-      font-size: 12.5px; font-weight: 700;
-      transition: all .2s;
+
+    /* HP 바 */
+    .hp-bar-wrap {
+      background: var(--s2);
+      border: 2px solid var(--border);
+      border-radius: 99px;
+      height: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
     }
-    .mission-item:hover { border-color: var(--a1); transform: translateX(2px); }
-    .mission-item.done {
-      background: linear-gradient(135deg, #f0fff8, #e0f8e0);
-      border-color: #b8e8c8;
-      color: #3a9a80;
+    .hp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f5a623, #fdd835, #87f5c0);
+      transition: width .4s ease, background .3s;
+      border-radius: 99px;
+      box-shadow: 0 0 8px rgba(135,245,192,0.5);
     }
-    [data-theme="dark"] .mission-item { background:#27263e; border-color:#3a3860; }
-    [data-theme="dark"] .mission-item.done { background:#1e2e26; border-color:#3a6e58; color:#60ddb0; }
-    .mission-check {
-      width: 22px; height: 22px; border-radius: 50%;
-      border: 2px solid var(--border2);
+    .hp-bar-fill.medium { background: linear-gradient(90deg, #f5a623, #fdd835); }
+    .hp-bar-fill.low { background: linear-gradient(90deg, #ff7a8a, #f5a623); }
+    .hp-bar-fill.critical { background: linear-gradient(90deg, #d23a3a, #ff7a8a); animation: hpCritical .5s ease-in-out infinite; }
+    @keyframes hpCritical {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .hp-text {
+      position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 12px; color: var(--t3); font-weight: 900;
-      flex-shrink: 0;
-    }
-    .mission-item.done .mission-check {
-      background: #60ddb0; color: #fff; border-color: #60ddb0;
-    }
-    .mission-text { flex: 1; }
-    .mission-reward {
-      font-size: 10px; font-weight: 900; color: var(--gold, #f5a623);
-      background: #fff8e0; border: 1.5px solid #fdd835;
-      padding: 2px 8px; border-radius: 99px;
+      font-size: 11px; font-weight: 900;
       font-family: 'Nunito', sans-serif;
+      color: var(--t1);
+      text-shadow: 0 1px 2px rgba(255,255,255,0.8);
     }
-    [data-theme="dark"] .mission-reward { background: #3a3020; border-color:#a08038; color:#ffd070; }
+    [data-theme="dark"] .hp-text { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+
+    /* VS 디바이더 */
+    .battle-vs {
+      font-size: 28px; font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #ff7a8a, #f5a623);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: vsPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes vsPulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* 데미지 팝업 */
+    .damage-pop {
+      position: absolute;
+      font-size: 32px; font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      color: #ff3838;
+      text-shadow:
+        2px 2px 0 #fff, -2px -2px 0 #fff,
+        2px -2px 0 #fff, -2px 2px 0 #fff;
+      pointer-events: none;
+      animation: damagePop 1s ease-out forwards;
+      z-index: 10;
+    }
+    .damage-pop.crit {
+      color: #fdd835;
+      font-size: 42px;
+    }
+    @keyframes damagePop {
+      0%   { transform: translateY(0) scale(0.5); opacity: 1; }
+      30%  { transform: translateY(-30px) scale(1.4); opacity: 1; }
+      100% { transform: translateY(-70px) scale(1); opacity: 0; }
+    }
+
+    /* 전투 로그 */
+    .battle-log {
+      background: var(--s1);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      max-height: 120px;
+      overflow-y: auto;
+      font-size: 12px;
+      color: var(--t2);
+      font-weight: 700;
+      line-height: 1.7;
+    }
+    [data-theme="dark"] .battle-log { background:#1f1e33; border-color:#3a3860; color:#b0aedd; }
+    .battle-log-line { animation: fadeIn .3s ease; }
+    .battle-log-line.crit { color: #f5a623; font-weight: 900; }
+    .battle-log-line.win  { color: #3a9a80; font-weight: 900; }
+    .battle-log-line.lose { color: #d23a3a; font-weight: 900; }
+
+    /* 결과 모달 스타일 */
+    .battle-result {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .battle-result-emoji {
+      font-size: 60px;
+      margin-bottom: 10px;
+      animation: tamagoIdle 2s ease-in-out infinite;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.2));
+    }
+    .battle-result-title {
+      font-size: 28px; font-weight: 900;
+      font-family: 'Noto Sans KR', sans-serif;
+      margin-bottom: 6px;
+    }
+    .battle-result-title.win {
+      background: linear-gradient(135deg, #f5a623, #fdd835);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .battle-result-title.lose { color: var(--t2); }
+    .battle-result-msg {
+      font-size: 13px; color: var(--t2); font-weight: 700;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .battle-stat-diff {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 8px; margin-top: 12px;
+      padding: 12px; background: var(--s1);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+    }
+    .battle-stat-diff-cell {
+      text-align: center;
+      font-size: 11px;
+    }
+    .battle-stat-diff-label { color: var(--t3); font-weight: 800; margin-bottom: 2px; }
+    .battle-stat-diff-val { font-weight: 900; font-family: 'Nunito', sans-serif; }
+    .battle-stat-diff-val.plus { color: #3a9a80; }
+    .battle-stat-diff-val.minus { color: #d23a3a; }
 
     /* 🎵 사운드 토글 */
     .sound-float-btn {
@@ -1270,9 +1420,6 @@
 
 <!-- 🎊 폭죽 캔버스 -->
 <canvas id="confetti-canvas"></canvas>
-
-<!-- 🐣 떠다니는 미니 펫 친구들 -->
-<div class="floating-pets" id="floating-pets"></div>
 <script src="nav.js"></script>
 
 <!-- ── Float Buttons ── -->
@@ -1323,8 +1470,8 @@
   <!-- 🥚 상위권 변화 알림 -->
   <div id="changes-banner-container"></div>
 
-  <!-- 🎯 데일리 미션 -->
-  <div id="daily-missions-container"></div>
+  <!-- 🥊 펫 대전 -->
+  <div id="battle-container"></div>
 
   <!-- Tabs -->
   <div class="tabs-row">
@@ -1667,7 +1814,7 @@ function renderFortunePet(pets) {
 }
 function jumpToPet(name) {
   sfxClick();
-  setMissionDone('fortune');
+  /* mission removed */
   // 펫별 랭킹 탭으로 전환 + 검색 (4번째 탭, 인덱스 3)
   const petTabBtn = document.querySelectorAll('.tab-btn')[3];
   if (petTabBtn) {
@@ -1680,20 +1827,6 @@ function jumpToPet(name) {
       }
     }, 100);
   }
-}
-
-// ── 🏅 트레이너 칭호 (POWER 점수 기반) ──
-function trainerTitle(charisma) {
-  if (charisma >= 200) return { class: 'tt-grandmaster', label: '🌟 그랜드마스터' };
-  if (charisma >= 100) return { class: 'tt-master',      label: '👑 마스터' };
-  if (charisma >= 50)  return { class: 'tt-veteran',     label: '⚔️ 베테랑' };
-  if (charisma >= 20)  return { class: 'tt-skilled',     label: '✨ 숙련가' };
-  if (charisma >= 5)   return { class: 'tt-apprentice',  label: '🌱 견습생' };
-  return { class: 'tt-rookie', label: '🐣 새내기' };
-}
-function trainerTitleHTML(charisma) {
-  const t = trainerTitle(charisma);
-  return `<span class="trainer-title ${t.class}">${t.label}</span>`;
 }
 
 // ── 🥚 상위권 변화 알림 (전일 데이터 대비) ──
@@ -1746,107 +1879,377 @@ function renderChangesBanner(pets) {
   `;
 }
 
-// ── 🎯 데일리 미션 ──
-const MISSIONS_KEY = 'wind-rank-missions';
-const TODAY_KEY = () => 'wind-rank-mission-' + new Date().toISOString().slice(0, 10);
+// ── 🥊 펫 대전 시스템 ──
 
-const MISSIONS = [
-  { id: 'visit',      icon: '🏠', text: '오늘 방문하기',           reward: '⚡ POWER +1' },
-  { id: 'fortune',    icon: '🎲', text: '오늘의 운세펫 확인하기',     reward: '🍀 행운 +1' },
-  { id: 'slot',       icon: '🎰', text: '랜덤 유저 뽑기 (🎰)',       reward: '🎟️ 토큰 +1' },
-  { id: 'detail',     icon: '🔍', text: '유저 상세 정보 보기',       reward: '📜 지식 +1' },
-  { id: 'tab',        icon: '📑', text: '모든 탭 둘러보기',          reward: '🌟 별 +1' },
-];
+let _battlePets = []; // 대전 가능한 펫 목록 (랭킹 데이터 있는 펫)
+let _battleState = null; // 현재 전투 상태
 
-function getMissionState() {
-  const key = TODAY_KEY();
-  try {
-    const data = JSON.parse(localStorage.getItem(key) || '{}');
-    return data;
-  } catch(e) { return {}; }
+// 능력치 파싱 (예: "209 (-2)" → 209)
+function parseStat(s) {
+  if (!s) return 0;
+  const m = String(s).match(/(\d+)/);
+  return m ? parseInt(m[1]) : 0;
 }
-function setMissionDone(id) {
-  const key = TODAY_KEY();
-  const data = getMissionState();
-  if (data[id]) return false; // 이미 완료
-  data[id] = true;
-  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
-  renderMissions();
-  // 미션 완료 도전과제 알림
-  const m = MISSIONS.find(x => x.id === id);
-  if (m) {
-    showAchievement(m.icon, '미션 완료!', `${m.text} ${m.reward}`);
+
+// 펫 랭커의 평균 스탯 계산
+function getOpponentStats(petData, rank) {
+  // rank: 1 (1위) / 2 (2위) / 3 (3위) / 0 (랜덤 TOP10)
+  const list = petData.general_ranking || [];
+  if (list.length === 0) return null;
+  let target;
+  if (rank > 0 && list[rank - 1]) {
+    target = list[rank - 1];
+  } else {
+    // 랜덤 TOP10 (또는 가능한 만큼)
+    const pool = list.slice(0, Math.min(10, list.length));
+    target = pool[Math.floor(Math.random() * pool.length)];
   }
-  // 모두 완료?
-  if (MISSIONS.every(mm => data[mm.id])) {
+  return {
+    nickname: target.nickname,
+    rank: list.indexOf(target) + 1,
+    atk: parseStat(target.attack),
+    def: parseStat(target.defense),
+    spd: parseStat(target.speed),
+    hp:  parseStat(target.exp),
+    level: parseStat(target.level),
+  };
+}
+
+function renderBattleWidget(pets) {
+  // 랭킹 데이터 있는 펫만
+  _battlePets = pets.filter(p => (p.general_ranking || []).length > 0)
+                    .sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  if (_battlePets.length === 0) {
+    document.getElementById('battle-container').innerHTML = '';
+    return;
+  }
+
+  const petOptions = _battlePets.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+
+  // 기존에 입력한 값 복원
+  const saved = (() => {
+    try { return JSON.parse(localStorage.getItem('wind-rank-battle-state') || '{}'); }
+    catch(e) { return {}; }
+  })();
+
+  document.getElementById('battle-container').innerHTML = `
+    <div class="battle-card">
+      <div class="battle-header">
+        <span style="font-size: 28px;">🥊</span>
+        <span class="battle-title">랭킹 펫과 싸워보기</span>
+      </div>
+      <div class="battle-sub">내 펫 능력치를 입력하고 같은 펫 랭커와 대결!</div>
+
+      <div class="battle-input-grid">
+        <select id="battle-pet-select" class="battle-pet-select">
+          <option value="">⬇️ 펫 선택...</option>
+          ${petOptions}
+        </select>
+      </div>
+
+      <div class="battle-stat-grid">
+        <div class="battle-stat-input">
+          <div class="battle-stat-label">⚔️ 공격</div>
+          <input type="number" id="my-atk" min="0" placeholder="0" value="${saved.atk || ''}">
+        </div>
+        <div class="battle-stat-input">
+          <div class="battle-stat-label">🛡️ 방어</div>
+          <input type="number" id="my-def" min="0" placeholder="0" value="${saved.def || ''}">
+        </div>
+        <div class="battle-stat-input">
+          <div class="battle-stat-label">💨 순발</div>
+          <input type="number" id="my-spd" min="0" placeholder="0" value="${saved.spd || ''}">
+        </div>
+        <div class="battle-stat-input">
+          <div class="battle-stat-label">❤️ 내구</div>
+          <input type="number" id="my-hp" min="0" placeholder="0" value="${saved.hp || ''}">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <button class="battle-btn" onclick="startBattle(1)" id="battle-btn-1">🥇 1위와 대결</button>
+        <button class="battle-btn secondary" onclick="startBattle(0)" id="battle-btn-rand">🎲 랜덤 도전</button>
+        <button class="battle-btn secondary" onclick="autoFillBattleSelf()" title="내 닉네임 검색">🔍 내 닉</button>
+      </div>
+
+      <!-- 전투 결과 영역 -->
+      <div id="battle-arena-area"></div>
+    </div>
+  `;
+
+  // 저장된 펫 선택 복원
+  if (saved.petName) {
+    document.getElementById('battle-pet-select').value = saved.petName;
+  }
+}
+
+// 본인 닉네임으로 능력치 자동 채우기 (랭킹에서 검색)
+function autoFillBattleSelf() {
+  const nick = prompt('본인 닉네임을 입력하세요 (랭킹에 있어야 됨):');
+  if (!nick) return;
+  // 본캐 정규화
+  const mainName = aliasToMain[nick] || nick;
+  // 모든 펫에서 이 닉이 등록된 첫 펫 찾기
+  for (const pet of _battlePets) {
+    const found = (pet.general_ranking || []).find(r =>
+      r.nickname === nick || aliasToMain[r.nickname] === mainName
+    );
+    if (found) {
+      document.getElementById('battle-pet-select').value = pet.name;
+      document.getElementById('my-atk').value = parseStat(found.attack);
+      document.getElementById('my-def').value = parseStat(found.defense);
+      document.getElementById('my-spd').value = parseStat(found.speed);
+      document.getElementById('my-hp').value  = parseStat(found.exp);
+      showToast(`✅ ${pet.name}에서 ${found.nickname}님 데이터 가져왔어요!`);
+      sfxAch();
+      return;
+    }
+  }
+  showToast(`❌ "${nick}"을 랭킹에서 못 찾았어요`);
+}
+
+// 본인 능력치 입력 저장 + 가져오기
+function saveBattleState() {
+  const state = {
+    petName: document.getElementById('battle-pet-select').value,
+    atk: document.getElementById('my-atk').value,
+    def: document.getElementById('my-def').value,
+    spd: document.getElementById('my-spd').value,
+    hp:  document.getElementById('my-hp').value,
+  };
+  try { localStorage.setItem('wind-rank-battle-state', JSON.stringify(state)); } catch(e) {}
+}
+
+// 전투 시작
+async function startBattle(opponentRank) {
+  const petName = document.getElementById('battle-pet-select').value;
+  if (!petName) {
+    showToast('⬇️ 먼저 펫을 선택해주세요');
+    return;
+  }
+  const atk = parseInt(document.getElementById('my-atk').value) || 0;
+  const def = parseInt(document.getElementById('my-def').value) || 0;
+  const spd = parseInt(document.getElementById('my-spd').value) || 0;
+  const hp  = parseInt(document.getElementById('my-hp').value) || 0;
+  if (atk + def + spd + hp === 0) {
+    showToast('📊 능력치를 입력해주세요');
+    return;
+  }
+
+  saveBattleState();
+  sfxClick();
+
+  const petData = _battlePets.find(p => p.name === petName);
+  if (!petData) return;
+  const opponent = getOpponentStats(petData, opponentRank);
+  if (!opponent) {
+    showToast('❌ 상대를 찾을 수 없어요');
+    return;
+  }
+
+  const me = { nickname: '나', rank: 0, atk, def, spd, hp, level: 140 };
+  await runBattle(petName, me, opponent);
+}
+
+// 데미지 계산
+function calcDamage(attacker, defender) {
+  // 기본 데미지 = ATK × 0.5 - DEF × 0.15 (좀 더 공세적)
+  const raw = attacker.atk * 0.5 - defender.def * 0.15;
+  const minDmg = Math.max(1, Math.round(attacker.atk * 0.1));
+  let dmg = Math.max(minDmg, Math.round(raw));
+  // 큰 변동 (±25%) - 운빨 요소
+  const variance = 0.75 + Math.random() * 0.5;
+  dmg = Math.max(1, Math.round(dmg * variance));
+  // 크리티컬 확률 12%
+  const isCrit = Math.random() < 0.12;
+  if (isCrit) dmg = Math.round(dmg * 1.6);
+  return { dmg, isCrit };
+}
+
+// 전투 실행 (시각 + 로직)
+async function runBattle(petName, me, opp) {
+  // arena UI
+  const img = PET_IMAGES[petName];
+  const imgHTML = img ? `<img src="${img}" alt="${petName}">` : '<span style="font-size:32px;">🐾</span>';
+
+  document.getElementById('battle-arena-area').innerHTML = `
+    <div class="battle-arena" id="battle-arena">
+      <div class="battle-vs-row">
+        <div class="battle-fighter" id="fighter-me">
+          <div class="battle-fighter-img" id="my-img">${imgHTML}</div>
+          <div class="battle-fighter-name">${me.nickname}</div>
+          <div class="battle-fighter-nick">⚔️${me.atk} 🛡${me.def} 💨${me.spd}</div>
+          <div class="hp-bar-wrap"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%;"></div><div class="hp-text" id="my-hp-text">${me.hp} / ${me.hp}</div></div>
+        </div>
+        <div class="battle-vs">VS</div>
+        <div class="battle-fighter" id="fighter-opp">
+          <div class="battle-fighter-img" id="opp-img">${imgHTML}</div>
+          <div class="battle-fighter-name">${petName}</div>
+          <div class="battle-fighter-nick">${opp.nickname} (${opp.rank}위) · ⚔️${opp.atk} 🛡${opp.def} 💨${opp.spd}</div>
+          <div class="hp-bar-wrap"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;"></div><div class="hp-text" id="opp-hp-text">${opp.hp} / ${opp.hp}</div></div>
+        </div>
+      </div>
+      <div class="battle-log" id="battle-log"></div>
+    </div>
+  `;
+
+  // 초기 HP
+  let myCurHp = me.hp;
+  let oppCurHp = opp.hp;
+  const logEl = document.getElementById('battle-log');
+
+  function log(text, cls) {
+    const line = document.createElement('div');
+    line.className = 'battle-log-line' + (cls ? ' ' + cls : '');
+    line.textContent = text;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function updateHpBar(who, cur, max) {
+    const bar = document.getElementById(who + '-hp-bar');
+    const text = document.getElementById(who + '-hp-text');
+    const pct = Math.max(0, cur) / max * 100;
+    bar.style.width = pct + '%';
+    text.textContent = Math.max(0, cur) + ' / ' + max;
+    bar.classList.remove('medium','low','critical');
+    if (pct < 20) bar.classList.add('critical');
+    else if (pct < 40) bar.classList.add('low');
+    else if (pct < 70) bar.classList.add('medium');
+  }
+
+  // 데미지 팝업
+  function showDamagePop(who, dmg, isCrit) {
+    const target = document.getElementById('fighter-' + who);
+    const pop = document.createElement('div');
+    pop.className = 'damage-pop' + (isCrit ? ' crit' : '');
+    pop.textContent = (isCrit ? 'CRIT! ' : '') + '-' + dmg;
+    // 위치: 펫 이미지 위
+    const imgEl = document.getElementById(who + '-img');
+    const rect = imgEl.getBoundingClientRect();
+    const arenaRect = document.getElementById('battle-arena').getBoundingClientRect();
+    pop.style.left = (rect.left - arenaRect.left + rect.width / 2 - 20) + 'px';
+    pop.style.top = (rect.top - arenaRect.top - 10) + 'px';
+    document.getElementById('battle-arena').appendChild(pop);
+    setTimeout(() => pop.remove(), 1000);
+  }
+
+  // 공격 애니메이션
+  function animateAttack(attacker, defender) {
+    document.getElementById(attacker + '-img').classList.add('attacking');
+    document.getElementById(defender + '-img').classList.add('hit');
     setTimeout(() => {
-      fireConfetti({ count: 60, originY: window.innerHeight / 2 });
-      showAchievement('🏆', '오늘의 모든 미션 완료!', 'COMPLETE BONUS! ✨');
-    }, 800);
+      document.getElementById(attacker + '-img').classList.remove('attacking');
+      document.getElementById(defender + '-img').classList.remove('hit');
+    }, 400);
   }
-  return true;
+
+  // 선공권: 순발 빠른 쪽
+  const myFirst = me.spd >= opp.spd;
+  log(myFirst ? '⚡ 내가 더 빨라요! 선공!' : `⚡ ${opp.nickname}이(가) 더 빨라요!`);
+
+  await sleep(700);
+
+  let turn = 0;
+  const MAX_TURNS = 30;
+
+  while (myCurHp > 0 && oppCurHp > 0 && turn < MAX_TURNS) {
+    turn++;
+    const myTurn = (turn % 2 === 1) ? myFirst : !myFirst;
+
+    if (myTurn) {
+      // 내가 공격
+      const { dmg, isCrit } = calcDamage(me, opp);
+      oppCurHp -= dmg;
+      animateAttack('me', 'opp');
+      sfxClick();
+      if (isCrit) sfxAch();
+      showDamagePop('opp', dmg, isCrit);
+      log((isCrit ? '⭐ 크리티컬! ' : '') + `내 공격 → ${dmg} 데미지!`, isCrit ? 'crit' : '');
+      updateHpBar('opp', oppCurHp, opp.hp);
+    } else {
+      // 상대 공격
+      const { dmg, isCrit } = calcDamage(opp, me);
+      myCurHp -= dmg;
+      animateAttack('opp', 'me');
+      sfxClick();
+      showDamagePop('me', dmg, isCrit);
+      log((isCrit ? '💢 크리티컬! ' : '') + `${opp.nickname}의 공격 → ${dmg} 데미지!`, isCrit ? 'crit' : '');
+      updateHpBar('me', myCurHp, me.hp);
+    }
+    await sleep(700);
+  }
+
+  await sleep(400);
+
+  // 결과
+  const win = myCurHp > 0 && oppCurHp <= 0;
+  const draw = myCurHp > 0 && oppCurHp > 0 && turn >= MAX_TURNS;
+
+  if (draw) {
+    log('⏱️ 시간 초과! 무승부!', 'win');
+    showBattleResult('draw', petName, me, opp);
+  } else if (win) {
+    log(`🏆 승리! ${opp.nickname}을(를) 꺾었어요!`, 'win');
+    fireConfetti({ count: 100, originY: window.innerHeight / 2 });
+    sfxAch();
+    setTimeout(() => showBattleResult('win', petName, me, opp), 600);
+  } else {
+    log(`💔 패배... ${opp.nickname}이(가) 너무 강했어요`, 'lose');
+    setTimeout(() => showBattleResult('lose', petName, me, opp), 600);
+  }
 }
-function renderMissions() {
-  const state = getMissionState();
-  const done = MISSIONS.filter(m => state[m.id]).length;
-  const html = MISSIONS.map(m => {
-    const isDone = !!state[m.id];
+
+// 결과 모달
+function showBattleResult(kind, petName, me, opp) {
+  const isWin = kind === 'win';
+  const isDraw = kind === 'draw';
+  const emoji = isWin ? '🏆' : isDraw ? '🤝' : '😢';
+  const title = isWin ? '승리!' : isDraw ? '무승부' : '패배...';
+  const titleClass = isWin ? 'win' : 'lose';
+
+  // 능력치 차이
+  const diffs = [
+    { label: '⚔️ 공격', val: me.atk - opp.atk },
+    { label: '🛡️ 방어', val: me.def - opp.def },
+    { label: '💨 순발', val: me.spd - opp.spd },
+    { label: '❤️ 내구', val: me.hp - opp.hp },
+  ];
+  const diffHTML = diffs.map(d => {
+    const cls = d.val > 0 ? 'plus' : d.val < 0 ? 'minus' : '';
+    const sign = d.val > 0 ? '+' : '';
     return `
-      <div class="mission-item ${isDone ? 'done' : ''}">
-        <div class="mission-check">${isDone ? '✓' : ''}</div>
-        <span style="font-size:16px;">${m.icon}</span>
-        <span class="mission-text">${m.text}</span>
-        <span class="mission-reward">${m.reward}</span>
+      <div class="battle-stat-diff-cell">
+        <div class="battle-stat-diff-label">${d.label}</div>
+        <div class="battle-stat-diff-val ${cls}">${sign}${d.val}</div>
       </div>
     `;
   }).join('');
 
-  const container = document.getElementById('daily-missions-container');
-  if (!container) return;
-  container.innerHTML = `
-    <div class="daily-missions">
-      <div class="missions-header">
-        <span class="missions-icon">🎯</span>
-        <span class="missions-title">오늘의 미션</span>
-        <span class="missions-progress">${done} / ${MISSIONS.length}</span>
-      </div>
-      <div class="mission-list">${html}</div>
+  let msg;
+  if (isWin) {
+    msg = `${petName} ${opp.rank}위 <strong>${opp.nickname}</strong>을(를) 꺾었습니다! 🎉`;
+  } else if (isDraw) {
+    msg = `${opp.nickname}와 호각의 승부였어요. 능력치를 올려서 다시 도전!`;
+  } else {
+    // 가장 부족한 스탯 찾기
+    const worst = diffs.reduce((a, b) => a.val < b.val ? a : b);
+    msg = `${opp.nickname}이(가) 더 강했어요. <strong>${worst.label}</strong> ${Math.abs(worst.val)}만큼 부족했어요!`;
+  }
+
+  document.getElementById('detailModalImg').innerHTML = `<span style="font-size:32px;">${emoji}</span>`;
+  document.getElementById('detailModalName').textContent = '전투 결과';
+  document.getElementById('detailModalSub').textContent = petName + ' vs ' + opp.nickname;
+  document.getElementById('detailModalBody').innerHTML = `
+    <div class="battle-result">
+      <div class="battle-result-emoji">${emoji}</div>
+      <div class="battle-result-title ${titleClass}">${title}</div>
+      <div class="battle-result-msg">${msg}</div>
+      <div class="battle-stat-diff">${diffHTML}</div>
     </div>
   `;
-
-  // 방문 미션 자동 완료
-  setTimeout(() => setMissionDone('visit'), 100);
-}
-
-// ── 🐣 떠다니는 미니 펫 친구들 ──
-function renderFloatingPets(pets) {
-  // 랭킹 데이터 있는 펫 중 랜덤 3마리
-  const withData = pets.filter(p =>
-    (p.general_ranking && p.general_ranking.length > 0) ||
-    (p.rebirth_ranking && p.rebirth_ranking.length > 0)
-  );
-  if (withData.length === 0) return;
-
-  // 매일 같은 펫 3마리 (시드 기반)
-  const today = new Date().toISOString().slice(0, 10);
-  let seed = 0;
-  for (let i = 0; i < today.length; i++) seed = (seed * 31 + today.charCodeAt(i)) | 0;
-  const shuffled = [...withData].sort((a, b) => {
-    const sa = (seed * a.name.charCodeAt(0)) % 1000;
-    const sb = (seed * b.name.charCodeAt(0)) % 1000;
-    return sa - sb;
-  });
-  const friends = shuffled.slice(0, 3);
-
-  const container = document.getElementById('floating-pets');
-  if (!container) return;
-  container.innerHTML = friends.map(p => {
-    const img = PET_IMAGES[p.name];
-    const inner = img
-      ? `<img src="${img}" alt="${p.name}">`
-      : `<span style="font-size:28px;">🐾</span>`;
-    return `<div class="floating-pet" title="${p.name}" onclick="jumpToPet('${p.name.replace(/'/g, "\\'")}')">${inner}</div>`;
-  }).join('');
+  document.getElementById('detailModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 // ── 🎰 슬롯머신 랜덤 유저 ──
@@ -1856,7 +2259,7 @@ function registerSlotData(gridId, sorted) {
 }
 function slotMachineUser(gridId, storeKey, searchInputId) {
   sfxSlot();
-  setMissionDone('slot');
+  /* mission removed */
   const btn = (typeof event !== 'undefined' && event) ? event.currentTarget : document.querySelector('.slot-btn');
   if (btn) {
     btn.classList.add('spinning');
@@ -2031,8 +2434,7 @@ async function loadData() {
       renderPetRanking(latestData.pets);
       renderFortunePet(latestData.pets);
       renderChangesBanner(latestData.pets);
-      renderFloatingPets(latestData.pets);
-      renderMissions();
+      renderBattleWidget(latestData.pets);
 
       // 인트로 스플래시 숨기기 (첫 로드 시)
       const splash = document.getElementById('intro-splash');
@@ -2113,7 +2515,6 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
   const prevScores = window._prevScoresCache || {};
   const deltaH = scoreDeltaHTML(user.name, charisma, prevScores);
   const medalH = medalHTML(user.first);
-  const titleH = trainerTitleHTML(charisma);
 
   const statChips = `
     <div class="user-stat-chips">
@@ -2122,7 +2523,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       <span class="stat-chip-item sci-top3">🎖 ${user.top3}개</span>
     </div>`;
 
-  const charismaChip = `<div class="charisma-score" title="POWER = 1등×10 + TOP3×3 + 전체×1">⚡ POWER ${charisma}</div>`;
+  const charismaChip = ''; // POWER 제거됨
 
   const badges = `<div class="pet-badges">${
     uniquePets.slice(0,5).map(n=>`<span class="pet-badge">${n}</span>`).join('')
@@ -2168,7 +2569,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
         <span class="rank-num-badge ${badgeClass}">${rankText}</span>
       </div>
       <div class="rank-comment">${comment}</div>
-      <div class="user-name">${user.name}${subsHTML}${medalH}${titleH}${deltaH}</div>
+      <div class="user-name">${user.name}${subsHTML}${medalH}${deltaH}</div>
       ${statChips}${charismaChip}${badges}${detailBtn}
     </div>`;
   } else {
@@ -2179,7 +2580,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       <div class="rest-rank">${displayRank}위</div>
       <div style="flex:1;min-width:0;">
         <div class="rest-name">${user.name}${subsHTML}${medalH}${deltaH}</div>
-        <div class="rest-stats">전체 ${user.total}개 · 1등 ${user.first}개 · TOP3 ${user.top3}개 · ⚡ ${charisma}</div>
+        <div class="rest-stats">전체 ${user.total}개 · 1등 ${user.first}개 · TOP3 ${user.top3}개</div>
       </div>
       <button class="rest-detail-btn" onclick="openDetailModal('${user.name}','${user.pets.length}개 랭킹','${petsJson}')">상세 ↗</button>
     </div>`;
@@ -2188,7 +2589,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
 
 // ── 상세 팝업 ── (펫 클릭 시 능력치 표시)
 function openDetailModal(userName, subText, petsEnc) {
-  setMissionDone('detail');
+  /* mission removed */
   const pets = JSON.parse(decodeURIComponent(petsEnc));
 
   document.getElementById('detailModalImg').innerHTML = `<span style="font-size:28px;">👤</span>`;
@@ -2581,19 +2982,6 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
-
-  // 본 탭 추적 (미션용)
-  const VISITED_TABS_KEY = 'wind-rank-tabs-' + new Date().toISOString().slice(0, 10);
-  let visited = [];
-  try { visited = JSON.parse(localStorage.getItem(VISITED_TABS_KEY) || '[]'); } catch(e) {}
-  if (!visited.includes(id)) {
-    visited.push(id);
-    try { localStorage.setItem(VISITED_TABS_KEY, JSON.stringify(visited)); } catch(e) {}
-  }
-  const allTabs = ['user-tab', 'first-tab', 'top3-tab', 'pet-tab'];
-  if (allTabs.every(t => visited.includes(t))) {
-    setMissionDone('tab');
-  }
 }
 
 // ── Dark Mode ──
