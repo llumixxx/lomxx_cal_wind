@@ -1076,7 +1076,7 @@ body {
     <!-- 액션 버튼 -->
     <div class="act-row">
       <button class="btn-go" id="btn-go" disabled>🎣 펫 잡기 시작!</button>
-      <button class="btn-stop" id="btn-stop" style="display:none;">⏸ 중지</button>
+      <!-- 큰 중지 버튼은 자동 진행 박스의 ⏸ 정지로 통합됨 -->
     </div>
 
     <!-- 자동 진행 모드 -->
@@ -1789,7 +1789,7 @@ function selectPet(name) {
     $('result-area').innerHTML = '';
     $('decision-area').innerHTML = '';
     $('btn-go').style.display = 'block';
-    $('btn-stop').style.display = 'none';
+    /* btn-stop removed */
     toast(`✨ ${name}으로 변경! 시작 버튼을 눌러주세요`);
   }
 }
@@ -2136,7 +2136,7 @@ function simulateRestOfRun(s, petPrice, orbReset, orbLife, useReset, useLife) {
     if (curStats && curStats.prob > 0 && !hallFailedThisStats) {
       hallAttempts++;
       if (Math.random() < curStats.prob) {
-        return { petsBought, resetsUsed, lifeUsed, hallAttempts, finalStats: curStats };
+        return { petsBought, resetOrbsUsed: resetsUsed, lifeOrbsUsed: lifeUsed, hallAttempts, finalStats: curStats };
       }
       hallFailedThisStats = true;
     }
@@ -2173,7 +2173,7 @@ function simulateRestOfRun(s, petPrice, orbReset, orbLife, useReset, useLife) {
     }
   }
 
-  return { petsBought, resetsUsed, lifeUsed, hallAttempts, finalStats: curStats };
+  return { petsBought, resetOrbsUsed: resetsUsed, lifeOrbsUsed: lifeUsed, hallAttempts, finalStats: curStats };
 }
 
 
@@ -2223,7 +2223,7 @@ async function runSimulation() {
   $('stat-rolls').classList.remove('all-max');
   $('sim-log').innerHTML = '';
   $('btn-go').style.display = 'none';
-  $('btn-stop').style.display = 'block';
+  /* btn-stop removed */
   $('sim-actions').style.display = 'none';
 
   $('sim-pet-name').textContent = selectedPetName;
@@ -2239,7 +2239,7 @@ async function runSimulation() {
  * 새 펫 잡았을 때 (또는 초기화 후) 새 스탯 추첨
  */
 async function rollNewPetStats() {
-  $('btn-stop').style.display = 'block';
+  /* btn-stop removed */
   $('sim-actions').style.display = 'none';
   if (!autoRunMode) $('btn-skip-anim').style.display = 'inline-block';
 
@@ -2291,7 +2291,7 @@ async function rollNewPetStats() {
   updateMainDisplay();
   showActionButtons();
 
-  $('btn-stop').style.display = 'none';
+  /* btn-stop removed */
   $('btn-skip-anim').style.display = 'none';
 }
 
@@ -2820,7 +2820,7 @@ async function buyNewPet() {
 function giveUp() {
   showGiveUpResult();
   $('btn-go').style.display = 'block';
-  $('btn-stop').style.display = 'none';
+  /* btn-stop removed */
   $('sim-actions').style.display = 'none';
   $('decision-area').innerHTML = '';
 }
@@ -3065,7 +3065,7 @@ function showSuccessResult() {
     </div>
   `;
   $('btn-go').style.display = 'block';
-  $('btn-stop').style.display = 'none';
+  /* btn-stop removed */
   $('sim-actions').style.display = 'none';
   saveStats(s.hallAttempts);
   renderStats();
@@ -3101,14 +3101,13 @@ function showAbortResult() {
       <div style="text-align:center;color:var(--t2);font-size:14px;font-weight:700;">⏸ 중지됨</div>
     </div>`;
   $('btn-go').style.display = 'block';
-  $('btn-stop').style.display = 'none';
+  /* btn-stop removed */
   $('sim-actions').style.display = 'none';
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 $('btn-go').addEventListener('click', runSimulation);
-$('btn-stop').addEventListener('click', () => { simAbort = true; });
 
 /* ═══════════════════════════════════════════════════════════
    누적 통계 (localStorage)
