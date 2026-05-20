@@ -392,23 +392,6 @@ body {
 }
 .tamago-fallback { font-size: 56px; }
 
-/* 펫 표정 오버레이 */
-.tamago-emotion {
-  position: absolute;
-  top: -8px; right: -6px;
-  font-size: 36px;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
-  animation: emotionPop .4s cubic-bezier(.34,1.56,.64,1);
-  z-index: 5;
-  pointer-events: none;
-}
-@keyframes emotionPop {
-  0% { transform: scale(0) rotate(-30deg); opacity: 0; }
-  60% { transform: scale(1.2) rotate(8deg); opacity: 1; }
-  100% { transform: scale(1) rotate(0); opacity: 1; }
-}
-.tamago-emotion:empty { display: none; }
-
 .tamago-pet.bouncing {
   animation: tamagoBounce .6s cubic-bezier(.34,1.56,.64,1);
 }
@@ -500,6 +483,22 @@ body {
   background: linear-gradient(135deg, #fff9e3, #fff);
 }
 .tamago-bubble.try::after { border-left-color: var(--gold); }
+
+/* 자동 N번 옵션 체크 */
+.auto-n-check {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 99px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  font-size: 12px; font-weight: 700; color: var(--t2);
+  cursor: pointer; transition: all .15s;
+}
+.auto-n-check input { display: none; }
+.auto-n-check.active {
+  border-color: var(--a1);
+  background: linear-gradient(135deg, #f5f0ff, #fff0f8);
+  color: var(--a1);
+}
 
 /* 자동 시뮬 통계 미니 카드 */
 .stat-card-mini {
@@ -1080,18 +1079,26 @@ body {
       <button class="btn-stop" id="btn-stop" style="display:none;">⏸ 중지</button>
     </div>
 
-    <!-- 자동 N번 반복 -->
-    <div id="auto-n-row" style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--s2);border:1.5px dashed var(--border2);border-radius:14px;">
-      <span style="font-size:12px;font-weight:800;color:var(--t2);">🔢 자동 반복:</span>
-      <select id="auto-n-count" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;background:var(--white);color:var(--t1);font-family:'Nunito',sans-serif;cursor:pointer;">
-        <option value="10">10회</option>
-        <option value="100" selected>100회</option>
-        <option value="1000">1000회</option>
-        <option value="10000">10000회</option>
-      </select>
-      <button id="btn-auto-n" class="btn-go" disabled style="padding:8px 16px;font-size:12px;background:linear-gradient(135deg,#87d4f5,#9b87f5);" onclick="runAutoN()">▶ 자동 N번 통계</button>
-      <button id="btn-auto-n-stop" class="btn-stop" style="display:none;padding:8px 16px;font-size:12px;" onclick="autoNAbort = true;">⏸ 중지</button>
-      <span style="font-size:11px;color:var(--t3);font-weight:700;">평균 비용/시도 횟수 통계만 빠르게</span>
+    <!-- 자동 진행 모드 -->
+    <div id="auto-n-row" style="margin-top:10px;padding:12px 14px;background:var(--s2);border:1.5px dashed var(--border2);border-radius:14px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:800;color:var(--t2);">🚀 자동 진행:</span>
+        <button id="btn-auto-n" class="btn-go" disabled style="padding:8px 16px;font-size:12px;background:linear-gradient(135deg,#87d4f5,#9b87f5);" onclick="runAutoRun()">▶ 환각까지 자동으로!</button>
+        <button id="btn-auto-n-stop" class="btn-stop" style="display:none;padding:8px 16px;font-size:12px;" onclick="autoNAbort = true;">⏸ 중지</button>
+        <span style="font-size:11px;color:var(--t3);font-weight:700;">알아서 초기화/도전/펫구매 반복</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <span style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:0.5px;">구슬 사용:</span>
+        <label class="auto-n-check active" id="auto-orb-reset-label">
+          <input type="checkbox" id="auto-orb-reset" checked />
+          <span>📊 초기화 구슬</span>
+        </label>
+        <label class="auto-n-check active" id="auto-orb-life-label">
+          <input type="checkbox" id="auto-orb-life" checked />
+          <span>💎 생명의 구슬</span>
+        </label>
+        <span style="font-size:10px;color:var(--t3);font-weight:600;">ⓘ 일반 포획펫은 둘 다 꺼주세요</span>
+      </div>
     </div>
   </div>
 
@@ -1119,7 +1126,6 @@ body {
       <div class="tamago-pet" id="tamago-pet">
         <img id="tamago-img" alt="pet" />
         <span class="tamago-fallback" id="tamago-fallback" style="display:none;">🐾</span>
-        <span class="tamago-emotion" id="tamago-emotion"></span>
       </div>
     </div>
 
@@ -1176,10 +1182,21 @@ body {
         <button class="btn-go" id="btn-action-reset5" style="padding:12px;font-size:13px;background:linear-gradient(135deg,#9b87f5,#f587b8);" onclick="rerollStats5()">
           ⚡ 초기화 5번 한번에
         </button>
-        <button class="btn-go" id="btn-action-newpet" style="padding:12px;font-size:13px;background:var(--white);color:var(--t2);border:1.5px solid var(--border2);box-shadow:none;" onclick="forceNewPet()">
-          🔄 새 펫으로 처음부터
+        <button class="btn-go" id="btn-action-life" style="padding:12px;font-size:13px;background:linear-gradient(135deg,#87d4f5,#9b87f5);" onclick="useLifeOrbInline()">
+          💎 생명의 구슬 사용
         </button>
       </div>
+      <!-- 새 펫 사기 (강조) -->
+      <div style="margin-top:10px;">
+        <button class="btn-go" id="btn-action-newpet-buy" style="padding:12px;font-size:13px;background:linear-gradient(135deg,#f587b8,#ffa3d3);width:100%;" onclick="buyNewPet()">
+          🛒 새 펫 사기
+        </button>
+      </div>
+    </div>
+
+    <!-- 처음부터 다시시작 (별도, 항상 보이게) -->
+    <div id="sim-restart-row" style="display:none;margin-top:14px;padding-top:14px;border-top:1.5px dashed var(--border);text-align:center;">
+      <button id="btn-restart" style="background:var(--white);color:var(--t3);border:1.5px solid var(--border2);padding:7px 16px;border-radius:99px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;" onclick="restartSimulation()">⚙️ 처음부터 다시시작</button>
     </div>
 
     <!-- 로그 -->
@@ -1407,7 +1424,6 @@ function setPetBubble(msg, kind) {
   const bubble = $('tamago-bubble');
   const text = $('tamago-bubble-text');
   const pet = $('tamago-pet');
-  const emotion = $('tamago-emotion');
   if (!bubble || !text) return;
   text.textContent = msg;
   bubble.classList.remove('win', 'fail', 'try');
@@ -1422,41 +1438,10 @@ function setPetBubble(msg, kind) {
   else if (kind === 'fail') pet.classList.add('shake');
   else pet.classList.add('bouncing');
 
-  // 표정 이모지
-  if (emotion) {
-    const emo = pickEmotion(kind);
-    emotion.textContent = emo;
-    emotion.style.animation = 'none';
-    void emotion.offsetWidth;
-    emotion.style.animation = '';
-  }
-
   // 말풍선 팝
   bubble.style.animation = 'none';
   void bubble.offsetWidth;
   bubble.style.animation = '';
-}
-
-/**
- * 상황별 표정 이모지
- */
-function pickEmotion(kind) {
-  // 현재 펫 환각 확률에 따라서도 달라짐
-  const s = simState;
-  const prob = s && s.currentStats ? s.currentStats.prob : -1;
-
-  if (kind === 'win') return '😆';   // 환각 성공
-  if (kind === 'fail') return '😭';  // 환각 실패
-  if (kind === 'try') return '😤';   // 도전 중
-
-  // normal: 환각 확률에 따라
-  if (prob < 0) return '😊';         // 시작 인사
-  if (prob === 0) return '😞';       // 꽝
-  if (prob < 0.01) return '😐';      // 1% 미만
-  if (prob < 0.05) return '🙂';      // 1~5%
-  if (prob < 0.5) return '😃';       // 5~50%
-  if (prob < 0.99) return '🤩';      // 50~99%
-  return '🥳';                       // 99%+
 }
 
 function setTamagoImage(name) {
@@ -1913,7 +1898,7 @@ $('pet-price').addEventListener('input', () => {
 });
 
 /* 옵션 체크 시각효과 */
-['log-check', 'sound-check'].forEach(id => {
+['log-check', 'sound-check', 'auto-orb-reset', 'auto-orb-life'].forEach(id => {
   const cb = $(id);
   const lb = $(id + '-label');
   if (!cb) return;
@@ -1990,244 +1975,96 @@ let autoNAbort = false;
    자동 N번 반복 시뮬 (시각효과 없이 통계만)
    ═══════════════════════════════════════════════════════════ */
 
-async function runAutoN() {
-  if (!selectedPetName || !currentPetStatPool) return;
-  if (simRunning) return;
+/* ═══════════════════════════════════════════════════════════
+   자동 진행 모드 - 환각 띄울 때까지 알아서 클릭
+   ═══════════════════════════════════════════════════════════ */
 
-  const n = parseInt($('auto-n-count').value) || 100;
-  const petPrice = parseInt($('pet-price').value) || 0;
-  const orbReset = parseInt($('orb-reset').value) || 0;
-  const orbLife = parseInt($('orb-life').value) || 0;
+let autoRunMode = false;  // 자동 진행 중인지
+
+async function runAutoRun() {
+  if (!selectedPetName || !currentPetStatPool) return;
+  if (simRunning && !autoRunMode) return;
+
+  const useReset = $('auto-orb-reset').checked;
+  const useLife = $('auto-orb-life').checked;
 
   autoNAbort = false;
+  autoRunMode = true;
   $('btn-auto-n').style.display = 'none';
   $('btn-auto-n-stop').style.display = 'inline-block';
-  $('btn-go').disabled = true;
 
-  // 진행 표시
-  $('result-area').innerHTML = `
-    <div class="result-card">
-      <div style="text-align:center;padding:20px;">
-        <div style="font-size:14px;font-weight:800;color:var(--t2);margin-bottom:12px;">🔢 자동 시뮬 진행 중...</div>
-        <div style="font-size:28px;font-weight:900;font-family:'Nunito',sans-serif;color:var(--a1);" id="auto-n-progress">0 / ${n}</div>
-        <div style="margin-top:10px;height:8px;background:var(--s2);border-radius:99px;overflow:hidden;">
-          <div id="auto-n-bar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--a1),var(--a2));transition:width .15s;"></div>
-        </div>
-        <div style="margin-top:10px;font-size:11px;color:var(--t3);">중지 가능</div>
-      </div>
-    </div>
-  `;
-
-  const results = [];
-  const BATCH = Math.max(1, Math.floor(n / 200)); // 진행률 업데이트 간격
-  const startTime = performance.now();
-
-  for (let trial = 0; trial < n; trial++) {
-    if (autoNAbort) break;
-
-    // 1회 시뮬: 환각 띄울 때까지
-    const r = simulateOneRun(petPrice, orbReset, orbLife);
-    results.push(r);
-
-    // 진행 표시 (주기적으로)
-    if (trial % BATCH === 0 || trial === n - 1) {
-      const done = trial + 1;
-      $('auto-n-progress').textContent = `${done.toLocaleString()} / ${n.toLocaleString()}`;
-      $('auto-n-bar').style.width = `${(done / n * 100).toFixed(1)}%`;
-      // 큰 N일 때 UI 업데이트 양보
-      if (trial % (BATCH * 10) === 0) await sleep(0);
-    }
+  // 시뮬 진행 중이 아니면 새로 시작
+  if (!simState || simState.finished) {
+    await runSimulation();
+    // runSimulation 끝나면 초기 상태에서 시작됨
   }
 
-  const elapsed = performance.now() - startTime;
+  // 자동 루프
+  while (!autoNAbort && simState && !simState.finished) {
+    const s = simState;
+    const stats = s.currentStats;
+    if (!stats) { await sleep(50); continue; }
 
-  $('btn-auto-n').style.display = 'inline-block';
-  $('btn-auto-n-stop').style.display = 'none';
-  $('btn-go').disabled = false;
-
-  if (results.length === 0) {
-    $('result-area').innerHTML = '';
-    return;
-  }
-
-  showAutoNResult(results, n, elapsed);
-}
-
-/**
- * 1회 시뮬 - 빠르게 (시각효과 없이)
- * 사용자 전략: 환각 확률 > 0 나오면 무조건 환각 도전, 실패하면 다시 초기화
- *             10번 다 쓰면 새 펫
- *             환각 성공할 때까지
- */
-function simulateOneRun(petPrice, orbReset, orbLife) {
-  let petsBought = 1;
-  let resetsUsed = 0;
-  let lifeUsed = 0;
-  let currentPetResets = 0;
-  let lifeUsedThisPet = false;
-  let hallAttempts = 0;
-  let hallFailedThisStats = false;
-  let finalProb = 0;
-  let finalStats = null;
-
-  // 첫 펫 잡으면 currentPetResets = 0 상태에서 첫 스탯 추첨됨
-  let curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
-
-  while (true) {
-    // 환각 도전 가능?
-    if (curStats.prob > 0 && !hallFailedThisStats) {
-      hallAttempts++;
-      if (Math.random() < curStats.prob) {
-        finalProb = curStats.prob;
-        finalStats = curStats;
-        break;
-      }
-      hallFailedThisStats = true;
-      // 실패 → 초기화 필요
-    }
-
-    // 초기화 단계
-    if (currentPetResets >= 10) {
-      // 새 펫
-      petsBought++;
-      currentPetResets = 0;
-      lifeUsedThisPet = false;
-      hallFailedThisStats = false;
-      curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
-    } else if (currentPetResets === 5 && !lifeUsedThisPet) {
-      // 생명 사용 (전략: 환각 확률 없는 펫이면 새 펫이 싸지 비교)
+    // 결정 카드가 떠 있으면 자동 처리 (5번, 10번 도달)
+    if (s.currentPetResets === 5 && !s.lifeUsedThisPet && useLife && useReset) {
+      // 비용 비교 후 자동 선택
+      const petPrice = parseInt($('pet-price').value) || 0;
+      const orbReset = parseInt($('orb-reset').value) || 0;
+      const orbLife = parseInt($('orb-life').value) || 0;
       const continueCost = orbLife + orbReset * 5;
       const newPetCost = petPrice + orbReset * 5;
       if (petPrice > 0 && newPetCost < continueCost) {
-        // 새 펫이 더 쌈
-        petsBought++;
-        currentPetResets = 0;
-        lifeUsedThisPet = false;
-        hallFailedThisStats = false;
-        curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+        await buyNewPetAuto();
       } else {
-        // 생명 사용
-        lifeUsed++;
-        lifeUsedThisPet = true;
-        // 초기화 회수만 +5, 스탯은 아직 그대로 (다음 초기화에서 굴림)
-        currentPetResets++;
-        resetsUsed++;
-        hallFailedThisStats = false;
-        curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+        await useLifeOrbAuto();
       }
+      continue;
+    }
+    if (s.currentPetResets >= getMaxResetsAuto(useReset, useLife)) {
+      await buyNewPetAuto();
+      continue;
+    }
+
+    // 환각 도전 가능?
+    if (stats.prob > 0 && !s.hallFailedThisStats) {
+      await tryHallChallengeAuto();
+      continue;
+    }
+
+    // 초기화 또는 새 펫 (구슬 안 쓰면 새 펫)
+    if (!useReset) {
+      await buyNewPetAuto();
     } else {
-      // 일반 초기화
-      currentPetResets++;
-      resetsUsed++;
-      hallFailedThisStats = false;
-      curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+      await rerollStatsAuto();
     }
   }
 
-  const totalCost = petsBought * petPrice + resetsUsed * orbReset + lifeUsed * orbLife;
-  return {
-    petsBought, resetsUsed, lifeUsed, hallAttempts,
-    totalCost, finalProb, finalStats,
-  };
+  autoRunMode = false;
+  $('btn-auto-n').style.display = 'inline-block';
+  $('btn-auto-n-stop').style.display = 'none';
 }
 
-function showAutoNResult(results, n, elapsed) {
-  const totals = results.reduce((acc, r) => {
-    acc.pets += r.petsBought;
-    acc.resets += r.resetsUsed;
-    acc.life += r.lifeUsed;
-    acc.hall += r.hallAttempts;
-    acc.cost += r.totalCost;
-    acc.finalProb += r.finalProb;
-    return acc;
-  }, { pets: 0, resets: 0, life: 0, hall: 0, cost: 0, finalProb: 0 });
-
-  const avg = (x) => x / results.length;
-
-  // 비용 분포 (min, median, max, p10, p90)
-  const sortedCost = [...results].map(r => r.totalCost).sort((a, b) => a - b);
-  const p = (q) => sortedCost[Math.floor(q * sortedCost.length)];
-  const minCost = sortedCost[0];
-  const maxCost = sortedCost[sortedCost.length - 1];
-  const medianCost = p(0.5);
-  const p10Cost = p(0.1);
-  const p90Cost = p(0.9);
-
-  // 비용 히스토그램
-  const buckets = 20;
-  const range = maxCost - minCost;
-  const bw = range / buckets;
-  const hist = new Array(buckets).fill(0);
-  sortedCost.forEach(c => {
-    let idx = bw > 0 ? Math.floor((c - minCost) / bw) : 0;
-    if (idx >= buckets) idx = buckets - 1;
-    hist[idx]++;
-  });
-  const maxBucket = Math.max(...hist, 1);
-  const histBars = hist.map((h, i) => {
-    const heightPct = (h / maxBucket * 100).toFixed(1);
-    const xPct = (i / buckets * 100).toFixed(1);
-    const wPct = (100 / buckets - 0.5).toFixed(1);
-    return `<div style="position:absolute;bottom:0;left:${xPct}%;width:${wPct}%;height:${heightPct}%;background:linear-gradient(180deg,var(--a1),var(--a2));border-radius:3px 3px 0 0;"></div>`;
-  }).join('');
-
-  $('result-area').innerHTML = `
-    <div class="result-card">
-      <div class="result-strip"></div>
-      <div style="text-align:center;margin-bottom:18px;">
-        <div style="font-size:11px;font-weight:900;letter-spacing:3px;color:var(--a1);font-family:'Nunito',sans-serif;margin-bottom:4px;">📊 ${n.toLocaleString()}회 자동 시뮬 결과</div>
-        <div style="font-size:11px;color:var(--t3);">소요 시간: ${(elapsed / 1000).toFixed(2)}초</div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;">
-        <div class="stat-card-mini">
-          <div class="stat-card-label">평균 펫 사용</div>
-          <div class="stat-card-val">${avg(totals.pets).toFixed(1)}<span class="stat-card-unit">마리</span></div>
-        </div>
-        <div class="stat-card-mini">
-          <div class="stat-card-label">평균 초기화</div>
-          <div class="stat-card-val">${avg(totals.resets).toFixed(1)}<span class="stat-card-unit">회</span></div>
-        </div>
-        <div class="stat-card-mini">
-          <div class="stat-card-label">평균 생명</div>
-          <div class="stat-card-val">${avg(totals.life).toFixed(2)}<span class="stat-card-unit">개</span></div>
-        </div>
-        <div class="stat-card-mini">
-          <div class="stat-card-label">평균 환각 도전</div>
-          <div class="stat-card-val">${avg(totals.hall).toFixed(1)}<span class="stat-card-unit">회</span></div>
-        </div>
-      </div>
-
-      <div style="padding:16px;background:linear-gradient(135deg,#fff8e8,#fff0f8);border:2px solid var(--gold);border-radius:14px;text-align:center;margin-bottom:14px;">
-        <div style="font-size:11px;font-weight:900;letter-spacing:2px;color:#c87800;margin-bottom:6px;">💰 평균 비용</div>
-        <div style="font-size:32px;font-weight:900;font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#c87800,#f5a623,#fdd835);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-          ${Math.round(avg(totals.cost)).toLocaleString()} vip
-        </div>
-      </div>
-
-      <!-- 비용 분포 히스토그램 -->
-      <div style="margin-bottom:14px;">
-        <div style="font-size:11px;font-weight:900;color:var(--t3);letter-spacing:1px;margin-bottom:8px;">💸 비용 분포 (${n.toLocaleString()}회)</div>
-        <div style="position:relative;height:80px;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;">
-          ${histBars}
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px;font-size:10px;text-align:center;color:var(--t2);font-weight:700;">
-          <div><div style="color:var(--t3);">최소</div><div style="color:var(--ok);font-family:'Nunito',sans-serif;font-size:11px;">${minCost.toLocaleString()}</div></div>
-          <div><div style="color:var(--t3);">하위10%</div><div style="font-family:'Nunito',sans-serif;font-size:11px;">${p10Cost.toLocaleString()}</div></div>
-          <div><div style="color:var(--t3);">중간값</div><div style="color:var(--a1);font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;">${medianCost.toLocaleString()}</div></div>
-          <div><div style="color:var(--t3);">상위10%</div><div style="font-family:'Nunito',sans-serif;font-size:11px;">${p90Cost.toLocaleString()}</div></div>
-          <div><div style="color:var(--t3);">최대</div><div style="color:var(--err);font-family:'Nunito',sans-serif;font-size:11px;">${maxCost.toLocaleString()}</div></div>
-        </div>
-      </div>
-
-      <div style="text-align:center;margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-        <button class="btn-go" style="padding:10px 22px;font-size:13px;" onclick="runAutoN()">🔁 다시 자동 시뮬</button>
-        <button class="btn-go" style="padding:10px 22px;font-size:13px;background:var(--white);color:var(--a1);border:1.5px solid var(--a1);box-shadow:none;" onclick="runSimulation()">🎮 일반 시뮬</button>
-      </div>
-    </div>
-  `;
-  $('result-area').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+function getMaxResetsAuto(useReset, useLife) {
+  return !useReset ? 0 : (useLife ? 10 : 5);
 }
+
+// 시각 진행은 짧게 (스킵 효과)
+async function tryHallChallengeAuto() {
+  skipAnimFlag = true; // 슬롯머신 짧게
+  await tryHallChallenge();
+}
+async function rerollStatsAuto() {
+  skipAnimFlag = true;
+  await rerollStats();
+}
+async function useLifeOrbAuto() {
+  await useLifeOrb();
+}
+async function buyNewPetAuto() {
+  skipAnimFlag = true;
+  await buyNewPet();
+}
+
 
 
 /**
@@ -2404,11 +2241,13 @@ function updateMainDisplay() {
 function showActionButtons() {
   const s = simState;
   $('sim-actions').style.display = 'block';
+  $('sim-restart-row').style.display = 'block';
 
   const hallBtn = $('btn-action-hall');
   const resetBtn = $('btn-action-reset');
   const reset5Btn = $('btn-action-reset5');
-  const newPetBtn = $('btn-action-newpet');
+  const lifeBtn = $('btn-action-life');
+  const newPetBuyBtn = $('btn-action-newpet-buy');
 
   // 환각 도전: 확률 > 0 + 이 스탯으로 아직 실패 안 한 상태
   const canHall = s.currentStats && s.currentStats.prob > 0 && !s.hallFailedThisStats;
@@ -2417,46 +2256,99 @@ function showActionButtons() {
   hallBtn.style.cursor = canHall ? 'pointer' : 'not-allowed';
   if (s.hallFailedThisStats) {
     hallBtn.textContent = '❌ 이미 실패 (초기화 필요)';
+  } else if (!canHall) {
+    hallBtn.textContent = '🎰 환각 도전 (확률 0%)';
   } else {
     hallBtn.textContent = '🎰 환각 도전!';
   }
 
-  // 초기화: 한계 전까지 가능. 단, 10번 다 썼는데 환각도 실패 상태면 새 펫만 가능
-  const allUsed = (s.currentPetResets >= 10);
-  if (allUsed) {
-    resetBtn.disabled = true;
-    resetBtn.textContent = '⛔ 이 펫 한계';
-    resetBtn.style.opacity = '0.45';
-    resetBtn.style.cursor = 'not-allowed';
-    reset5Btn.disabled = true;
-    reset5Btn.textContent = '⛔ 이 펫 한계';
-    reset5Btn.style.opacity = '0.45';
-    reset5Btn.style.cursor = 'not-allowed';
-    // 새 펫 사기 버튼을 눈에 띄게
-    newPetBtn.style.background = 'linear-gradient(135deg, #ff7a8a, #ffa3d3)';
-    newPetBtn.style.color = '#fff';
-    newPetBtn.style.borderColor = 'transparent';
-    newPetBtn.textContent = '🛒 새 펫 사기! (이 펫은 한계)';
-  } else {
+  // 초기화 구슬: 5번 미만일 때만 / 5번~10번 생명 후 / 10번이면 불가
+  const r = s.currentPetResets;
+  if (r < 5 || (r >= 5 && r < 10 && s.lifeUsedThisPet)) {
+    // 사용 가능
     resetBtn.disabled = false;
-    resetBtn.textContent = `📊 초기화 구슬 사용 (${s.currentPetResets + 1}/10)`;
+    resetBtn.textContent = `📊 초기화 구슬 사용 (${r + 1}/10)`;
     resetBtn.style.opacity = '1';
     resetBtn.style.cursor = 'pointer';
 
     reset5Btn.disabled = false;
-    const remaining = Math.min(5, 10 - s.currentPetResets);
+    const remaining = Math.min(5, 10 - r);
     reset5Btn.textContent = `⚡ 초기화 ${remaining}번 연속`;
     reset5Btn.style.opacity = '1';
     reset5Btn.style.cursor = 'pointer';
+  } else if (r === 5 && !s.lifeUsedThisPet) {
+    // 5번 다 썼는데 생명 안 씀 → 초기화 비활성
+    resetBtn.disabled = true;
+    resetBtn.textContent = '⛔ 생명 구슬 필요';
+    resetBtn.style.opacity = '0.45';
+    resetBtn.style.cursor = 'not-allowed';
 
-    // 일반 톤
-    newPetBtn.style.background = 'var(--white)';
-    newPetBtn.style.color = 'var(--t2)';
-    newPetBtn.style.borderColor = 'var(--border2)';
-    newPetBtn.textContent = '🔄 새 펫으로 처음부터';
+    reset5Btn.disabled = true;
+    reset5Btn.textContent = '⛔ 생명 구슬 필요';
+    reset5Btn.style.opacity = '0.45';
+    reset5Btn.style.cursor = 'not-allowed';
+  } else {
+    // 10번 다 씀
+    resetBtn.disabled = true;
+    resetBtn.textContent = '⛔ 이 펫 한계 (10/10)';
+    resetBtn.style.opacity = '0.45';
+    resetBtn.style.cursor = 'not-allowed';
+
+    reset5Btn.disabled = true;
+    reset5Btn.textContent = '⛔ 이 펫 한계';
+    reset5Btn.style.opacity = '0.45';
+    reset5Btn.style.cursor = 'not-allowed';
   }
 
-  newPetBtn.disabled = false;
+  // 생명 구슬: 5번 도달 + 아직 안 씀 → 활성
+  const canLife = r === 5 && !s.lifeUsedThisPet;
+  lifeBtn.disabled = !canLife;
+  lifeBtn.style.opacity = canLife ? '1' : '0.45';
+  lifeBtn.style.cursor = canLife ? 'pointer' : 'not-allowed';
+  if (s.lifeUsedThisPet) {
+    lifeBtn.textContent = '💎 생명 구슬 (사용 완료)';
+  } else if (r < 5) {
+    lifeBtn.textContent = `💎 생명 구슬 (초구 ${5 - r}번 후)`;
+  } else if (r >= 10) {
+    lifeBtn.textContent = '💎 생명 구슬 (한계)';
+  } else {
+    lifeBtn.textContent = '💎 생명의 구슬 사용!';
+  }
+
+  // 새 펫 사기 - 항상 활성 (즉시 새 펫)
+  newPetBuyBtn.disabled = false;
+  // 10번 도달 시 강조
+  if (r >= 10) {
+    newPetBuyBtn.style.background = 'linear-gradient(135deg, #ff7a8a, #ffa3d3)';
+    newPetBuyBtn.textContent = '🛒 새 펫 사기! (이 펫은 한계)';
+  } else {
+    newPetBuyBtn.style.background = 'linear-gradient(135deg, #f587b8, #ffa3d3)';
+    newPetBuyBtn.textContent = '🛒 새 펫 사기';
+  }
+}
+
+/**
+ * 인라인 생명 구슬 사용 (액션 버튼에서)
+ */
+async function useLifeOrbInline() {
+  if (!simState) return;
+  const s = simState;
+  if (s.currentPetResets !== 5 || s.lifeUsedThisPet) {
+    toast('💎 생명 구슬은 초구 5번 사용 후 활성화됩니다');
+    return;
+  }
+  await useLifeOrb();
+}
+
+/**
+ * ⚙️ 처음부터 다시시작 - 누적 비용 다 버리고 새로
+ */
+function restartSimulation() {
+  if (!simState) return;
+  if (!confirm('지금까지의 모든 진행을 버리고 처음부터 다시 시작할까요?')) return;
+  sfxClick();
+  toast('⚙️ 처음부터 다시 시작!');
+  runSimulation();
 }
 
 /**
@@ -2467,33 +2359,30 @@ async function rerollStats() {
   const s = simState;
   sfxClick();
 
-  // 5번 도달했고 아직 생명 안 쓴 상태 → 생명 결정 카드
+  // 5번 도달했고 아직 생명 안 쓴 상태 → 안내
   if (s.currentPetResets === 5 && !s.lifeUsedThisPet) {
-    showLifeDecision();
+    toast('💎 생명의 구슬을 먼저 사용해야 더 초기화 가능해요!');
     return;
   }
 
-  // 10번 도달 → 새 펫 결정 카드
+  // 10번 도달 → 안내
   if (s.currentPetResets >= 10) {
-    showNewPetDecision();
+    toast('⛔ 이 펫은 초기화 한계입니다. 새 펫을 사세요!');
     return;
   }
 
   // 초기화 1번 사용
   s.currentPetResets++;
   s.resetOrbsUsed++;
-  s.hallFailedThisStats = false; // 새 스탯이니 환각 실패 플래그 리셋
+  s.hallFailedThisStats = false;
 
-  // 로그
   logSim(`📊 초기화 ${s.currentPetResets}/10 → 추첨 중...`);
 
-  // 새 스탯 추첨
   $('sim-actions').style.display = 'none';
   await rollNewPetStats();
 
   logSim(`스탯: 공${s.currentStats.atk}/방${s.currentStats.def}/민${s.currentStats.agi}/체${s.currentStats.hp} · 환각 ${formatPct(s.currentStats.prob * 100)}`);
 
-  // history 기록
   s.history.push({
     type: 'reroll',
     petIdx: s.petsBought,
@@ -2515,7 +2404,11 @@ async function rerollStats5() {
 
   // 시작 조건 체크
   if (s.currentPetResets >= 10) {
-    showNewPetDecision();
+    toast('⛔ 이 펫은 초기화 한계입니다. 새 펫을 사세요!');
+    return;
+  }
+  if (s.currentPetResets === 5 && !s.lifeUsedThisPet) {
+    toast('💎 생명의 구슬을 먼저 사용해야 해요!');
     return;
   }
 
@@ -2526,30 +2419,23 @@ async function rerollStats5() {
   // 5번까지 또는 한계까지 (또는 환각 확률>0까지)
   for (let i = 0; i < 5; i++) {
     if (simAbort || skipAnimFlag) {
-      // 스킵해도 진행 중인 작업은 종료
       if (skipAnimFlag) break;
     }
 
-    // 5번 끝, 생명 안 쓴 상태면 멈추고 카드
+    // 5번 끝, 생명 안 쓴 상태 → 종료 (액션 버튼이 알아서 처리)
     if (s.currentPetResets === 5 && !s.lifeUsedThisPet) {
-      $('btn-skip-anim').style.display = 'none';
-      showLifeDecision();
-      return;
+      break;
     }
-    // 10번 도달 멈춤
     if (s.currentPetResets >= 10) {
-      $('btn-skip-anim').style.display = 'none';
-      showNewPetDecision();
-      return;
+      break;
     }
 
     // 초기화 1번
     s.currentPetResets++;
     s.resetOrbsUsed++;
-    s.hallFailedThisStats = false; // 새 스탯이니 리셋
+    s.hallFailedThisStats = false;
     logSim(`📊 [⚡연속] 초기화 ${s.currentPetResets}/10 → 추첨 중...`);
 
-    // 빠른 추첨 (간단하게)
     await rollNewPetStatsQuick();
     logSim(`스탯: 공${s.currentStats.atk}/방${s.currentStats.def}/민${s.currentStats.agi}/체${s.currentStats.hp} · 환각 ${formatPct(s.currentStats.prob * 100)}`);
 
