@@ -2480,14 +2480,18 @@ async function runBattle(me, opp) {
 
     let turn = 0;
     const MAX_TURNS = 30;
+    console.log('[Battle] myFirst:', myFirst, 'mySpd:', mySpd, 'oppSpd:', oppSpd);
 
     while (myCurHp > 0 && oppCurHp > 0 && turn < MAX_TURNS) {
       turn++;
-      const myTurn = (turn % 2 === 1) ? myFirst : !myFirst;
+      // 홀수턴: 선공자가 공격, 짝수턴: 후공자가 공격
+      const isOddTurn = (turn % 2 === 1);
+      const myTurn = isOddTurn ? myFirst : !myFirst;
+      console.log(`[Battle] turn ${turn} - myTurn:${myTurn} myHp:${myCurHp} oppHp:${oppCurHp}`);
 
       if (myTurn) {
         const { dmg, isCrit } = calcDamage(meObj, oppObj, myToOppAttr.mult);
-        oppCurHp -= dmg;
+        oppCurHp = oppCurHp - dmg;
         animateAttack('me', 'opp');
         sfxClick();
         if (isCrit) sfxAch();
@@ -2497,7 +2501,7 @@ async function runBattle(me, opp) {
         updateHpBar('opp', oppCurHp, oppHp);
       } else {
         const { dmg, isCrit } = calcDamage(oppObj, meObj, oppToMyAttr.mult);
-        myCurHp -= dmg;
+        myCurHp = myCurHp - dmg;
         animateAttack('opp', 'me');
         sfxClick();
         showDamagePop('me', dmg, isCrit);
