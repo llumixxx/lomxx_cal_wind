@@ -2364,18 +2364,18 @@ async function runBattle(me, opp) {
             <div class="battle-fighter-img" id="my-img">${myImgHTML}</div>
             <div class="battle-fighter-name">${me.nickname} <span class="battle-fighter-rank">${me.rank}위</span></div>
             <div class="battle-fighter-nick">${me.petName} · Lv.${me.level}</div>
-            <div class="battle-fighter-stats">⚔${myAtk} 🛡${myDef} 💨${mySpd} ❤${myHp}</div>
+            <div class="battle-fighter-stats">⚔${myAtk} 🛡${myDef} 💨${mySpd}</div>
             ${attrText(me.petName) ? `<div class="battle-fighter-attr">${attrText(me.petName)}</div>` : ''}
-            <div class="hp-bar-wrap"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%;"></div><div class="hp-text" id="my-hp-text">${myHp} / ${myHp}</div></div>
+            <div class="hp-bar-wrap"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%;"></div><div class="hp-text" id="my-hp-text">❤️ ${myHp} / ${myHp}</div></div>
           </div>
           <div class="battle-vs">VS</div>
           <div class="battle-fighter" id="fighter-opp">
             <div class="battle-fighter-img" id="opp-img">${oppImgHTML}</div>
             <div class="battle-fighter-name">${opp.nickname} <span class="battle-fighter-rank">${opp.rank}위</span></div>
             <div class="battle-fighter-nick">${opp.petName} · Lv.${opp.level}</div>
-            <div class="battle-fighter-stats">⚔${oppAtk} 🛡${oppDef} 💨${oppSpd} ❤${oppHp}</div>
+            <div class="battle-fighter-stats">⚔${oppAtk} 🛡${oppDef} 💨${oppSpd}</div>
             ${attrText(opp.petName) ? `<div class="battle-fighter-attr">${attrText(opp.petName)}</div>` : ''}
-            <div class="hp-bar-wrap"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;"></div><div class="hp-text" id="opp-hp-text">${oppHp} / ${oppHp}</div></div>
+            <div class="hp-bar-wrap"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;"></div><div class="hp-text" id="opp-hp-text">❤️ ${oppHp} / ${oppHp}</div></div>
           </div>
         </div>
         <div class="battle-log" id="battle-log"></div>
@@ -2409,9 +2409,14 @@ async function runBattle(me, opp) {
     function updateHpBar(who, cur, max) {
       const bar = document.getElementById(who + '-hp-bar');
       const text = document.getElementById(who + '-hp-text');
-      if (!bar || !text) return;
+      console.log(`[Battle] updateHpBar(${who}, ${cur}, ${max})`, 'bar:', !!bar, 'text:', !!text);
+      if (!bar || !text) {
+        console.warn(`[Battle] HP bar element not found! who=${who}`);
+        return;
+      }
       const pct = Math.max(0, cur) / max * 100;
-      bar.style.width = pct + '%';
+      // 강제로 width 설정 (인라인 스타일 우선)
+      bar.style.cssText = `width:${pct}%; transition: width .4s ease, background .3s;`;
       text.textContent = Math.max(0, cur) + ' / ' + max;
       bar.classList.remove('medium','low','critical');
       if (pct < 20) bar.classList.add('critical');
