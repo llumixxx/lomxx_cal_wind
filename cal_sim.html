@@ -2007,7 +2007,13 @@ async function runAutoRun() {
     const stats = s.currentStats;
     if (!stats) { await sleep(50); continue; }
 
-    // 5번 도달 + 생명 안 씀 → 비용 비교
+    // ⭐ 1순위: 환각 도전 가능? (확률 > 0 + 실패 안 한 상태)
+    if (stats.prob > 0 && !s.hallFailedThisStats) {
+      await tryHallChallengeAuto();
+      continue;
+    }
+
+    // 2순위: 5번 도달 + 생명 안 씀 → 비용 비교
     if (s.currentPetResets === 5 && !s.lifeUsedThisPet && useLife && useReset) {
       const petPrice = parseInt($('pet-price').value) || 0;
       const orbReset = parseInt($('orb-reset').value) || 0;
@@ -2021,18 +2027,14 @@ async function runAutoRun() {
       }
       continue;
     }
+
+    // 3순위: 초기화 한계 도달 → 새 펫
     if (s.currentPetResets >= getMaxResetsAuto(useReset, useLife)) {
       await buyNewPetAuto();
       continue;
     }
 
-    // 환각 도전 가능?
-    if (stats.prob > 0 && !s.hallFailedThisStats) {
-      await tryHallChallengeAuto();
-      continue;
-    }
-
-    // 초기화 또는 새 펫
+    // 4순위: 초기화 (구슬 안 쓰는 모드는 위에서 환각 실패 시 한계 도달로 새 펫 사러 감)
     if (!useReset) {
       await buyNewPetAuto();
     } else {
