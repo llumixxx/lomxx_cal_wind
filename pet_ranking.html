@@ -32,38 +32,43 @@
     * { box-sizing:border-box; margin:0; padding:0; }
     body {
       font-family:'Noto Sans KR',sans-serif;
-      background:var(--bg); color:var(--t1); min-height:100vh;
+      background:#faf8ff; color:var(--t1); min-height:100vh;
       background-image:
-        radial-gradient(ellipse at 15% 0%, rgba(155,135,245,0.18) 0%, transparent 45%),
-        radial-gradient(ellipse at 85% 5%, rgba(245,135,184,0.16) 0%, transparent 45%),
-        radial-gradient(ellipse at 50% 40%, rgba(135,212,245,0.10) 0%, transparent 50%),
-        radial-gradient(ellipse at 20% 80%, rgba(255,216,131,0.10) 0%, transparent 45%),
-        radial-gradient(ellipse at 80% 100%, rgba(135,245,192,0.10) 0%, transparent 45%);
+        radial-gradient(ellipse 800px 600px at 10% 0%, rgba(255,224,235,0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 700px 500px at 90% 10%, rgba(224,235,255,0.5) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 500px at 50% 50%, rgba(245,235,255,0.4) 0%, transparent 60%),
+        radial-gradient(ellipse 700px 500px at 20% 100%, rgba(255,240,225,0.45) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 500px at 80% 90%, rgba(225,255,240,0.4) 0%, transparent 60%);
+      background-attachment: fixed;
       position: relative;
-      overflow-x: hidden;
     }
-    /* ✨ 반짝이는 별빛 배경 패턴 */
+    [data-theme="dark"] body {
+      background: #13121f;
+      background-image:
+        radial-gradient(ellipse 800px 600px at 10% 0%, rgba(155,135,245,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 700px 500px at 90% 10%, rgba(245,135,184,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 600px 500px at 50% 50%, rgba(135,212,245,0.08) 0%, transparent 60%);
+    }
+    /* 💕 떠다니는 하트/별 (다마고치 느낌) */
     body::before {
       content: '';
       position: fixed; inset: 0;
       background-image:
-        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.6), transparent),
-        radial-gradient(1px 1px at 60% 70%, rgba(245,166,35,0.5), transparent),
-        radial-gradient(2px 2px at 80% 15%, rgba(155,135,245,0.5), transparent),
-        radial-gradient(1px 1px at 30% 80%, rgba(245,135,184,0.5), transparent),
-        radial-gradient(1.5px 1.5px at 90% 60%, rgba(135,212,245,0.5), transparent),
-        radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.4), transparent),
-        radial-gradient(2px 2px at 10% 60%, rgba(135,245,192,0.4), transparent);
-      background-size: 250px 250px, 200px 200px, 280px 280px, 220px 220px, 300px 300px, 180px 180px, 240px 240px;
+        radial-gradient(3px 3px at 15% 25%, rgba(245,135,184,0.4), transparent),
+        radial-gradient(2px 2px at 75% 35%, rgba(155,135,245,0.5), transparent),
+        radial-gradient(3px 3px at 45% 70%, rgba(255,200,150,0.4), transparent),
+        radial-gradient(2px 2px at 85% 85%, rgba(135,212,245,0.5), transparent),
+        radial-gradient(2px 2px at 25% 90%, rgba(135,245,192,0.4), transparent);
+      background-size: 350px 350px, 280px 280px, 400px 400px, 320px 320px, 380px 380px;
       pointer-events: none; z-index: 0;
-      animation: starShift 60s linear infinite;
-      opacity: 0.7;
+      animation: floatDots 30s linear infinite;
+      opacity: 0.6;
     }
-    @keyframes starShift {
-      0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
-      100% { background-position: 250px 250px, -200px 200px, 280px -280px, -220px 220px, 300px 300px, -180px 180px, 240px -240px; }
+    @keyframes floatDots {
+      0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+      100% { background-position: 0 -350px, 0 -280px, 0 -400px, 0 -320px, 0 -380px; }
     }
-    [data-theme="dark"] body::before { opacity: 1; }
+    [data-theme="dark"] body::before { opacity: 0.5; }
     .main-wrap, .page-header { position: relative; z-index: 1; }
 
     /* Float Buttons */
@@ -236,45 +241,64 @@
 
     /* 공통 카드 */
     .user-card {
-      border-radius:20px; padding:22px;
+      border-radius: 28px; padding: 22px;
       transition: all .25s cubic-bezier(.34,1.56,.64,1);
       position:relative; overflow:hidden;
-      backdrop-filter: blur(10px);
+      background: #fff;
+      border: 3px solid #fff;
+      box-shadow:
+        0 8px 24px rgba(155,135,245,0.18),
+        inset 0 -6px 0 rgba(155,135,245,0.06),
+        0 0 0 1.5px var(--border);
     }
     .user-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 50px rgba(155,135,245,0.3);
+      transform: translateY(-6px) scale(1.015);
+      box-shadow:
+        0 16px 36px rgba(155,135,245,0.28),
+        inset 0 -6px 0 rgba(155,135,245,0.08),
+        0 0 0 1.5px var(--a1);
+    }
+    [data-theme="dark"] .user-card {
+      background: #1f1e33;
+      border-color: #1f1e33;
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.4),
+        inset 0 -6px 0 rgba(155,135,245,0.12),
+        0 0 0 1.5px #3a3860;
     }
 
-    /* ── 1위: 화려한 황금 ── */
+    /* ── 1위: 황금 다마고치 ── */
     .user-card.rank-hero {
       grid-column:1 / -1;
       background:
-        linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#fff8d0,#ffeb9a,#fff4be,#ffe080,#fff8d0);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 5s ease infinite;
-      border:3px solid transparent;
-      background-clip: padding-box;
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 50%),
+        linear-gradient(135deg, #fff8e0, #fff4c8, #ffe888, #fff4c8);
+      background-size: 100% 100%, 300% 300%;
+      animation: gradientShift 6s ease infinite;
+      border-color: #fff;
       box-shadow:
         0 12px 36px rgba(245,166,35,0.35),
-        0 0 0 1px rgba(245,166,35,0.4),
-        inset 0 1px 2px rgba(255,255,255,0.5);
+        inset 0 -8px 0 rgba(245,166,35,0.12),
+        0 0 0 3px #fdd835,
+        0 0 40px rgba(253,216,53,0.4);
     }
     [data-theme="dark"] .user-card.rank-hero {
       background:
-        linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#3c2c08,#4c3a0a,#382806,#3c2c08);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 5s ease infinite;
-      border-color: #c89030;
-      box-shadow: 0 12px 36px rgba(200,144,48,0.5);
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1), transparent 50%),
+        linear-gradient(135deg, #3c2c08, #4c3a0a, #382806);
+      background-size: 100% 100%, 300% 300%;
+      animation: gradientShift 6s ease infinite;
+      border-color: #3c2c08;
+      box-shadow:
+        0 12px 36px rgba(200,144,48,0.5),
+        inset 0 -8px 0 rgba(245,166,35,0.15),
+        0 0 0 3px #c89030;
     }
     .user-card.rank-hero::after {
       content: '';
       position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
-      animation: shineSweep 4s linear infinite;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+      animation: shineSweep 5s linear infinite;
       pointer-events: none;
       z-index: 0;
     }
@@ -284,69 +308,66 @@
     }
     .user-card.rank-hero > * { position: relative; z-index: 1; }
 
-    /* ── 2위: 은은한 은빛 ── */
+    /* ── 2위: 은빛 다마고치 ── */
     .user-card.rank-silver {
       background:
-        linear-gradient(135deg, rgba(255,255,255,.3), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#eef0ff,#c8d4ff,#dde6ff,#b8c8ff,#eef0ff);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 6s ease infinite;
-      border:3px solid #8a98e8;
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 50%),
+        linear-gradient(135deg, #f0f0ff, #dde0ff, #c8d0ff, #dde0ff);
+      background-size: 100% 100%, 300% 300%;
+      animation: gradientShift 7s ease infinite;
+      border-color: #fff;
       box-shadow:
-        0 10px 30px rgba(120,140,230,0.35),
-        inset 0 1px 2px rgba(255,255,255,0.5);
+        0 10px 30px rgba(120,140,230,0.3),
+        inset 0 -8px 0 rgba(120,140,230,0.12),
+        0 0 0 3px #a8b4e8;
     }
     [data-theme="dark"] .user-card.rank-silver {
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#252a60,#2e3672,#1f2452,#252a60);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 6s ease infinite;
-      border-color:#7080d8;
-      box-shadow: 0 10px 30px rgba(120,140,230,0.5);
+      background: linear-gradient(135deg,#252a60,#2e3672,#1f2452);
+      background-size: 300% 300%;
+      animation: gradientShift 7s ease infinite;
+      border-color: #252a60;
+      box-shadow: 0 10px 30px rgba(120,140,230,0.45), inset 0 -8px 0 rgba(120,140,230,0.18), 0 0 0 3px #7080d8;
     }
 
     /* ── 3위: 따뜻한 브론즈 ── */
     .user-card.rank-bronze {
       background:
-        linear-gradient(135deg, rgba(255,255,255,.3), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#fdf2e0,#f5d8b0,#fae5c8,#f0c898,#fdf2e0);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 7s ease infinite;
-      border:3px solid #d49060;
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.6), transparent 50%),
+        linear-gradient(135deg, #fdf2e0, #f8dcb8, #f0c898, #f8dcb8);
+      background-size: 100% 100%, 300% 300%;
+      animation: gradientShift 8s ease infinite;
+      border-color: #fff;
       box-shadow:
         0 8px 24px rgba(200,140,80,0.28),
-        inset 0 1px 2px rgba(255,255,255,0.5);
+        inset 0 -8px 0 rgba(200,140,80,0.12),
+        0 0 0 3px #e0a070;
     }
     [data-theme="dark"] .user-card.rank-bronze {
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#2c1c08,#3c2410,#241408,#2c1c08);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 7s ease infinite;
-      border-color:#946028;
-      box-shadow: 0 8px 24px rgba(140,90,40,0.4);
+      background: linear-gradient(135deg,#2c1c08,#3c2410,#241408);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+      border-color: #2c1c08;
+      box-shadow: 0 8px 24px rgba(140,90,40,0.4), inset 0 -8px 0 rgba(200,140,80,0.18), 0 0 0 3px #946028;
     }
 
-    /* ── 4~10위: 풍성한 보라 그라데이션 ── */
+    /* ── 4~10위: 파스텔 보라 다마고치 ── */
     .user-card.rank-top10 {
       background:
-        linear-gradient(135deg, rgba(255,255,255,.3), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#faf9ff,#e8e0ff,#fdf9ff,#ddd2ff,#faf9ff);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 8s ease infinite;
-      border:2px solid var(--border2);
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 50%),
+        linear-gradient(135deg, #fff, #faf8ff);
+      border-color: #fff;
       box-shadow:
         0 6px 20px rgba(155,135,245,0.15),
-        inset 0 1px 2px rgba(255,255,255,0.5);
+        inset 0 -6px 0 rgba(155,135,245,0.08),
+        0 0 0 2px var(--border2);
     }
     [data-theme="dark"] .user-card.rank-top10 {
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
-        linear-gradient(270deg,#1f1e33,#2a2848,#1c1b2e,#2a2848);
-      background-size: 100% 100%, 400% 400%;
-      animation:gradientShift 8s ease infinite;
-      border-color:#5e5a8e;
+      background: linear-gradient(135deg,#1f1e33,#2a2848);
+      border-color: #1f1e33;
+      box-shadow:
+        0 6px 20px rgba(0,0,0,0.4),
+        inset 0 -6px 0 rgba(155,135,245,0.12),
+        0 0 0 2px #4e4c7a;
     }
 
     /* 카드 꾸밈 - 오른쪽 위 별 + 도트 */
@@ -869,95 +890,119 @@
       text-shadow: 0 1px 0 rgba(0,0,0,0.4);
     }
 
-    /* 🎲 오늘의 운세펫 카드 - 게임 스페셜 카드 */
+    /* 🥚 오늘의 운세펫 - 다마고치 풍선 카드 */
     .fortune-pet-card {
       background:
-        linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,0) 50%),
-        linear-gradient(135deg, #fff, var(--s1), #fff5f8);
-      background-size: 100% 100%, 200% 200%;
-      animation: gradientShift 6s ease infinite;
-      border: 3px solid transparent;
-      background-clip: padding-box;
-      border-radius: 22px;
-      padding: 20px 22px;
-      margin-bottom: 22px;
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 50%),
+        linear-gradient(135deg, #fff, #fef8ff);
+      border: 3px solid #fff;
+      border-radius: 32px;
+      padding: 22px;
+      margin-bottom: 24px;
       position: relative;
       overflow: hidden;
       box-shadow:
-        0 10px 30px rgba(155,135,245,0.25),
-        inset 0 1px 2px rgba(255,255,255,0.5);
+        0 12px 32px rgba(155,135,245,0.22),
+        inset 0 -8px 0 rgba(155,135,245,0.06),
+        0 0 0 2px var(--border2);
       display: flex; align-items: center; gap: 18px;
     }
+    [data-theme="dark"] .fortune-pet-card {
+      background: linear-gradient(135deg, #1f1e33, #27263e);
+      border-color: #1f1e33;
+      box-shadow:
+        0 12px 32px rgba(0,0,0,0.4),
+        inset 0 -8px 0 rgba(155,135,245,0.12),
+        0 0 0 2px #4e4c7a;
+    }
+    /* 상단 무지개 띠 */
     .fortune-pet-card::before {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      position: absolute; top: 0; left: 0; right: 0; height: 6px;
       background: linear-gradient(90deg, #fdd835, #f5a623, #ff7a8a, #9b87f5, #87d4f5, #fdd835);
       background-size: 300% 100%;
-      animation: gradShift 3s linear infinite;
+      animation: gradShift 4s linear infinite;
+      border-radius: 32px 32px 0 0;
     }
-    .fortune-pet-card::after {
-      content: '';
-      position: absolute; top: -50%; right: -10%; width: 50%; height: 200%;
-      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
-      animation: shineSweep 5s linear infinite;
-      pointer-events: none;
-    }
-    .fortune-pet-card > * { position: relative; z-index: 1; }
-    [data-theme="dark"] .fortune-pet-card {
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
-        linear-gradient(135deg, #1f1e33, #27263e, #2a2848);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
+
     .fortune-label {
-      font-size: 11px; font-weight: 900; letter-spacing: 2.5px;
+      font-size: 11px; font-weight: 900; letter-spacing: 3px;
       color: var(--a1); font-family: 'Nunito', sans-serif;
       margin-bottom: 6px;
       text-transform: uppercase;
     }
+    /* 다마고치 펫 이미지 (시뮬 스타일) */
     .fortune-pet-img {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: var(--white); border: 3px solid var(--border2);
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(248,247,255,.9));
+      border: 3px solid #fff;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; overflow: hidden;
-      box-shadow: 0 6px 18px rgba(155,135,245,.3), inset 0 1px 2px rgba(255,255,255,0.5);
-      animation: fortuneBounce 3s ease-in-out infinite;
+      box-shadow:
+        0 8px 24px rgba(155,135,245,.35),
+        inset 0 -8px 0 rgba(155,135,245,.08),
+        0 0 30px rgba(245,135,184,.2);
+      animation: tamagoIdle 3s ease-in-out infinite;
     }
-    @keyframes fortuneBounce {
-      0%, 100% { transform: translateY(0) rotate(-3deg); }
-      50% { transform: translateY(-6px) rotate(3deg); }
+    @keyframes tamagoIdle {
+      0%,100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-5px) rotate(2deg); }
     }
-    .fortune-pet-img img { width: 65%; height: 65%; object-fit: contain; }
+    .fortune-pet-img img {
+      width: 75%; height: 75%; object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.15));
+    }
     .fortune-info { flex: 1; min-width: 0; }
     .fortune-name {
-      font-size: 26px; font-weight: 900; color: var(--t1);
+      font-size: 24px; font-weight: 900; color: var(--t1);
       font-family: 'Noto Sans KR', sans-serif;
       margin-bottom: 4px;
-      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a4));
-      background-size: 200% 200%;
-      animation: gradientShift 4s ease infinite;
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
       letter-spacing: -0.5px;
     }
+    /* 말풍선 형태 메시지 */
     .fortune-msg {
+      display: inline-block;
+      background: var(--s1);
+      border: 2px solid var(--border2);
+      border-radius: 18px;
+      padding: 8px 14px;
       font-size: 12.5px; color: var(--t2);
       font-weight: 700; line-height: 1.5;
+      position: relative;
+      margin-top: 4px;
     }
+    .fortune-msg::before {
+      content: '';
+      position: absolute;
+      left: -8px; top: 50%; transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: var(--border2);
+    }
+    .fortune-msg::after {
+      content: '';
+      position: absolute;
+      left: -5px; top: 50%; transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-right-color: var(--s1);
+    }
+    [data-theme="dark"] .fortune-msg { background: #27263e; border-color: #4e4c7a; color: #b0aedd; }
+    [data-theme="dark"] .fortune-msg::before { border-right-color: #4e4c7a; }
+    [data-theme="dark"] .fortune-msg::after { border-right-color: #27263e; }
+
     .fortune-refresh {
       background: linear-gradient(135deg, var(--a1), var(--a2));
-      border: none; border-radius: 99px;
+      border: 3px solid #fff;
+      border-radius: 99px;
       padding: 10px 18px; color: #fff;
       font-size: 12px; font-weight: 900;
       font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
       transition: all .2s cubic-bezier(.34,1.56,.64,1);
-      box-shadow: 0 4px 14px rgba(155,135,245,.4);
+      box-shadow:
+        0 6px 16px rgba(155,135,245,.4),
+        inset 0 -3px 0 rgba(0,0,0,0.1);
       letter-spacing: 0.3px;
     }
-    .fortune-refresh:hover {
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 8px 24px rgba(155,135,245,.6);
-    }
+    .fortune-refresh:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 24px rgba(155,135,245,.5); }
     .fortune-refresh:active { transform: translateY(0); }
 
     /* 🎰 슬롯머신 검색 */
@@ -1011,6 +1056,176 @@
     }
     .achievement-text { font-size: 14px; }
 
+    /* 🏅 트레이너 칭호 (메달 옆에) */
+    .trainer-title {
+      display: inline-block;
+      padding: 3px 10px; border-radius: 99px;
+      font-size: 10px; font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      margin-left: 8px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+      border: 1.5px solid;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .tt-rookie { background: #f0fff8; color: #3a9a80; border-color: #90d4b8; }
+    .tt-apprentice { background: #e8f0ff; color: #4070c8; border-color: #a8c4f0; }
+    .tt-skilled { background: #f0eeff; color: var(--a1); border-color: var(--border2); }
+    .tt-veteran { background: #ffe8f0; color: #c84890; border-color: #f5b8d0; }
+    .tt-master { background: linear-gradient(135deg, #ffd87f, #ff9020); color: #fff; border-color: #fff; }
+    .tt-grandmaster {
+      background: linear-gradient(135deg, #87d4f5, #c8a8ff, #f587b8, #ffd87f);
+      background-size: 300% 300%;
+      animation: diamondShine 3s linear infinite;
+      color: #fff; border-color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    [data-theme="dark"] .tt-rookie { background:#1e2e26; color:#60ddb0; border-color:#3a6e58; }
+    [data-theme="dark"] .tt-apprentice { background:#1e2640; color:#6fa0ff; border-color:#4a6098; }
+    [data-theme="dark"] .tt-skilled { background:#27263e; color:#c4b0ff; border-color:#4e4c7a; }
+    [data-theme="dark"] .tt-veteran { background:#3a1e30; color:#ff9bc8; border-color:#8e4868; }
+
+    /* 🥚 상위권 변화 알림 (페이지 상단) */
+    .changes-banner {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 50%),
+        linear-gradient(135deg, #fff, #fef0f8);
+      border: 2.5px solid #fff;
+      border-radius: 22px;
+      padding: 14px 20px;
+      margin-bottom: 18px;
+      box-shadow:
+        0 6px 20px rgba(245,135,184,0.18),
+        inset 0 -4px 0 rgba(245,135,184,0.06),
+        0 0 0 2px #f5c8de;
+      display: flex; align-items: center; gap: 12px;
+    }
+    [data-theme="dark"] .changes-banner {
+      background: linear-gradient(135deg, #1f1e33, #2e1e2a);
+      border-color: #1f1e33;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 -4px 0 rgba(245,135,184,0.1), 0 0 0 2px #4a2e40;
+    }
+    .changes-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, #fdd835, #f5a623);
+      border: 2.5px solid #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(245,166,35,.4);
+      animation: tamagoIdle 3s ease-in-out infinite;
+    }
+    .changes-text { flex: 1; min-width: 0; }
+    .changes-title { font-size: 12px; font-weight: 900; color: var(--a2); letter-spacing: 0.5px; margin-bottom: 2px; }
+    .changes-body { font-size: 13px; color: var(--t1); font-weight: 700; line-height: 1.4; }
+    .changes-body strong { color: var(--a1); }
+
+    /* 🐣 떠다니는 미니 펫 친구들 */
+    .floating-pets {
+      position: fixed; bottom: 20px; left: 20px;
+      z-index: 999;
+      display: flex; gap: 8px; pointer-events: none;
+    }
+    .floating-pet {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(248,247,255,.9));
+      border: 3px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow:
+        0 6px 18px rgba(155,135,245,.3),
+        inset 0 -5px 0 rgba(155,135,245,.08);
+      animation: tamagoFloat 4s ease-in-out infinite;
+      overflow: hidden;
+      cursor: pointer;
+      pointer-events: auto;
+      transition: transform .2s;
+    }
+    .floating-pet:hover { transform: scale(1.2) rotate(10deg); }
+    .floating-pet img { width: 75%; height: 75%; object-fit: contain; }
+    .floating-pet:nth-child(2) { animation-delay: .8s; }
+    .floating-pet:nth-child(3) { animation-delay: 1.6s; }
+    @keyframes tamagoFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+    }
+    @media(max-width:768px) {
+      .floating-pets { display: none; }
+    }
+
+    /* 🎯 데일리 미션 위젯 */
+    .daily-missions {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 50%),
+        linear-gradient(135deg, #fff, #f0fff8);
+      border: 2.5px solid #fff;
+      border-radius: 22px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      box-shadow:
+        0 6px 20px rgba(135,245,192,0.2),
+        inset 0 -4px 0 rgba(135,245,192,0.08),
+        0 0 0 2px #b8e8c8;
+    }
+    [data-theme="dark"] .daily-missions {
+      background: linear-gradient(135deg, #1f1e33, #1e2e26);
+      border-color: #1f1e33;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 -4px 0 rgba(135,245,192,0.1), 0 0 0 2px #3a6e58;
+    }
+    .missions-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .missions-icon {
+      font-size: 22px; line-height: 1;
+      animation: tamagoIdle 3s ease-in-out infinite;
+    }
+    .missions-title {
+      font-size: 13px; font-weight: 900;
+      color: #3a9a80; letter-spacing: 0.5px;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    [data-theme="dark"] .missions-title { color: #60ddb0; }
+    .missions-progress {
+      margin-left: auto;
+      font-size: 11px; font-weight: 900;
+      font-family: 'Nunito', sans-serif; color: var(--t3);
+      background: var(--s1); padding: 3px 10px; border-radius: 99px;
+      border: 1.5px solid var(--border);
+    }
+    .mission-list { display: flex; flex-direction: column; gap: 6px; }
+    .mission-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 14px;
+      background: var(--white); border: 1.5px solid var(--border);
+      font-size: 12.5px; font-weight: 700;
+      transition: all .2s;
+    }
+    .mission-item:hover { border-color: var(--a1); transform: translateX(2px); }
+    .mission-item.done {
+      background: linear-gradient(135deg, #f0fff8, #e0f8e0);
+      border-color: #b8e8c8;
+      color: #3a9a80;
+    }
+    [data-theme="dark"] .mission-item { background:#27263e; border-color:#3a3860; }
+    [data-theme="dark"] .mission-item.done { background:#1e2e26; border-color:#3a6e58; color:#60ddb0; }
+    .mission-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--t3); font-weight: 900;
+      flex-shrink: 0;
+    }
+    .mission-item.done .mission-check {
+      background: #60ddb0; color: #fff; border-color: #60ddb0;
+    }
+    .mission-text { flex: 1; }
+    .mission-reward {
+      font-size: 10px; font-weight: 900; color: var(--gold, #f5a623);
+      background: #fff8e0; border: 1.5px solid #fdd835;
+      padding: 2px 8px; border-radius: 99px;
+      font-family: 'Nunito', sans-serif;
+    }
+    [data-theme="dark"] .mission-reward { background: #3a3020; border-color:#a08038; color:#ffd070; }
+
     /* 🎵 사운드 토글 */
     .sound-float-btn {
       width: 38px; height: 38px; border-radius: 50%;
@@ -1055,6 +1270,9 @@
 
 <!-- 🎊 폭죽 캔버스 -->
 <canvas id="confetti-canvas"></canvas>
+
+<!-- 🐣 떠다니는 미니 펫 친구들 -->
+<div class="floating-pets" id="floating-pets"></div>
 <script src="nav.js"></script>
 
 <!-- ── Float Buttons ── -->
@@ -1101,6 +1319,12 @@
 
   <!-- 🎲 오늘의 운세펫 -->
   <div id="fortune-pet-container"></div>
+
+  <!-- 🥚 상위권 변화 알림 -->
+  <div id="changes-banner-container"></div>
+
+  <!-- 🎯 데일리 미션 -->
+  <div id="daily-missions-container"></div>
 
   <!-- Tabs -->
   <div class="tabs-row">
@@ -1433,18 +1657,19 @@ function renderFortunePet(pets) {
     <div class="fortune-pet-card">
       <div class="fortune-pet-img">${imgHTML}</div>
       <div class="fortune-info">
-        <div class="fortune-label">🎲 ${today} 오늘의 펫</div>
+        <div class="fortune-label">🥚 ${today} 오늘의 펫</div>
         <div class="fortune-name">${pet.name}</div>
         <div class="fortune-msg">${msg}${topNick ? ` · 현재 1위: <strong>${topNick}</strong>` : ''}</div>
       </div>
-      <button class="fortune-refresh" onclick="jumpToPet('${pet.name.replace(/'/g, "\\'")}')">➜ 보기</button>
+      <button class="fortune-refresh" onclick="jumpToPet('${pet.name.replace(/'/g, "\\'")}')">랭킹 보기 ➜</button>
     </div>
   `;
 }
 function jumpToPet(name) {
   sfxClick();
-  // 펫별 랭킹 탭으로 전환 + 검색
-  const petTabBtn = document.querySelectorAll('.tab-btn')[4]; // 펫별 랭킹 (5번째)
+  setMissionDone('fortune');
+  // 펫별 랭킹 탭으로 전환 + 검색 (4번째 탭, 인덱스 3)
+  const petTabBtn = document.querySelectorAll('.tab-btn')[3];
   if (petTabBtn) {
     switchTab('pet-tab', petTabBtn);
     setTimeout(() => {
@@ -1457,6 +1682,173 @@ function jumpToPet(name) {
   }
 }
 
+// ── 🏅 트레이너 칭호 (POWER 점수 기반) ──
+function trainerTitle(charisma) {
+  if (charisma >= 200) return { class: 'tt-grandmaster', label: '🌟 그랜드마스터' };
+  if (charisma >= 100) return { class: 'tt-master',      label: '👑 마스터' };
+  if (charisma >= 50)  return { class: 'tt-veteran',     label: '⚔️ 베테랑' };
+  if (charisma >= 20)  return { class: 'tt-skilled',     label: '✨ 숙련가' };
+  if (charisma >= 5)   return { class: 'tt-apprentice',  label: '🌱 견습생' };
+  return { class: 'tt-rookie', label: '🐣 새내기' };
+}
+function trainerTitleHTML(charisma) {
+  const t = trainerTitle(charisma);
+  return `<span class="trainer-title ${t.class}">${t.label}</span>`;
+}
+
+// ── 🥚 상위권 변화 알림 (전일 데이터 대비) ──
+const PREV_TOP_KEY = 'wind-rank-prev-top';
+function renderChangesBanner(pets) {
+  // 펫별 1위가 바뀐 경우 감지
+  const currTop = {};
+  pets.forEach(pet => {
+    const g = pet.general_ranking || [];
+    if (g.length > 0) currTop[pet.name] = g[0].nickname;
+  });
+
+  let prevTop = {};
+  try { prevTop = JSON.parse(localStorage.getItem(PREV_TOP_KEY) || '{}'); }
+  catch(e) {}
+
+  const changes = [];
+  Object.entries(currTop).forEach(([petName, nick]) => {
+    if (prevTop[petName] && prevTop[petName] !== nick) {
+      changes.push({ pet: petName, prev: prevTop[petName], curr: nick });
+    }
+  });
+
+  // 저장
+  try { localStorage.setItem(PREV_TOP_KEY, JSON.stringify(currTop)); } catch(e) {}
+
+  const container = document.getElementById('changes-banner-container');
+  if (!container) return;
+
+  if (changes.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  // 최대 3개만
+  const showChanges = changes.slice(0, 3);
+  const moreText = changes.length > 3 ? ` 외 ${changes.length - 3}개 펫` : '';
+  const summary = showChanges.map(c =>
+    `<strong>${c.pet}</strong>: ${c.prev} → ${c.curr}`
+  ).join(' · ');
+
+  container.innerHTML = `
+    <div class="changes-banner">
+      <div class="changes-icon">📢</div>
+      <div class="changes-text">
+        <div class="changes-title">왕좌가 바뀌었어요!</div>
+        <div class="changes-body">${summary}${moreText}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ── 🎯 데일리 미션 ──
+const MISSIONS_KEY = 'wind-rank-missions';
+const TODAY_KEY = () => 'wind-rank-mission-' + new Date().toISOString().slice(0, 10);
+
+const MISSIONS = [
+  { id: 'visit',      icon: '🏠', text: '오늘 방문하기',           reward: '⚡ POWER +1' },
+  { id: 'fortune',    icon: '🎲', text: '오늘의 운세펫 확인하기',     reward: '🍀 행운 +1' },
+  { id: 'slot',       icon: '🎰', text: '랜덤 유저 뽑기 (🎰)',       reward: '🎟️ 토큰 +1' },
+  { id: 'detail',     icon: '🔍', text: '유저 상세 정보 보기',       reward: '📜 지식 +1' },
+  { id: 'tab',        icon: '📑', text: '모든 탭 둘러보기',          reward: '🌟 별 +1' },
+];
+
+function getMissionState() {
+  const key = TODAY_KEY();
+  try {
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    return data;
+  } catch(e) { return {}; }
+}
+function setMissionDone(id) {
+  const key = TODAY_KEY();
+  const data = getMissionState();
+  if (data[id]) return false; // 이미 완료
+  data[id] = true;
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+  renderMissions();
+  // 미션 완료 도전과제 알림
+  const m = MISSIONS.find(x => x.id === id);
+  if (m) {
+    showAchievement(m.icon, '미션 완료!', `${m.text} ${m.reward}`);
+  }
+  // 모두 완료?
+  if (MISSIONS.every(mm => data[mm.id])) {
+    setTimeout(() => {
+      fireConfetti({ count: 60, originY: window.innerHeight / 2 });
+      showAchievement('🏆', '오늘의 모든 미션 완료!', 'COMPLETE BONUS! ✨');
+    }, 800);
+  }
+  return true;
+}
+function renderMissions() {
+  const state = getMissionState();
+  const done = MISSIONS.filter(m => state[m.id]).length;
+  const html = MISSIONS.map(m => {
+    const isDone = !!state[m.id];
+    return `
+      <div class="mission-item ${isDone ? 'done' : ''}">
+        <div class="mission-check">${isDone ? '✓' : ''}</div>
+        <span style="font-size:16px;">${m.icon}</span>
+        <span class="mission-text">${m.text}</span>
+        <span class="mission-reward">${m.reward}</span>
+      </div>
+    `;
+  }).join('');
+
+  const container = document.getElementById('daily-missions-container');
+  if (!container) return;
+  container.innerHTML = `
+    <div class="daily-missions">
+      <div class="missions-header">
+        <span class="missions-icon">🎯</span>
+        <span class="missions-title">오늘의 미션</span>
+        <span class="missions-progress">${done} / ${MISSIONS.length}</span>
+      </div>
+      <div class="mission-list">${html}</div>
+    </div>
+  `;
+
+  // 방문 미션 자동 완료
+  setTimeout(() => setMissionDone('visit'), 100);
+}
+
+// ── 🐣 떠다니는 미니 펫 친구들 ──
+function renderFloatingPets(pets) {
+  // 랭킹 데이터 있는 펫 중 랜덤 3마리
+  const withData = pets.filter(p =>
+    (p.general_ranking && p.general_ranking.length > 0) ||
+    (p.rebirth_ranking && p.rebirth_ranking.length > 0)
+  );
+  if (withData.length === 0) return;
+
+  // 매일 같은 펫 3마리 (시드 기반)
+  const today = new Date().toISOString().slice(0, 10);
+  let seed = 0;
+  for (let i = 0; i < today.length; i++) seed = (seed * 31 + today.charCodeAt(i)) | 0;
+  const shuffled = [...withData].sort((a, b) => {
+    const sa = (seed * a.name.charCodeAt(0)) % 1000;
+    const sb = (seed * b.name.charCodeAt(0)) % 1000;
+    return sa - sb;
+  });
+  const friends = shuffled.slice(0, 3);
+
+  const container = document.getElementById('floating-pets');
+  if (!container) return;
+  container.innerHTML = friends.map(p => {
+    const img = PET_IMAGES[p.name];
+    const inner = img
+      ? `<img src="${img}" alt="${p.name}">`
+      : `<span style="font-size:28px;">🐾</span>`;
+    return `<div class="floating-pet" title="${p.name}" onclick="jumpToPet('${p.name.replace(/'/g, "\\'")}')">${inner}</div>`;
+  }).join('');
+}
+
 // ── 🎰 슬롯머신 랜덤 유저 ──
 let _slotData = {};  // gridId → sorted array
 function registerSlotData(gridId, sorted) {
@@ -1464,6 +1856,7 @@ function registerSlotData(gridId, sorted) {
 }
 function slotMachineUser(gridId, storeKey, searchInputId) {
   sfxSlot();
+  setMissionDone('slot');
   const btn = (typeof event !== 'undefined' && event) ? event.currentTarget : document.querySelector('.slot-btn');
   if (btn) {
     btn.classList.add('spinning');
@@ -1637,6 +2030,9 @@ async function loadData() {
       renderAllUserTabs(latestData.pets);
       renderPetRanking(latestData.pets);
       renderFortunePet(latestData.pets);
+      renderChangesBanner(latestData.pets);
+      renderFloatingPets(latestData.pets);
+      renderMissions();
 
       // 인트로 스플래시 숨기기 (첫 로드 시)
       const splash = document.getElementById('intro-splash');
@@ -1717,6 +2113,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
   const prevScores = window._prevScoresCache || {};
   const deltaH = scoreDeltaHTML(user.name, charisma, prevScores);
   const medalH = medalHTML(user.first);
+  const titleH = trainerTitleHTML(charisma);
 
   const statChips = `
     <div class="user-stat-chips">
@@ -1771,7 +2168,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
         <span class="rank-num-badge ${badgeClass}">${rankText}</span>
       </div>
       <div class="rank-comment">${comment}</div>
-      <div class="user-name">${user.name}${subsHTML}${medalH}${deltaH}</div>
+      <div class="user-name">${user.name}${subsHTML}${medalH}${titleH}${deltaH}</div>
       ${statChips}${charismaChip}${badges}${detailBtn}
     </div>`;
   } else {
@@ -1791,6 +2188,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
 
 // ── 상세 팝업 ── (펫 클릭 시 능력치 표시)
 function openDetailModal(userName, subText, petsEnc) {
+  setMissionDone('detail');
   const pets = JSON.parse(decodeURIComponent(petsEnc));
 
   document.getElementById('detailModalImg').innerHTML = `<span style="font-size:28px;">👤</span>`;
@@ -2183,6 +2581,19 @@ function switchTab(id, btn) {
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   btn.classList.add('active');
+
+  // 본 탭 추적 (미션용)
+  const VISITED_TABS_KEY = 'wind-rank-tabs-' + new Date().toISOString().slice(0, 10);
+  let visited = [];
+  try { visited = JSON.parse(localStorage.getItem(VISITED_TABS_KEY) || '[]'); } catch(e) {}
+  if (!visited.includes(id)) {
+    visited.push(id);
+    try { localStorage.setItem(VISITED_TABS_KEY, JSON.stringify(visited)); } catch(e) {}
+  }
+  const allTabs = ['user-tab', 'first-tab', 'top3-tab', 'pet-tab'];
+  if (allTabs.every(t => visited.includes(t))) {
+    setMissionDone('tab');
+  }
 }
 
 // ── Dark Mode ──
