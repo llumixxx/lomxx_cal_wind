@@ -1117,6 +1117,53 @@
       font-family: 'Noto Sans KR', sans-serif;
     }
 
+    /* 2칼럼 레이아웃 (내 vs 상대) */
+    .battle-two-col {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 14px;
+    }
+    @media(max-width:640px) { .battle-two-col { grid-template-columns: 1fr; } }
+    .battle-col {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+    .battle-col-my { border-color: #b8d4ff; background: linear-gradient(135deg, #fff, #f0f6ff); }
+    .battle-col-opp { border-color: #f5b8d0; background: linear-gradient(135deg, #fff, #fff0f4); }
+    [data-theme="dark"] .battle-col { background:#1f1e33; border-color:#3a3860; }
+    [data-theme="dark"] .battle-col-my { background:linear-gradient(135deg, #1f1e33, #1e2640); border-color:#4060c0; }
+    [data-theme="dark"] .battle-col-opp { background:linear-gradient(135deg, #1f1e33, #2e1e2a); border-color:#a83870; }
+
+    /* 🥊 배틀 시작 버튼 */
+    .battle-start-btn {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, #ff7a8a, #f5a623, #fdd835);
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease infinite;
+      border: 3px solid #fff;
+      border-radius: 99px; color: #fff;
+      font-size: 18px; font-weight: 900;
+      font-family: 'Noto Sans KR', sans-serif;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:
+        0 8px 24px rgba(245,122,138,.5),
+        inset 0 -4px 0 rgba(0,0,0,0.15);
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      margin-top: 8px;
+    }
+    .battle-start-btn:hover:not(:disabled) {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 12px 32px rgba(245,122,138,.6);
+    }
+    .battle-start-btn:disabled {
+      opacity: 0.5; cursor: not-allowed;
+      filter: grayscale(0.7);
+      animation: none;
+    }
+
     /* 닉네임 입력창 */
     .battle-pet-select {
       width: 100%;
@@ -1134,11 +1181,11 @@
     /* 펫 선택 카드 그리드 */
     .battle-pet-pick-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 8px;
-      max-height: 280px;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      max-height: 240px;
       overflow-y: auto;
-      padding: 4px;
+      padding: 2px;
     }
     .battle-pet-pick {
       display: flex; align-items: center; gap: 10px;
@@ -1926,11 +1973,9 @@ function renderBattleWidget(pets) {
   });
   // 본캐로 정규화한 유니크 목록
   const mainNicks = new Set();
-  const subToMainMap = {};
   allNicks.forEach(n => {
     const main = aliasToMain[n] || n;
     mainNicks.add(main);
-    subToMainMap[n] = main;
   });
   const sortedNicks = [...mainNicks].sort((a, b) => a.localeCompare(b, 'ko'));
 
@@ -1948,28 +1993,44 @@ function renderBattleWidget(pets) {
         <span style="font-size: 28px;">🥊</span>
         <span class="battle-title">랭킹 펫과 싸워보기</span>
       </div>
-      <div class="battle-sub">내 닉네임 → 내 펫 → 상대 펫 순서로 골라 대결해보세요!</div>
+      <div class="battle-sub">내 닉/펫 → 상대 닉/펫 → 배틀 시작 버튼!</div>
 
-      <!-- 1단계: 내 닉네임 -->
-      <div class="battle-step">
-        <div class="battle-step-label">👤 1. 내 닉네임</div>
-        <input list="battle-nick-list" id="battle-my-nick" class="battle-pet-select"
-               placeholder="닉네임 입력 또는 선택 (본캐/부캐 다 OK)"
-               oninput="onBattleNickChange()" value="${saved.myNick || ''}">
-        <datalist id="battle-nick-list">${nickOptions}</datalist>
+      <div class="battle-two-col">
+        <!-- 왼쪽: 내 정보 -->
+        <div class="battle-col battle-col-my">
+          <div class="battle-step">
+            <div class="battle-step-label">👤 1. 내 닉네임</div>
+            <input list="battle-nick-list" id="battle-my-nick" class="battle-pet-select"
+                   placeholder="닉네임 입력 (본캐/부캐)"
+                   oninput="onBattleNickChange('my')" value="${saved.myNick || ''}">
+          </div>
+          <div class="battle-step" id="battle-step-mypet" style="display:none;">
+            <div class="battle-step-label">🐾 2. 내 펫 선택</div>
+            <div id="battle-my-pets"></div>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 상대 정보 -->
+        <div class="battle-col battle-col-opp">
+          <div class="battle-step">
+            <div class="battle-step-label">👥 3. 상대 닉네임</div>
+            <input list="battle-nick-list" id="battle-opp-nick" class="battle-pet-select"
+                   placeholder="상대 닉네임 입력"
+                   oninput="onBattleNickChange('opp')" value="${saved.oppNick || ''}">
+          </div>
+          <div class="battle-step" id="battle-step-opppet" style="display:none;">
+            <div class="battle-step-label">⚔️ 4. 상대 펫 선택</div>
+            <div id="battle-opp-pets"></div>
+          </div>
+        </div>
       </div>
 
-      <!-- 2단계: 내 펫 -->
-      <div class="battle-step" id="battle-step-mypet" style="display:none;">
-        <div class="battle-step-label">🐾 2. 내 펫 선택</div>
-        <div id="battle-my-pets"></div>
-      </div>
+      <datalist id="battle-nick-list">${nickOptions}</datalist>
 
-      <!-- 3단계: 상대 펫 -->
-      <div class="battle-step" id="battle-step-opp" style="display:none;">
-        <div class="battle-step-label">⚔️ 3. 상대 선택</div>
-        <div id="battle-opp-pets"></div>
-      </div>
+      <!-- 배틀 시작 버튼 -->
+      <button class="battle-start-btn" id="battle-start-btn" onclick="startBattleNow()" disabled>
+        🥊 배틀 시작!
+      </button>
 
       <!-- 전투 결과 영역 -->
       <div id="battle-arena-area"></div>
@@ -1978,34 +2039,41 @@ function renderBattleWidget(pets) {
 
   // 저장된 닉네임 있으면 자동 진행
   if (saved.myNick) {
-    setTimeout(() => onBattleNickChange(), 100);
+    setTimeout(() => onBattleNickChange('my'), 100);
+  }
+  if (saved.oppNick) {
+    setTimeout(() => onBattleNickChange('opp'), 150);
   }
 }
 
-// 닉네임 변경 시 보유 펫 표시
-function onBattleNickChange() {
-  const nick = document.getElementById('battle-my-nick').value.trim();
-  const stepMypet = document.getElementById('battle-step-mypet');
-  const stepOpp = document.getElementById('battle-step-opp');
-  const arenaArea = document.getElementById('battle-arena-area');
+// 닉네임 변경 시 보유 펫 표시 (side: 'my' / 'opp')
+function onBattleNickChange(side) {
+  const inputId = side === 'my' ? 'battle-my-nick' : 'battle-opp-nick';
+  const stepId  = side === 'my' ? 'battle-step-mypet' : 'battle-step-opppet';
+  const petsId  = side === 'my' ? 'battle-my-pets' : 'battle-opp-pets';
+  const nick = document.getElementById(inputId).value.trim();
+  const stepEl = document.getElementById(stepId);
 
   if (!nick) {
-    stepMypet.style.display = 'none';
-    stepOpp.style.display = 'none';
-    arenaArea.innerHTML = '';
+    stepEl.style.display = 'none';
+    if (side === 'my') _myBattleEntries = [];
+    else _oppBattleEntries = [];
+    if (side === 'my') _selectedMyIdx = -1;
+    else _selectedOppIdx = -1;
+    updateBattleStartBtn();
     return;
   }
 
   // 본캐로 정규화
   const mainName = aliasToMain[nick] || nick;
   // 이 유저가 보유한 펫 + 랭킹 데이터 모음
-  const myEntries = []; // [{petName, rank, attack, defense, speed, exp, level, nickname}]
+  const entries = [];
   _battlePets.forEach(pet => {
     (pet.general_ranking || []).forEach((r, idx) => {
       if (!r.nickname) return;
       const recMain = aliasToMain[r.nickname] || r.nickname;
       if (recMain === mainName) {
-        myEntries.push({
+        entries.push({
           petName: pet.name,
           rank: idx + 1,
           attack: parseStat(r.attack),
@@ -2020,26 +2088,33 @@ function onBattleNickChange() {
     });
   });
 
-  if (myEntries.length === 0) {
-    stepMypet.style.display = 'block';
-    document.getElementById('battle-my-pets').innerHTML = `
-      <div style="padding:14px;text-align:center;color:var(--t3);font-size:13px;font-weight:700;background:var(--s1);border-radius:14px;">
-        ❌ "${nick}"은(는) 랭킹에 없어요. 다른 닉네임을 입력하세요.
+  if (entries.length === 0) {
+    stepEl.style.display = 'block';
+    document.getElementById(petsId).innerHTML = `
+      <div style="padding:14px;text-align:center;color:var(--t3);font-size:12px;font-weight:700;background:var(--s1);border-radius:14px;">
+        ❌ "${nick}" 랭킹 없음
       </div>
     `;
-    stepOpp.style.display = 'none';
-    arenaArea.innerHTML = '';
+    if (side === 'my') { _myBattleEntries = []; _selectedMyIdx = -1; }
+    else { _oppBattleEntries = []; _selectedOppIdx = -1; }
+    updateBattleStartBtn();
     return;
   }
 
   // 저장
-  saveBattleState({ myNick: nick });
+  if (side === 'my') {
+    saveBattleState({ myNick: nick });
+    _myBattleEntries = entries;
+  } else {
+    saveBattleState({ oppNick: nick });
+    _oppBattleEntries = entries;
+  }
 
-  // 내 펫 카드 렌더
-  stepMypet.style.display = 'block';
-  document.getElementById('battle-my-pets').innerHTML = `
+  // 펫 카드 렌더
+  stepEl.style.display = 'block';
+  document.getElementById(petsId).innerHTML = `
     <div class="battle-pet-pick-grid">
-      ${myEntries.map((e, i) => makeBattlePetCard(e, 'my', i)).join('')}
+      ${entries.map((e, i) => makeBattlePetCard(e, side, i)).join('')}
     </div>
   `;
 
@@ -2048,15 +2123,16 @@ function onBattleNickChange() {
     try { return JSON.parse(localStorage.getItem('wind-rank-battle-state') || '{}'); }
     catch(e) { return {}; }
   })();
-  if (saved.myPetIdx !== undefined && myEntries[saved.myPetIdx]) {
-    selectMyPet(saved.myPetIdx, myEntries[saved.myPetIdx].petName);
-  } else {
-    stepOpp.style.display = 'none';
+  const savedIdxKey = side === 'my' ? 'myPetIdx' : 'oppPetIdx';
+  if (saved[savedIdxKey] !== undefined && entries[saved[savedIdxKey]]) {
+    selectBattlePet(side, saved[savedIdxKey]);
   }
+
+  updateBattleStartBtn();
 }
 
 // 펫 카드 (내 펫 / 상대 펫 둘 다 사용)
-function makeBattlePetCard(entry, kind, idx, isSelected) {
+function makeBattlePetCard(entry, side, idx) {
   const img = PET_IMAGES[entry.petName];
   const imgHTML = img
     ? `<img src="${img}" alt="${entry.petName}">`
@@ -2064,94 +2140,47 @@ function makeBattlePetCard(entry, kind, idx, isSelected) {
   const rankBadge = entry.rank <= 3
     ? ['🥇','🥈','🥉'][entry.rank - 1]
     : entry.rank + '위';
-  const sel = isSelected ? ' selected' : '';
-  const action = kind === 'my'
-    ? `onclick="selectMyPet(${idx}, '${entry.petName.replace(/'/g, "\\'")}')"`
-    : `onclick="startBattleWith(${idx})"`;
   return `
-    <div class="battle-pet-pick${sel}" ${action}>
+    <div class="battle-pet-pick" data-side="${side}" data-idx="${idx}" onclick="selectBattlePet('${side}', ${idx})">
       <div class="battle-pet-pick-img">${imgHTML}</div>
       <div class="battle-pet-pick-info">
         <div class="battle-pet-pick-name">${entry.petName} <span class="battle-pet-pick-rank">${rankBadge}</span></div>
-        ${kind === 'opp' ? `<div class="battle-pet-pick-nick">${entry.nickname}</div>` : ''}
-        <div class="battle-pet-pick-stats">⚔️${entry.attack} 🛡${entry.defense} 💨${entry.speed} ❤${entry.exp}</div>
+        <div class="battle-pet-pick-stats">⚔${entry.attack} 🛡${entry.defense} 💨${entry.speed} ❤${entry.exp}</div>
       </div>
     </div>
   `;
 }
 
-// 내 펫 데이터 캐시 (이번 라운드)
+// 내/상대 펫 데이터 캐시 + 선택 인덱스
 let _myBattleEntries = [];
 let _oppBattleEntries = [];
 let _selectedMyIdx = -1;
+let _selectedOppIdx = -1;
 
-function selectMyPet(idx, petName) {
+// 펫 선택 (양쪽 공용)
+function selectBattlePet(side, idx) {
   sfxClick();
-  // 내 entries 다시 빌드
-  const myNick = document.getElementById('battle-my-nick').value.trim();
-  const mainName = aliasToMain[myNick] || myNick;
-  _myBattleEntries = [];
-  _battlePets.forEach(pet => {
-    (pet.general_ranking || []).forEach((r, i) => {
-      if (!r.nickname) return;
-      const recMain = aliasToMain[r.nickname] || r.nickname;
-      if (recMain === mainName) {
-        _myBattleEntries.push({
-          petName: pet.name,
-          rank: i + 1,
-          attack: parseStat(r.attack),
-          defense: parseStat(r.defense),
-          speed: parseStat(r.speed),
-          exp: parseStat(r.exp),
-          level: parseStat(r.level),
-          nickname: r.nickname,
-        });
-      }
-    });
-  });
-  _selectedMyIdx = idx;
-  saveBattleState({ myNick, myPetIdx: idx });
-
-  // 선택 표시
-  document.querySelectorAll('#battle-my-pets .battle-pet-pick').forEach((el, i) => {
-    el.classList.toggle('selected', i === idx);
-  });
-
-  // 상대 펫 목록 - 같은 펫의 다른 랭커들
-  const petData = _battlePets.find(p => p.name === petName);
-  if (!petData) return;
-  _oppBattleEntries = (petData.general_ranking || []).map((r, i) => ({
-    petName: petName,
-    rank: i + 1,
-    attack: parseStat(r.attack),
-    defense: parseStat(r.defense),
-    speed: parseStat(r.speed),
-    exp: parseStat(r.exp),
-    level: parseStat(r.level),
-    nickname: r.nickname,
-  })).filter(e => {
-    // 본인 제외 (본캐 기준)
-    const recMain = aliasToMain[e.nickname] || e.nickname;
-    return recMain !== mainName;
-  });
-
-  const stepOpp = document.getElementById('battle-step-opp');
-  if (_oppBattleEntries.length === 0) {
-    stepOpp.style.display = 'block';
-    document.getElementById('battle-opp-pets').innerHTML = `
-      <div style="padding:14px;text-align:center;color:var(--t3);font-size:13px;font-weight:700;background:var(--s1);border-radius:14px;">
-        🏆 ${petName} 랭킹에서 본인만 등록되어 있어요! 상대가 없네요.
-      </div>
-    `;
-    return;
+  if (side === 'my') {
+    _selectedMyIdx = idx;
+    saveBattleState({ myPetIdx: idx });
+  } else {
+    _selectedOppIdx = idx;
+    saveBattleState({ oppPetIdx: idx });
   }
+  // 선택 표시 (해당 side의 카드만)
+  document.querySelectorAll(`.battle-pet-pick[data-side="${side}"]`).forEach((el) => {
+    el.classList.toggle('selected', parseInt(el.dataset.idx) === idx);
+  });
+  updateBattleStartBtn();
+}
 
-  stepOpp.style.display = 'block';
-  document.getElementById('battle-opp-pets').innerHTML = `
-    <div class="battle-pet-pick-grid">
-      ${_oppBattleEntries.map((e, i) => makeBattlePetCard(e, 'opp', i)).join('')}
-    </div>
-  `;
+// 배틀 시작 버튼 활성화/비활성화
+function updateBattleStartBtn() {
+  const btn = document.getElementById('battle-start-btn');
+  if (!btn) return;
+  const ready = _selectedMyIdx >= 0 && _selectedOppIdx >= 0
+             && _myBattleEntries[_selectedMyIdx] && _oppBattleEntries[_selectedOppIdx];
+  btn.disabled = !ready;
 }
 
 // 상태 저장
@@ -2163,18 +2192,32 @@ function saveBattleState(patch) {
   try { localStorage.setItem('wind-rank-battle-state', JSON.stringify(state)); } catch(e) {}
 }
 
-// 상대 선택 → 바로 전투
-async function startBattleWith(oppIdx) {
-  if (_selectedMyIdx < 0 || !_myBattleEntries[_selectedMyIdx]) {
-    showToast('먼저 내 펫을 선택해주세요');
+// 🥊 배틀 시작!
+async function startBattleNow() {
+  if (_selectedMyIdx < 0 || _selectedOppIdx < 0) {
+    showToast('내/상대 펫을 모두 선택해주세요');
     return;
   }
   const me = _myBattleEntries[_selectedMyIdx];
-  const opp = _oppBattleEntries[oppIdx];
-  if (!opp) return;
+  const opp = _oppBattleEntries[_selectedOppIdx];
+  if (!me || !opp) return;
 
-  // 같은 펫끼리 싸우는 거니까 petName 동일
-  await runBattle(me.petName, me, opp);
+  // 같은 사람 같은 펫 비교는 의미 X
+  if (me.petName === opp.petName && me.nickname === opp.nickname) {
+    showToast('본인 자신과는 싸울 수 없어요');
+    return;
+  }
+
+  sfxClick();
+  // 배틀 시작 버튼 잠시 비활성화
+  document.getElementById('battle-start-btn').disabled = true;
+  document.getElementById('battle-start-btn').textContent = '⚔️ 전투 중...';
+
+  await runBattle(me, opp);
+
+  // 다시 활성화
+  document.getElementById('battle-start-btn').disabled = false;
+  document.getElementById('battle-start-btn').textContent = '🥊 다시 배틀!';
 }
 
 // 데미지 계산
@@ -2193,35 +2236,40 @@ function calcDamage(attacker, defender) {
 }
 
 // 전투 실행
-async function runBattle(petName, me, opp) {
+async function runBattle(me, opp) {
   // me/opp는 { petName, rank, attack, defense, speed, exp, level, nickname } 형식
   const myAtk = me.attack, myDef = me.defense, mySpd = me.speed, myHp = me.exp;
   const oppAtk = opp.attack, oppDef = opp.defense, oppSpd = opp.speed, oppHp = opp.exp;
 
-  // arena UI
-  const img = PET_IMAGES[petName];
-  const imgHTML = img ? `<img src="${img}" alt="${petName}">` : '<span style="font-size:32px;">🐾</span>';
+  // 각자 펫 이미지 (서로 다를 수 있음)
+  const myImg = PET_IMAGES[me.petName];
+  const oppImg = PET_IMAGES[opp.petName];
+  const myImgHTML = myImg ? `<img src="${myImg}" alt="${me.petName}">` : '<span style="font-size:32px;">🐾</span>';
+  const oppImgHTML = oppImg ? `<img src="${oppImg}" alt="${opp.petName}">` : '<span style="font-size:32px;">🐾</span>';
 
   document.getElementById('battle-arena-area').innerHTML = `
     <div class="battle-arena" id="battle-arena">
       <div class="battle-vs-row">
         <div class="battle-fighter" id="fighter-me">
-          <div class="battle-fighter-img" id="my-img">${imgHTML}</div>
+          <div class="battle-fighter-img" id="my-img">${myImgHTML}</div>
           <div class="battle-fighter-name">${me.nickname} <span class="battle-fighter-rank">${me.rank}위</span></div>
-          <div class="battle-fighter-nick">Lv.${me.level} · ⚔${myAtk} 🛡${myDef} 💨${mySpd}</div>
+          <div class="battle-fighter-nick">${me.petName} · Lv.${me.level} · ⚔${myAtk} 🛡${myDef} 💨${mySpd}</div>
           <div class="hp-bar-wrap"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%;"></div><div class="hp-text" id="my-hp-text">${myHp} / ${myHp}</div></div>
         </div>
         <div class="battle-vs">VS</div>
         <div class="battle-fighter" id="fighter-opp">
-          <div class="battle-fighter-img" id="opp-img">${imgHTML}</div>
+          <div class="battle-fighter-img" id="opp-img">${oppImgHTML}</div>
           <div class="battle-fighter-name">${opp.nickname} <span class="battle-fighter-rank">${opp.rank}위</span></div>
-          <div class="battle-fighter-nick">Lv.${opp.level} · ⚔${oppAtk} 🛡${oppDef} 💨${oppSpd}</div>
+          <div class="battle-fighter-nick">${opp.petName} · Lv.${opp.level} · ⚔${oppAtk} 🛡${oppDef} 💨${oppSpd}</div>
           <div class="hp-bar-wrap"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;"></div><div class="hp-text" id="opp-hp-text">${oppHp} / ${oppHp}</div></div>
         </div>
       </div>
       <div class="battle-log" id="battle-log"></div>
     </div>
   `;
+
+  // arena 스크롤
+  document.getElementById('battle-arena').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
   // 초기 HP
   let myCurHp = myHp;
@@ -2248,7 +2296,6 @@ async function runBattle(petName, me, opp) {
     else if (pct < 70) bar.classList.add('medium');
   }
 
-  // 데미지 팝업
   function showDamagePop(who, dmg, isCrit) {
     const pop = document.createElement('div');
     pop.className = 'damage-pop' + (isCrit ? ' crit' : '');
@@ -2262,7 +2309,6 @@ async function runBattle(petName, me, opp) {
     setTimeout(() => pop.remove(), 1000);
   }
 
-  // 공격 애니메이션
   function animateAttack(attacker, defender) {
     document.getElementById(attacker + '-img').classList.add('attacking');
     document.getElementById(defender + '-img').classList.add('hit');
@@ -2273,8 +2319,8 @@ async function runBattle(petName, me, opp) {
   }
 
   // 시작 로그
-  log(`⚔️ <strong>${petName}</strong> 대결 시작!`, 'win');
-  log(`👤 <strong>${me.nickname}</strong> (${me.rank}위) vs <strong>${opp.nickname}</strong> (${opp.rank}위)`);
+  log(`⚔️ <strong>${me.petName}</strong> vs <strong>${opp.petName}</strong> 대결 시작!`, 'win');
+  log(`👤 <strong>${me.nickname}</strong>의 ${me.petName} (${me.rank}위) vs <strong>${opp.nickname}</strong>의 ${opp.petName} (${opp.rank}위)`);
 
   // 선공권: 순발 빠른 쪽
   const myFirst = mySpd >= oppSpd;
@@ -2286,7 +2332,6 @@ async function runBattle(petName, me, opp) {
 
   await sleep(800);
 
-  // 가상 객체 만들어서 calcDamage에 넘기기
   const meObj = { atk: myAtk, def: myDef, spd: mySpd, hp: myHp };
   const oppObj = { atk: oppAtk, def: oppDef, spd: oppSpd, hp: oppHp };
 
@@ -2328,20 +2373,20 @@ async function runBattle(petName, me, opp) {
 
   if (draw) {
     log(`⏱️ <strong>${MAX_TURNS}턴 경과! 무승부!</strong>`, 'win');
-    showBattleResult('draw', petName, me, opp);
+    showBattleResult('draw', me, opp);
   } else if (win) {
     log(`🏆 <strong>승리! ${opp.nickname}을(를) 꺾었어요!</strong>`, 'win');
     fireConfetti({ count: 100, originY: window.innerHeight / 2 });
     sfxAch();
-    setTimeout(() => showBattleResult('win', petName, me, opp), 600);
+    setTimeout(() => showBattleResult('win', me, opp), 600);
   } else {
     log(`💔 <strong>패배... ${opp.nickname}이(가) 너무 강했어요</strong>`, 'lose');
-    setTimeout(() => showBattleResult('lose', petName, me, opp), 600);
+    setTimeout(() => showBattleResult('lose', me, opp), 600);
   }
 }
 
 // 결과 모달
-function showBattleResult(kind, petName, me, opp) {
+function showBattleResult(kind, me, opp) {
   const isWin = kind === 'win';
   const isDraw = kind === 'draw';
   const emoji = isWin ? '🏆' : isDraw ? '🤝' : '😢';
@@ -2368,18 +2413,17 @@ function showBattleResult(kind, petName, me, opp) {
 
   let msg;
   if (isWin) {
-    msg = `${petName} ${opp.rank}위 <strong>${opp.nickname}</strong>을(를) 꺾었습니다! 🎉`;
+    msg = `${opp.petName} ${opp.rank}위 <strong>${opp.nickname}</strong>을(를) 꺾었습니다! 🎉`;
   } else if (isDraw) {
     msg = `${opp.nickname}와(과) 호각의 승부였어요!`;
   } else {
-    // 가장 부족한 스탯 찾기
     const worst = diffs.reduce((a, b) => a.val < b.val ? a : b);
     msg = `${opp.nickname}이(가) 더 강했어요. <strong>${worst.label}</strong>에서 ${Math.abs(worst.val)}만큼 부족했어요!`;
   }
 
   document.getElementById('detailModalImg').innerHTML = `<span style="font-size:32px;">${emoji}</span>`;
   document.getElementById('detailModalName').textContent = '전투 결과';
-  document.getElementById('detailModalSub').textContent = petName + ' · ' + me.nickname + ' vs ' + opp.nickname;
+  document.getElementById('detailModalSub').textContent = me.nickname + '(' + me.petName + ') vs ' + opp.nickname + '(' + opp.petName + ')';
   document.getElementById('detailModalBody').innerHTML = `
     <div class="battle-result">
       <div class="battle-result-emoji">${emoji}</div>
