@@ -34,10 +34,37 @@
       font-family:'Noto Sans KR',sans-serif;
       background:var(--bg); color:var(--t1); min-height:100vh;
       background-image:
-        radial-gradient(ellipse at 20% 0%,rgba(155,135,245,0.10) 0%,transparent 50%),
-        radial-gradient(ellipse at 80% 5%,rgba(245,135,184,0.08) 0%,transparent 45%),
-        radial-gradient(ellipse at 50% 100%,rgba(135,212,245,0.06) 0%,transparent 50%);
+        radial-gradient(ellipse at 15% 0%, rgba(155,135,245,0.18) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 5%, rgba(245,135,184,0.16) 0%, transparent 45%),
+        radial-gradient(ellipse at 50% 40%, rgba(135,212,245,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 80%, rgba(255,216,131,0.10) 0%, transparent 45%),
+        radial-gradient(ellipse at 80% 100%, rgba(135,245,192,0.10) 0%, transparent 45%);
+      position: relative;
+      overflow-x: hidden;
     }
+    /* ✨ 반짝이는 별빛 배경 패턴 */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1px 1px at 60% 70%, rgba(245,166,35,0.5), transparent),
+        radial-gradient(2px 2px at 80% 15%, rgba(155,135,245,0.5), transparent),
+        radial-gradient(1px 1px at 30% 80%, rgba(245,135,184,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 90% 60%, rgba(135,212,245,0.5), transparent),
+        radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.4), transparent),
+        radial-gradient(2px 2px at 10% 60%, rgba(135,245,192,0.4), transparent);
+      background-size: 250px 250px, 200px 200px, 280px 280px, 220px 220px, 300px 300px, 180px 180px, 240px 240px;
+      pointer-events: none; z-index: 0;
+      animation: starShift 60s linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes starShift {
+      0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0; }
+      100% { background-position: 250px 250px, -200px 200px, 280px -280px, -220px 220px, 300px 300px, -180px 180px, 240px -240px; }
+    }
+    [data-theme="dark"] body::before { opacity: 1; }
+    .main-wrap, .page-header { position: relative; z-index: 1; }
 
     /* Float Buttons */
     .float-btns { position:fixed; top:14px; right:14px; display:flex; flex-direction:column; align-items:center; gap:7px; z-index:9999; }
@@ -71,10 +98,18 @@
     [data-theme="dark"] .page-header { background:#1a1930; border-color:#3a3860; }
     .header-inner { max-width:1280px; margin:0 auto; padding:14px 20px 12px; text-align:center; }
     .header-title-row {
-      display:inline-flex; align-items:center; gap:8px; margin-bottom:10px;
-      font-family:'Nunito',sans-serif; font-weight:900; font-size:22px;
-      background:linear-gradient(135deg,var(--a1),var(--a2));
+      display:inline-flex; align-items:center; gap:10px; margin-bottom:10px;
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:28px;
+      background:linear-gradient(135deg, #9b87f5 0%, #f587b8 35%, #f5a623 65%, #fdd835 100%);
+      background-size: 200% 200%;
       -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      filter: drop-shadow(0 2px 6px rgba(155,135,245,0.3));
+      letter-spacing: -1.2px;
+      animation: titleShimmer 4s ease-in-out infinite;
+    }
+    @keyframes titleShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .page-nav { display:flex; justify-content:center; gap:6px; flex-wrap:wrap; }
     .pnav-tab {
@@ -135,39 +170,60 @@
     .update-dot { width:8px; height:8px; background:var(--ok); border-radius:50%; flex-shrink:0; animation:pulse 2s infinite; }
 
     /* Tabs */
-    .tabs-row { display:flex; gap:4px; margin-bottom:24px; border-bottom:2px solid var(--border); overflow-x:auto; padding-bottom:0; }
-    [data-theme="dark"] .tabs-row { border-color:#3a3860; }
-    .tab-btn {
-      padding:10px 18px; border:none; background:transparent; color:var(--t2);
-      font-weight:700; font-size:13px; font-family:'Noto Sans KR',sans-serif;
-      cursor:pointer; transition:all .2s; white-space:nowrap;
-      border-bottom:2.5px solid transparent; margin-bottom:-2px; border-radius:8px 8px 0 0;
+    .tabs-row {
+      display:flex; gap:8px; margin-bottom:24px;
+      overflow-x:auto; padding: 6px 4px;
+      border-bottom: none;
     }
-    .tab-btn:hover { color:var(--a1); background:var(--s1); }
-    .tab-btn.active { color:var(--a1); border-bottom-color:var(--a1); background:var(--s1); font-weight:800; }
-    [data-theme="dark"] .tab-btn { color:#7a78a8; }
-    [data-theme="dark"] .tab-btn:hover { background:#27263e; color:var(--a1); }
-    [data-theme="dark"] .tab-btn.active { background:#27263e; color:var(--a1); border-bottom-color:var(--a1); }
+    .tab-btn {
+      padding:10px 20px; border:2px solid var(--border2);
+      background:var(--white); color:var(--t2);
+      font-weight:800; font-size:13px; font-family:'Noto Sans KR',sans-serif;
+      cursor:pointer; transition:all .2s cubic-bezier(.34,1.56,.64,1);
+      white-space:nowrap; border-radius: 99px;
+      box-shadow: 0 2px 6px rgba(155,135,245,0.08);
+    }
+    .tab-btn:hover {
+      color:var(--a1); border-color: var(--a1);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(155,135,245,0.2);
+    }
+    .tab-btn.active {
+      color:#fff;
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(155,135,245,0.4);
+      font-weight:900;
+    }
+    [data-theme="dark"] .tab-btn { background:#1f1e33; color:#b0aedd; border-color:#3a3860; }
+    [data-theme="dark"] .tab-btn:hover { background:#27263e; color:var(--a1); border-color:var(--a1); }
+    [data-theme="dark"] .tab-btn.active { color:#fff; background: linear-gradient(135deg, var(--a1), var(--a2)); border-color:transparent; }
     .tab-content { display:none; }
     .tab-content.active { display:block; animation:fadeInUp .3s ease; }
 
     /* Nick / Pet Search */
     .nick-search-wrap, .search-wrap {
-      display:flex; align-items:center; gap:8px; background:var(--white);
-      border:1.5px solid var(--border2); border-radius:12px; padding:10px 16px;
-      max-width:400px; margin-bottom:20px; box-shadow:var(--shadow);
-      transition:border-color .2s, box-shadow .2s;
+      display:flex; align-items:center; gap:10px;
+      background: linear-gradient(135deg, var(--white), var(--s1));
+      border:2.5px solid var(--border2); border-radius: 99px;
+      padding:10px 18px;
+      max-width:400px; margin-bottom:20px;
+      box-shadow: 0 4px 16px rgba(155,135,245,0.12), inset 0 1px 2px rgba(255,255,255,0.4);
+      transition: all .2s;
     }
     .nick-search-wrap:focus-within, .search-wrap:focus-within {
-      border-color:var(--a1); box-shadow:0 0 0 3px rgba(155,135,245,.10);
+      border-color:var(--a1);
+      box-shadow: 0 4px 20px rgba(155,135,245,.3), inset 0 1px 2px rgba(255,255,255,0.4), 0 0 0 4px rgba(155,135,245,.12);
+      transform: translateY(-1px);
     }
-    .nick-search-wrap span, .search-wrap span { font-size:14px; color:var(--t3); flex-shrink:0; }
+    .nick-search-wrap span, .search-wrap span { font-size:16px; color:var(--a1); flex-shrink:0; }
     .nick-search-wrap input, .search-wrap input {
       border:none; background:transparent; color:var(--t1);
-      font-size:13px; font-family:'Noto Sans KR',sans-serif; flex:1; outline:none;
+      font-size:14px; font-family:'Noto Sans KR',sans-serif; font-weight:600;
+      flex:1; outline:none;
     }
-    .nick-search-wrap input::placeholder, .search-wrap input::placeholder { color:var(--t4); }
-    [data-theme="dark"] .nick-search-wrap,[data-theme="dark"] .search-wrap { background:#1f1e33; border-color:#3a3860; }
+    .nick-search-wrap input::placeholder, .search-wrap input::placeholder { color:var(--t4); font-weight: 500; }
+    [data-theme="dark"] .nick-search-wrap,[data-theme="dark"] .search-wrap { background:linear-gradient(135deg, #1f1e33, #27263e); border-color:#4e4c7a; }
     [data-theme="dark"] .nick-search-wrap input,[data-theme="dark"] .search-wrap input { color:#e4e2ff; }
 
     /* ══════ TOP10 그리드 ══════ */
@@ -181,73 +237,116 @@
     /* 공통 카드 */
     .user-card {
       border-radius:20px; padding:22px;
-      transition:transform .22s ease, box-shadow .22s ease;
+      transition: all .25s cubic-bezier(.34,1.56,.64,1);
       position:relative; overflow:hidden;
+      backdrop-filter: blur(10px);
     }
-    .user-card:hover { transform:translateY(-5px); box-shadow:var(--shadow3); }
+    .user-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(155,135,245,0.3);
+    }
 
-    /* ── 1위: 금색 흐르는 그라데이션 ── */
+    /* ── 1위: 화려한 황금 ── */
     .user-card.rank-hero {
       grid-column:1 / -1;
-      background:linear-gradient(270deg,#fff8d0,#fffbe8,#ffefc8,#fff8d0);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#fff8d0,#ffeb9a,#fff4be,#ffe080,#fff8d0);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 5s ease infinite;
-      border:2px solid #d9a010;
-      box-shadow:0 6px 28px rgba(217,160,16,0.22);
+      border:3px solid transparent;
+      background-clip: padding-box;
+      box-shadow:
+        0 12px 36px rgba(245,166,35,0.35),
+        0 0 0 1px rgba(245,166,35,0.4),
+        inset 0 1px 2px rgba(255,255,255,0.5);
     }
     [data-theme="dark"] .user-card.rank-hero {
-      background:linear-gradient(270deg,#2e2408,#3c2e0a,#281e06,#2e2408);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#3c2c08,#4c3a0a,#382806,#3c2c08);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 5s ease infinite;
-      border-color:#a07818;
-      box-shadow:0 6px 28px rgba(160,120,24,0.35);
+      border-color: #c89030;
+      box-shadow: 0 12px 36px rgba(200,144,48,0.5);
     }
+    .user-card.rank-hero::after {
+      content: '';
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+      animation: shineSweep 4s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes shineSweep {
+      0% { transform: translate(-100%, -100%) rotate(45deg); }
+      100% { transform: translate(100%, 100%) rotate(45deg); }
+    }
+    .user-card.rank-hero > * { position: relative; z-index: 1; }
 
-    /* ── 2위: 밝은 은색 ── */
+    /* ── 2위: 은은한 은빛 ── */
     .user-card.rank-silver {
-      background:linear-gradient(270deg,#eef0ff,#dde2f8,#e8ecff,#d8dff5);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.3), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#eef0ff,#c8d4ff,#dde6ff,#b8c8ff,#eef0ff);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 6s ease infinite;
-      border:2.5px solid #7080d0;
-      box-shadow:0 6px 24px rgba(100,120,220,0.28);
+      border:3px solid #8a98e8;
+      box-shadow:
+        0 10px 30px rgba(120,140,230,0.35),
+        inset 0 1px 2px rgba(255,255,255,0.5);
     }
     [data-theme="dark"] .user-card.rank-silver {
-      background:linear-gradient(270deg,#1e2248,#252c5a,#192040,#1e2248);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#252a60,#2e3672,#1f2452,#252a60);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 6s ease infinite;
-      border-color:#6878d8;
-      box-shadow:0 6px 28px rgba(100,120,220,0.5);
+      border-color:#7080d8;
+      box-shadow: 0 10px 30px rgba(120,140,230,0.5);
     }
 
-    /* ── 3위: 차분한 브론즈 ── */
+    /* ── 3위: 따뜻한 브론즈 ── */
     .user-card.rank-bronze {
-      background:linear-gradient(270deg,#fdf6f0,#f8ece0,#fdf2e8,#f5e8d8);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.3), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#fdf2e0,#f5d8b0,#fae5c8,#f0c898,#fdf2e0);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 7s ease infinite;
-      border:1.5px solid #c89060;
-      box-shadow:0 3px 14px rgba(184,130,80,0.14);
+      border:3px solid #d49060;
+      box-shadow:
+        0 8px 24px rgba(200,140,80,0.28),
+        inset 0 1px 2px rgba(255,255,255,0.5);
     }
     [data-theme="dark"] .user-card.rank-bronze {
-      background:linear-gradient(270deg,#221608,#2c1c08,#1c1206,#221608);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#2c1c08,#3c2410,#241408,#2c1c08);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 7s ease infinite;
-      border-color:#7a5028;
-      box-shadow:0 3px 16px rgba(120,80,40,0.28);
+      border-color:#946028;
+      box-shadow: 0 8px 24px rgba(140,90,40,0.4);
     }
 
-    /* ── 4~10위: 은은한 보라 흐름 ── */
+    /* ── 4~10위: 풍성한 보라 그라데이션 ── */
     .user-card.rank-top10 {
-      background:linear-gradient(270deg,#faf9ff,#f4f2ff,#fdf9ff,#f0eeff);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.3), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#faf9ff,#e8e0ff,#fdf9ff,#ddd2ff,#faf9ff);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 8s ease infinite;
-      border:1.5px solid var(--border2);
-      box-shadow:var(--shadow);
+      border:2px solid var(--border2);
+      box-shadow:
+        0 6px 20px rgba(155,135,245,0.15),
+        inset 0 1px 2px rgba(255,255,255,0.5);
     }
     [data-theme="dark"] .user-card.rank-top10 {
-      background:linear-gradient(270deg,#1f1e33,#27263e,#1c1b2e,#27263e);
-      background-size:400% 400%;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
+        linear-gradient(270deg,#1f1e33,#2a2848,#1c1b2e,#2a2848);
+      background-size: 100% 100%, 400% 400%;
       animation:gradientShift 8s ease infinite;
-      border-color:#4e4c7a;
+      border-color:#5e5a8e;
     }
 
     /* 카드 꾸밈 - 오른쪽 위 별 + 도트 */
@@ -257,40 +356,61 @@
       font-size:22px; opacity:.12; pointer-events:none;
       line-height:1;
     }
-    .user-card::after {
+    .user-card:not(.rank-hero)::after {
       content:'·';
       position:absolute; top:34px; right:14px;
       font-size:28px; opacity:.10; pointer-events:none;
       line-height:1;
     }
     .user-card.rank-hero::before   { color:#d9a010; opacity:.22; font-size:28px; }
-    .user-card.rank-hero::after    { color:#d9a010; opacity:.14; }
     .user-card.rank-silver::before { color:#4060c0; opacity:.22; }
     .user-card.rank-silver::after  { color:#4060c0; opacity:.12; }
     .user-card.rank-bronze::before { color:#b07040; opacity:.16; }
     .user-card.rank-bronze::after  { color:#b07040; opacity:.10; }
 
-    /* 카드 내용 */
-    .rank-label-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    /* 카드 내용 - 게임 칭호 스타일 */
+    .rank-label-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
     .rank-num-badge {
-      font-family:'Nunito',sans-serif; font-weight:900; font-size:12px;
-      padding:3px 10px; border-radius:99px; letter-spacing:.5px;
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:13px;
+      padding:5px 14px; border-radius:99px; letter-spacing: 1px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255,255,255,0.4);
+      border:2px solid rgba(255,255,255,0.3);
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
     }
-    .rank-num-badge.gold   { background:rgba(217,160,16,.18); color:#a07010; border:1.5px solid rgba(217,160,16,.4); }
-    .rank-num-badge.silver { background:rgba(100,120,220,.18); color:#4060c0; border:1.5px solid rgba(100,120,220,.45); }
-    .rank-num-badge.bronze { background:rgba(184,112,48,.18);  color:#906020; border:1.5px solid rgba(184,112,48,.4); }
-    .rank-num-badge.normal { background:var(--s2); color:var(--a1); border:1.5px solid var(--border2); }
-    [data-theme="dark"] .rank-num-badge.gold   { background:rgba(217,160,16,.22); color:#d4a820; border-color:rgba(217,160,16,.45); }
-    [data-theme="dark"] .rank-num-badge.silver { background:rgba(100,120,230,.28); color:#8cacff; border-color:rgba(100,120,230,.55); }
-    [data-theme="dark"] .rank-num-badge.bronze { background:rgba(184,112,48,.22); color:#d08040; border-color:rgba(184,112,48,.45); }
-    [data-theme="dark"] .rank-num-badge.normal { background:#312f4c; color:var(--a1); border-color:#4e4c7a; }
-    .rank-emoji { font-size:20px; line-height:1; }
+    .rank-num-badge.gold   {
+      background:linear-gradient(135deg, #ffd700, #ff9800, #ffd700);
+      background-size: 200% 200%;
+      animation: badgeShimmer 3s linear infinite;
+      color:#5a3010; border-color: rgba(255,255,255,0.5);
+    }
+    .rank-num-badge.silver {
+      background:linear-gradient(135deg, #c8d0e8, #8898c8, #c8d0e8);
+      color:#fff; text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+    .rank-num-badge.bronze {
+      background:linear-gradient(135deg, #d49060, #b8682a, #d49060);
+      color:#fff; text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+    .rank-num-badge.normal {
+      background:linear-gradient(135deg, var(--s2), var(--s1));
+      color:var(--a1);
+      text-shadow: none;
+    }
+    @keyframes badgeShimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    [data-theme="dark"] .rank-num-badge.normal { background:linear-gradient(135deg, #312f4c, #27263e); color:var(--a1); }
+    .rank-emoji {
+      font-size:24px; line-height:1;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+    }
     .rank-comment {
-      font-size:11px; font-weight:700; color:var(--t3);
-      font-family:'Nunito',sans-serif; letter-spacing:.3px;
-      margin-bottom:8px; margin-top:-2px;
+      font-size:11.5px; font-weight:800; color:var(--t3);
+      font-family:'Noto Sans KR',sans-serif; letter-spacing:.3px;
+      margin-bottom:10px; margin-top:-2px;
     }
-    .user-card.rank-hero .rank-comment   { color:#b08010; }
+    .user-card.rank-hero .rank-comment   { color:#a06010; font-weight:900; }
     .user-card.rank-silver .rank-comment { color:#4060b0; }
     .user-card.rank-bronze .rank-comment { color:#9a6840; }
     [data-theme="dark"] .user-card.rank-hero .rank-comment   { color:#d4a820; }
@@ -300,43 +420,69 @@
     .user-card.rank-hero .user-name { font-size:20px; }
     .user-name-sub { font-size:0.72em; font-weight:600; color:var(--t3); margin-left:6px; letter-spacing:-0.3px; }
 
-    /* 통계 칩 */
+    /* 통계 칩 - RPG 능력치 스타일 */
     .user-stat-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
     .stat-chip-item {
-      display:flex; align-items:center; gap:3px;
-      padding:4px 10px; border-radius:8px;
-      font-size:11px; font-weight:700; font-family:'Nunito',sans-serif;
+      display:inline-flex; align-items:center; gap:4px;
+      padding:5px 12px; border-radius:10px;
+      font-size:11.5px; font-weight:900; font-family:'Nunito',sans-serif;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06), inset 0 1px 1px rgba(255,255,255,0.4);
+      transition: transform .15s;
     }
-    .sci-total { background:#f0eeff; color:var(--a1); border:1px solid var(--border2); }
-    .sci-first { background:#fff0f6; color:var(--a2); border:1px solid #f5c8de; }
-    .sci-top3  { background:#f0fff8; color:#4abca0; border:1px solid #b0ead8; }
-    [data-theme="dark"] .sci-total { background:rgba(168,150,255,.14); color:var(--a1); border-color:rgba(168,150,255,.3); }
-    [data-theme="dark"] .sci-first { background:rgba(255,143,196,.12); color:var(--a2); border-color:rgba(255,143,196,.28); }
-    [data-theme="dark"] .sci-top3  { background:rgba(80,255,190,.09); color:#60ddb0; border-color:rgba(80,255,190,.2); }
+    .stat-chip-item:hover { transform: translateY(-1px) scale(1.05); }
+    .sci-total {
+      background: linear-gradient(135deg, #f0eeff, #e0d8ff);
+      color:var(--a1); border:1.5px solid var(--border2);
+    }
+    .sci-first {
+      background: linear-gradient(135deg, #fff0f6, #ffd8e8);
+      color:#d04898; border:1.5px solid #f5b8d0;
+    }
+    .sci-top3  {
+      background: linear-gradient(135deg, #f0fff8, #c8f0e0);
+      color:#3a9a80; border:1.5px solid #90d4b8;
+    }
+    [data-theme="dark"] .sci-total { background:linear-gradient(135deg, rgba(168,150,255,.2), rgba(168,150,255,.1)); color:var(--a1); border-color:rgba(168,150,255,.4); }
+    [data-theme="dark"] .sci-first { background:linear-gradient(135deg, rgba(255,143,196,.2), rgba(255,143,196,.1)); color:var(--a2); border-color:rgba(255,143,196,.4); }
+    [data-theme="dark"] .sci-top3  { background:linear-gradient(135deg, rgba(80,255,190,.15), rgba(80,255,190,.05)); color:#60ddb0; border-color:rgba(80,255,190,.3); }
 
     /* 펫 뱃지 */
-    .pet-badges { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px; }
+    .pet-badges { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
     .pet-badge {
-      background:var(--s1); border:1px solid var(--border2);
-      padding:3px 10px; border-radius:8px; font-size:11px; color:var(--t2); font-weight:600; transition:all .15s;
+      background: linear-gradient(135deg, var(--white), var(--s1));
+      border: 1.5px solid var(--border2);
+      padding:4px 12px; border-radius:99px;
+      font-size:11px; color:var(--t2); font-weight:800;
+      transition: all .15s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 2px 4px rgba(155,135,245,0.08);
     }
-    .pet-badge:hover { background:var(--a1); color:#fff; border-color:var(--a1); }
-    [data-theme="dark"] .pet-badge { background:#27263e; border-color:#4e4c7a; color:#b0aedd; }
-    [data-theme="dark"] .pet-badge:hover { background:var(--a1); color:#fff; border-color:var(--a1); }
+    .pet-badge:hover {
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      color:#fff; border-color:transparent;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 10px rgba(155,135,245,0.3);
+    }
+    [data-theme="dark"] .pet-badge { background:linear-gradient(135deg, #1f1e33, #27263e); border-color:#4e4c7a; color:#b0aedd; }
+    [data-theme="dark"] .pet-badge:hover { background:linear-gradient(135deg, var(--a1), var(--a2)); color:#fff; border-color:transparent; }
 
     /* 상세보기 버튼 */
     .view-more-btn {
-      width:100%; padding:10px; border-radius:12px;
+      width:100%; padding:11px; border-radius:99px;
       background:linear-gradient(135deg,var(--s2),#ffeef6);
-      border:1.5px solid var(--border2); color:var(--a1);
-      font-size:12px; font-weight:700; font-family:'Noto Sans KR',sans-serif;
-      cursor:pointer; transition:all .2s;
+      border:2px solid var(--border2); color:var(--a1);
+      font-size:12.5px; font-weight:900; font-family:'Noto Sans KR',sans-serif;
+      cursor:pointer; transition: all .2s cubic-bezier(.34,1.56,.64,1);
+      letter-spacing: 0.3px;
+      box-shadow: 0 3px 8px rgba(155,135,245,0.12);
     }
     .view-more-btn:hover {
       background:linear-gradient(135deg,var(--a1),var(--a2));
-      color:#fff; border-color:transparent; transform:translateY(-1px);
-      box-shadow:0 4px 16px rgba(155,135,245,.3);
+      color:#fff; border-color:transparent;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(155,135,245,.4);
     }
+    .view-more-btn:active { transform: translateY(0) scale(0.98); }
     [data-theme="dark"] .view-more-btn { background:linear-gradient(135deg,#312f4c,#3a2a4e); border-color:#4e4c7a; color:var(--a1); }
     [data-theme="dark"] .view-more-btn:hover { background:linear-gradient(135deg,var(--a1),var(--a2)); color:#fff; border-color:transparent; }
 
@@ -344,22 +490,42 @@
     .rest-list { display:flex; flex-direction:column; gap:7px; margin-bottom:20px; }
     .rest-item {
       display:flex; align-items:center; gap:12px;
-      background:var(--white); border:1.5px solid var(--border);
-      border-radius:14px; padding:12px 16px; transition:all .18s;
+      background: linear-gradient(135deg, var(--white), var(--s1));
+      border:2px solid var(--border); border-radius:16px;
+      padding:14px 18px; transition: all .2s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 2px 8px rgba(155,135,245,0.06);
     }
-    .rest-item:hover { border-color:var(--a1); box-shadow:var(--shadow); transform:translateX(3px); }
-    [data-theme="dark"] .rest-item { background:#1f1e33; border-color:#3a3860; }
+    .rest-item:hover {
+      border-color:var(--a1);
+      box-shadow: 0 8px 20px rgba(155,135,245,0.2);
+      transform: translateX(4px) translateY(-2px);
+    }
+    [data-theme="dark"] .rest-item { background:linear-gradient(135deg, #1f1e33, #27263e); border-color:#3a3860; }
     [data-theme="dark"] .rest-item:hover { border-color:var(--a1); }
-    .rest-rank { font-family:'Nunito',sans-serif; font-weight:900; font-size:14px; color:var(--t3); min-width:40px; text-align:center; }
-    .rest-name { font-size:14px; font-weight:700; color:var(--t1); }
-    .rest-stats { font-size:11px; color:var(--t3); margin-top:2px; }
-    .rest-detail-btn {
-      padding:5px 13px; font-size:11px; font-weight:700;
-      border:1.5px solid var(--border2); border-radius:99px;
-      background:var(--s1); color:var(--a1); cursor:pointer; transition:all .15s; white-space:nowrap;
+    .rest-rank {
+      font-family:'Nunito',sans-serif; font-weight:900; font-size:16px;
+      color:var(--a1); min-width:44px; text-align:center;
+      background: linear-gradient(135deg, var(--s2), var(--s1));
+      border-radius: 99px; padding: 4px 0;
+      border: 1.5px solid var(--border2);
     }
-    .rest-detail-btn:hover { background:var(--a1); color:#fff; border-color:var(--a1); }
-    [data-theme="dark"] .rest-detail-btn { background:#27263e; border-color:#4e4c7a; color:var(--a1); }
+    [data-theme="dark"] .rest-rank { background:linear-gradient(135deg, #2a2848, #1c1b2e); border-color:#4e4c7a; }
+    .rest-name { font-size:15px; font-weight:800; color:var(--t1); }
+    .rest-stats { font-size:11px; color:var(--t3); margin-top:3px; font-weight: 600; }
+    .rest-detail-btn {
+      padding:6px 14px; font-size:11px; font-weight:800;
+      border:1.5px solid var(--border2); border-radius:99px;
+      background: linear-gradient(135deg, var(--white), var(--s1));
+      color:var(--a1); cursor:pointer; transition:all .15s; white-space:nowrap;
+      box-shadow: 0 2px 6px rgba(155,135,245,0.1);
+    }
+    .rest-detail-btn:hover {
+      background:linear-gradient(135deg, var(--a1), var(--a2));
+      color:#fff; border-color:transparent;
+      transform: scale(1.05);
+      box-shadow: 0 4px 14px rgba(155,135,245,0.4);
+    }
+    [data-theme="dark"] .rest-detail-btn { background:linear-gradient(135deg, #27263e, #1f1e33); border-color:#4e4c7a; color:var(--a1); }
 
     /* ══════ 펫별 랭킹 (검색 온디맨드) ══════ */
     .pet-search-area {
@@ -621,28 +787,35 @@
       50% { transform: translateY(-5px) rotate(5deg); }
     }
 
-    /* 💎 메달 등급 시스템 */
+    /* 💎 메달 등급 시스템 - 게임 RPG 등급 */
     .medal-badge {
-      display: inline-flex; align-items: center; gap: 3px;
-      padding: 2px 8px; border-radius: 99px;
-      font-size: 10px; font-weight: 900;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 99px;
+      font-size: 10.5px; font-weight: 900;
       font-family: 'Nunito', sans-serif;
-      margin-left: 6px;
+      margin-left: 8px;
       vertical-align: middle;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      box-shadow: 0 3px 10px rgba(0,0,0,.18), inset 0 1px 1px rgba(255,255,255,0.4);
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
     }
-    .medal-bronze { background: linear-gradient(135deg, #cd7f32, #e8a165); color: #fff; }
-    .medal-silver { background: linear-gradient(135deg, #b8b8b8, #d8d8d8); color: #333; }
-    .medal-gold { background: linear-gradient(135deg, #fdd835, #f5a623); color: #5a4015; }
+    .medal-bronze { background: linear-gradient(135deg, #cd7f32 0%, #e8a165 50%, #b8682a 100%); color: #fff; }
+    .medal-silver { background: linear-gradient(135deg, #a8a8b8 0%, #d8d8e0 50%, #8898a8 100%); color: #fff; }
+    .medal-gold {
+      background: linear-gradient(135deg, #ffd700 0%, #ffec80 50%, #f5a623 100%);
+      color: #5a3010; text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    }
     .medal-diamond {
-      background: linear-gradient(135deg, #87d4f5, #9b87f5, #f587b8);
+      background: linear-gradient(135deg, #87d4f5, #c8a8ff, #f587b8, #ffd87f, #87d4f5);
+      background-size: 300% 300%;
       color: #fff;
-      animation: diamondShine 2s linear infinite;
-      background-size: 200% 200%;
+      animation: diamondShine 3s linear infinite;
+      box-shadow: 0 3px 14px rgba(155,135,245,0.5), inset 0 1px 1px rgba(255,255,255,0.5);
     }
     @keyframes diamondShine {
       0% { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
+      100% { background-position: 300% 50%; }
     }
 
     /* 🔥 점수 변화 인디케이터 */
@@ -668,98 +841,148 @@
     [data-theme="dark"] .score-delta-up { background: #4a2528; color: #ff7080; }
     [data-theme="dark"] .score-delta-down { background: #1f3050; color: #6fa0ff; }
 
-    /* 📊 카리스마 점수 표시 */
+    /* 📊 POWER 점수 표시 (게임 스코어 느낌) */
     .charisma-score {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 10px; border-radius: 99px;
-      background: linear-gradient(135deg, #fff5cc, #ffe988);
-      border: 1.5px solid #f5c842;
-      font-size: 11px; font-weight: 900;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 99px;
+      background: linear-gradient(135deg, #fff5cc, #ffd06f, #ffe988);
+      background-size: 200% 200%;
+      animation: powerShine 3s linear infinite;
+      border: 2px solid #f5a623;
+      font-size: 12px; font-weight: 900;
       font-family: 'Nunito', sans-serif;
-      color: #c87800; margin-top: 6px;
-      box-shadow: 0 2px 8px rgba(245,200,66,.25);
+      color: #6a3800; margin-top: 8px;
+      box-shadow:
+        0 4px 12px rgba(245,200,66,.4),
+        inset 0 1px 2px rgba(255,255,255,0.6);
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+    }
+    @keyframes powerShine {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
     }
     [data-theme="dark"] .charisma-score {
-      background: linear-gradient(135deg, #3a3020, #4a3825);
-      color: #f5c842; border-color: #6a5530;
+      background: linear-gradient(135deg, #4a3825, #6a5020, #4a3825);
+      background-size: 200% 200%;
+      color: #ffd070; border-color: #b08038;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.4);
     }
 
-    /* 🎲 오늘의 운세펫 카드 */
+    /* 🎲 오늘의 운세펫 카드 - 게임 스페셜 카드 */
     .fortune-pet-card {
-      background: linear-gradient(135deg, #fff, var(--s1));
-      border: 2.5px solid transparent;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,0) 50%),
+        linear-gradient(135deg, #fff, var(--s1), #fff5f8);
+      background-size: 100% 100%, 200% 200%;
+      animation: gradientShift 6s ease infinite;
+      border: 3px solid transparent;
       background-clip: padding-box;
-      border-radius: 20px;
-      padding: 18px 20px;
+      border-radius: 22px;
+      padding: 20px 22px;
       margin-bottom: 22px;
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow2);
-      display: flex; align-items: center; gap: 16px;
+      box-shadow:
+        0 10px 30px rgba(155,135,245,0.25),
+        inset 0 1px 2px rgba(255,255,255,0.5);
+      display: flex; align-items: center; gap: 18px;
     }
     .fortune-pet-card::before {
       content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 4px;
-      background: linear-gradient(90deg, #fdd835, #f5a623, #ff7a8a, #9b87f5);
+      position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, #fdd835, #f5a623, #ff7a8a, #9b87f5, #87d4f5, #fdd835);
       background-size: 300% 100%;
       animation: gradShift 3s linear infinite;
     }
+    .fortune-pet-card::after {
+      content: '';
+      position: absolute; top: -50%; right: -10%; width: 50%; height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.3) 50%, transparent 60%);
+      animation: shineSweep 5s linear infinite;
+      pointer-events: none;
+    }
+    .fortune-pet-card > * { position: relative; z-index: 1; }
     [data-theme="dark"] .fortune-pet-card {
-      background: linear-gradient(135deg, #1f1e33, #27263e);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 50%),
+        linear-gradient(135deg, #1f1e33, #27263e, #2a2848);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .fortune-label {
-      font-size: 11px; font-weight: 900; letter-spacing: 2px;
+      font-size: 11px; font-weight: 900; letter-spacing: 2.5px;
       color: var(--a1); font-family: 'Nunito', sans-serif;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
     }
     .fortune-pet-img {
-      width: 70px; height: 70px; border-radius: 50%;
-      background: var(--white); border: 2px solid var(--border2);
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--white); border: 3px solid var(--border2);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; overflow: hidden;
-      box-shadow: 0 4px 12px rgba(155,135,245,.2);
+      box-shadow: 0 6px 18px rgba(155,135,245,.3), inset 0 1px 2px rgba(255,255,255,0.5);
+      animation: fortuneBounce 3s ease-in-out infinite;
     }
-    .fortune-pet-img img { width: 60%; height: 60%; object-fit: contain; }
+    @keyframes fortuneBounce {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-6px) rotate(3deg); }
+    }
+    .fortune-pet-img img { width: 65%; height: 65%; object-fit: contain; }
     .fortune-info { flex: 1; min-width: 0; }
     .fortune-name {
-      font-size: 22px; font-weight: 900; color: var(--t1);
+      font-size: 26px; font-weight: 900; color: var(--t1);
       font-family: 'Noto Sans KR', sans-serif;
       margin-bottom: 4px;
-      background: linear-gradient(135deg, var(--a1), var(--a2));
+      background: linear-gradient(135deg, var(--a1), var(--a2), var(--a4));
+      background-size: 200% 200%;
+      animation: gradientShift 4s ease infinite;
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       background-clip: text;
+      letter-spacing: -0.5px;
     }
     .fortune-msg {
-      font-size: 12px; color: var(--t2);
+      font-size: 12.5px; color: var(--t2);
       font-weight: 700; line-height: 1.5;
     }
     .fortune-refresh {
-      background: var(--white); border: 1.5px solid var(--border2);
-      border-radius: 99px; padding: 6px 14px;
-      font-size: 11px; font-weight: 800; color: var(--a1);
+      background: linear-gradient(135deg, var(--a1), var(--a2));
+      border: none; border-radius: 99px;
+      padding: 10px 18px; color: #fff;
+      font-size: 12px; font-weight: 900;
       font-family: 'Noto Sans KR', sans-serif; cursor: pointer;
-      transition: all .2s;
+      transition: all .2s cubic-bezier(.34,1.56,.64,1);
+      box-shadow: 0 4px 14px rgba(155,135,245,.4);
+      letter-spacing: 0.3px;
     }
     .fortune-refresh:hover {
-      background: var(--a1); color: #fff; border-color: var(--a1);
-      transform: rotate(180deg);
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 24px rgba(155,135,245,.6);
     }
+    .fortune-refresh:active { transform: translateY(0); }
 
     /* 🎰 슬롯머신 검색 */
     .slot-btn {
-      background: linear-gradient(135deg, #fdd835, #f5a623);
-      border: none; border-radius: 50%;
-      width: 38px; height: 38px;
-      font-size: 16px; cursor: pointer;
-      box-shadow: 0 3px 10px rgba(245,166,35,.4);
-      transition: all .2s;
+      background: linear-gradient(135deg, #ffd700, #f5a623, #ff9020);
+      background-size: 200% 200%;
+      animation: badgeShimmer 3s linear infinite;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      width: 44px; height: 44px;
+      font-size: 18px; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(245,166,35,.5), inset 0 1px 2px rgba(255,255,255,0.4);
+      transition: all .2s cubic-bezier(.34,1.56,.64,1);
       flex-shrink: 0;
+      filter: drop-shadow(0 0 2px rgba(245,166,35,0.5));
     }
-    .slot-btn:hover { transform: scale(1.1) rotate(15deg); }
-    .slot-btn.spinning { animation: slotSpin .6s linear; }
+    .slot-btn:hover {
+      transform: scale(1.15) rotate(15deg);
+      box-shadow: 0 8px 24px rgba(245,166,35,.7);
+    }
+    .slot-btn.spinning { animation: slotSpin .6s cubic-bezier(.34,1.56,.64,1), badgeShimmer 3s linear infinite; }
     @keyframes slotSpin {
-      0% { transform: rotate(0); }
-      100% { transform: rotate(360deg); }
+      0% { transform: rotate(0) scale(1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
     }
 
     /* 🏅 도전과제 토스트 */
@@ -788,108 +1011,6 @@
     }
     .achievement-text { font-size: 14px; }
 
-    /* 🆚 비교 모드 */
-    .compare-toolbar {
-      position: fixed; bottom: 20px; left: 50%;
-      transform: translateX(-50%); z-index: 9997;
-      background: var(--white); border: 2px solid var(--a1);
-      border-radius: 99px; padding: 8px 16px;
-      box-shadow: 0 12px 32px rgba(155,135,245,.3);
-      display: flex; align-items: center; gap: 10px;
-      font-size: 13px; font-weight: 800;
-      animation: slideUp .3s cubic-bezier(.34,1.56,.64,1);
-    }
-    [data-theme="dark"] .compare-toolbar {
-      background: #1f1e33; border-color: var(--a1);
-    }
-    .compare-toolbar.hide { display: none; }
-    .compare-count {
-      background: var(--a1); color: #fff;
-      padding: 2px 10px; border-radius: 99px;
-      font-family: 'Nunito', sans-serif;
-    }
-    .compare-go-btn {
-      background: linear-gradient(135deg, var(--a1), var(--a2));
-      color: #fff; border: none; border-radius: 99px;
-      padding: 6px 16px; font-weight: 900; cursor: pointer;
-      font-family: 'Noto Sans KR', sans-serif;
-    }
-    .compare-go-btn:disabled {
-      opacity: 0.4; cursor: not-allowed;
-    }
-    .compare-cancel-btn {
-      background: var(--white); color: var(--t3);
-      border: 1.5px solid var(--border2);
-      border-radius: 99px; padding: 4px 12px;
-      font-size: 11px; cursor: pointer;
-    }
-
-    /* 비교 모드 시 카드에 체크박스 */
-    .user-card.compare-mode, .rest-item.compare-mode { cursor: pointer; }
-    .user-card.compare-selected, .rest-item.compare-selected {
-      outline: 3px solid var(--a1);
-      outline-offset: 3px;
-      transform: scale(1.02);
-    }
-    .compare-check {
-      position: absolute; top: 8px; right: 8px;
-      width: 24px; height: 24px; border-radius: 50%;
-      background: var(--white); border: 2px solid var(--border2);
-      display: none;
-      align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 900;
-    }
-    .user-card.compare-mode .compare-check,
-    .rest-item.compare-mode .compare-check { display: flex; }
-    .compare-selected .compare-check {
-      background: var(--a1); color: #fff; border-color: var(--a1);
-    }
-
-    /* 비교 결과 모달 */
-    .compare-result-grid {
-      display: grid; grid-template-columns: 1fr auto 1fr;
-      gap: 10px; align-items: stretch;
-      margin: 14px 0;
-    }
-    @media(max-width:500px){ .compare-result-grid { grid-template-columns: 1fr; } .compare-vs-divider { display: none; } }
-    .compare-result-cell {
-      background: var(--s1); border: 1.5px solid var(--border);
-      border-radius: 14px; padding: 14px;
-      text-align: center;
-    }
-    .compare-result-cell.winner {
-      border-color: var(--gold); background: linear-gradient(135deg, #fff8e8, #fff0f8);
-      box-shadow: 0 4px 16px rgba(245,166,35,.2);
-      position: relative;
-    }
-    [data-theme="dark"] .compare-result-cell.winner {
-      background: linear-gradient(135deg, #3a3020, #4a3825);
-    }
-    .compare-result-cell.winner::before {
-      content: '👑 승';
-      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-      background: linear-gradient(135deg, #fdd835, #f5a623);
-      color: #5a4015; font-size: 10px; font-weight: 900;
-      padding: 2px 10px; border-radius: 99px;
-    }
-    .compare-stat-row {
-      display: flex; justify-content: space-between;
-      padding: 6px 0; font-size: 12px;
-      border-bottom: 1px dashed var(--border);
-    }
-    .compare-stat-row:last-child { border-bottom: none; }
-    .compare-stat-label { color: var(--t3); font-weight: 700; }
-    .compare-stat-val {
-      font-weight: 900; color: var(--t1);
-      font-family: 'Nunito', sans-serif;
-    }
-    .compare-stat-val.winner-val { color: var(--gold); }
-    .compare-vs-divider {
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; font-weight: 900;
-      color: var(--t3); font-family: 'Nunito', sans-serif;
-    }
-
     /* 🎵 사운드 토글 */
     .sound-float-btn {
       width: 38px; height: 38px; border-radius: 50%;
@@ -902,80 +1023,6 @@
     .sound-float-btn:hover { border-color: var(--a1); transform: scale(1.1); }
     [data-theme="dark"] .sound-float-btn { background:#27263e; border-color:#4e4c7a; }
     .sound-float-btn.muted { opacity: 0.6; }
-
-    /* 🏆 명예의 전당 탭 */
-    .hof-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 14px; margin-top: 18px;
-    }
-    .hof-card {
-      background: linear-gradient(135deg, var(--white), var(--s1));
-      border: 2px solid var(--border2);
-      border-radius: 16px;
-      padding: 16px;
-      position: relative;
-      transition: all .25s cubic-bezier(.34,1.56,.64,1);
-    }
-    .hof-card:hover {
-      transform: translateY(-4px) rotate(-1deg);
-      box-shadow: 0 12px 32px rgba(155,135,245,.25);
-      border-color: var(--gold);
-    }
-    .hof-card.legendary {
-      background: linear-gradient(135deg, #fff8e8, #fff0f8, #fff8e8);
-      background-size: 200% 200%;
-      animation: gradShift 4s linear infinite;
-      border-color: var(--gold);
-    }
-    [data-theme="dark"] .hof-card.legendary {
-      background: linear-gradient(135deg, #3a3020, #2a2840, #3a3020);
-    }
-    .hof-crown {
-      font-size: 32px;
-      filter: drop-shadow(0 4px 12px rgba(245,166,35,.5));
-    }
-    .hof-name {
-      font-size: 20px; font-weight: 900; color: var(--t1);
-      font-family: 'Noto Sans KR', sans-serif;
-      margin-top: 4px; margin-bottom: 6px;
-    }
-    .hof-stats {
-      font-size: 12px; color: var(--t2); font-weight: 700;
-      line-height: 1.7;
-    }
-    .hof-count-big {
-      font-size: 32px; font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(135deg, var(--gold), var(--a2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-    }
-    .hof-pet-list {
-      display: flex; flex-wrap: wrap; gap: 4px;
-      margin-top: 10px;
-    }
-    .hof-pet-chip {
-      background: var(--white); border: 1px solid var(--border);
-      padding: 2px 8px; border-radius: 99px;
-      font-size: 10px; font-weight: 700; color: var(--t2);
-    }
-
-    /* 🃏 카드 호버 효과 향상 */
-    .user-card {
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .user-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(155,135,245,.22);
-    }
-    .rest-item {
-      transition: transform .15s ease, border-color .15s ease;
-    }
-    .rest-item:hover {
-      transform: translateX(4px);
-      border-color: var(--a1) !important;
-    }
 
     /* 토스트 일반 */
     .toast {
@@ -1008,14 +1055,6 @@
 
 <!-- 🎊 폭죽 캔버스 -->
 <canvas id="confetti-canvas"></canvas>
-
-<!-- 🆚 비교 모드 툴바 -->
-<div class="compare-toolbar hide" id="compare-toolbar">
-  <span>🆚 비교</span>
-  <span class="compare-count" id="compare-count">0 / 2</span>
-  <button class="compare-go-btn" id="compare-go-btn" onclick="showCompareResult()" disabled>비교!</button>
-  <button class="compare-cancel-btn" onclick="toggleCompareMode()">취소</button>
-</div>
 <script src="nav.js"></script>
 
 <!-- ── Float Buttons ── -->
@@ -1068,7 +1107,6 @@
     <button class="tab-btn active" onclick="switchTab('user-tab', this)">🏆 전체 랭킹</button>
     <button class="tab-btn" onclick="switchTab('first-tab', this)">🥇 1등 보유</button>
     <button class="tab-btn" onclick="switchTab('top3-tab', this)">🎖️ TOP3 보유</button>
-    <button class="tab-btn" onclick="switchTab('hof-tab', this)">👑 명예의 전당</button>
     <button class="tab-btn" onclick="switchTab('pet-tab', this)">🐾 펫별 랭킹</button>
   </div>
 
@@ -1080,7 +1118,6 @@
         <input type="text" id="userNickSearch" placeholder="닉네임 검색 (본캐/부캐)..." oninput="filterGrid('userGrid','userGrid',this.value)">
       </div>
       <button class="slot-btn" onclick="slotMachineUser('userGrid','userGrid','userNickSearch')" title="랜덤 유저">🎰</button>
-      <button class="slot-btn" style="background:linear-gradient(135deg,#9b87f5,#f587b8);" onclick="toggleCompareMode()" title="유저 비교">🆚</button>
     </div>
     <div id="userGrid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
     <div style="text-align:center;margin-top:12px;">
@@ -1110,16 +1147,6 @@
     <div style="text-align:center;margin-top:12px;">
       <button class="view-more-btn" id="top3MoreBtn" style="max-width:340px;display:none;" onclick="expandGrid('top3Grid','top3Grid','top3MoreBtn')">전체보기 ▼</button>
     </div>
-  </div>
-
-  <!-- 👑 명예의 전당 -->
-  <div id="hof-tab" class="tab-content">
-    <div style="background:linear-gradient(135deg,#fff8e8,#fff0f8);border:2px solid var(--gold,#f5a623);border-radius:16px;padding:18px;margin-bottom:22px;text-align:center;" id="hof-intro">
-      <div style="font-size:32px;margin-bottom:6px;">👑</div>
-      <div style="font-size:18px;font-weight:900;color:#c87800;margin-bottom:4px;font-family:'Noto Sans KR',sans-serif;">명예의 전당</div>
-      <div style="font-size:12px;color:var(--t2);font-weight:700;">1등을 한 번이라도 차지한 영광의 챔피언들</div>
-    </div>
-    <div id="hofGrid"><div class="empty-state">데이터를 불러오는 중입니다...</div></div>
   </div>
 
   <!-- 펫별 랭킹 -->
@@ -1355,9 +1382,7 @@ function savePrevUserScores(map) {
 }
 function scoreDeltaHTML(userName, currCharisma, prevScores) {
   const prev = prevScores[userName];
-  if (prev === undefined) {
-    return `<span class="score-delta score-delta-new" title="신규!">NEW</span>`;
-  }
+  if (prev === undefined) return ''; // 신규는 표시 안 함
   if (currCharisma === prev) return '';
   const delta = currCharisma - prev;
   if (delta > 0) {
@@ -1474,170 +1499,6 @@ function slotMachineUser(gridId, storeKey, searchInputId) {
     }
   }, 70);
 }
-
-// ── 🆚 비교 모드 ──
-let compareMode = false;
-let compareSelected = [];  // [{name, ...}]
-function toggleCompareMode() {
-  sfxClick();
-  compareMode = !compareMode;
-  compareSelected = [];
-  const toolbar = document.getElementById('compare-toolbar');
-  toolbar.classList.toggle('hide', !compareMode);
-  updateCompareUI();
-  // 모든 카드/rest-item에 compare-mode 클래스
-  document.querySelectorAll('.user-card, .rest-item').forEach(el => {
-    el.classList.toggle('compare-mode', compareMode);
-    el.classList.remove('compare-selected');
-  });
-  if (compareMode) {
-    showToast('🆚 비교할 유저 2명을 선택하세요');
-    // 모든 카드에 클릭 핸들러 위임
-    setupCompareClickHandlers();
-  }
-}
-function setupCompareClickHandlers() {
-  // 이벤트 위임으로 동적 카드도 잡기
-  document.body.addEventListener('click', compareClickHandler, true);
-}
-function compareClickHandler(e) {
-  if (!compareMode) {
-    document.body.removeEventListener('click', compareClickHandler, true);
-    return;
-  }
-  const card = e.target.closest('.user-card, .rest-item');
-  if (!card) return;
-  // 버튼 클릭은 제외
-  if (e.target.closest('button')) return;
-  e.preventDefault();
-  e.stopPropagation();
-
-  const name = card.dataset.userName ||
-               card.querySelector('.user-name')?.textContent?.split('(')[0].trim() ||
-               card.querySelector('.rest-name')?.textContent?.split('(')[0].trim();
-  if (!name) return;
-
-  const userObj = _allUsersData[name];
-  if (!userObj) return;
-
-  // 이미 선택?
-  const idx = compareSelected.findIndex(u => u.name === name);
-  if (idx >= 0) {
-    compareSelected.splice(idx, 1);
-    card.classList.remove('compare-selected');
-  } else {
-    if (compareSelected.length >= 2) {
-      showToast('2명만 선택 가능');
-      return;
-    }
-    compareSelected.push({ name, ...userObj });
-    card.classList.add('compare-selected');
-    sfxClick();
-  }
-  updateCompareUI();
-}
-function updateCompareUI() {
-  document.getElementById('compare-count').textContent = `${compareSelected.length} / 2`;
-  document.getElementById('compare-go-btn').disabled = compareSelected.length !== 2;
-}
-function showCompareResult() {
-  if (compareSelected.length !== 2) return;
-  sfxAch();
-  const [a, b] = compareSelected;
-  const charA = calcCharisma(a), charB = calcCharisma(b);
-  const winnerCharisma = charA === charB ? null : (charA > charB ? 'a' : 'b');
-
-  const cellHTML = (u, isWinner, stats) => `
-    <div class="compare-result-cell ${isWinner ? 'winner' : ''}">
-      <div style="font-size:18px;font-weight:900;margin-bottom:8px;font-family:'Noto Sans KR',sans-serif;">${u.name}</div>
-      ${stats}
-    </div>
-  `;
-  const winClass = (val, opp) => val > opp ? 'winner-val' : '';
-  const statsA = `
-    <div class="compare-stat-row"><span class="compare-stat-label">📊 카리스마</span><span class="compare-stat-val ${winClass(charA, charB)}">${charA}</span></div>
-    <div class="compare-stat-row"><span class="compare-stat-label">🏆 전체</span><span class="compare-stat-val ${winClass(a.total, b.total)}">${a.total}</span></div>
-    <div class="compare-stat-row"><span class="compare-stat-label">🥇 1등</span><span class="compare-stat-val ${winClass(a.first, b.first)}">${a.first}</span></div>
-    <div class="compare-stat-row"><span class="compare-stat-label">🎖️ TOP3</span><span class="compare-stat-val ${winClass(a.top3, b.top3)}">${a.top3}</span></div>
-  `;
-  const statsB = `
-    <div class="compare-stat-row"><span class="compare-stat-label">📊 카리스마</span><span class="compare-stat-val ${winClass(charB, charA)}">${charB}</span></div>
-    <div class="compare-stat-row"><span class="compare-stat-label">🏆 전체</span><span class="compare-stat-val ${winClass(b.total, a.total)}">${b.total}</span></div>
-    <div class="compare-stat-row"><span class="compare-stat-label">🥇 1등</span><span class="compare-stat-val ${winClass(b.first, a.first)}">${b.first}</span></div>
-    <div class="compare-stat-row"><span class="compare-stat-label">🎖️ TOP3</span><span class="compare-stat-val ${winClass(b.top3, a.top3)}">${b.top3}</span></div>
-  `;
-
-  // 모달 사용
-  document.getElementById('detailModalImg').innerHTML = `<span style="font-size:32px;">🆚</span>`;
-  document.getElementById('detailModalName').textContent = '유저 비교';
-  document.getElementById('detailModalSub').textContent = `${a.name} vs ${b.name}`;
-  document.getElementById('detailModalBody').innerHTML = `
-    <div class="compare-result-grid">
-      ${cellHTML(a, winnerCharisma === 'a', statsA)}
-      <div class="compare-vs-divider">VS</div>
-      ${cellHTML(b, winnerCharisma === 'b', statsB)}
-    </div>
-    <div style="text-align:center;font-size:13px;color:var(--t2);font-weight:700;margin-top:14px;">
-      ${winnerCharisma === null ? '😮 동점! 정말 호각세!' :
-        `🏆 ${(winnerCharisma === 'a' ? a : b).name} 의 승!`}
-    </div>
-    <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:10px;">
-      카리스마 = 1등×10 + TOP3×3 + 전체×1
-    </div>
-  `;
-  document.getElementById('detailModal').classList.add('active');
-  document.body.style.overflow = 'hidden';
-
-  // 승자 폭죽
-  if (winnerCharisma) {
-    setTimeout(() => fireConfetti({ count: 60, originY: window.innerHeight / 2 }), 200);
-  }
-  // 비교 모드 종료
-  setTimeout(toggleCompareMode, 100);
-}
-
-// ── 🏆 명예의 전당 렌더 ──
-function renderHallOfFame(pets) {
-  const userMap = buildUserStats(pets);
-  // 1등 1개 이상 가진 유저만
-  const hofUsers = Object.entries(userMap)
-    .map(([name, d]) => ({ name, ...d, charisma: calcCharisma(d) }))
-    .filter(u => u.first > 0)
-    .sort((a, b) =>
-      b.first !== a.first ? b.first - a.first :
-      b.charisma - a.charisma
-    );
-
-  const container = document.getElementById('hofGrid');
-  if (hofUsers.length === 0) {
-    container.innerHTML = '<div class="empty-state">아직 1등 보유자가 없어요</div>';
-    return;
-  }
-
-  container.innerHTML = `<div class="hof-grid">${hofUsers.map(u => {
-    const isLegend = u.first >= 5;
-    // 이 유저가 1등인 펫 목록
-    const firstPets = [...new Set(u.pets.filter(p => p.rank === 1).map(p => p.petName))];
-    const petChips = firstPets.slice(0, 8).map(n => `<span class="hof-pet-chip">${n}</span>`).join('');
-    const restChip = firstPets.length > 8 ? `<span class="hof-pet-chip">+${firstPets.length - 8}</span>` : '';
-    return `
-      <div class="hof-card ${isLegend ? 'legendary' : ''}">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="hof-crown">${isLegend ? '👑' : '🥇'}</div>
-          <div style="flex:1;min-width:0;">
-            <div class="hof-name">${u.name}${medalHTML(u.first)}</div>
-            <div class="hof-stats">전체 ${u.total} · TOP3 ${u.top3} · 카리스마 <strong>${u.charisma}</strong></div>
-          </div>
-          <div class="hof-count-big">${u.first}</div>
-        </div>
-        <div class="hof-pet-list">${petChips}${restChip}</div>
-      </div>
-    `;
-  }).join('')}</div>`;
-}
-
-// ── 전역 데이터 캐시 (비교 모드용) ──
-let _allUsersData = {};  // name → user obj
 
 // ── 펫 이미지 맵 (pet_info_data.json에서 동적으로 로드됨) ──
 let PET_IMAGES = {};
@@ -1864,7 +1725,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       <span class="stat-chip-item sci-top3">🎖 ${user.top3}개</span>
     </div>`;
 
-  const charismaChip = `<div class="charisma-score" title="카리스마 = 1등×10 + TOP3×3 + 전체×1">📊 카리스마 ${charisma}</div>`;
+  const charismaChip = `<div class="charisma-score" title="POWER = 1등×10 + TOP3×3 + 전체×1">⚡ POWER ${charisma}</div>`;
 
   const badges = `<div class="pet-badges">${
     uniquePets.slice(0,5).map(n=>`<span class="pet-badge">${n}</span>`).join('')
@@ -1921,7 +1782,7 @@ function makeUserCard(user, displayRank, cardIdx, detailPrefix) {
       <div class="rest-rank">${displayRank}위</div>
       <div style="flex:1;min-width:0;">
         <div class="rest-name">${user.name}${subsHTML}${medalH}${deltaH}</div>
-        <div class="rest-stats">전체 ${user.total}개 · 1등 ${user.first}개 · TOP3 ${user.top3}개 · 📊 ${charisma}</div>
+        <div class="rest-stats">전체 ${user.total}개 · 1등 ${user.first}개 · TOP3 ${user.top3}개 · ⚡ ${charisma}</div>
       </div>
       <button class="rest-detail-btn" onclick="openDetailModal('${user.name}','${user.pets.length}개 랭킹','${petsJson}')">상세 ↗</button>
     </div>`;
@@ -2096,10 +1957,6 @@ function filterGrid(gridId, storeKey, q) {
 function renderAllUserTabs(pets) {
   const userMap = buildUserStats(pets);
 
-  // 전역 캐시 (비교 모드용)
-  _allUsersData = {};
-  Object.entries(userMap).forEach(([name, d]) => { _allUsersData[name] = d; });
-
   // 점수 변화 추적: 이전 카리스마 → 캐시 → 새로 저장
   const prevScores = getPrevUserScores();
   window._prevScoresCache = prevScores;
@@ -2150,9 +2007,6 @@ function renderAllUserTabs(pets) {
   renderUserGrid(top3Ranked, 'top3Grid', 'top3Grid', 'top3MoreBtn', 't',
     p => p.rank <= 3);
   registerSlotData('top3Grid', top3Ranked);
-
-  // 명예의 전당
-  renderHallOfFame(pets);
 
   // 1위 유저 첫 진입 시 폭죽
   if (!window._heroConfettiFired && totalRanked.length > 0) {
