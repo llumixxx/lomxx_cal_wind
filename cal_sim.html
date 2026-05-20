@@ -8,19 +8,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 <style>
 :root {
-  --bg: #faf9ff; --bg2: #f3f0ff; --white: #ffffff;
-  --s1: #f8f7ff; --s2: #f0eeff;
-  --border: #e8e3ff; --border2: #d4cbff;
+  --bg: #fff7fb; --bg2: #fdf5fa; --white: #ffffff;
+  --s1: #fdfbff; --s2: #f5f0ff;
+  --border: #ebe4f5; --border2: #d4cbff;
   --a1: #9b87f5; --a2: #f587b8; --a3: #87d4f5; --a4: #f5c887; --a5: #87f5c0;
   --t1: #3d3560; --t2: #7b72a8; --t3: #b0a8d4; --t4: #d4cff0;
   --ok: #6dd5a0; --err: #f57878;
   --gold: #f5a623; --gold2: #fdd835;
-  --shadow: 0 4px 24px rgba(155,135,245,0.12);
-  --shadow2: 0 8px 32px rgba(155,135,245,0.18);
+  --shadow: 0 4px 24px rgba(155,135,245,0.14);
+  --shadow2: 0 8px 32px rgba(155,135,245,0.22);
 }
 [data-theme="dark"] {
-  --bg: #0f0f1a; --bg2: #1a1a2e; --white: #252540;
-  --s1: #2a2a45; --s2: #353555;
+  --bg: #1a1525; --bg2: #251b35; --white: #2a2040;
+  --s1: #2a2040; --s2: #352855;
   --border: #404060; --border2: #505080;
   --t1: #e8e8f0; --t2: #b0b0c8; --t3: #8080a0; --t4: #606080;
   --shadow: 0 4px 24px rgba(0,0,0,0.4);
@@ -33,8 +33,11 @@ body {
   color: var(--t1);
   min-height: 100vh;
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(155,135,245,0.08) 0%, transparent 50%),
-    radial-gradient(circle at 85% 80%, rgba(245,135,184,0.07) 0%, transparent 50%);
+    /* 큰 동그란 색 점들 (다마고치 배경 느낌) */
+    radial-gradient(circle 600px at 10% 10%, rgba(245,135,184,0.10) 0%, transparent 100%),
+    radial-gradient(circle 700px at 90% 30%, rgba(135,212,245,0.10) 0%, transparent 100%),
+    radial-gradient(circle 500px at 50% 90%, rgba(155,135,245,0.10) 0%, transparent 100%),
+    radial-gradient(circle 400px at 20% 70%, rgba(245,200,135,0.08) 0%, transparent 100%);
 }
 .main-inner { max-width: 1100px; margin: 0 auto; padding: 20px 20px 80px; }
 
@@ -42,28 +45,36 @@ body {
 .page-head { text-align: center; padding: 18px 0 26px; }
 .wind-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  background: linear-gradient(135deg, #f0eeff, #ffeef6);
-  border: 1.5px solid var(--border2); border-radius: 99px;
-  padding: 4px 14px; font-size: 11px; font-weight: 800;
+  background: linear-gradient(135deg, #fff0f8, #f0eeff);
+  border: 2px solid #fff;
+  outline: 1.5px solid var(--border2);
+  border-radius: 99px;
+  padding: 5px 16px; font-size: 11px; font-weight: 800;
   font-family: 'Nunito', sans-serif;
   color: var(--a1); letter-spacing: 1px; margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(245,135,184,.12);
 }
-.wind-badge-dot { width: 6px; height: 6px; background: var(--a2); border-radius: 50%; animation: pulse 2s infinite; }
+.wind-badge-dot { width: 7px; height: 7px; background: var(--a2); border-radius: 50%; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(2)} }
 .page-title {
   font-family: 'Nunito', sans-serif;
-  font-size: 34px; font-weight: 900; letter-spacing: -0.5px;
+  font-size: 38px; font-weight: 900; letter-spacing: -1px;
   background: linear-gradient(135deg, var(--a1) 0%, var(--a2) 60%, var(--a4) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   line-height: 1.15; margin-bottom: 6px;
+  filter: drop-shadow(0 2px 4px rgba(155,135,245,.15));
 }
-.page-sub { font-size: 12px; color: var(--t3); font-family: 'Nunito', sans-serif; font-weight: 600; letter-spacing: 0.5px; }
+.page-sub { font-size: 12px; color: var(--t3); font-family: 'Nunito', sans-serif; font-weight: 700; letter-spacing: 1px; }
 
-/* ── card ── */
+/* ── card (다마고치풍 둥글고 통통) ── */
 .card {
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: 20px; padding: 20px; margin-bottom: 14px;
-  box-shadow: var(--shadow);
+  background: var(--white);
+  border: 3px solid #fff;
+  outline: 2px solid var(--border);
+  border-radius: 28px; padding: 22px; margin-bottom: 16px;
+  box-shadow:
+    0 8px 28px rgba(155,135,245,0.14),
+    inset 0 -4px 0 rgba(155,135,245,0.06);
 }
 .card-title {
   font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
@@ -130,46 +141,44 @@ body {
   gap: 8px; margin-bottom: 14px;
 }
 .stat-roll-cell {
-  background: rgba(0,0,0,.25);
-  border: 1.5px solid rgba(155,135,245,.3);
-  border-radius: 12px; padding: 12px 4px;
+  background: linear-gradient(180deg, #fff, var(--s2));
+  border: 2px solid #fff;
+  outline: 1.5px solid var(--border);
+  border-radius: 16px; padding: 12px 4px;
   text-align: center;
   transition: all .25s;
   position: relative;
-}
-.sim-display .stat-roll-cell {
-  /* 게임풍 디스플레이 안의 셀 */
+  box-shadow: 0 3px 8px rgba(155,135,245,.08);
 }
 .srl-label {
-  font-size: 10px; font-weight: 800;
-  color: rgba(232,227,255,.55);
+  font-size: 10px; font-weight: 900;
+  color: var(--t3);
   letter-spacing: 1.5px; font-family: 'Nunito', sans-serif;
   margin-bottom: 6px;
   text-transform: uppercase;
 }
 .srl-val {
   font-size: 28px; font-weight: 900; font-family: 'Nunito', sans-serif;
-  color: #fff;
+  color: var(--t1);
   transition: color .15s;
-  text-shadow: 0 0 12px rgba(155,135,245,.4);
 }
-/* 스탯 값별 색상 (게임풍) */
-.srl-val.s-pos2 { color: #fdd835; text-shadow: 0 0 16px rgba(253,216,53,.7); }
-.srl-val.s-pos1 { color: #c5b3ff; text-shadow: 0 0 12px rgba(197,179,255,.6); }
-.srl-val.s-zero { color: rgba(232,227,255,.6); }
-.srl-val.s-neg1 { color: #a4a0c4; }
-.srl-val.s-neg2 { color: #ff7a8a; text-shadow: 0 0 12px rgba(255,122,138,.5); }
+/* 스탯 값별 색상 */
+.srl-val.s-pos2 { color: var(--gold); text-shadow: 0 0 8px rgba(245,166,35,.3); }
+.srl-val.s-pos1 { color: var(--a1); }
+.srl-val.s-zero { color: var(--t3); }
+.srl-val.s-neg1 { color: var(--t2); }
+.srl-val.s-neg2 { color: var(--err); }
 
 /* 모두 +2일 때 강조 */
 .stat-rolls.all-max .stat-roll-cell {
-  background: linear-gradient(135deg, rgba(245,166,35,.3), rgba(253,216,53,.25));
-  border-color: var(--gold);
+  background: linear-gradient(180deg, #fff, #ffe988);
+  outline-color: var(--gold);
   animation: gradePop .35s cubic-bezier(.34,1.56,.64,1);
-  box-shadow: 0 0 24px rgba(245,166,35,.4);
+  box-shadow: 0 6px 20px rgba(245,166,35,.3);
 }
 .stat-rolls.all-max .srl-val {
-  color: #fff;
-  text-shadow: 0 0 20px rgba(253,216,53,1), 0 0 8px rgba(255,255,255,.8);
+  color: #c87800;
+  text-shadow: 0 0 12px rgba(253,216,53,.6);
 }
 
 /* 셀 팝 애니메이션 (매 시도마다) */
@@ -177,9 +186,9 @@ body {
   animation: cellFlash .25s ease;
 }
 @keyframes cellFlash {
-  0% { transform: scale(1); box-shadow: 0 0 0 rgba(155,135,245,0); }
-  50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(155,135,245,.6); border-color: var(--a1); }
-  100% { transform: scale(1); box-shadow: 0 0 0 rgba(155,135,245,0); }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); outline-color: var(--a1); box-shadow: 0 6px 16px rgba(155,135,245,.3); }
+  100% { transform: scale(1); }
 }
 
 /* ── 4개 스탯 랜덤값 셀 끝 ── */
@@ -337,36 +346,159 @@ body {
 .info-label { font-size: 11px; color: var(--t3); font-weight: 700; letter-spacing: 1px; font-family: 'Nunito', sans-serif; text-transform: uppercase; }
 
 /* ── 시뮬 디스플레이 ── */
-/* 상태바 (게임풍) */
+/* 다마고치 펫 + 말풍선 */
+.tamago-area {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 16px; margin: 14px 0;
+  position: relative;
+}
+.tamago-pet {
+  width: 110px; height: 110px;
+  background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(248,247,255,.9));
+  border: 3px solid #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow:
+    0 8px 24px rgba(155,135,245,.35),
+    inset 0 -8px 0 rgba(155,135,245,.08),
+    0 0 30px rgba(245,135,184,.2);
+  overflow: hidden;
+  position: relative;
+  animation: tamagoIdle 3s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes tamagoIdle {
+  0%,100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+}
+.tamago-pet img {
+  width: 88px; height: 88px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.15));
+}
+.tamago-fallback { font-size: 56px; }
+
+.tamago-pet.bouncing {
+  animation: tamagoBounce .6s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes tamagoBounce {
+  0%,100% { transform: scale(1) rotate(0); }
+  30% { transform: scale(1.15) rotate(-6deg); }
+  60% { transform: scale(0.92) rotate(4deg); }
+}
+.tamago-pet.shake {
+  animation: tamagoShake .5s ease;
+}
+@keyframes tamagoShake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-8px) rotate(-3deg); }
+  40% { transform: translateX(8px) rotate(3deg); }
+  60% { transform: translateX(-5px) rotate(-2deg); }
+  80% { transform: translateX(5px) rotate(2deg); }
+}
+.tamago-pet.win {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 40px rgba(245,166,35,.6),
+    0 0 80px rgba(253,216,53,.4),
+    inset 0 -8px 0 rgba(245,166,35,.15);
+  animation: tamagoWin 1s ease-in-out infinite;
+}
+@keyframes tamagoWin {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+/* 말풍선 */
+.tamago-bubble {
+  background: #fff;
+  border: 3px solid var(--a1);
+  border-radius: 22px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--t1);
+  font-family: 'Noto Sans KR', sans-serif;
+  position: relative;
+  max-width: 280px;
+  min-height: 50px;
+  display: flex; align-items: center;
+  box-shadow: 0 4px 16px rgba(155,135,245,.2);
+  animation: bubblePop .35s cubic-bezier(.34,1.56,.64,1);
+}
+.tamago-bubble::after {
+  content: '';
+  position: absolute;
+  right: -16px; top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border: 10px solid transparent;
+  border-left-color: var(--a1);
+  border-right: 0;
+}
+.tamago-bubble::before {
+  content: '';
+  position: absolute;
+  right: -11px; top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border: 8px solid transparent;
+  border-left-color: #fff;
+  border-right: 0;
+  z-index: 1;
+}
+@keyframes bubblePop {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.tamago-bubble.win {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, #fffce8, #fff);
+  color: #c87800;
+}
+.tamago-bubble.win::after { border-left-color: var(--gold); }
+.tamago-bubble.fail {
+  border-color: #ff7a8a;
+  background: linear-gradient(135deg, #fff0f0, #fff);
+  color: #c84a4a;
+}
+.tamago-bubble.fail::after { border-left-color: #ff7a8a; }
+.tamago-bubble.try {
+  border-color: var(--gold);
+  background: linear-gradient(135deg, #fff9e3, #fff);
+}
+.tamago-bubble.try::after { border-left-color: var(--gold); }
+
+/* 상태바 (다마고치 화이트) */
 .sim-status-bar {
   display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
   padding-bottom: 14px;
-  border-bottom: 1.5px dashed rgba(155,135,245,.25);
+  border-bottom: 2px dashed var(--border);
   flex-wrap: wrap; gap: 10px;
 }
 .sim-status-label {
   font-size: 10px; font-weight: 900;
-  color: rgba(232,227,255,.55);
+  color: var(--t3);
   letter-spacing: 2px;
   font-family: 'Nunito', sans-serif;
   margin-bottom: 4px;
 }
 .sim-status-value {
   font-size: 22px; font-weight: 900;
-  color: #fff;
-  text-shadow: 0 0 14px rgba(255,255,255,.3);
+  color: var(--t1);
   letter-spacing: -0.5px;
 }
 .sim-status-counter {
   font-size: 28px; font-weight: 900;
   font-family: 'Nunito', sans-serif;
-  color: #fdd835;
-  text-shadow: 0 0 16px rgba(253,216,53,.5);
+  color: var(--a1);
+  text-shadow: 0 2px 8px rgba(155,135,245,.2);
 }
 .sim-status-sub {
   font-size: 11px;
-  color: rgba(232,227,255,.65);
+  color: var(--t2);
   font-weight: 700;
   margin-top: 4px;
 }
@@ -374,42 +506,36 @@ body {
 
 /* 셀러 옵션 active */
 .opt-check.active {
-  background: linear-gradient(135deg, rgba(155,135,245,.15), rgba(245,135,184,.1));
+  background: linear-gradient(135deg, #f5f0ff, #fff0f8);
   border-color: var(--a1);
   color: var(--a1);
 }
 
 .sim-display {
-  background: linear-gradient(135deg, #1a1a2e 0%, #2a1f3e 50%, #2a1a3e 100%);
-  border: 3px solid var(--a1);
-  border-radius: 24px; padding: 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff7fb 100%);
+  border: 3px solid #fff;
+  outline: 2.5px solid var(--a1);
+  border-radius: 28px;
+  padding: 26px 22px;
   box-shadow:
-    0 12px 40px rgba(155,135,245,.35),
-    inset 0 0 60px rgba(155,135,245,.08),
-    inset 0 2px 0 rgba(255,255,255,.05);
+    0 12px 40px rgba(155,135,245,.18),
+    inset 0 -6px 0 rgba(155,135,245,.05);
   position: relative; overflow: hidden;
-  min-height: 320px;
+  min-height: 360px;
   display: flex; flex-direction: column;
-  color: #e8e3ff;
+  color: var(--t1);
 }
 .sim-display::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background:
-    radial-gradient(circle at 15% 15%, rgba(155,135,245,.18), transparent 35%),
-    radial-gradient(circle at 85% 85%, rgba(245,135,184,.15), transparent 35%);
+    radial-gradient(circle 200px at 15% 15%, rgba(245,135,184,.08), transparent 80%),
+    radial-gradient(circle 200px at 85% 85%, rgba(135,212,245,.08), transparent 80%);
   pointer-events: none;
 }
 .sim-display > * { position: relative; z-index: 1; }
 
-/* 상단 상태 바 컬러 오버라이드 */
-.sim-display [style*="color:var(--t3)"],
-.sim-display [style*="color:var(--t2)"] {
-  color: rgba(232,227,255,.6) !important;
-}
-.sim-display [style*="color:var(--t1)"] {
-  color: #fff !important;
-}
+/* 인라인 스타일 var(--t3) 등은 그대로 작동 (라이트 톤) */
 
 .sim-tries-big {
   text-align: center;
@@ -421,30 +547,29 @@ body {
   color: var(--a1);
   display: inline-block; min-width: 80px;
 }
-.sim-tries-unit { font-size: 22px; color: rgba(232,227,255,.7); font-weight: 800; margin-left: 4px; }
-.sim-tries-label { font-size: 11px; color: rgba(232,227,255,.5); font-weight: 700; letter-spacing: 2px; margin-top: 6px; }
+.sim-tries-unit { font-size: 22px; color: var(--t2); font-weight: 800; margin-left: 4px; }
+.sim-tries-label { font-size: 11px; color: var(--t3); font-weight: 700; letter-spacing: 2px; margin-top: 6px; }
 
-/* 등급 결과 한 줄 (게임풍) */
+/* 등급 결과 (다마고치 화이트 톤) */
 .sim-rolling {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Nunito', sans-serif;
   font-size: 24px; font-weight: 900;
-  min-height: 80px;
+  min-height: 70px;
   transition: all .15s;
-  margin: 10px 0;
+  margin: 6px 0;
 }
 .sim-grade-pop {
   display: inline-flex; align-items: center; gap: 14px;
   padding: 14px 32px;
-  background: linear-gradient(135deg, rgba(155,135,245,.2), rgba(245,135,184,.15));
-  border: 2px solid rgba(155,135,245,.5);
+  background: linear-gradient(135deg, #fff, #fdf8ff);
+  border: 2.5px solid var(--a1);
   border-radius: 99px;
   animation: gradePop .35s cubic-bezier(.34,1.56,.64,1);
   box-shadow:
-    0 8px 24px rgba(155,135,245,.3),
-    inset 0 1px 0 rgba(255,255,255,.1);
-  backdrop-filter: blur(10px);
+    0 6px 20px rgba(155,135,245,.18),
+    inset 0 -3px 0 rgba(155,135,245,.05);
 }
 @keyframes gradePop {
   0% { transform: scale(0.5); opacity: 0; }
@@ -452,38 +577,33 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 .sim-grade-num { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; }
-.sim-grade-text { font-size: 14px; font-weight: 700; color: rgba(232,227,255,.85); }
+.sim-grade-text { font-size: 14px; font-weight: 700; color: var(--t2); }
 
-/* 등급별 색상 (게임풍 글로우) */
-.g-pos1 { color: #b8aef5; text-shadow: 0 0 12px rgba(184,174,245,.6); }
-.g-pos2 { color: #c5b3ff; text-shadow: 0 0 12px rgba(197,179,255,.7); }
-.g-pos3 { color: #ffa3d3; text-shadow: 0 0 14px rgba(255,163,211,.8); }
-.g-zero { color: rgba(232,227,255,.5); }
-.g-neg { color: rgba(232,227,255,.3); }
+/* 등급별 색상 (다마고치 톤) */
+.g-pos1 { color: #c5b3ff; }
+.g-pos2 { color: #9b87f5; }
+.g-pos3 { color: #ff7aaa; text-shadow: 0 0 10px rgba(255,122,170,.3); }
+.g-zero { color: var(--t3); }
+.g-neg { color: var(--t4); }
 .g-hall {
-  background: linear-gradient(135deg, #ffe988, #f5a623, #ff6b9d);
+  background: linear-gradient(135deg, #ff9a3c, #fdd835, #ff7aaa);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 0 14px rgba(245,166,35,.7));
+  filter: drop-shadow(0 0 12px rgba(245,166,35,.5));
   animation: hallGlow 1.5s ease infinite alternate;
 }
 @keyframes hallGlow {
-  from { filter: drop-shadow(0 0 10px rgba(245,166,35,.5)); }
-  to { filter: drop-shadow(0 0 22px rgba(253,216,53,.9)); }
+  from { filter: drop-shadow(0 0 8px rgba(245,166,35,.4)); }
+  to { filter: drop-shadow(0 0 18px rgba(253,216,53,.7)); }
 }
 
 /* 환각 떴을 때 카드 */
 .sim-display.hall-mode {
-  background: linear-gradient(135deg, #3a2515 0%, #4a3520 50%, #3a1f3e 100%);
-  border-color: var(--gold);
+  background: linear-gradient(135deg, #fffce8 0%, #fff5e8 50%, #fff0f6 100%);
+  outline-color: var(--gold);
   animation: hallShake .5s ease;
   box-shadow:
-    0 12px 50px rgba(245,166,35,.5),
-    inset 0 0 80px rgba(253,216,53,.15);
-}
-.sim-display.hall-mode::before {
-  background:
-    radial-gradient(circle at 15% 15%, rgba(245,166,35,.25), transparent 35%),
-    radial-gradient(circle at 85% 85%, rgba(253,216,53,.20), transparent 35%);
+    0 16px 50px rgba(245,166,35,.3),
+    inset 0 -6px 0 rgba(245,166,35,.1);
 }
 @keyframes hallShake {
   0%,100% { transform: translateX(0); }
@@ -493,28 +613,28 @@ body {
   80% { transform: translateX(3px); }
 }
 
-/* 비용 표시 작은거 */
+/* 비용 표시 */
 .sim-cost-small {
   text-align: center; font-size: 12px;
-  color: rgba(232,227,255,.7);
+  color: var(--t2);
   margin-top: 8px;
   font-family: 'Nunito', sans-serif; font-weight: 700;
-  padding: 8px 12px;
-  background: rgba(0,0,0,.15);
+  padding: 8px 16px;
+  background: var(--s2);
   border-radius: 99px;
   display: inline-block;
-  align-self: center;
+  border: 1.5px solid var(--border);
 }
 
-/* 로그 (게임풍) */
+/* 로그 */
 .sim-log {
   margin-top: 14px; max-height: 100px;
   overflow-y: auto;
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(155,135,245,.2);
-  border-radius: 10px; padding: 8px 12px;
+  background: var(--s2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 8px 12px;
   font-family: 'Nunito', sans-serif; font-size: 11px;
-  color: rgba(232,227,255,.7);
+  color: var(--t2);
   display: none;
 }
 .sim-log.show { display: block; }
@@ -896,6 +1016,17 @@ body {
       </div>
     </div>
 
+    <!-- 다마고치 펫 영역 -->
+    <div class="tamago-area">
+      <div class="tamago-bubble" id="tamago-bubble">
+        <span id="tamago-bubble-text">안녕! 잘 부탁해 🐾</span>
+      </div>
+      <div class="tamago-pet" id="tamago-pet">
+        <img id="tamago-img" alt="pet" />
+        <span class="tamago-fallback" id="tamago-fallback" style="display:none;">🐾</span>
+      </div>
+    </div>
+
     <!-- 4개 스탯 표시 -->
     <div class="stat-rolls" id="stat-rolls" style="margin-bottom:14px;">
       <div class="stat-roll-cell"><div class="srl-label">공격</div><div class="srl-val" id="srl-atk">−</div></div>
@@ -907,6 +1038,11 @@ body {
     <!-- 환각 확률 큼지막하게 -->
     <div class="sim-rolling" id="sim-rolling">
       <span style="color:var(--t4);font-size:14px;font-weight:700;">시작을 기다리는 중...</span>
+    </div>
+
+    <!-- 스킵 버튼 (애니메이션 중에만 표시) -->
+    <div style="text-align:center;margin-top:-6px;margin-bottom:8px;">
+      <button id="btn-skip-anim" style="display:none;background:var(--white);color:var(--a1);border:2px solid var(--a1);padding:6px 20px;border-radius:99px;font-size:12px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 2px 8px rgba(155,135,245,.2);" onclick="skipAnimFlag = true;">⏭ 스킵</button>
     </div>
 
     <!-- 비용 + 진행 -->
@@ -1062,6 +1198,136 @@ function _convertPetInfo(p) {
     obtain: p.obtain || "",
     image: p.image || ""
   };
+}
+
+/* ═══════════════════════════════════════════════════════════
+   다마고치 펫 멘트 시스템
+   ═══════════════════════════════════════════════════════════ */
+
+const PET_MSGS = {
+  greet: [
+    '안녕! 잘 부탁해 🐾',
+    '오늘은 내 운명을 정해줘!',
+    '준비됐어?',
+    '한 번 해보자!',
+  ],
+  // 초기화 결과별
+  zero: [  // 환각 0%
+    '아 이번엔 망했네... 😞',
+    '에휴, 다시 굴려줘',
+    '꽝이야 ㅠㅠ',
+    '난 크게 될 놈이 아닌가봐 ㅠㅠ',
+    '으악 또 0%야...',
+    '나 그냥 평범한 펫인가봐',
+  ],
+  weak: [  // 0~1%
+    '아쉬워... 살짝 있긴 한데',
+    '이게 최선이야...?',
+    '음... 미묘하네',
+    '0.001%라도 있긴 있어!',
+  ],
+  okay: [  // 1~5%
+    '오! 좀 괜찮은데?',
+    '도전해볼만 한데? 🤔',
+    '음~ 나쁘지 않아!',
+    '한 번 도전해봐!',
+  ],
+  good: [  // 5~50%
+    '오오! 꽤 좋은데?!',
+    '도전해봐!!!',
+    '나 좀 쓸만한 펫인가?',
+    '이번엔 가즈아!',
+  ],
+  great: [  // 50~99%
+    '대박! 도전 ㄱㄱ! 🔥',
+    '나 환각 띄울 자신 있어!',
+    '믿어봐!',
+    '거의 확정이야!!!',
+  ],
+  hot: [  // 99%+
+    '나 확신해! 100% 가능 ✨',
+    'GOAT 펫이야!!!',
+    '걍 도전이지 ㄴㄴ',
+  ],
+  try: [
+    '두근두근... 가즈아!',
+    '제발 떠라!!! 🙏',
+    '간다아아아!',
+  ],
+  win: [
+    '환각 성공!!! 나 8등급이야 ✨',
+    '내가 해냈어!!! 🎉',
+    '봐라 나의 진짜 모습을!',
+    '드디어... 진짜 됐어 😭',
+  ],
+  fail: [
+    '아쉽네 ㅠㅜ',
+    '왜 안 떠... 분명 확률 있었는데',
+    '한 번 더... 한 번 더 줘봐',
+    '나 진짜 안 되는 건가...',
+    '에휴 다시 굴려야겠다',
+    '맘에 안 들어! 다시!',
+  ],
+  newpet: [
+    '안녕! 새로 왔어! 🐾',
+    '이번엔 내가 해낼게!',
+    '나는 다르다구!',
+    '잘 부탁해~',
+  ],
+};
+
+function randomPetMsg(kind) {
+  const arr = PET_MSGS[kind] || PET_MSGS.greet;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function petBubbleForProb(prob) {
+  const pct = prob * 100;
+  if (pct === 0) return randomPetMsg('zero');
+  if (pct < 1) return randomPetMsg('weak');
+  if (pct < 5) return randomPetMsg('okay');
+  if (pct < 50) return randomPetMsg('good');
+  if (pct < 99) return randomPetMsg('great');
+  return randomPetMsg('hot');
+}
+
+function setPetBubble(msg, kind) {
+  const bubble = $('tamago-bubble');
+  const text = $('tamago-bubble-text');
+  const pet = $('tamago-pet');
+  if (!bubble || !text) return;
+  text.textContent = msg;
+  bubble.classList.remove('win', 'fail', 'try');
+  if (kind === 'win') bubble.classList.add('win');
+  else if (kind === 'fail') bubble.classList.add('fail');
+  else if (kind === 'try') bubble.classList.add('try');
+
+  // 펫 애니메이션
+  pet.classList.remove('bouncing', 'shake', 'win');
+  void pet.offsetWidth;
+  if (kind === 'win') pet.classList.add('win');
+  else if (kind === 'fail') pet.classList.add('shake');
+  else pet.classList.add('bouncing');
+
+  // 말풍선 팝
+  bubble.style.animation = 'none';
+  void bubble.offsetWidth;
+  bubble.style.animation = '';
+}
+
+function setTamagoImage(name) {
+  const img = $('tamago-img');
+  const fb = $('tamago-fallback');
+  if (!img || !fb) return;
+  const src = petImages[name];
+  if (src) {
+    img.src = src;
+    img.style.display = 'block';
+    fb.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    fb.style.display = 'inline';
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1289,7 +1555,13 @@ function setupPetSearch() {
       .sort((a, b) => a.localeCompare(b, 'ko-KR'))
       .slice(0, 12);
     if (matches.length === 0) { sugg.style.display = 'none'; return; }
-    sugg.innerHTML = matches.map(n => `<div class="sugg-item" data-name="${n}">${n}</div>`).join('');
+    sugg.innerHTML = matches.map(n => {
+      const img = petImages[n];
+      const imgHTML = img ? `<img src="${img}" alt="${n}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;flex-shrink:0;">` : '<div style="width:32px;height:32px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🐾</div>';
+      const pet = petData[n];
+      const meta = pet ? `<div style="font-size:10px;color:var(--t3);">${pet.grade || ''}</div>` : '';
+      return `<div class="sugg-item" data-name="${n}" style="display:flex;align-items:center;gap:10px;">${imgHTML}<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:700;color:var(--t1);">${n}</div>${meta}</div></div>`;
+    }).join('');
     sugg.style.display = 'block';
   });
 
@@ -1514,6 +1786,8 @@ function getLuckMsg(actual, theory) {
 let simState = null;
 let simRunning = false;
 let simAbort = false;
+let skipAnimFlag = false;
+let skipResultDelay = false;
 
 /**
  * simState 구조:
@@ -1548,6 +1822,8 @@ async function runSimulation() {
     hallAttempts: 0,
     currentStats: null,
     finished: false,
+    lifeUsedThisPet: false,
+    hallFailedThisStats: false,
   };
 
   $('result-area').innerHTML = '';
@@ -1562,6 +1838,8 @@ async function runSimulation() {
 
   $('sim-pet-name').textContent = selectedPetName;
   $('sim-pet-meta').textContent = `펫 1마리째 · 초기화 0/10`;
+  setTamagoImage(selectedPetName);
+  setPetBubble(randomPetMsg('greet'), 'normal');
 
   // 첫 펫의 첫 스탯 (펫 잡으면 자동으로 결정됨, 초기화 사용 0번)
   await rollNewPetStats();
@@ -1573,14 +1851,16 @@ async function runSimulation() {
 async function rollNewPetStats() {
   $('btn-stop').style.display = 'block';
   $('sim-actions').style.display = 'none';
+  $('btn-skip-anim').style.display = 'inline-block';
 
   // 슬롯머신 효과 (짧게)
   const pool = currentPetStatPool;
   const totalW = currentPetTotalCombos;
   const cells = ['srl-atk', 'srl-def', 'srl-agi', 'srl-hp'];
-  // 약간의 효과
-  for (let i = 0; i < 8; i++) {
-    if (simAbort) break;
+  skipAnimFlag = false;
+  // 짧고 빠르게 (5틱)
+  for (let i = 0; i < 5; i++) {
+    if (simAbort || skipAnimFlag) break;
     const tempPick = weightedPick(pool, totalW);
     $('srl-atk').textContent = tempPick.atk;
     $('srl-def').textContent = tempPick.def;
@@ -1593,13 +1873,13 @@ async function rollNewPetStats() {
       cell.classList.add('flash');
     });
     if (i % 2 === 0) sfxReroll();
-    await sleep(60 + i * 12);
+    await sleep(40 + i * 8);
   }
 
   // 최종 결정
   const picked = weightedPick(pool, totalW);
   simState.currentStats = picked;
-  sfxStatDecide();
+  if (!skipAnimFlag) sfxStatDecide();
 
   // 표시
   $('srl-atk').textContent = picked.atk;
@@ -1617,6 +1897,7 @@ async function rollNewPetStats() {
   showActionButtons();
 
   $('btn-stop').style.display = 'none';
+  $('btn-skip-anim').style.display = 'none';
 }
 
 /**
@@ -1682,41 +1963,52 @@ function showActionButtons() {
   const reset5Btn = $('btn-action-reset5');
   const newPetBtn = $('btn-action-newpet');
 
-  // 환각 도전: 확률 0보다 크면 가능
-  const canHall = s.currentStats && s.currentStats.prob > 0;
+  // 환각 도전: 확률 > 0 + 이 스탯으로 아직 실패 안 한 상태
+  const canHall = s.currentStats && s.currentStats.prob > 0 && !s.hallFailedThisStats;
   hallBtn.disabled = !canHall;
   hallBtn.style.opacity = canHall ? '1' : '0.45';
   hallBtn.style.cursor = canHall ? 'pointer' : 'not-allowed';
+  if (s.hallFailedThisStats) {
+    hallBtn.textContent = '❌ 이미 실패 (초기화 필요)';
+  } else {
+    hallBtn.textContent = '🎰 환각 도전!';
+  }
 
-  // 초기화: 5번 이내면 가능, 5번 정확히 = 생명 필요, 10번 = 새 펫
-  if (s.currentPetResets < 10) {
+  // 초기화: 한계 전까지 가능. 단, 10번 다 썼는데 환각도 실패 상태면 새 펫만 가능
+  const allUsed = (s.currentPetResets >= 10);
+  if (allUsed) {
+    resetBtn.disabled = true;
+    resetBtn.textContent = '⛔ 이 펫 한계';
+    resetBtn.style.opacity = '0.45';
+    resetBtn.style.cursor = 'not-allowed';
+    reset5Btn.disabled = true;
+    reset5Btn.textContent = '⛔ 이 펫 한계';
+    reset5Btn.style.opacity = '0.45';
+    reset5Btn.style.cursor = 'not-allowed';
+    // 새 펫 사기 버튼을 눈에 띄게
+    newPetBtn.style.background = 'linear-gradient(135deg, #ff7a8a, #ffa3d3)';
+    newPetBtn.style.color = '#fff';
+    newPetBtn.style.borderColor = 'transparent';
+    newPetBtn.textContent = '🛒 새 펫 사기! (이 펫은 한계)';
+  } else {
     resetBtn.disabled = false;
     resetBtn.textContent = `📊 다시 초기화 (${s.currentPetResets + 1}/10)`;
     resetBtn.style.opacity = '1';
     resetBtn.style.cursor = 'pointer';
-  } else {
-    resetBtn.disabled = true;
-    resetBtn.textContent = '⛔ 한계 도달';
-    resetBtn.style.opacity = '0.45';
-    resetBtn.style.cursor = 'not-allowed';
-  }
 
-  // 5번 한번에: 10번 도달 안 했고 + 환각 확률 0인 경우만 의미있음
-  // (이미 환각 가능한 펫이면 5번 한번에 누르는 거 의미 없으니 약간 흐릿)
-  if (s.currentPetResets >= 10) {
-    reset5Btn.disabled = true;
-    reset5Btn.textContent = '⛔ 한계 도달';
-    reset5Btn.style.opacity = '0.45';
-    reset5Btn.style.cursor = 'not-allowed';
-  } else {
     reset5Btn.disabled = false;
     const remaining = Math.min(5, 10 - s.currentPetResets);
     reset5Btn.textContent = `⚡ 초기화 ${remaining}번 연속`;
     reset5Btn.style.opacity = '1';
     reset5Btn.style.cursor = 'pointer';
+
+    // 일반 톤
+    newPetBtn.style.background = 'var(--white)';
+    newPetBtn.style.color = 'var(--t2)';
+    newPetBtn.style.borderColor = 'var(--border2)';
+    newPetBtn.textContent = '🔄 새 펫으로 처음부터';
   }
 
-  // 새 펫으로 처음부터 - 항상 가능
   newPetBtn.disabled = false;
 }
 
@@ -1743,6 +2035,7 @@ async function rerollStats() {
   // 초기화 1번 사용
   s.currentPetResets++;
   s.resetOrbsUsed++;
+  s.hallFailedThisStats = false; // 새 스탯이니 환각 실패 플래그 리셋
 
   // 로그
   logSim(`📊 초기화 ${s.currentPetResets}/10 → 추첨 중...`);
@@ -1752,6 +2045,9 @@ async function rerollStats() {
   await rollNewPetStats();
 
   logSim(`스탯: 공${s.currentStats.atk}/방${s.currentStats.def}/민${s.currentStats.agi}/체${s.currentStats.hp} · 환각 ${formatPct(s.currentStats.prob * 100)}`);
+
+  // 펫 멘트
+  setPetBubble(petBubbleForProb(s.currentStats.prob), 'normal');
 }
 
 /**
@@ -1768,18 +2064,25 @@ async function rerollStats5() {
   }
 
   $('sim-actions').style.display = 'none';
+  $('btn-skip-anim').style.display = 'inline-block';
+  skipAnimFlag = false;
 
   // 5번까지 또는 한계까지 (또는 환각 확률>0까지)
   for (let i = 0; i < 5; i++) {
-    if (simAbort) break;
+    if (simAbort || skipAnimFlag) {
+      // 스킵해도 진행 중인 작업은 종료
+      if (skipAnimFlag) break;
+    }
 
     // 5번 끝, 생명 안 쓴 상태면 멈추고 카드
     if (s.currentPetResets === 5 && !s.lifeUsedThisPet) {
+      $('btn-skip-anim').style.display = 'none';
       showLifeDecision();
       return;
     }
     // 10번 도달 멈춤
     if (s.currentPetResets >= 10) {
+      $('btn-skip-anim').style.display = 'none';
       showNewPetDecision();
       return;
     }
@@ -1787,6 +2090,7 @@ async function rerollStats5() {
     // 초기화 1번
     s.currentPetResets++;
     s.resetOrbsUsed++;
+    s.hallFailedThisStats = false; // 새 스탯이니 리셋
     logSim(`📊 [⚡연속] 초기화 ${s.currentPetResets}/10 → 추첨 중...`);
 
     // 빠른 추첨 (간단하게)
@@ -1798,13 +2102,14 @@ async function rerollStats5() {
       logSim(`⏸ 환각 가능 확률 발견! 자동 정지`);
       toast(`✨ ${formatPct(s.currentStats.prob * 100)} 확률 발견! 자동 정지`);
       sfxStatDecide();
-      sfxStatDecide();
+      setPetBubble(petBubbleForProb(s.currentStats.prob), 'normal');
       break;
     }
 
-    await sleep(150);
+    if (!skipAnimFlag) await sleep(120);
   }
 
+  $('btn-skip-anim').style.display = 'none';
   updateMainDisplay();
   showActionButtons();
 }
@@ -1852,14 +2157,19 @@ async function rollNewPetStatsQuick() {
 }
 
 /**
- * 🔄 새 펫으로 처음부터 - 전체 리셋
+ * 🔄 새 펫으로 처음부터 - 전체 리셋 (또는 자연스러운 새 펫 구매)
  */
 function forceNewPet() {
   if (!simState) return;
+  // 10번 다 쓴 경우 = 게임 시스템상 어차피 새 펫 사야하니 confirm 없이 바로 새 펫
+  if (simState.currentPetResets >= 10) {
+    buyNewPet();
+    return;
+  }
+  // 그 외 = 완전 리셋 (지금까지 비용/펫 모두 사라짐)
   if (!confirm('지금까지의 진행을 모두 버리고 새 펫으로 처음부터 다시 시작할까요?')) return;
   sfxNewPet();
   toast('🔄 처음부터 다시 시작!');
-  // 새 시뮬레이션 시작
   runSimulation();
 }
 
@@ -1871,20 +2181,25 @@ async function tryHallChallenge() {
   const s = simState;
   const prob = s.currentStats.prob;
   if (prob <= 0) return;
+  if (s.hallFailedThisStats) return; // 이미 실패한 스탯
 
   s.hallAttempts++;
   $('sim-actions').style.display = 'none';
+  $('btn-skip-anim').style.display = 'inline-block';
   sfxHallStart();
+  skipAnimFlag = false;
+  setPetBubble('두근두근... 가즈아!', 'try');
 
-  // 도전 애니메이션 (간단하게)
+  // 도전 애니메이션 (짧게, 스킵 가능)
   $('sim-display').classList.add('hall-mode');
   const rolling = $('sim-rolling');
-  for (let i = 0; i < 5; i++) {
-    if (simAbort) break;
-    rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-hall">도전 중...</span></div>`;
-    await sleep(150);
-    rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-pos2">두근두근</span></div>`;
-    await sleep(150);
+  for (let i = 0; i < 3; i++) {
+    if (simAbort || skipAnimFlag) break;
+    rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-hall">두근...</span></div>`;
+    await sleep(120);
+    if (skipAnimFlag) break;
+    rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-pos3">두근두근!</span></div>`;
+    await sleep(120);
   }
 
   // 베르누이 시행
@@ -1897,15 +2212,27 @@ async function tryHallChallenge() {
     rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-hall" style="font-size:32px;">✨ 8등급 환각! ✨</span></div>`;
     logSim(`✨ 환각 성공! (${formatPct(prob * 100)} 확률)`);
     sfxHallSuccess();
-    await sleep(1500);
+    setPetBubble(randomPetMsg('win'), 'win');
+    // 짧고 스킵 가능
+    for (let i = 0; i < 12; i++) {
+      if (skipAnimFlag) break;
+      await sleep(100);
+    }
+    $('btn-skip-anim').style.display = 'none';
     showSuccessResult();
   } else {
-    // 실패
+    // 실패 - 이 스탯 그대로는 재도전 불가, 다시 초기화 해야 함
+    s.hallFailedThisStats = true;
     $('sim-display').classList.remove('hall-mode');
-    logSim(`❌ 환각 실패 (${formatPct(prob * 100)} → 실패)`);
+    logSim(`❌ 환각 실패 (${formatPct(prob * 100)} → 실패) · 다시 초기화 필요`);
     sfxHallFail();
-    rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-neg">😢 실패!</span><span class="sim-grade-text">다시 초기화 또는 도전</span></div>`;
-    await sleep(800);
+    setPetBubble(randomPetMsg('fail'), 'fail');
+    rolling.innerHTML = `<div class="sim-grade-pop"><span class="sim-grade-num g-neg">😢 환각 실패!</span><span class="sim-grade-text">다시 초기화 필수</span></div>`;
+    for (let i = 0; i < 8; i++) {
+      if (skipAnimFlag) break;
+      await sleep(80);
+    }
+    $('btn-skip-anim').style.display = 'none';
     updateMainDisplay();
     showActionButtons();
   }
@@ -1994,12 +2321,12 @@ async function useLifeOrb() {
   simState.lifeUsedThisPet = true;
   $('decision-area').innerHTML = '';
   sfxLifeOrb();
-  toast('💎 생명의 구슬 사용! · 5번 더 초기화 가능');
-  // 곧바로 초기화 1번 실행
-  simState.currentPetResets++;
-  simState.resetOrbsUsed++;
-  logSim(`💎 생명 구슬 사용! 초기화 ${simState.currentPetResets}/10`);
-  await rollNewPetStats();
+  toast('💎 생명의 구슬 사용! · 초기화 5번 추가');
+  logSim(`💎 생명 구슬 사용! 초기화 횟수 +5 (현재 펫에서 5번 더 가능)`);
+  // 스탯은 그대로! 초기화 회수만 +5 (currentPetResets는 5에 머무름)
+  // 사용자가 다시 '초기화' 누르면 그때 굴려짐
+  updateMainDisplay();
+  showActionButtons();
 }
 
 /**
@@ -2010,10 +2337,12 @@ async function buyNewPet() {
   simState.petsBought++;
   simState.currentPetResets = 0;
   simState.lifeUsedThisPet = false;
+  simState.hallFailedThisStats = false;
   $('decision-area').innerHTML = '';
   $('sim-display').classList.remove('hall-mode');
   $('stat-rolls').classList.remove('all-max');
   sfxNewPet();
+  setPetBubble(randomPetMsg('newpet'), 'normal');
   toast(`🛒 새 펫 구매! · 펫 ${simState.petsBought}마리째`);
   logSim(`🛒 새 펫 구매! 펫 ${simState.petsBought}마리째 (초기화 0/10)`);
   await rollNewPetStats();
