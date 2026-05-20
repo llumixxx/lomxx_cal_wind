@@ -1076,7 +1076,7 @@ body {
     <!-- 액션 버튼 -->
     <div class="act-row">
       <button class="btn-go" id="btn-go" disabled>🎣 펫 잡기 시작!</button>
-      <button class="btn-stop" id="btn-stop" style="display:none;">⏩ 결과 바로보기</button>
+      <button class="btn-stop" id="btn-stop" style="display:none;">⏸ 중지</button>
     </div>
 
     <!-- 자동 진행 모드 -->
@@ -1084,7 +1084,9 @@ body {
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
         <span style="font-size:12px;font-weight:800;color:var(--t2);">🚀 자동 진행:</span>
         <button id="btn-auto-n" class="btn-go" disabled style="padding:8px 16px;font-size:12px;background:linear-gradient(135deg,#87d4f5,#9b87f5);" onclick="runAutoRun()">▶ 환각까지 자동으로!</button>
-        <span style="font-size:11px;color:var(--t3);font-weight:700;">알아서 초기화/도전/펫구매 반복</span>
+        <button id="btn-auto-stop" class="btn-stop" style="display:none;padding:8px 14px;font-size:12px;" onclick="autoNAbort = true;">⏸ 정지</button>
+        <button id="btn-auto-skip" class="btn-go" style="display:none;padding:8px 14px;font-size:12px;background:linear-gradient(135deg,#f5a623,#fdd835);color:#5a4015;" onclick="skipToResult()">⏩ 결과 바로보기</button>
+        <span id="auto-help-text" style="font-size:11px;color:var(--t3);font-weight:700;">알아서 초기화/도전/펫구매 반복</span>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
         <span style="font-size:11px;font-weight:800;color:var(--t3);letter-spacing:0.5px;">구슬 사용:</span>
@@ -1969,7 +1971,6 @@ let simAbort = false;
 let skipAnimFlag = false;
 let skipResultDelay = false;
 let autoNAbort = false;
-let fastForward = false;
 
 /* ═══════════════════════════════════════════════════════════
    자동 N번 반복 시뮬 (시각효과 없이 통계만)
@@ -1990,10 +1991,10 @@ async function runAutoRun() {
 
   autoNAbort = false;
   autoRunMode = true;
-  fastForward = false;
-  $('btn-auto-n').disabled = true;
-  $('btn-auto-n').textContent = '🚀 자동 진행 중...';
-  $('btn-stop').style.display = 'block';
+  $('btn-auto-n').style.display = 'none';
+  $('btn-auto-stop').style.display = 'inline-block';
+  $('btn-auto-skip').style.display = 'inline-block';
+  $('auto-help-text').textContent = '환각까지 자동 진행 중...';
 
   // 시뮬 진행 중이 아니면 새로 시작
   if (!simState || simState.finished) {
@@ -2001,11 +2002,10 @@ async function runAutoRun() {
   }
 
   // 자동 루프
-  let loopCount = 0;
   while (!autoNAbort && simState && !simState.finished) {
     const s = simState;
     const stats = s.currentStats;
-    if (!stats) { await sleepAuto(50); continue; }
+    if (!stats) { await sleep(50); continue; }
 
     // 5번 도달 + 생명 안 씀 → 비용 비교
     if (s.currentPetResets === 5 && !s.lifeUsedThisPet && useLife && useReset) {
@@ -2038,24 +2038,13 @@ async function runAutoRun() {
     } else {
       await rerollStatsAuto();
     }
-
-    // fastForward일 때 가끔 UI 양보 (브라우저 안 멈추게)
-    if (fastForward && (++loopCount % 50 === 0)) {
-      await new Promise(r => setTimeout(r, 0));
-    }
   }
 
   autoRunMode = false;
-  fastForward = false;
-  $('btn-auto-n').disabled = false;
-  $('btn-auto-n').textContent = '▶ 환각까지 자동으로!';
-  $('btn-stop').style.display = 'none';
-}
-
-// fastForward 켜지면 모든 sleep을 0으로 (즉시 진행)
-async function sleepAuto(ms) {
-  if (fastForward) return;
-  return sleep(ms);
+  $('btn-auto-n').style.display = 'inline-block';
+  $('btn-auto-stop').style.display = 'none';
+  $('btn-auto-skip').style.display = 'none';
+  $('auto-help-text').textContent = '알아서 초기화/도전/펫구매 반복';
 }
 
 function getMaxResetsAuto(useReset, useLife) {
@@ -2066,12 +2055,10 @@ function getMaxResetsAuto(useReset, useLife) {
 async function tryHallChallengeAuto() {
   skipAnimFlag = true;
   await tryHallChallenge();
-  if (fastForward) skipAnimFlag = true;
 }
 async function rerollStatsAuto() {
   skipAnimFlag = true;
   await rerollStats();
-  if (fastForward) skipAnimFlag = true;
 }
 async function useLifeOrbAuto() {
   await useLifeOrb();
@@ -2079,7 +2066,114 @@ async function useLifeOrbAuto() {
 async function buyNewPetAuto() {
   skipAnimFlag = true;
   await buyNewPet();
-  if (fastForward) skipAnimFlag = true;
+}
+
+/**
+ * ⏩ 결과 바로보기
+ * 자동 진행 중단 → 현재 상태에서 환각까지 즉시 계산해서 결과 카드 표시
+ * 시각 효과 없이 한 번에 결과로 점프
+ */
+function skipToResult() {
+  if (!simState) return;
+  const useReset = $('auto-orb-reset').checked;
+  const useLife = $('auto-orb-life').checked;
+  const petPrice = parseInt($('pet-price').value) || 0;
+  const orbReset = parseInt($('orb-reset').value) || 0;
+  const orbLife = parseInt($('orb-life').value) || 0;
+
+  // 자동 루프 즉시 중단
+  autoNAbort = true;
+  skipAnimFlag = true;
+
+  // 현재 simState를 그대로 이어서 계산 (시각 효과 0)
+  const finished = simulateRestOfRun(simState, petPrice, orbReset, orbLife, useReset, useLife);
+
+  // 현재 simState에 결과 반영
+  simState.petsBought = finished.petsBought;
+  simState.resetOrbsUsed = finished.resetOrbsUsed;
+  simState.lifeOrbsUsed = finished.lifeOrbsUsed;
+  simState.hallAttempts = finished.hallAttempts;
+  simState.currentStats = finished.finalStats;
+  simState.finished = true;
+
+  // 자동 모드 종료
+  autoRunMode = false;
+  $('btn-auto-n').style.display = 'inline-block';
+  $('btn-auto-stop').style.display = 'none';
+  $('btn-auto-skip').style.display = 'none';
+  $('auto-help-text').textContent = '알아서 초기화/도전/펫구매 반복';
+
+  // 환각 성공 SFX + 결과 카드
+  sfxHallSuccess();
+  toast('⏩ 결과 바로 표시');
+  $('stat-rolls').classList.add('all-max');
+  updateStatCells(finished.finalStats);
+  $('sim-display').classList.add('hall-mode');
+  setPetBubble(randomPetMsg('win'), 'win');
+  updateMainDisplay();
+  showSuccessResult();
+}
+
+/**
+ * 현재 simState 상태에서 환각까지 시뮬 (시각 효과 없이)
+ * 누적 카운트 그대로 이어감
+ */
+function simulateRestOfRun(s, petPrice, orbReset, orbLife, useReset, useLife) {
+  const maxResets = !useReset ? 0 : (useLife ? 10 : 5);
+
+  let petsBought = s.petsBought;
+  let resetsUsed = s.resetOrbsUsed;
+  let lifeUsed = s.lifeOrbsUsed;
+  let currentPetResets = s.currentPetResets;
+  let lifeUsedThisPet = s.lifeUsedThisPet;
+  let hallAttempts = s.hallAttempts;
+  let hallFailedThisStats = s.hallFailedThisStats;
+  let curStats = s.currentStats || weightedPick(currentPetStatPool, currentPetTotalCombos);
+  const MAX_PETS = 50000;
+
+  while (petsBought <= MAX_PETS) {
+    // 환각 도전 가능?
+    if (curStats && curStats.prob > 0 && !hallFailedThisStats) {
+      hallAttempts++;
+      if (Math.random() < curStats.prob) {
+        return { petsBought, resetsUsed, lifeUsed, hallAttempts, finalStats: curStats };
+      }
+      hallFailedThisStats = true;
+    }
+
+    // 초기화 단계
+    if (currentPetResets >= maxResets) {
+      petsBought++;
+      currentPetResets = 0;
+      lifeUsedThisPet = false;
+      hallFailedThisStats = false;
+      curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+    } else if (currentPetResets === 5 && !lifeUsedThisPet && useLife && useReset) {
+      const continueCost = orbLife + orbReset * 5;
+      const newPetCost = petPrice + orbReset * 5;
+      if (petPrice > 0 && newPetCost < continueCost) {
+        petsBought++;
+        currentPetResets = 0;
+        lifeUsedThisPet = false;
+        hallFailedThisStats = false;
+        curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+      } else {
+        lifeUsed++;
+        lifeUsedThisPet = true;
+        currentPetResets++;
+        resetsUsed++;
+        hallFailedThisStats = false;
+        curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+      }
+    } else {
+      currentPetResets++;
+      resetsUsed++;
+      hallFailedThisStats = false;
+      curStats = weightedPick(currentPetStatPool, currentPetTotalCombos);
+    }
+  }
+
+  return { petsBought, resetsUsed, lifeUsed, hallAttempts, finalStats: curStats };
 }
 
 
@@ -2147,7 +2241,7 @@ async function runSimulation() {
 async function rollNewPetStats() {
   $('btn-stop').style.display = 'block';
   $('sim-actions').style.display = 'none';
-  $('btn-skip-anim').style.display = 'inline-block';
+  if (!autoRunMode) $('btn-skip-anim').style.display = 'inline-block';
 
   // 슬롯머신 효과 (짧게)
   const pool = currentPetStatPool;
@@ -2430,7 +2524,7 @@ async function rerollStats5() {
   }
 
   $('sim-actions').style.display = 'none';
-  $('btn-skip-anim').style.display = 'inline-block';
+  if (!autoRunMode) $('btn-skip-anim').style.display = 'inline-block';
   skipAnimFlag = false;
 
   // 5번까지 또는 한계까지 (또는 환각 확률>0까지)
@@ -2547,7 +2641,7 @@ async function tryHallChallenge() {
 
   s.hallAttempts++;
   $('sim-actions').style.display = 'none';
-  $('btn-skip-anim').style.display = 'inline-block';
+  if (!autoRunMode) $('btn-skip-anim').style.display = 'inline-block';
   sfxHallStart();
   skipAnimFlag = false;
   setPetBubble('두근두근... 가즈아!', 'try');
@@ -3011,22 +3105,10 @@ function showAbortResult() {
   $('sim-actions').style.display = 'none';
 }
 
-function sleep(ms) {
-  if (fastForward) return Promise.resolve();
-  return new Promise(r => setTimeout(r, ms));
-}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 $('btn-go').addEventListener('click', runSimulation);
-$('btn-stop').addEventListener('click', () => {
-  if (autoRunMode) {
-    // 자동 진행 중: 시각 효과 다 스킵, 즉시 결과로
-    fastForward = true;
-    skipAnimFlag = true;
-    toast('⏩ 결과까지 빨리 진행 중...');
-  } else {
-    simAbort = true;
-  }
-});
+$('btn-stop').addEventListener('click', () => { simAbort = true; });
 
 /* ═══════════════════════════════════════════════════════════
    누적 통계 (localStorage)
