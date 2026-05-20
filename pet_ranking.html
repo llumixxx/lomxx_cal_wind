@@ -1238,6 +1238,11 @@
       font-size: 10px; color: var(--t2); font-weight: 700;
       font-family: 'Nunito', sans-serif;
     }
+    .battle-pet-pick-attr {
+      font-size: 10px; color: var(--t3); font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      margin-top: 2px;
+    }
 
     /* 🥊 전투 화면 */
     .battle-arena {
@@ -1304,8 +1309,18 @@
     }
     .battle-fighter-nick {
       font-size: 10px; color: var(--t3); font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       font-family: 'Nunito', sans-serif;
+    }
+    .battle-fighter-stats {
+      font-size: 10px; color: var(--t2); font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      margin-bottom: 3px;
+    }
+    .battle-fighter-attr {
+      font-size: 10px; color: var(--a1); font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      margin-bottom: 6px;
     }
 
     /* HP 바 */
@@ -1945,14 +1960,115 @@ function renderChangesBanner(pets) {
 
 // ── 🥊 펫 대전 시스템 ──
 
+// sleep 헬퍼
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 let _battlePets = []; // 대전 가능한 펫 목록 (랭킹 데이터 있는 펫)
-let _battleState = null; // 현재 전투 상태
+let _battleState = null;
+let _petInfoMap = {}; // name → 펫 정보 (속성 등)
+
+// 펫 정보 로드 (속성용)
+async function loadPetInfoForBattle() {
+  try {
+    const r = await fetch('pet_info_data.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const pets = await r.json();
+    (Array.isArray(pets) ? pets : []).forEach(p => {
+      if (p && p.name) _petInfoMap[p.name] = p;
+    });
+  } catch(e) {
+    console.warn('펫 정보 로드 실패:', e);
+  }
+}
 
 // 능력치 파싱 (예: "209 (-2)" → 209)
 function parseStat(s) {
   if (!s) return 0;
   const m = String(s).match(/(\d+)/);
   return m ? parseInt(m[1]) : 0;
+}
+
+// 속성 정보 (이모지)
+const ATTR_ICONS = { '지': '🌍', '수': '💧', '화': '🔥', '풍': '⚡' };
+// 상성: 지 > 풍 > 수 > 화 > 지 (가위바위보)
+// attacker_attr > defender_attr 이면 강함
+const ATTR_STRONG_AGAINST = { '지': '풍', '풍': '수', '수': '화', '화': '지' };
+
+// 펫의 속성 정보 가져오기
+function getPetAttr(petName) {
+  const info = _petInfoMap[petName];
+  if (!info || !info.attr) return null;
+  return info.attr; // { '지': 8, '수': 2, '화': 0, '풍': 0 }
+}
+
+// 속성 표시 텍스트
+function attrText(petName) {
+  const attr = getPetAttr(petName);
+  if (!attr) return '';
+  const parts = [];
+  for (const a of ['지', '수', '화', '풍']) {
+    if (attr[a] > 0) parts.push(`${ATTR_ICONS[a]}${attr[a]}`);
+  }
+  return parts.join(' ');
+}
+
+// 속성 상성 배율 계산 (1.0 = 보통, > 1 = 유리, < 1 = 불리)
+// 펫이 여러 속성 섞여있으니 가중평균
+function attrMultiplier(atkPetName, defPetName) {
+  const atkAttr = getPetAttr(atkPetName);
+  const defAttr = getPetAttr(defPetName);
+  if (!atkAttr || !defAttr) return { mult: 1.0, summary: '' };
+
+  // 공격자의 각 속성 → 방어자에게 얼마나 효과적인지
+  let totalAtk = 0, weightedBonus = 0;
+  const detail = [];
+
+  for (const a of ['지', '수', '화', '풍']) {
+    const atkPower = atkAttr[a] || 0;
+    if (atkPower === 0) continue;
+    totalAtk += atkPower;
+
+    // 방어자 각 속성에 대해 상성 체크
+    let bonus = 0;
+    for (const d of ['지', '수', '화', '풍']) {
+      const defPower = defAttr[d] || 0;
+      if (defPower === 0) continue;
+      // a가 d에 강함? → +0.5
+      // d가 a에 강함? → -0.3
+      // 같음 → 0
+      if (ATTR_STRONG_AGAINST[a] === d) {
+        bonus += defPower * 0.05; // 강함 보너스 (방어자 속성 비율만큼)
+        detail.push(`${ATTR_ICONS[a]}>${ATTR_ICONS[d]}`);
+      } else if (ATTR_STRONG_AGAINST[d] === a) {
+        bonus -= defPower * 0.03; // 약함 페널티
+      }
+    }
+    weightedBonus += atkPower * bonus;
+  }
+
+  if (totalAtk === 0) return { mult: 1.0, summary: '' };
+  const mult = 1.0 + weightedBonus / totalAtk;
+  // 합리적 범위 (0.5 ~ 1.8)
+  const clamped = Math.max(0.5, Math.min(1.8, mult));
+
+  let summary = '';
+  if (clamped > 1.15) summary = '🔥 속성 유리!';
+  else if (clamped < 0.85) summary = '❄️ 속성 불리!';
+
+  return { mult: clamped, summary };
+}
+
+// 데미지 계산 (속성 반영)
+function calcDamage(attacker, defender, attrMult) {
+  attrMult = attrMult || 1.0;
+  const raw = (attacker.atk * 0.5 - defender.def * 0.15) * attrMult;
+  const minDmg = Math.max(1, Math.round(attacker.atk * 0.1));
+  let dmg = Math.max(minDmg, Math.round(raw));
+  const variance = 0.75 + Math.random() * 0.5;
+  dmg = Math.max(1, Math.round(dmg * variance));
+  const isCrit = Math.random() < 0.12;
+  if (isCrit) dmg = Math.round(dmg * 1.6);
+  return { dmg, isCrit };
 }
 
 function renderBattleWidget(pets) {
@@ -2140,12 +2256,14 @@ function makeBattlePetCard(entry, side, idx) {
   const rankBadge = entry.rank <= 3
     ? ['🥇','🥈','🥉'][entry.rank - 1]
     : entry.rank + '위';
+  const attrStr = attrText(entry.petName);
   return `
     <div class="battle-pet-pick" data-side="${side}" data-idx="${idx}" onclick="selectBattlePet('${side}', ${idx})">
       <div class="battle-pet-pick-img">${imgHTML}</div>
       <div class="battle-pet-pick-info">
         <div class="battle-pet-pick-name">${entry.petName} <span class="battle-pet-pick-rank">${rankBadge}</span></div>
         <div class="battle-pet-pick-stats">⚔${entry.attack} 🛡${entry.defense} 💨${entry.speed} ❤${entry.exp}</div>
+        ${attrStr ? `<div class="battle-pet-pick-attr">${attrStr}</div>` : ''}
       </div>
     </div>
   `;
@@ -2209,179 +2327,216 @@ async function startBattleNow() {
   }
 
   sfxClick();
-  // 배틀 시작 버튼 잠시 비활성화
-  document.getElementById('battle-start-btn').disabled = true;
-  document.getElementById('battle-start-btn').textContent = '⚔️ 전투 중...';
+  const startBtn = document.getElementById('battle-start-btn');
+  startBtn.disabled = true;
+  startBtn.textContent = '⚔️ 전투 중...';
 
-  await runBattle(me, opp);
-
-  // 다시 활성화
-  document.getElementById('battle-start-btn').disabled = false;
-  document.getElementById('battle-start-btn').textContent = '🥊 다시 배틀!';
-}
-
-// 데미지 계산
-function calcDamage(attacker, defender) {
-  // 기본 데미지 = ATK × 0.5 - DEF × 0.15 (좀 더 공세적)
-  const raw = attacker.atk * 0.5 - defender.def * 0.15;
-  const minDmg = Math.max(1, Math.round(attacker.atk * 0.1));
-  let dmg = Math.max(minDmg, Math.round(raw));
-  // 큰 변동 (±25%) - 운빨 요소
-  const variance = 0.75 + Math.random() * 0.5;
-  dmg = Math.max(1, Math.round(dmg * variance));
-  // 크리티컬 확률 12%
-  const isCrit = Math.random() < 0.12;
-  if (isCrit) dmg = Math.round(dmg * 1.6);
-  return { dmg, isCrit };
+  try {
+    await runBattle(me, opp);
+  } finally {
+    startBtn.disabled = false;
+    startBtn.textContent = '🥊 다시 배틀!';
+  }
 }
 
 // 전투 실행
 async function runBattle(me, opp) {
-  // me/opp는 { petName, rank, attack, defense, speed, exp, level, nickname } 형식
-  const myAtk = me.attack, myDef = me.defense, mySpd = me.speed, myHp = me.exp;
-  const oppAtk = opp.attack, oppDef = opp.defense, oppSpd = opp.speed, oppHp = opp.exp;
+  try {
+    console.log('[Battle] start', me, opp);
+    // me/opp는 { petName, rank, attack, defense, speed, exp, level, nickname } 형식
+    const myAtk = me.attack, myDef = me.defense, mySpd = me.speed, myHp = me.exp;
+    const oppAtk = opp.attack, oppDef = opp.defense, oppSpd = opp.speed, oppHp = opp.exp;
 
-  // 각자 펫 이미지 (서로 다를 수 있음)
-  const myImg = PET_IMAGES[me.petName];
-  const oppImg = PET_IMAGES[opp.petName];
-  const myImgHTML = myImg ? `<img src="${myImg}" alt="${me.petName}">` : '<span style="font-size:32px;">🐾</span>';
-  const oppImgHTML = oppImg ? `<img src="${oppImg}" alt="${opp.petName}">` : '<span style="font-size:32px;">🐾</span>';
-
-  document.getElementById('battle-arena-area').innerHTML = `
-    <div class="battle-arena" id="battle-arena">
-      <div class="battle-vs-row">
-        <div class="battle-fighter" id="fighter-me">
-          <div class="battle-fighter-img" id="my-img">${myImgHTML}</div>
-          <div class="battle-fighter-name">${me.nickname} <span class="battle-fighter-rank">${me.rank}위</span></div>
-          <div class="battle-fighter-nick">${me.petName} · Lv.${me.level} · ⚔${myAtk} 🛡${myDef} 💨${mySpd}</div>
-          <div class="hp-bar-wrap"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%;"></div><div class="hp-text" id="my-hp-text">${myHp} / ${myHp}</div></div>
-        </div>
-        <div class="battle-vs">VS</div>
-        <div class="battle-fighter" id="fighter-opp">
-          <div class="battle-fighter-img" id="opp-img">${oppImgHTML}</div>
-          <div class="battle-fighter-name">${opp.nickname} <span class="battle-fighter-rank">${opp.rank}위</span></div>
-          <div class="battle-fighter-nick">${opp.petName} · Lv.${opp.level} · ⚔${oppAtk} 🛡${oppDef} 💨${oppSpd}</div>
-          <div class="hp-bar-wrap"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;"></div><div class="hp-text" id="opp-hp-text">${oppHp} / ${oppHp}</div></div>
-        </div>
-      </div>
-      <div class="battle-log" id="battle-log"></div>
-    </div>
-  `;
-
-  // arena 스크롤
-  document.getElementById('battle-arena').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-  // 초기 HP
-  let myCurHp = myHp;
-  let oppCurHp = oppHp;
-  const logEl = document.getElementById('battle-log');
-
-  function log(text, cls) {
-    const line = document.createElement('div');
-    line.className = 'battle-log-line' + (cls ? ' ' + cls : '');
-    line.innerHTML = text;
-    logEl.appendChild(line);
-    logEl.scrollTop = logEl.scrollHeight;
-  }
-
-  function updateHpBar(who, cur, max) {
-    const bar = document.getElementById(who + '-hp-bar');
-    const text = document.getElementById(who + '-hp-text');
-    const pct = Math.max(0, cur) / max * 100;
-    bar.style.width = pct + '%';
-    text.textContent = Math.max(0, cur) + ' / ' + max;
-    bar.classList.remove('medium','low','critical');
-    if (pct < 20) bar.classList.add('critical');
-    else if (pct < 40) bar.classList.add('low');
-    else if (pct < 70) bar.classList.add('medium');
-  }
-
-  function showDamagePop(who, dmg, isCrit) {
-    const pop = document.createElement('div');
-    pop.className = 'damage-pop' + (isCrit ? ' crit' : '');
-    pop.textContent = (isCrit ? 'CRIT! ' : '') + '-' + dmg;
-    const imgEl = document.getElementById(who + '-img');
-    const rect = imgEl.getBoundingClientRect();
-    const arenaRect = document.getElementById('battle-arena').getBoundingClientRect();
-    pop.style.left = (rect.left - arenaRect.left + rect.width / 2 - 20) + 'px';
-    pop.style.top = (rect.top - arenaRect.top - 10) + 'px';
-    document.getElementById('battle-arena').appendChild(pop);
-    setTimeout(() => pop.remove(), 1000);
-  }
-
-  function animateAttack(attacker, defender) {
-    document.getElementById(attacker + '-img').classList.add('attacking');
-    document.getElementById(defender + '-img').classList.add('hit');
-    setTimeout(() => {
-      document.getElementById(attacker + '-img').classList.remove('attacking');
-      document.getElementById(defender + '-img').classList.remove('hit');
-    }, 400);
-  }
-
-  // 시작 로그
-  log(`⚔️ <strong>${me.petName}</strong> vs <strong>${opp.petName}</strong> 대결 시작!`, 'win');
-  log(`👤 <strong>${me.nickname}</strong>의 ${me.petName} (${me.rank}위) vs <strong>${opp.nickname}</strong>의 ${opp.petName} (${opp.rank}위)`);
-
-  // 선공권: 순발 빠른 쪽
-  const myFirst = mySpd >= oppSpd;
-  if (mySpd === oppSpd) {
-    log(`⚡ 순발 동률 (${mySpd}) - 운으로 선공 결정!`);
-  } else {
-    log(`⚡ ${myFirst ? me.nickname : opp.nickname}이(가) 더 빨라요! (${myFirst ? mySpd : oppSpd} vs ${myFirst ? oppSpd : mySpd}) 선공권 획득`);
-  }
-
-  await sleep(800);
-
-  const meObj = { atk: myAtk, def: myDef, spd: mySpd, hp: myHp };
-  const oppObj = { atk: oppAtk, def: oppDef, spd: oppSpd, hp: oppHp };
-
-  let turn = 0;
-  const MAX_TURNS = 30;
-
-  while (myCurHp > 0 && oppCurHp > 0 && turn < MAX_TURNS) {
-    turn++;
-    const myTurn = (turn % 2 === 1) ? myFirst : !myFirst;
-
-    if (myTurn) {
-      const { dmg, isCrit } = calcDamage(meObj, oppObj);
-      oppCurHp -= dmg;
-      animateAttack('me', 'opp');
-      sfxClick();
-      if (isCrit) sfxAch();
-      showDamagePop('opp', dmg, isCrit);
-      const critTag = isCrit ? '⭐<strong>크리티컬!</strong> ' : '';
-      log(`<strong>턴 ${turn}</strong> · ${critTag}${me.nickname}의 공격 → <strong>${dmg}</strong> 데미지 (${opp.nickname} HP ${Math.max(0,oppCurHp)})`, isCrit ? 'crit' : '');
-      updateHpBar('opp', oppCurHp, oppHp);
-    } else {
-      const { dmg, isCrit } = calcDamage(oppObj, meObj);
-      myCurHp -= dmg;
-      animateAttack('opp', 'me');
-      sfxClick();
-      showDamagePop('me', dmg, isCrit);
-      const critTag = isCrit ? '💢<strong>크리티컬!</strong> ' : '';
-      log(`<strong>턴 ${turn}</strong> · ${critTag}${opp.nickname}의 공격 → <strong>${dmg}</strong> 데미지 (${me.nickname} HP ${Math.max(0,myCurHp)})`, isCrit ? 'crit' : '');
-      updateHpBar('me', myCurHp, myHp);
+    if (!myHp || !oppHp || myHp < 1 || oppHp < 1) {
+      throw new Error('HP 값이 잘못됨: myHp=' + myHp + ' oppHp=' + oppHp);
     }
-    await sleep(600);
-  }
 
-  await sleep(400);
+    // 각자 펫 이미지 (서로 다를 수 있음)
+    const myImg = PET_IMAGES[me.petName];
+    const oppImg = PET_IMAGES[opp.petName];
+    const myImgHTML = myImg ? `<img src="${myImg}" alt="${me.petName}">` : '<span style="font-size:32px;">🐾</span>';
+    const oppImgHTML = oppImg ? `<img src="${oppImg}" alt="${opp.petName}">` : '<span style="font-size:32px;">🐾</span>';
 
-  // 결과
-  const win = myCurHp > 0 && oppCurHp <= 0;
-  const draw = myCurHp > 0 && oppCurHp > 0 && turn >= MAX_TURNS;
+    document.getElementById('battle-arena-area').innerHTML = `
+      <div class="battle-arena" id="battle-arena">
+        <div class="battle-vs-row">
+          <div class="battle-fighter" id="fighter-me">
+            <div class="battle-fighter-img" id="my-img">${myImgHTML}</div>
+            <div class="battle-fighter-name">${me.nickname} <span class="battle-fighter-rank">${me.rank}위</span></div>
+            <div class="battle-fighter-nick">${me.petName} · Lv.${me.level}</div>
+            <div class="battle-fighter-stats">⚔${myAtk} 🛡${myDef} 💨${mySpd} ❤${myHp}</div>
+            ${attrText(me.petName) ? `<div class="battle-fighter-attr">${attrText(me.petName)}</div>` : ''}
+            <div class="hp-bar-wrap"><div class="hp-bar-fill" id="my-hp-bar" style="width:100%;"></div><div class="hp-text" id="my-hp-text">${myHp} / ${myHp}</div></div>
+          </div>
+          <div class="battle-vs">VS</div>
+          <div class="battle-fighter" id="fighter-opp">
+            <div class="battle-fighter-img" id="opp-img">${oppImgHTML}</div>
+            <div class="battle-fighter-name">${opp.nickname} <span class="battle-fighter-rank">${opp.rank}위</span></div>
+            <div class="battle-fighter-nick">${opp.petName} · Lv.${opp.level}</div>
+            <div class="battle-fighter-stats">⚔${oppAtk} 🛡${oppDef} 💨${oppSpd} ❤${oppHp}</div>
+            ${attrText(opp.petName) ? `<div class="battle-fighter-attr">${attrText(opp.petName)}</div>` : ''}
+            <div class="hp-bar-wrap"><div class="hp-bar-fill" id="opp-hp-bar" style="width:100%;"></div><div class="hp-text" id="opp-hp-text">${oppHp} / ${oppHp}</div></div>
+          </div>
+        </div>
+        <div class="battle-log" id="battle-log"></div>
+      </div>
+    `;
 
-  if (draw) {
-    log(`⏱️ <strong>${MAX_TURNS}턴 경과! 무승부!</strong>`, 'win');
-    showBattleResult('draw', me, opp);
-  } else if (win) {
-    log(`🏆 <strong>승리! ${opp.nickname}을(를) 꺾었어요!</strong>`, 'win');
-    fireConfetti({ count: 100, originY: window.innerHeight / 2 });
-    sfxAch();
-    setTimeout(() => showBattleResult('win', me, opp), 600);
-  } else {
-    log(`💔 <strong>패배... ${opp.nickname}이(가) 너무 강했어요</strong>`, 'lose');
-    setTimeout(() => showBattleResult('lose', me, opp), 600);
+    // arena 스크롤
+    setTimeout(() => {
+      const arena = document.getElementById('battle-arena');
+      if (arena) arena.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+
+    // 속성 상성 계산
+    const myToOppAttr = attrMultiplier(me.petName, opp.petName);
+    const oppToMyAttr = attrMultiplier(opp.petName, me.petName);
+    console.log('[Battle] attr', myToOppAttr, oppToMyAttr);
+
+    // 초기 HP
+    let myCurHp = myHp;
+    let oppCurHp = oppHp;
+    const logEl = document.getElementById('battle-log');
+
+    function log(text, cls) {
+      const line = document.createElement('div');
+      line.className = 'battle-log-line' + (cls ? ' ' + cls : '');
+      line.innerHTML = text;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function updateHpBar(who, cur, max) {
+      const bar = document.getElementById(who + '-hp-bar');
+      const text = document.getElementById(who + '-hp-text');
+      if (!bar || !text) return;
+      const pct = Math.max(0, cur) / max * 100;
+      bar.style.width = pct + '%';
+      text.textContent = Math.max(0, cur) + ' / ' + max;
+      bar.classList.remove('medium','low','critical');
+      if (pct < 20) bar.classList.add('critical');
+      else if (pct < 40) bar.classList.add('low');
+      else if (pct < 70) bar.classList.add('medium');
+    }
+
+    function showDamagePop(who, dmg, isCrit) {
+      try {
+        const pop = document.createElement('div');
+        pop.className = 'damage-pop' + (isCrit ? ' crit' : '');
+        pop.textContent = (isCrit ? 'CRIT! ' : '') + '-' + dmg;
+        const imgEl = document.getElementById(who + '-img');
+        const arenaEl = document.getElementById('battle-arena');
+        if (!imgEl || !arenaEl) return;
+        const rect = imgEl.getBoundingClientRect();
+        const arenaRect = arenaEl.getBoundingClientRect();
+        pop.style.left = (rect.left - arenaRect.left + rect.width / 2 - 20) + 'px';
+        pop.style.top = (rect.top - arenaRect.top - 10) + 'px';
+        arenaEl.appendChild(pop);
+        setTimeout(() => pop.remove(), 1000);
+      } catch(e) { console.warn('damagePop err', e); }
+    }
+
+    function animateAttack(attacker, defender) {
+      const aEl = document.getElementById(attacker + '-img');
+      const dEl = document.getElementById(defender + '-img');
+      if (aEl) aEl.classList.add('attacking');
+      if (dEl) dEl.classList.add('hit');
+      setTimeout(() => {
+        if (aEl) aEl.classList.remove('attacking');
+        if (dEl) dEl.classList.remove('hit');
+      }, 400);
+    }
+
+    // 시작 로그
+    log(`⚔️ <strong>${me.petName}</strong> vs <strong>${opp.petName}</strong> 대결 시작!`, 'win');
+    log(`👤 <strong>${me.nickname}</strong>의 ${me.petName} (${me.rank}위) vs <strong>${opp.nickname}</strong>의 ${opp.petName} (${opp.rank}위)`);
+
+    // 속성 정보
+    const myAttrStr = attrText(me.petName);
+    const oppAttrStr = attrText(opp.petName);
+    if (myAttrStr || oppAttrStr) {
+      log(`🌐 속성 - ${me.petName}: ${myAttrStr || '없음'} / ${opp.petName}: ${oppAttrStr || '없음'}`);
+    }
+    if (myToOppAttr.summary) {
+      log(`<strong>${me.nickname}</strong> → ${myToOppAttr.summary} (×${myToOppAttr.mult.toFixed(2)})`, myToOppAttr.mult > 1 ? 'crit' : 'lose');
+    }
+    if (oppToMyAttr.summary) {
+      log(`<strong>${opp.nickname}</strong> → ${oppToMyAttr.summary} (×${oppToMyAttr.mult.toFixed(2)})`, oppToMyAttr.mult > 1 ? 'crit' : 'lose');
+    }
+
+    // 선공권: 순발 빠른 쪽
+    const myFirst = mySpd >= oppSpd;
+    if (mySpd === oppSpd) {
+      log(`⚡ 순발 동률 (${mySpd}) - 운으로 선공 결정!`);
+    } else {
+      log(`⚡ ${myFirst ? me.nickname : opp.nickname}이(가) 더 빨라요! (${myFirst ? mySpd : oppSpd} vs ${myFirst ? oppSpd : mySpd}) 선공권 획득`);
+    }
+
+    await sleep(800);
+    console.log('[Battle] entering main loop');
+
+    const meObj = { atk: myAtk, def: myDef, spd: mySpd, hp: myHp };
+    const oppObj = { atk: oppAtk, def: oppDef, spd: oppSpd, hp: oppHp };
+
+    let turn = 0;
+    const MAX_TURNS = 30;
+
+    while (myCurHp > 0 && oppCurHp > 0 && turn < MAX_TURNS) {
+      turn++;
+      const myTurn = (turn % 2 === 1) ? myFirst : !myFirst;
+
+      if (myTurn) {
+        const { dmg, isCrit } = calcDamage(meObj, oppObj, myToOppAttr.mult);
+        oppCurHp -= dmg;
+        animateAttack('me', 'opp');
+        sfxClick();
+        if (isCrit) sfxAch();
+        showDamagePop('opp', dmg, isCrit);
+        const critTag = isCrit ? '⭐<strong>크리티컬!</strong> ' : '';
+        log(`<strong>턴 ${turn}</strong> · ${critTag}${me.nickname}의 공격 → <strong>${dmg}</strong> 데미지 (${opp.nickname} HP ${Math.max(0,oppCurHp)})`, isCrit ? 'crit' : '');
+        updateHpBar('opp', oppCurHp, oppHp);
+      } else {
+        const { dmg, isCrit } = calcDamage(oppObj, meObj, oppToMyAttr.mult);
+        myCurHp -= dmg;
+        animateAttack('opp', 'me');
+        sfxClick();
+        showDamagePop('me', dmg, isCrit);
+        const critTag = isCrit ? '💢<strong>크리티컬!</strong> ' : '';
+        log(`<strong>턴 ${turn}</strong> · ${critTag}${opp.nickname}의 공격 → <strong>${dmg}</strong> 데미지 (${me.nickname} HP ${Math.max(0,myCurHp)})`, isCrit ? 'crit' : '');
+        updateHpBar('me', myCurHp, myHp);
+      }
+      await sleep(600);
+    }
+
+    await sleep(400);
+    console.log('[Battle] ended', { myCurHp, oppCurHp, turn });
+
+    // 결과
+    const win = myCurHp > 0 && oppCurHp <= 0;
+    const draw = myCurHp > 0 && oppCurHp > 0 && turn >= MAX_TURNS;
+
+    if (draw) {
+      log(`⏱️ <strong>${MAX_TURNS}턴 경과! 무승부!</strong>`, 'win');
+      showBattleResult('draw', me, opp);
+    } else if (win) {
+      log(`🏆 <strong>승리! ${opp.nickname}을(를) 꺾었어요!</strong>`, 'win');
+      fireConfetti({ count: 100, originY: window.innerHeight / 2 });
+      sfxAch();
+      setTimeout(() => showBattleResult('win', me, opp), 600);
+    } else {
+      log(`💔 <strong>패배... ${opp.nickname}이(가) 너무 강했어요</strong>`, 'lose');
+      setTimeout(() => showBattleResult('lose', me, opp), 600);
+    }
+  } catch(err) {
+    console.error('[Battle] ERROR', err);
+    const logEl = document.getElementById('battle-log');
+    if (logEl) {
+      const errLine = document.createElement('div');
+      errLine.className = 'battle-log-line lose';
+      errLine.textContent = '❌ 전투 에러: ' + err.message;
+      logEl.appendChild(errLine);
+    }
+    showToast('❌ 전투 에러: ' + err.message);
   }
 }
 
@@ -2489,15 +2644,21 @@ async function loadPetImages() {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const pets = await r.json();
     const map = {};
-    // pet_info_data.json은 배열이고, 각 항목이 { name, image, ... }
+    const infoMap = {};
+    // pet_info_data.json은 배열이고, 각 항목이 { name, image, attr, ... }
     (Array.isArray(pets) ? pets : []).forEach(p => {
-      if (p && p.name && p.image) map[p.name] = p.image;
+      if (p && p.name) {
+        if (p.image) map[p.name] = p.image;
+        infoMap[p.name] = p; // 속성 + 기타 정보 같이 저장
+      }
     });
     PET_IMAGES = map;
-    console.log('펫 이미지 로드:', Object.keys(PET_IMAGES).length, '마리');
+    _petInfoMap = infoMap;
+    console.log('펫 이미지 로드:', Object.keys(PET_IMAGES).length, '마리, 속성정보:', Object.keys(_petInfoMap).length);
   } catch(e) {
     console.warn('pet_info_data.json 로드 실패:', e);
     PET_IMAGES = {};
+    _petInfoMap = {};
   }
 }
 
