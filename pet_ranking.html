@@ -1272,6 +1272,18 @@
       font-family: 'Nunito', sans-serif;
       margin-left: 2px;
     }
+    .rebirth-badge {
+      display: inline-block;
+      font-size: 9px; font-weight: 900;
+      background: linear-gradient(135deg, #ff7a8a, #f5a623);
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 99px;
+      margin-left: 4px;
+      vertical-align: middle;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 4px rgba(245,122,138,0.3);
+    }
     .battle-pet-pick-nick {
       font-size: 11px; color: var(--t3); font-weight: 700;
       margin-bottom: 2px;
@@ -2225,18 +2237,23 @@ function renderBattleWidget(pets) {
     console.log('[Battle] in progress, skipping renderBattleWidget');
     return;
   }
-  // 랭킹 데이터 있는 펫만
-  _battlePets = pets.filter(p => (p.general_ranking || []).length > 0)
-                    .sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  // 랭킹 데이터 있는 펫만 (일반 또는 환생 둘 중 하나라도 있으면 OK)
+  _battlePets = pets.filter(p =>
+    (p.general_ranking && p.general_ranking.length > 0) ||
+    (p.rebirth_ranking && p.rebirth_ranking.length > 0)
+  ).sort((a, b) => a.name.localeCompare(b.name, 'ko'));
   if (_battlePets.length === 0) {
     document.getElementById('battle-container').innerHTML = '';
     return;
   }
 
-  // 모든 닉네임 목록 (본캐 기준 정렬)
+  // 모든 닉네임 목록 (본캐 기준 정렬) - 일반 + 환생 둘 다
   const allNicks = new Set();
   _battlePets.forEach(pet => {
     (pet.general_ranking || []).forEach(r => {
+      if (r.nickname) allNicks.add(r.nickname);
+    });
+    (pet.rebirth_ranking || []).forEach(r => {
       if (r.nickname) allNicks.add(r.nickname);
     });
   });
@@ -2416,15 +2433,43 @@ function onBattleNickChange(side) {
 
   // 본캐로 정규화
   const mainName = aliasToMain[nick] || nick;
-  // 이 유저가 보유한 펫 + 랭킹 데이터 모음
+  // 이 유저가 보유한 펫 + 랭킹 데이터 모음 (일반 + 환생 모두)
   const entries = [];
+  const seenKey = new Set(); // 중복 방지 (같은 펫에 일반+환생 둘 다 있으면)
   _battlePets.forEach(pet => {
+    // 일반 랭킹
     (pet.general_ranking || []).forEach((r, idx) => {
       if (!r.nickname) return;
       const recMain = aliasToMain[r.nickname] || r.nickname;
       if (recMain === mainName) {
+        const key = pet.name + '|일반|' + r.nickname;
+        if (seenKey.has(key)) return;
+        seenKey.add(key);
         entries.push({
           petName: pet.name,
+          rankType: '일반',
+          rank: idx + 1,
+          attack: parseStat(r.attack),
+          defense: parseStat(r.defense),
+          speed: parseStat(r.speed),
+          exp: parseStat(r.exp),
+          level: parseStat(r.level),
+          nickname: r.nickname,
+          score: r.score,
+        });
+      }
+    });
+    // 환생 랭킹
+    (pet.rebirth_ranking || []).forEach((r, idx) => {
+      if (!r.nickname) return;
+      const recMain = aliasToMain[r.nickname] || r.nickname;
+      if (recMain === mainName) {
+        const key = pet.name + '|환생|' + r.nickname;
+        if (seenKey.has(key)) return;
+        seenKey.add(key);
+        entries.push({
+          petName: pet.name,
+          rankType: '환생',
           rank: idx + 1,
           attack: parseStat(r.attack),
           defense: parseStat(r.defense),
@@ -2491,11 +2536,12 @@ function makeBattlePetCard(entry, side, idx) {
     ? ['🥇','🥈','🥉'][entry.rank - 1]
     : entry.rank + '위';
   const attrStr = attrText(entry.petName);
+  const rebirthBadge = entry.rankType === '환생' ? '<span class="rebirth-badge">🌟환생</span>' : '';
   return `
     <div class="battle-pet-pick" data-side="${side}" data-idx="${idx}" onclick="selectBattlePet('${side}', ${idx})">
       <div class="battle-pet-pick-img">${imgHTML}</div>
       <div class="battle-pet-pick-info">
-        <div class="battle-pet-pick-name">${entry.petName} <span class="battle-pet-pick-rank">${rankBadge}</span></div>
+        <div class="battle-pet-pick-name">${entry.petName} <span class="battle-pet-pick-rank">${rankBadge}</span>${rebirthBadge}</div>
         <div class="battle-pet-pick-stats">⚔${entry.attack} 🛡${entry.defense} 💨${entry.speed} ❤${entry.exp}</div>
         ${attrStr ? `<div class="battle-pet-pick-attr">${attrStr}</div>` : ''}
       </div>
@@ -2598,7 +2644,7 @@ async function runBattle(me, opp) {
         <div class="battle-vs-row">
           <div class="battle-fighter" id="fighter-me">
             <div class="battle-fighter-img" id="my-img">${myImgHTML}</div>
-            <div class="battle-fighter-name">${me.nickname} <span class="battle-fighter-rank">${me.rank}위</span></div>
+            <div class="battle-fighter-name">${me.nickname} <span class="battle-fighter-rank">${me.rank}위</span>${me.rankType === '환생' ? '<span class="rebirth-badge">🌟환생</span>' : ''}</div>
             <div class="battle-fighter-nick">${me.petName} · Lv.${me.level}</div>
             <div class="battle-fighter-stats">⚔${myAtk} 🛡${myDef} 💨${mySpd}</div>
             ${attrText(me.petName) ? `<div class="battle-fighter-attr">${attrText(me.petName)}</div>` : ''}
@@ -2607,7 +2653,7 @@ async function runBattle(me, opp) {
           <div class="battle-vs">VS</div>
           <div class="battle-fighter" id="fighter-opp">
             <div class="battle-fighter-img" id="opp-img">${oppImgHTML}</div>
-            <div class="battle-fighter-name">${opp.nickname} <span class="battle-fighter-rank">${opp.rank}위</span></div>
+            <div class="battle-fighter-name">${opp.nickname} <span class="battle-fighter-rank">${opp.rank}위</span>${opp.rankType === '환생' ? '<span class="rebirth-badge">🌟환생</span>' : ''}</div>
             <div class="battle-fighter-nick">${opp.petName} · Lv.${opp.level}</div>
             <div class="battle-fighter-stats">⚔${oppAtk} 🛡${oppDef} 💨${oppSpd}</div>
             ${attrText(opp.petName) ? `<div class="battle-fighter-attr">${attrText(opp.petName)}</div>` : ''}
