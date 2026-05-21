@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🦇 펫 서바이벌</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;800;900&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a1a;
+    --panel: rgba(20, 20, 40, 0.85);
+    --border: rgba(155, 135, 245, 0.4);
+    --accent: #9b87f5;
+    --accent2: #f587b8;
+    --gold: #fdd835;
+    --hp: #4caf50;
+    --hp-low: #ff5252;
+    --exp: #87d4f5;
+    --text: #ffffff;
+    --text-dim: #b0aedd;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  /* ─── 게임 캔버스 ─── */
+  #game-canvas {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at center, #1a1a3a 0%, #0a0a1a 70%, #000 100%);
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+  }
+
+  /* ─── 메뉴 화면 ─── */
+  #menu-screen {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(155,135,245,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 80%, rgba(245,135,184,0.15) 0%, transparent 50%),
+      linear-gradient(135deg, #0a0a1a, #1a1a3a);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  #menu-screen.hide { display: none; }
+
+  .game-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff7a8a, #f5a623, #fdd835, #87f5c0, #87d4f5, #9b87f5);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleShimmer 4s linear infinite;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: -2px;
+    filter: drop-shadow(0 4px 24px rgba(155,135,245,0.5));
+  }
+  .game-subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 700;
+    margin-bottom: 32px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  @keyframes titleShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  /* 펫 선택 영역 */
+  .pet-select-section {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    max-width: 720px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    margin-bottom: 16px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+  }
+  .pet-select-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .pet-search {
+    width: 100%;
+    padding: 12px 18px;
+    border: 2px solid var(--border);
+    border-radius: 99px;
+    background: rgba(0,0,0,0.4);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .pet-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(155,135,245,0.2); }
+  .pet-search::placeholder { color: var(--text-dim); }
+
+  .pet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 4px;
+  }
+  .pet-grid::-webkit-scrollbar { width: 6px; }
+  .pet-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 99px; }
+  .pet-grid::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+  .pet-card {
+    background: rgba(40,40,80,0.5);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .pet-card:hover {
+    background: rgba(80,80,150,0.5);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .pet-card.selected {
+    background: linear-gradient(135deg, rgba(155,135,245,0.4), rgba(245,135,184,0.4));
+    border-color: var(--accent2);
+    box-shadow: 0 4px 20px rgba(245,135,184,0.4);
+  }
+  .pet-card-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    margin: 0 auto 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .pet-card-img img { width: 75%; height: 75%; object-fit: contain; }
+  .pet-card-name { font-size: 11px; font-weight: 800; line-height: 1.2; }
+  .pet-card-stats { font-size: 9px; color: var(--text-dim); font-family: 'Nunito', sans-serif; margin-top: 2px; }
+
+  .game-start-btn {
+    background: linear-gradient(135deg, #ff7a8a, #f5a623);
+    color: #fff;
+    border: 3px solid #fff;
+    border-radius: 99px;
+    padding: 16px 48px;
+    font-size: 20px;
+    font-weight: 900;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(245,122,138,0.5);
+    transition: all .2s cubic-bezier(.34,1.56,.64,1);
+    letter-spacing: 2px;
+    margin-top: 8px;
+  }
+  .game-start-btn:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 12px 32px rgba(245,122,138,0.6);
+  }
+  .game-start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .high-score {
+    margin-top: 14px;
+    color: var(--gold);
+    font-weight: 800;
+    font-size: 14px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ─── 게임 HUD ─── */
+  #game-hud {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 16px 20px;
+    z-index: 50;
+    pointer-events: none;
+  }
+  .hud-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .hud-stat-box {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-weight: 800;
+    backdrop-filter: blur(8px);
+    pointer-events: auto;
+  }
+  .hud-time {
+    font-size: 22px;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text);
+    letter-spacing: 2px;
+  }
+  .hud-stats { display: flex; gap: 8px; }
+  .hud-level {
+    color: var(--gold);
+    font-size: 16px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .hud-kills {
+    color: #ff7a8a;
+    font-size: 16px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  .hud-bars {
+    margin-top: 12px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hud-bar-wrap {
+    background: var(--panel);
+    border: 1.5px solid var(--border);
+    border-radius: 99px;
+    height: 18px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+  }
+  .hud-bar-fill {
+    height: 100%;
+    transition: width .3s ease;
+    border-radius: 99px;
+  }
+  .hud-bar-fill.hp { background: linear-gradient(90deg, #4caf50, #87f5c0); box-shadow: 0 0 12px rgba(76,175,80,0.5); }
+  .hud-bar-fill.hp.low { background: linear-gradient(90deg, #ff5252, #f5a623); animation: lowHp 0.6s ease infinite; }
+  @keyframes lowHp { 50% { opacity: 0.6; } }
+  .hud-bar-fill.exp { background: linear-gradient(90deg, #87d4f5, #9b87f5); box-shadow: 0 0 12px rgba(135,212,245,0.5); }
+  .hud-bar-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    font-family: 'Nunito', sans-serif;
+    pointer-events: none;
+  }
+
+  .weapon-icons {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 50;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 90%;
+  }
+  .weapon-icon {
+    background: var(--panel);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 800;
+    backdrop-filter: blur(8px);
+  }
+  .weapon-icon-emoji { font-size: 18px; }
+  .weapon-icon-lv {
+    background: var(--gold);
+    color: #5a3010;
+    padding: 1px 6px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ─── 가상 조이스틱 (모바일) ─── */
+  #joystick-zone {
+    position: fixed;
+    bottom: 80px;
+    left: 30px;
+    width: 140px;
+    height: 140px;
+    z-index: 60;
+    pointer-events: auto;
+    display: none;
+  }
+  #joystick-zone.show { display: block; }
+  .joystick-base {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    backdrop-filter: blur(4px);
+  }
+  .joystick-knob {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(155,135,245,0.6);
+    transition: transform 0.05s linear;
+    pointer-events: none;
+  }
+
+  /* ─── 레벨업 모달 ─── */
+  #levelup-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+  #levelup-modal.show { display: flex; }
+  .levelup-card {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(253,216,53,0.3), transparent 60%),
+      linear-gradient(135deg, #1a1a3a, #2a2a4a);
+    border: 3px solid var(--gold);
+    border-radius: 24px;
+    padding: 30px 24px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(253,216,53,0.4);
+    text-align: center;
+  }
+  .levelup-title {
+    font-size: 32px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fdd835, #f5a623);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    animation: levelUpPulse 1s ease-in-out infinite;
+  }
+  @keyframes levelUpPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  .levelup-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .upgrade-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 600px) {
+    .upgrade-options { grid-template-columns: 1fr 1fr 1fr; }
+  }
+  .upgrade-option {
+    background: rgba(40,40,80,0.6);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 12px;
+    cursor: pointer;
+    transition: all .2s cubic-bezier(.34,1.56,.64,1);
+    text-align: center;
+  }
+  .upgrade-option:hover {
+    transform: translateY(-4px) scale(1.03);
+    border-color: var(--gold);
+    background: rgba(60,60,100,0.7);
+    box-shadow: 0 8px 24px rgba(253,216,53,0.3);
+  }
+  .upgrade-option.weapon { border-color: rgba(245,135,184,0.5); }
+  .upgrade-option.weapon:hover { border-color: var(--accent2); }
+  .upgrade-option.new { border-color: rgba(253,216,53,0.6); background: rgba(80,60,20,0.4); }
+  .upgrade-icon {
+    font-size: 40px;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  }
+  .upgrade-name {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .upgrade-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .upgrade-lv-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #5a3010;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 1px 8px;
+    border-radius: 99px;
+    margin-top: 4px;
+    font-family: 'Nunito', sans-serif;
+  }
+  .upgrade-new-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 1px 8px;
+    border-radius: 99px;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* ─── 일시정지/게임오버 ─── */
+  #pause-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--panel);
+    border: 2px solid var(--border);
+    color: var(--text);
+    font-size: 16px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    z-index: 55;
+    display: none;
+  }
+  #pause-btn.show { display: flex; align-items: center; justify-content: center; }
+
+  #gameover-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 250;
+    padding: 20px;
+  }
+  #gameover-modal.show { display: flex; }
+  .gameover-card {
+    background:
+      radial-gradient(circle at 50% 0%, rgba(255,82,82,0.3), transparent 60%),
+      linear-gradient(135deg, #1a1a3a, #2a1a2a);
+    border: 3px solid #ff5252;
+    border-radius: 24px;
+    padding: 36px 28px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(255,82,82,0.4);
+    text-align: center;
+  }
+  .gameover-emoji { font-size: 64px; margin-bottom: 12px; }
+  .gameover-title {
+    font-size: 36px;
+    font-weight: 900;
+    color: #ff5252;
+    margin-bottom: 8px;
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: -1px;
+  }
+  .gameover-stats {
+    background: rgba(0,0,0,0.4);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .gameover-stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .gameover-stat-row:last-child { border-bottom: none; }
+  .gameover-stat-label { color: var(--text-dim); font-weight: 700; }
+  .gameover-stat-val { color: var(--text); font-weight: 900; font-family: 'Nunito', sans-serif; }
+  .gameover-stat-val.gold { color: var(--gold); }
+  .gameover-stat-val.new-record {
+    color: var(--gold);
+    animation: levelUpPulse 1s ease infinite;
+  }
+  .gameover-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .gameover-btn {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid var(--border);
+    border-radius: 99px;
+    background: rgba(40,40,80,0.6);
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all .2s;
+  }
+  .gameover-btn:hover { background: rgba(80,80,150,0.8); border-color: var(--accent); }
+  .gameover-btn.primary {
+    background: linear-gradient(135deg, #ff7a8a, #f5a623);
+    border-color: transparent;
+  }
+  .gameover-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245,122,138,0.5);
+  }
+
+  /* ─── 데미지 텍스트 / 이펙트 ─── */
+  .floating-text {
+    position: fixed;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    pointer-events: none;
+    z-index: 40;
+    animation: floatUp 0.8s ease-out forwards;
+    text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(0.5); opacity: 1; }
+    20% { transform: translateY(-15px) scale(1.3); opacity: 1; }
+    100% { transform: translateY(-50px) scale(0.9); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<!-- 게임 캔버스 -->
+<canvas id="game-canvas"></canvas>
+
+<!-- 메뉴 화면 -->
+<div id="menu-screen">
+  <div class="game-title">🦇 펫 서바이벌</div>
+  <div class="game-subtitle">SURVIVE THE WAVES OF WILD PETS</div>
+
+  <div class="pet-select-section">
+    <div class="pet-select-title">🐾 펫을 선택하세요</div>
+    <input type="text" class="pet-search" id="pet-search" placeholder="펫 이름 검색...">
+    <div class="pet-grid" id="pet-grid"></div>
+  </div>
+
+  <button class="game-start-btn" id="start-btn" onclick="startGame()" disabled>⚔️ 게임 시작</button>
+  <div class="high-score" id="high-score">🏆 최고 기록: -</div>
+</div>
+
+<!-- 게임 HUD -->
+<div id="game-hud" style="display:none;">
+  <div class="hud-top">
+    <div class="hud-stat-box hud-time" id="hud-time">00:00</div>
+    <div class="hud-stats">
+      <div class="hud-stat-box hud-level" id="hud-level">Lv.1</div>
+      <div class="hud-stat-box hud-kills" id="hud-kills">💀 0</div>
+    </div>
+  </div>
+  <div class="hud-bars">
+    <div class="hud-bar-wrap">
+      <div class="hud-bar-fill hp" id="hp-bar" style="width:100%"></div>
+      <div class="hud-bar-text" id="hp-text">100 / 100</div>
+    </div>
+    <div class="hud-bar-wrap" style="height:10px;">
+      <div class="hud-bar-fill exp" id="exp-bar" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 무기 아이콘 -->
+<div class="weapon-icons" id="weapon-icons" style="display:none;"></div>
+
+<!-- 일시정지 버튼 -->
+<button id="pause-btn" onclick="togglePause()">⏸</button>
+
+<!-- 가상 조이스틱 (모바일) -->
+<div id="joystick-zone">
+  <div class="joystick-base"></div>
+  <div class="joystick-knob" id="joystick-knob"></div>
+</div>
+
+<!-- 레벨업 모달 -->
+<div id="levelup-modal">
+  <div class="levelup-card">
+    <div class="levelup-title">⚡ LEVEL UP!</div>
+    <div class="levelup-sub" id="levelup-sub">강화할 능력을 선택하세요</div>
+    <div class="upgrade-options" id="upgrade-options"></div>
+  </div>
+</div>
+
+<!-- 게임오버 모달 -->
+<div id="gameover-modal">
+  <div class="gameover-card">
+    <div class="gameover-emoji">💀</div>
+    <div class="gameover-title">GAME OVER</div>
+    <div class="gameover-stats" id="gameover-stats"></div>
+    <div class="gameover-buttons">
+      <button class="gameover-btn" onclick="goToMenu()">🏠 메뉴로</button>
+      <button class="gameover-btn primary" onclick="restartGame()">🔄 다시 시작</button>
+    </div>
+  </div>
+</div>
+
+<script src="pet_survival_game.js"></script>
+</body>
+</html>
