@@ -1108,6 +1108,49 @@
       margin-bottom: 14px;
     }
 
+    /* 닉네임 자동완성 */
+    .nick-autocomplete-wrap {
+      position: relative;
+    }
+    .nick-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0; right: 0;
+      background: var(--white);
+      border: 2px solid var(--a1);
+      border-radius: 14px;
+      max-height: 280px;
+      overflow-y: auto;
+      box-shadow: 0 8px 24px rgba(155,135,245,0.25);
+      z-index: 100;
+      margin-top: 4px;
+      display: none;
+    }
+    [data-theme="dark"] .nick-suggestions { background:#1f1e33; border-color:var(--a1); }
+    .nick-suggestion-item {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--t1);
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: background .15s;
+    }
+    .nick-suggestion-item:last-child { border-bottom: none; }
+    .nick-suggestion-item:hover {
+      background: linear-gradient(135deg, #fff0f8, #f8f0ff);
+      color: var(--a1);
+    }
+    [data-theme="dark"] .nick-suggestion-item { border-color:#3a3860; color:#e4e2ff; }
+    [data-theme="dark"] .nick-suggestion-item:hover { background:#27263e; color:var(--a1); }
+    .nick-suggestion-sub {
+      font-size: 11px;
+      color: var(--t3);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
     /* 단계 표시 */
     .battle-step { margin-bottom: 14px; }
     .battle-step-label {
@@ -2109,7 +2152,8 @@ function renderBattleWidget(pets) {
     catch(e) { return {}; }
   })();
 
-  const nickOptions = sortedNicks.map(n => `<option value="${n}">${n}</option>`).join('');
+  // 전역에 닉네임 목록 저장 (자동완성용)
+  window._allBattleNicks = sortedNicks;
 
   document.getElementById('battle-container').innerHTML = `
     <div class="battle-card">
@@ -2124,9 +2168,16 @@ function renderBattleWidget(pets) {
         <div class="battle-col battle-col-my">
           <div class="battle-step">
             <div class="battle-step-label">👤 1. 내 닉네임</div>
-            <input list="battle-nick-list" id="battle-my-nick" class="battle-pet-select"
-                   placeholder="닉네임 입력 (본캐/부캐)"
-                   oninput="onBattleNickChange('my')" value="${saved.myNick || ''}">
+            <div class="nick-autocomplete-wrap">
+              <input id="battle-my-nick" class="battle-pet-select"
+                     placeholder="닉네임 입력 (1글자만 쳐도 OK)"
+                     autocomplete="off"
+                     oninput="onNickInput('my')"
+                     onfocus="onNickInput('my')"
+                     onblur="onNickBlur('my')"
+                     value="${saved.myNick || ''}">
+              <div class="nick-suggestions" id="battle-my-nick-suggestions"></div>
+            </div>
           </div>
           <div class="battle-step" id="battle-step-mypet" style="display:none;">
             <div class="battle-step-label">🐾 2. 내 펫 선택</div>
@@ -2138,9 +2189,16 @@ function renderBattleWidget(pets) {
         <div class="battle-col battle-col-opp">
           <div class="battle-step">
             <div class="battle-step-label">👥 3. 상대 닉네임</div>
-            <input list="battle-nick-list" id="battle-opp-nick" class="battle-pet-select"
-                   placeholder="상대 닉네임 입력"
-                   oninput="onBattleNickChange('opp')" value="${saved.oppNick || ''}">
+            <div class="nick-autocomplete-wrap">
+              <input id="battle-opp-nick" class="battle-pet-select"
+                     placeholder="상대 닉네임 입력"
+                     autocomplete="off"
+                     oninput="onNickInput('opp')"
+                     onfocus="onNickInput('opp')"
+                     onblur="onNickBlur('opp')"
+                     value="${saved.oppNick || ''}">
+              <div class="nick-suggestions" id="battle-opp-nick-suggestions"></div>
+            </div>
           </div>
           <div class="battle-step" id="battle-step-opppet" style="display:none;">
             <div class="battle-step-label">⚔️ 4. 상대 펫 선택</div>
@@ -2148,8 +2206,6 @@ function renderBattleWidget(pets) {
           </div>
         </div>
       </div>
-
-      <datalist id="battle-nick-list">${nickOptions}</datalist>
 
       <!-- 배틀 시작 버튼 -->
       <button class="battle-start-btn" id="battle-start-btn" onclick="startBattleNow()" disabled>
@@ -2168,6 +2224,68 @@ function renderBattleWidget(pets) {
   if (saved.oppNick) {
     setTimeout(() => onBattleNickChange('opp'), 150);
   }
+}
+
+// 닉네임 입력 시 자동완성 드롭다운 표시
+function onNickInput(side) {
+  const inputId = side === 'my' ? 'battle-my-nick' : 'battle-opp-nick';
+  const suggId = inputId + '-suggestions';
+  const input = document.getElementById(inputId);
+  const sugg = document.getElementById(suggId);
+  if (!input || !sugg) return;
+
+  const query = input.value.trim().toLowerCase();
+  const allNicks = window._allBattleNicks || [];
+
+  // 필터링: 부캐 닉으로 검색해도 본캐 찾기
+  let matched;
+  if (!query) {
+    matched = allNicks.slice(0, 50); // 비어있으면 처음 50개
+  } else {
+    matched = allNicks.filter(n => {
+      // 본캐 매칭
+      if (n.toLowerCase().includes(query)) return true;
+      // 부캐 매칭
+      const subs = mainToAliases[n] || [];
+      return subs.some(s => s.toLowerCase().includes(query));
+    }).slice(0, 30); // 최대 30개
+  }
+
+  if (matched.length === 0) {
+    sugg.style.display = 'none';
+    return;
+  }
+
+  // 부캐 목록 표시
+  sugg.innerHTML = matched.map(n => {
+    const subs = mainToAliases[n] || [];
+    const subText = subs.length > 0
+      ? `<span class="nick-suggestion-sub">(${subs.join(', ')})</span>`
+      : '';
+    return `<div class="nick-suggestion-item" onmousedown="selectNickSuggestion('${side}', '${n.replace(/'/g, "\\'")}')">${n}${subText}</div>`;
+  }).join('');
+  sugg.style.display = 'block';
+
+  // 입력 변경시 펫 목록 업데이트
+  onBattleNickChange(side);
+}
+
+// 추천 항목 클릭
+function selectNickSuggestion(side, nick) {
+  const inputId = side === 'my' ? 'battle-my-nick' : 'battle-opp-nick';
+  const suggId = inputId + '-suggestions';
+  document.getElementById(inputId).value = nick;
+  document.getElementById(suggId).style.display = 'none';
+  onBattleNickChange(side);
+}
+
+// blur 시 약간 딜레이 두고 숨기기 (클릭 처리 위해)
+function onNickBlur(side) {
+  setTimeout(() => {
+    const suggId = (side === 'my' ? 'battle-my-nick' : 'battle-opp-nick') + '-suggestions';
+    const el = document.getElementById(suggId);
+    if (el) el.style.display = 'none';
+  }, 200);
 }
 
 // 닉네임 변경 시 보유 펫 표시 (side: 'my' / 'opp')
@@ -2417,17 +2535,18 @@ async function runBattle(me, opp) {
     }
 
     function updateHpBar(who, cur, max) {
-      const bar = document.getElementById(who + '-hp-bar');
-      const text = document.getElementById(who + '-hp-text');
-      console.log(`[Battle] updateHpBar(${who}, ${cur}, ${max})`, 'bar:', !!bar, 'text:', !!text);
+      // fighter 내부에서 찾아서 id 충돌 회피
+      const fighter = document.getElementById('fighter-' + who);
+      const bar = fighter ? fighter.querySelector('.hp-bar-fill') : null;
+      const text = fighter ? fighter.querySelector('.hp-text') : null;
+      console.log(`[Battle] updateHpBar(${who}, ${cur}, ${max})`, 'fighter:', !!fighter, 'bar:', !!bar, 'text:', !!text);
       if (!bar || !text) {
         console.warn(`[Battle] HP bar element not found! who=${who}`);
         return;
       }
       const pct = Math.max(0, cur) / max * 100;
-      // 강제로 width 설정 (인라인 스타일 우선)
       bar.style.cssText = `width:${pct}%; transition: width .4s ease, background .3s;`;
-      text.textContent = Math.max(0, cur) + ' / ' + max;
+      text.textContent = '❤️ ' + Math.max(0, cur) + ' / ' + max;
       bar.classList.remove('medium','low','critical');
       if (pct < 20) bar.classList.add('critical');
       else if (pct < 40) bar.classList.add('low');
