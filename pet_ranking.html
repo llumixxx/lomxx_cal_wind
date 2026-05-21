@@ -2112,50 +2112,48 @@ function attrText(petName) {
   return parts.join(' ');
 }
 
-// 속성 상성 배율 계산 (1.0 = 보통, > 1 = 유리, < 1 = 불리)
-// 펫이 여러 속성 섞여있으니 가중평균
+// 속성 상성 배율 계산 (게임 공식: 속성당 10%)
+// 강함: 방어자 속성수치 × 10% 데미지 증가
+// 약함: 방어자 속성수치 × 10% 데미지 감소
 function attrMultiplier(atkPetName, defPetName) {
   const atkAttr = getPetAttr(atkPetName);
   const defAttr = getPetAttr(defPetName);
   if (!atkAttr || !defAttr) return { mult: 1.0, summary: '' };
 
-  // 공격자의 각 속성 → 방어자에게 얼마나 효과적인지
-  let totalAtk = 0, weightedBonus = 0;
-  const detail = [];
+  // 공격자 총 속성 (비율 가중치용)
+  let totalAtk = 0;
+  for (const a of ['지', '수', '화', '풍']) totalAtk += (atkAttr[a] || 0);
+  if (totalAtk === 0) return { mult: 1.0, summary: '' };
 
+  // 각 (공격속성 a, 방어속성 d) 쌍에 대해
+  // a가 d 이기면 → 방어자 d 수치 × 10% × (공격자 a 비율) 만큼 +
+  // d가 a 이기면 → 방어자 d 수치 × 10% × (공격자 a 비율) 만큼 -
+  let bonus = 0;
   for (const a of ['지', '수', '화', '풍']) {
-    const atkPower = atkAttr[a] || 0;
-    if (atkPower === 0) continue;
-    totalAtk += atkPower;
-
-    // 방어자 각 속성에 대해 상성 체크
-    let bonus = 0;
+    const atkVal = atkAttr[a] || 0;
+    if (atkVal === 0) continue;
+    const atkRatio = atkVal / totalAtk;
     for (const d of ['지', '수', '화', '풍']) {
-      const defPower = defAttr[d] || 0;
-      if (defPower === 0) continue;
-      // a가 d에 강함? → +0.5
-      // d가 a에 강함? → -0.3
-      // 같음 → 0
+      const defVal = defAttr[d] || 0;
+      if (defVal === 0) continue;
       if (ATTR_STRONG_AGAINST[a] === d) {
-        bonus += defPower * 0.05; // 강함 보너스 (방어자 속성 비율만큼)
-        detail.push(`${ATTR_ICONS[a]}>${ATTR_ICONS[d]}`);
+        bonus += defVal * 0.10 * atkRatio;
       } else if (ATTR_STRONG_AGAINST[d] === a) {
-        bonus -= defPower * 0.03; // 약함 페널티
+        bonus -= defVal * 0.10 * atkRatio;
       }
     }
-    weightedBonus += atkPower * bonus;
   }
 
-  if (totalAtk === 0) return { mult: 1.0, summary: '' };
-  const mult = 1.0 + weightedBonus / totalAtk;
-  // 합리적 범위 (0.5 ~ 1.8)
-  const clamped = Math.max(0.5, Math.min(1.8, mult));
+  // 최소 0.1, 최대 2.5 클램프 (완전 무력화/완전 카운터 방지)
+  const mult = Math.max(0.1, Math.min(2.5, 1.0 + bonus));
 
   let summary = '';
-  if (clamped > 1.15) summary = '🔥 속성 유리!';
-  else if (clamped < 0.85) summary = '❄️ 속성 불리!';
+  if (mult >= 1.5) summary = '🔥 효과는 굉장했다!';
+  else if (mult > 1.10) summary = '✨ 속성 유리';
+  else if (mult <= 0.5) summary = '🥶 효과가 없는 듯하다...';
+  else if (mult < 0.90) summary = '❄️ 속성 불리';
 
-  return { mult: clamped, summary };
+  return { mult, summary };
 }
 
 // 데미지 계산 (스톤에이지 게임 공식 기반 + 펫 튜닝)
@@ -2785,11 +2783,16 @@ async function runBattle(me, opp) {
     if (myAttrStr || oppAttrStr) {
       log(`🌐 속성 - ${me.petName}: ${myAttrStr || '없음'} / ${opp.petName}: ${oppAttrStr || '없음'}`);
     }
-    if (myToOppAttr.summary) {
-      log(`<strong>${me.nickname}</strong> → ${myToOppAttr.summary} (×${myToOppAttr.mult.toFixed(2)})`, myToOppAttr.mult > 1 ? 'crit' : 'lose');
+    // 속성 상성 - 배율 1.0이 아니면 항상 표시
+    if (Math.abs(myToOppAttr.mult - 1.0) > 0.01) {
+      const tag = myToOppAttr.mult > 1 ? 'crit' : 'miss';
+      const sum = myToOppAttr.summary || (myToOppAttr.mult > 1 ? '✨ 속성 유리' : '❄️ 속성 불리');
+      log(`<strong>${me.nickname}</strong> → ${sum} (×${myToOppAttr.mult.toFixed(2)})`, tag);
     }
-    if (oppToMyAttr.summary) {
-      log(`<strong>${opp.nickname}</strong> → ${oppToMyAttr.summary} (×${oppToMyAttr.mult.toFixed(2)})`, oppToMyAttr.mult > 1 ? 'crit' : 'lose');
+    if (Math.abs(oppToMyAttr.mult - 1.0) > 0.01) {
+      const tag = oppToMyAttr.mult > 1 ? 'crit' : 'miss';
+      const sum = oppToMyAttr.summary || (oppToMyAttr.mult > 1 ? '✨ 속성 유리' : '❄️ 속성 불리');
+      log(`<strong>${opp.nickname}</strong> → ${sum} (×${oppToMyAttr.mult.toFixed(2)})`, tag);
     }
 
     // 선공권: 순발 빠른 쪽
