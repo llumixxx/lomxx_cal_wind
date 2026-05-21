@@ -2071,7 +2071,15 @@ function calcDamage(attacker, defender, attrMult) {
   return { dmg, isCrit };
 }
 
+// 🥊 펫 대전 시스템
+let _battleInProgress = false; // 전투 진행 중 플래그
+
 function renderBattleWidget(pets) {
+  // 전투 중이면 DOM 건드리지 않기 (HP 바 등 element 보호)
+  if (_battleInProgress) {
+    console.log('[Battle] in progress, skipping renderBattleWidget');
+    return;
+  }
   // 랭킹 데이터 있는 펫만
   _battlePets = pets.filter(p => (p.general_ranking || []).length > 0)
                     .sort((a, b) => a.name.localeCompare(b.name, 'ko'));
@@ -2330,10 +2338,12 @@ async function startBattleNow() {
   const startBtn = document.getElementById('battle-start-btn');
   startBtn.disabled = true;
   startBtn.textContent = '⚔️ 전투 중...';
+  _battleInProgress = true; // 전투 중 - 데이터 자동 갱신 방지
 
   try {
     await runBattle(me, opp);
   } finally {
+    _battleInProgress = false;
     startBtn.disabled = false;
     startBtn.textContent = '🥊 다시 배틀!';
   }
