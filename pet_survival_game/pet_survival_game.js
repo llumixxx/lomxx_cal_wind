@@ -194,82 +194,112 @@ function setupCanvas() {
   window.addEventListener('resize', resize);
 }
 
-// ───── 배경 그리기 (스톤에이지 분위기) ─────
-function drawBackground() {
-  const ctx = G.ctx;
-  // 1. 잔디 베이스
-  ctx.fillStyle = '#3a5a2a';
-  ctx.fillRect(0, 0, G.W, G.H);
-  
-  // 2. 그라데이션 명암 (중앙 밝게)
-  const grad = ctx.createRadialGradient(G.W/2, G.H/2, 0, G.W/2, G.H/2, Math.max(G.W, G.H)*0.7);
-  grad.addColorStop(0, 'rgba(100, 140, 60, 0.4)');
-  grad.addColorStop(1, 'rgba(20, 40, 10, 0.6)');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, G.W, G.H);
+// ───── 배경 (SVG 타일 + DOM 부드러운 이동) ─────
+// 풀숲 SVG 타일 (256x256, seamless)
+const GRASS_TILE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4a7a3a"/>
+      <stop offset="100%" stop-color="#3a5a2a"/>
+    </radialGradient>
+  </defs>
+  <!-- 베이스 잔디 -->
+  <rect width="256" height="256" fill="url(#g1)"/>
+  <!-- 어두운 패치 (음영) -->
+  <ellipse cx="60" cy="40" rx="40" ry="25" fill="#2a4a1a" opacity="0.35"/>
+  <ellipse cx="200" cy="180" rx="50" ry="30" fill="#2a4a1a" opacity="0.35"/>
+  <ellipse cx="130" cy="220" rx="35" ry="20" fill="#2a4a1a" opacity="0.3"/>
+  <!-- 밝은 패치 -->
+  <ellipse cx="180" cy="60" rx="30" ry="20" fill="#5a8a45" opacity="0.4"/>
+  <ellipse cx="40" cy="150" rx="25" ry="18" fill="#5a8a45" opacity="0.35"/>
+  <!-- 풀잎들 (선) -->
+  <g stroke="#5a8a35" stroke-width="1.2" stroke-linecap="round" opacity="0.6">
+    <path d="M30,80 q1,-6 0,-12"/>
+    <path d="M35,82 q-1,-5 -1,-10"/>
+    <path d="M50,120 q1,-6 0,-12"/>
+    <path d="M70,90 q-1,-5 0,-11"/>
+    <path d="M90,140 q1,-7 0,-13"/>
+    <path d="M110,60 q1,-5 0,-11"/>
+    <path d="M125,170 q-1,-6 0,-12"/>
+    <path d="M150,90 q1,-5 0,-10"/>
+    <path d="M170,140 q-1,-6 0,-12"/>
+    <path d="M190,30 q1,-5 0,-10"/>
+    <path d="M210,100 q-1,-6 0,-12"/>
+    <path d="M230,180 q1,-6 0,-12"/>
+    <path d="M15,200 q1,-5 0,-10"/>
+    <path d="M55,235 q-1,-5 0,-11"/>
+    <path d="M100,220 q1,-6 0,-12"/>
+    <path d="M180,240 q-1,-5 0,-10"/>
+    <path d="M240,55 q1,-5 0,-10"/>
+  </g>
+  <!-- 풀잎 밝은 부분 (하이라이트) -->
+  <g stroke="#8ab85a" stroke-width="0.8" stroke-linecap="round" opacity="0.7">
+    <path d="M31,75 l0,-5"/>
+    <path d="M51,115 l0,-5"/>
+    <path d="M91,135 l0,-5"/>
+    <path d="M126,165 l0,-5"/>
+    <path d="M171,135 l0,-5"/>
+    <path d="M211,95 l0,-5"/>
+    <path d="M101,215 l0,-5"/>
+  </g>
+  <!-- 작은 돌 -->
+  <ellipse cx="80" cy="50" rx="4" ry="3" fill="#7a7060" opacity="0.7"/>
+  <ellipse cx="80" cy="49" rx="2" ry="1.5" fill="#9a9080" opacity="0.6"/>
+  <ellipse cx="160" cy="120" rx="5" ry="3.5" fill="#7a7060" opacity="0.7"/>
+  <ellipse cx="160" cy="119" rx="2.5" ry="1.8" fill="#9a9080" opacity="0.6"/>
+  <ellipse cx="210" cy="200" rx="4" ry="2.5" fill="#7a7060" opacity="0.7"/>
+  <ellipse cx="40" cy="220" rx="3" ry="2" fill="#7a7060" opacity="0.7"/>
+  <!-- 작은 꽃 -->
+  <circle cx="120" cy="45" r="2.5" fill="#ff9a4a" opacity="0.8"/>
+  <circle cx="120" cy="45" r="1" fill="#fdd835" opacity="0.9"/>
+  <circle cx="195" cy="155" r="2" fill="#f587b8" opacity="0.8"/>
+  <circle cx="60" cy="185" r="2" fill="#9b87f5" opacity="0.8"/>
+  <circle cx="220" cy="80" r="2.5" fill="#fdd835" opacity="0.8"/>
+  <circle cx="220" cy="80" r="1" fill="#ff9a4a" opacity="0.9"/>
+  <!-- 덤불/큰 풀 -->
+  <g opacity="0.7">
+    <ellipse cx="100" cy="100" rx="14" ry="10" fill="#2a4a1a"/>
+    <ellipse cx="97" cy="97" rx="8" ry="6" fill="#3a6a25"/>
+    <ellipse cx="103" cy="98" rx="5" ry="4" fill="#4a7a35"/>
+  </g>
+  <g opacity="0.7">
+    <ellipse cx="200" cy="40" rx="12" ry="9" fill="#2a4a1a"/>
+    <ellipse cx="198" cy="38" rx="7" ry="5" fill="#3a6a25"/>
+  </g>
+  <g opacity="0.6">
+    <ellipse cx="30" cy="130" rx="10" ry="7" fill="#2a4a1a"/>
+    <ellipse cx="28" cy="128" rx="6" ry="4" fill="#3a6a25"/>
+  </g>
+  <g opacity="0.6">
+    <ellipse cx="150" cy="250" rx="14" ry="9" fill="#2a4a1a"/>
+    <ellipse cx="147" cy="248" rx="8" ry="5" fill="#3a6a25"/>
+  </g>
+</svg>`;
 
-  // 3. 잔디 패턴 (점들 - 카메라 좌표 기반)
-  const tileSize = 40;
-  const offX = -((G.camX) % tileSize);
-  const offY = -((G.camY) % tileSize);
-  // 시드 기반 패턴 (같은 위치는 같은 모양)
-  ctx.save();
-  for (let y = -tileSize; y < G.H + tileSize; y += tileSize) {
-    for (let x = -tileSize; x < G.W + tileSize; x += tileSize) {
-      const wx = Math.floor((x + G.camX - G.W/2) / tileSize);
-      const wy = Math.floor((y + G.camY - G.H/2) / tileSize);
-      const seed = (wx * 374761393 + wy * 668265263) & 0xffffffff;
-      const r = ((seed >> 13) ^ (seed >> 27) ^ seed) & 0xff;
-      // 잔디 풀
-      if (r < 80) {
-        const px = x + offX + (r % 20);
-        const py = y + offY + ((r >> 4) % 20);
-        ctx.fillStyle = 'rgba(50, 90, 30, 0.5)';
-        ctx.fillRect(px, py, 3, 5);
-        ctx.fillStyle = 'rgba(80, 130, 50, 0.4)';
-        ctx.fillRect(px+1, py-2, 1, 3);
-      }
-      // 작은 돌
-      else if (r < 95) {
-        const px = x + offX + (r % 30);
-        const py = y + offY + ((r >> 5) % 30);
-        ctx.fillStyle = 'rgba(120, 110, 100, 0.5)';
-        ctx.beginPath();
-        ctx.ellipse(px, py, 4, 3, 0, 0, Math.PI*2);
-        ctx.fill();
-      }
-      // 작은 꽃
-      else if (r < 100) {
-        const px = x + offX + (r % 30);
-        const py = y + offY + ((r >> 5) % 30);
-        ctx.fillStyle = ['#ff7a8a', '#fdd835', '#ff9a4a', '#f587b8'][r % 4];
-        ctx.beginPath();
-        ctx.arc(px, py, 2, 0, Math.PI*2);
-        ctx.fill();
-      }
-      // 덤불
-      else if (r < 105) {
-        const px = x + offX + (r % 20);
-        const py = y + offY + ((r >> 5) % 20);
-        ctx.fillStyle = 'rgba(30, 60, 15, 0.6)';
-        ctx.beginPath();
-        ctx.arc(px, py, 8, 0, Math.PI*2);
-        ctx.fill();
-        ctx.fillStyle = 'rgba(60, 100, 35, 0.5)';
-        ctx.beginPath();
-        ctx.arc(px-2, py-2, 4, 0, Math.PI*2);
-        ctx.fill();
-      }
-    }
-  }
-  ctx.restore();
+const GRASS_TILE_URL = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(GRASS_TILE_SVG)));
 
-  // 4. 가장자리 어둡게 (비네트)
-  const vig = ctx.createRadialGradient(G.W/2, G.H/2, Math.min(G.W,G.H)*0.3, G.W/2, G.H/2, Math.max(G.W,G.H)*0.7);
-  vig.addColorStop(0, 'rgba(0,0,0,0)');
-  vig.addColorStop(1, 'rgba(0,0,0,0.5)');
-  ctx.fillStyle = vig;
-  ctx.fillRect(0, 0, G.W, G.H);
+let _bgEl = null;
+function setupBackground() {
+  if (_bgEl) return;
+  _bgEl = document.createElement('div');
+  _bgEl.id = 'game-bg';
+  _bgEl.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background-image: url("${GRASS_TILE_URL}");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    pointer-events: none;
+    z-index: 1;
+    will-change: background-position;
+  `;
+  document.body.insertBefore(_bgEl, document.body.firstChild);
+}
+
+function updateBackgroundPosition() {
+  if (!_bgEl) return;
+  // 카메라 반대 방향으로 배경 이동 (자연스러운 스크롤)
+  _bgEl.style.backgroundPosition = `${-G.camX}px ${-G.camY}px`;
 }
 
 // ───── 펫 DOM 요소 관리 ─────
@@ -351,6 +381,16 @@ function removePetDOM(el) {
   if (el && el.parentNode) el.parentNode.removeChild(el);
 }
 
+function safeDrawImage(ctx, img, x, y, w, h) {
+  if (!img || !img.complete || img.naturalWidth === 0) return false;
+  try {
+    ctx.drawImage(img, x, y, w, h);
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
 // ───── 무기 이미지 캐시 ─────
 const weaponImgCache = {};
 function getWeaponImg(key) {
@@ -359,7 +399,7 @@ function getWeaponImg(key) {
     if (def) {
       const img = new Image();
       img.src = def.icon;
-      img.crossOrigin = 'anonymous';
+      // crossOrigin 안 씀 - 캔버스 tainted 되지만 그리기는 됨
       weaponImgCache[key] = img;
     }
   }
@@ -493,8 +533,12 @@ function gameLoop(now) {
   const dt = Math.min(0.05, (now - G.lastFrame) / 1000);
   G.lastFrame = now;
   G.time = (now - G.startTime) / 1000;
-  update(dt, now);
-  render();
+  try {
+    update(dt, now);
+    render();
+  } catch(err) {
+    console.error('[Game] loop error:', err);
+  }
   requestAnimationFrame(gameLoop);
 }
 
@@ -524,11 +568,13 @@ function updatePlayer(dt) {
   const speed = p.moveSpeed * G.passives.spdMul;
   p.x += dx * speed * dt;
   p.y += dy * speed * dt;
-  if (dx !== 0) p.facing = dx > 0 ? 1 : -1;
+  if (dx > 0.1) p.facing = 1;
+  else if (dx < -0.1) p.facing = -1;
   G.camX = p.x; G.camY = p.y;
-  // DOM 업데이트
-  updatePetDOM(p.dom, p.x, p.y);
-  p.dom.style.transform += ` scaleX(${p.facing})`;
+  // DOM 업데이트 (transform 한 번에)
+  const sx = p.x - G.camX + G.W/2;
+  const sy = p.y - G.camY + G.H/2;
+  p.dom.style.transform = `translate(${sx}px, ${sy}px) scaleX(${p.facing})`;
 }
 
 function updateEnemies(dt, now) {
@@ -1044,11 +1090,18 @@ function flashDamage() {
   setTimeout(() => flash.remove(), 300);
 }
 
-// ───── 렌더링 (잔상 없게 완전 클리어) ─────
+// ───── 렌더링 ─────
 function render() {
   const ctx = G.ctx;
   ctx.clearRect(0, 0, G.W, G.H);
-  drawBackground();
+  // 배경은 DOM에서 알아서 - 위치만 업데이트
+  updateBackgroundPosition();
+  // 비네트 (캔버스에 어두운 가장자리)
+  const vig = ctx.createRadialGradient(G.W/2, G.H/2, Math.min(G.W,G.H)*0.35, G.W/2, G.H/2, Math.max(G.W,G.H)*0.75);
+  vig.addColorStop(0, 'rgba(0,0,0,0)');
+  vig.addColorStop(1, 'rgba(0,0,0,0.5)');
+  ctx.fillStyle = vig;
+  ctx.fillRect(0, 0, G.W, G.H);
   // 보석
   for (const g of G.gems) drawGem(g);
   // 발사체
@@ -1057,9 +1110,10 @@ function render() {
   for (const o of G.orbitals) drawOrbital(o);
   // 이펙트
   for (const ef of G.effects) {
-    if (ef.draw) ef.draw(ctx);
+    if (ef.draw) {
+      try { ef.draw(ctx); } catch(e) {}
+    }
   }
-  // (펫은 DOM이라 그냥 위에 그려짐)
 }
 
 function drawProjectile(pr) {
@@ -1328,6 +1382,7 @@ function goToMenu() {
 (async () => {
   await loadGameData();
   setupCanvas();
+  setupBackground();
   setupInput();
   // 무기 이미지 프리로드
   for (const key in WEAPON_DEFS) getWeaponImg(key);
