@@ -5,9 +5,37 @@
 // ───── 데이터 로딩 ─────
 let PET_DATA = [];
 let PET_IMAGES = {};
+let RANKING_DATA = {};  // petName → top rankers
 let selectedPetName = null;
 
 const ATTR_STRONG = { '지': '풍', '풍': '수', '수': '화', '화': '지' };
+
+async function loadGameData() {
+  try {
+    const r = await fetch('../pet_info_data.json?t=' + Date.now());
+    const pets = await r.json();
+    PET_DATA = pets;
+    pets.forEach(p => { if (p.image) PET_IMAGES[p.name] = p.image; });
+    console.log(`✅ ${pets.length} 마리 펫 로드`);
+    // 랭킹 데이터 (보스 닉네임용)
+    try {
+      const r2 = await fetch('../wind_data.json?t=' + Date.now());
+      if (r2.ok) {
+        const data = await r2.json();
+        if (data.pets) {
+          data.pets.forEach(p => {
+            if (p.name && p.general_ranking && p.general_ranking.length > 0) {
+              RANKING_DATA[p.name] = p.general_ranking.slice(0, 5);
+            }
+          });
+          console.log(`✅ 랭킹 데이터 ${Object.keys(RANKING_DATA).length}종`);
+        }
+      }
+    } catch(e) { /* 랭킹 없어도 OK */ }
+  } catch(e) {
+    console.error('펫 데이터 로드 실패:', e);
+  }
+}
 
 // ───── 무기 정의 (이미지 + 동작) ─────
 const WEAPON_DEFS = {
@@ -41,36 +69,23 @@ const WEAPON_DEFS = {
   },
   hammer: {
     name: '의식의 곤봉', icon: 'https://wind01.net/info/item/36476.png',
-    desc: '하늘에서 망치 떨어트리기',
-    cooldown: 2000, damage: 2.5, range: 200,
-    style: 'meteor',
+    desc: '앞 방향 부채꼴 휘두르기',
+    cooldown: 1300, damage: 1.8, range: 180,
+    style: 'sweep',
   },
   ice: {
     name: '얼음 손톱', icon: 'https://wind01.net/info/item/36289.png',
-    desc: '적을 얼리고 느리게',
-    cooldown: 1800, damage: 1.2, range: 200,
+    desc: '눈꽃 발사 (얼리고 슬로우)',
+    cooldown: 1500, damage: 1.2, range: 400,
     style: 'freeze',
   },
   stone: {
     name: '합성 돌9', icon: 'https://wind01.net/info/item/36186.png',
-    desc: '주변을 도는 보호 오브',
-    cooldown: 0, damage: 0.5,
-    style: 'orb',
-    orbCount: 3, orbRadius: 70, orbSpeed: 2.5,
+    desc: '하늘에서 떨어지는 돌',
+    cooldown: 1800, damage: 2.0, range: 350,
+    style: 'falling_stone',
   },
 };
-
-async function loadGameData() {
-  try {
-    const r = await fetch('../pet_info_data.json?t=' + Date.now());
-    const pets = await r.json();
-    PET_DATA = pets;
-    pets.forEach(p => { if (p.image) PET_IMAGES[p.name] = p.image; });
-    console.log(`✅ ${pets.length} 마리 펫 로드`);
-  } catch(e) {
-    console.error('펫 데이터 로드 실패:', e);
-  }
-}
 
 // ───── 메뉴 ─────
 function renderPetGrid(filter = '') {
@@ -121,13 +136,15 @@ function updateHighScoreDisplay() {
 // ───── 게임 상태 ─────
 const G = {
   canvas: null, ctx: null,
-  petLayer: null,    // DOM 레이어 (펫 이미지용)
+  petLayer: null,
   W: 0, H: 0,
   running: false, paused: false,
   time: 0, startTime: 0, lastFrame: 0,
   player: null,
   enemies: [], projectiles: [], gems: [], effects: [],
-  weapons: [], orbitals: [],  // orbitals: 회전 무기 (axe, orb)
+  weapons: [], orbitals: [],
+  items: [],         // 🍖 🧲 💣
+  obstacles: [],     // 나무, 큰 바위
   passives: {},
   kills: 0, level: 1, exp: 0, expToNext: 5,
   spawnTimer: 0, bossTimer: 30, difficultyMul: 1,
@@ -199,80 +216,143 @@ function setupCanvas() {
 const GRASS_TILE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
   <defs>
     <radialGradient id="g1" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#4a7a3a"/>
-      <stop offset="100%" stop-color="#3a5a2a"/>
+      <stop offset="0%" stop-color="#5a8a3a"/>
+      <stop offset="100%" stop-color="#3e6028"/>
+    </radialGradient>
+    <radialGradient id="bushG" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#5a8a3a"/>
+      <stop offset="60%" stop-color="#3a6020"/>
+      <stop offset="100%" stop-color="#1e3812"/>
     </radialGradient>
   </defs>
   <!-- 베이스 잔디 -->
   <rect width="256" height="256" fill="url(#g1)"/>
-  <!-- 어두운 패치 (음영) -->
-  <ellipse cx="60" cy="40" rx="40" ry="25" fill="#2a4a1a" opacity="0.35"/>
-  <ellipse cx="200" cy="180" rx="50" ry="30" fill="#2a4a1a" opacity="0.35"/>
-  <ellipse cx="130" cy="220" rx="35" ry="20" fill="#2a4a1a" opacity="0.3"/>
+  <!-- 큰 어두운 패치 (음영) -->
+  <ellipse cx="60" cy="50" rx="50" ry="30" fill="#2a4818" opacity="0.4"/>
+  <ellipse cx="200" cy="180" rx="60" ry="35" fill="#2a4818" opacity="0.4"/>
+  <ellipse cx="130" cy="220" rx="45" ry="22" fill="#2a4818" opacity="0.35"/>
+  <ellipse cx="220" cy="40" rx="35" ry="22" fill="#2a4818" opacity="0.3"/>
+  <ellipse cx="20" cy="190" rx="40" ry="25" fill="#2a4818" opacity="0.35"/>
   <!-- 밝은 패치 -->
-  <ellipse cx="180" cy="60" rx="30" ry="20" fill="#5a8a45" opacity="0.4"/>
-  <ellipse cx="40" cy="150" rx="25" ry="18" fill="#5a8a45" opacity="0.35"/>
-  <!-- 풀잎들 (선) -->
-  <g stroke="#5a8a35" stroke-width="1.2" stroke-linecap="round" opacity="0.6">
-    <path d="M30,80 q1,-6 0,-12"/>
-    <path d="M35,82 q-1,-5 -1,-10"/>
-    <path d="M50,120 q1,-6 0,-12"/>
-    <path d="M70,90 q-1,-5 0,-11"/>
-    <path d="M90,140 q1,-7 0,-13"/>
-    <path d="M110,60 q1,-5 0,-11"/>
-    <path d="M125,170 q-1,-6 0,-12"/>
-    <path d="M150,90 q1,-5 0,-10"/>
-    <path d="M170,140 q-1,-6 0,-12"/>
-    <path d="M190,30 q1,-5 0,-10"/>
-    <path d="M210,100 q-1,-6 0,-12"/>
-    <path d="M230,180 q1,-6 0,-12"/>
-    <path d="M15,200 q1,-5 0,-10"/>
-    <path d="M55,235 q-1,-5 0,-11"/>
-    <path d="M100,220 q1,-6 0,-12"/>
-    <path d="M180,240 q-1,-5 0,-10"/>
-    <path d="M240,55 q1,-5 0,-10"/>
+  <ellipse cx="180" cy="60" rx="35" ry="22" fill="#6a9a48" opacity="0.5"/>
+  <ellipse cx="40" cy="150" rx="28" ry="20" fill="#6a9a48" opacity="0.45"/>
+  <ellipse cx="155" cy="155" rx="32" ry="20" fill="#6a9a48" opacity="0.4"/>
+  
+  <!-- 큰 풀잎 무리 (실제 풀처럼 다발) -->
+  <g stroke-linecap="round" fill="none">
+    <!-- 풀 다발 1 -->
+    <g transform="translate(45,75)" opacity="0.85">
+      <path d="M0,0 q-1,-10 -3,-16" stroke="#3a6020" stroke-width="2"/>
+      <path d="M2,0 q1,-8 0,-14" stroke="#4a7030" stroke-width="1.8"/>
+      <path d="M-2,0 q-2,-7 -4,-13" stroke="#5a8038" stroke-width="1.5"/>
+      <path d="M4,0 q3,-9 2,-15" stroke="#4a7030" stroke-width="1.8"/>
+    </g>
+    <!-- 풀 다발 2 -->
+    <g transform="translate(180,110)" opacity="0.85">
+      <path d="M0,0 q-1,-9 -2,-15" stroke="#3a6020" stroke-width="2"/>
+      <path d="M3,0 q1,-7 0,-13" stroke="#5a8038" stroke-width="1.6"/>
+      <path d="M-3,0 q-2,-6 -4,-12" stroke="#4a7030" stroke-width="1.7"/>
+    </g>
+    <!-- 풀 다발 3 -->
+    <g transform="translate(95,170)" opacity="0.8">
+      <path d="M0,0 q1,-10 2,-16" stroke="#3a6020" stroke-width="2"/>
+      <path d="M-2,0 q-2,-8 -3,-14" stroke="#5a8038" stroke-width="1.5"/>
+      <path d="M3,0 q2,-7 1,-13" stroke="#4a7030" stroke-width="1.7"/>
+    </g>
+    <!-- 풀 다발 4 -->
+    <g transform="translate(215,225)" opacity="0.85">
+      <path d="M0,0 q-1,-8 -2,-14" stroke="#3a6020" stroke-width="2"/>
+      <path d="M2,0 q1,-9 0,-15" stroke="#4a7030" stroke-width="1.8"/>
+    </g>
+    <!-- 풀 다발 5 -->
+    <g transform="translate(20,230)" opacity="0.8">
+      <path d="M0,0 q-1,-7 -2,-13" stroke="#3a6020" stroke-width="1.8"/>
+      <path d="M2,0 q2,-8 1,-14" stroke="#4a7030" stroke-width="1.5"/>
+    </g>
+    <!-- 흩어진 단일 풀잎 -->
+    <path d="M130,40 q1,-6 0,-12" stroke="#4a7030" stroke-width="1.3" opacity="0.7"/>
+    <path d="M65,200 q-1,-6 0,-12" stroke="#4a7030" stroke-width="1.3" opacity="0.7"/>
+    <path d="M240,150 q1,-5 0,-11" stroke="#4a7030" stroke-width="1.3" opacity="0.7"/>
+    <path d="M150,250 q-1,-6 0,-12" stroke="#4a7030" stroke-width="1.3" opacity="0.7"/>
   </g>
-  <!-- 풀잎 밝은 부분 (하이라이트) -->
-  <g stroke="#8ab85a" stroke-width="0.8" stroke-linecap="round" opacity="0.7">
-    <path d="M31,75 l0,-5"/>
-    <path d="M51,115 l0,-5"/>
-    <path d="M91,135 l0,-5"/>
-    <path d="M126,165 l0,-5"/>
-    <path d="M171,135 l0,-5"/>
-    <path d="M211,95 l0,-5"/>
-    <path d="M101,215 l0,-5"/>
+  
+  <!-- 작은 디테일 잔디 (점들) -->
+  <g fill="#4a7030" opacity="0.6">
+    <circle cx="30" cy="60" r="1.5"/>
+    <circle cx="70" cy="100" r="1"/>
+    <circle cx="110" cy="50" r="1.2"/>
+    <circle cx="150" cy="85" r="1"/>
+    <circle cx="195" cy="130" r="1.5"/>
+    <circle cx="235" cy="95" r="1"/>
+    <circle cx="50" cy="160" r="1.2"/>
+    <circle cx="100" cy="195" r="1"/>
+    <circle cx="160" cy="230" r="1.3"/>
+    <circle cx="225" cy="200" r="1"/>
+    <circle cx="80" cy="240" r="1.2"/>
+    <circle cx="200" cy="80" r="1"/>
   </g>
-  <!-- 작은 돌 -->
-  <ellipse cx="80" cy="50" rx="4" ry="3" fill="#7a7060" opacity="0.7"/>
-  <ellipse cx="80" cy="49" rx="2" ry="1.5" fill="#9a9080" opacity="0.6"/>
-  <ellipse cx="160" cy="120" rx="5" ry="3.5" fill="#7a7060" opacity="0.7"/>
-  <ellipse cx="160" cy="119" rx="2.5" ry="1.8" fill="#9a9080" opacity="0.6"/>
-  <ellipse cx="210" cy="200" rx="4" ry="2.5" fill="#7a7060" opacity="0.7"/>
-  <ellipse cx="40" cy="220" rx="3" ry="2" fill="#7a7060" opacity="0.7"/>
+  
+  <!-- 흙 패치 (밟힌 곳) -->
+  <ellipse cx="125" cy="125" rx="28" ry="18" fill="#7a6048" opacity="0.4"/>
+  <ellipse cx="125" cy="125" rx="20" ry="13" fill="#5a4028" opacity="0.3"/>
+  
+  <!-- 돌멩이들 -->
+  <g>
+    <ellipse cx="85" cy="55" rx="5" ry="3.5" fill="#7a7060"/>
+    <ellipse cx="84" cy="54" rx="3" ry="2" fill="#9a9080" opacity="0.7"/>
+  </g>
+  <g>
+    <ellipse cx="170" cy="130" rx="6" ry="4" fill="#7a7060"/>
+    <ellipse cx="168" cy="128" rx="3.5" ry="2.3" fill="#9a9080" opacity="0.7"/>
+  </g>
+  <g>
+    <ellipse cx="225" cy="205" rx="5" ry="3" fill="#7a7060"/>
+    <ellipse cx="224" cy="204" rx="3" ry="1.8" fill="#9a9080" opacity="0.7"/>
+  </g>
+  <g>
+    <ellipse cx="40" cy="225" rx="4" ry="2.5" fill="#7a7060"/>
+  </g>
+  
   <!-- 작은 꽃 -->
-  <circle cx="120" cy="45" r="2.5" fill="#ff9a4a" opacity="0.8"/>
-  <circle cx="120" cy="45" r="1" fill="#fdd835" opacity="0.9"/>
-  <circle cx="195" cy="155" r="2" fill="#f587b8" opacity="0.8"/>
-  <circle cx="60" cy="185" r="2" fill="#9b87f5" opacity="0.8"/>
-  <circle cx="220" cy="80" r="2.5" fill="#fdd835" opacity="0.8"/>
-  <circle cx="220" cy="80" r="1" fill="#ff9a4a" opacity="0.9"/>
-  <!-- 덤불/큰 풀 -->
-  <g opacity="0.7">
-    <ellipse cx="100" cy="100" rx="14" ry="10" fill="#2a4a1a"/>
-    <ellipse cx="97" cy="97" rx="8" ry="6" fill="#3a6a25"/>
-    <ellipse cx="103" cy="98" rx="5" ry="4" fill="#4a7a35"/>
+  <g>
+    <circle cx="125" cy="48" r="3" fill="#ff9a4a"/>
+    <circle cx="125" cy="48" r="1.2" fill="#fdd835"/>
   </g>
-  <g opacity="0.7">
-    <ellipse cx="200" cy="40" rx="12" ry="9" fill="#2a4a1a"/>
-    <ellipse cx="198" cy="38" rx="7" ry="5" fill="#3a6a25"/>
+  <g>
+    <circle cx="195" cy="160" r="2.5" fill="#f587b8"/>
+    <circle cx="195" cy="160" r="1" fill="#fff"/>
   </g>
-  <g opacity="0.6">
-    <ellipse cx="30" cy="130" rx="10" ry="7" fill="#2a4a1a"/>
-    <ellipse cx="28" cy="128" rx="6" ry="4" fill="#3a6a25"/>
+  <g>
+    <circle cx="60" cy="195" r="2.5" fill="#9b87f5"/>
+    <circle cx="60" cy="195" r="1" fill="#fdd835"/>
   </g>
-  <g opacity="0.6">
-    <ellipse cx="150" cy="250" rx="14" ry="9" fill="#2a4a1a"/>
-    <ellipse cx="147" cy="248" rx="8" ry="5" fill="#3a6a25"/>
+  <g>
+    <circle cx="225" cy="85" r="3" fill="#fdd835"/>
+    <circle cx="225" cy="85" r="1.2" fill="#ff9a4a"/>
+  </g>
+  <g>
+    <circle cx="35" cy="130" r="2.5" fill="#f587b8"/>
+  </g>
+  
+  <!-- 큰 덤불 (입체적) -->
+  <g opacity="0.85">
+    <ellipse cx="105" cy="105" rx="20" ry="14" fill="url(#bushG)"/>
+    <ellipse cx="100" cy="100" rx="12" ry="8" fill="#3a6a25" opacity="0.7"/>
+    <ellipse cx="108" cy="103" rx="7" ry="5" fill="#5a8a35"/>
+    <!-- 잔디 디테일 -->
+    <path d="M95,92 q-1,-4 -2,-7" stroke="#3a5818" stroke-width="1.2" fill="none"/>
+    <path d="M105,90 q0,-5 -1,-8" stroke="#3a5818" stroke-width="1.2" fill="none"/>
+    <path d="M115,93 q1,-4 0,-7" stroke="#3a5818" stroke-width="1.2" fill="none"/>
+  </g>
+  <g opacity="0.85">
+    <ellipse cx="205" cy="45" rx="16" ry="11" fill="url(#bushG)"/>
+    <ellipse cx="202" cy="42" rx="9" ry="6" fill="#3a6a25" opacity="0.7"/>
+    <ellipse cx="208" cy="44" rx="5" ry="3.5" fill="#5a8a35"/>
+  </g>
+  <g opacity="0.8">
+    <ellipse cx="155" cy="245" rx="18" ry="12" fill="url(#bushG)"/>
+    <ellipse cx="152" cy="242" rx="10" ry="7" fill="#3a6a25" opacity="0.7"/>
+    <ellipse cx="158" cy="244" rx="6" ry="4" fill="#5a8a35"/>
   </g>
 </svg>`;
 
@@ -303,9 +383,9 @@ function updateBackgroundPosition() {
 }
 
 // ───── 펫 DOM 요소 관리 ─────
-function createPetDOM(name, imgUrl, isPlayer, isBoss) {
+function createPetDOM(name, imgUrl, isPlayer, isBoss, bossLabel) {
   const el = document.createElement('div');
-  const sz = isBoss ? 80 : (isPlayer ? 60 : 44);
+  const sz = isBoss ? 90 : (isPlayer ? 60 : 44);
   el.style.cssText = `
     position: absolute;
     width: ${sz}px;
@@ -328,11 +408,11 @@ function createPetDOM(name, imgUrl, isPlayer, isBoss) {
     hpWrap.style.cssText = `
       position: absolute;
       top: -8px; left: 10%; width: 80%;
-      height: 4px;
+      height: ${isBoss ? '6px' : '4px'};
       background: rgba(0,0,0,0.7);
-      border-radius: 2px;
+      border-radius: 3px;
       overflow: hidden;
-      display: none;
+      ${isBoss ? '' : 'display: none;'}
     `;
     const hpFill = document.createElement('div');
     hpFill.style.cssText = `width: 100%; height: 100%; background: ${isBoss ? '#fdd835' : '#ff5252'};`;
@@ -343,14 +423,18 @@ function createPetDOM(name, imgUrl, isPlayer, isBoss) {
   }
   if (isBoss) {
     const label = document.createElement('div');
-    label.textContent = 'BOSS';
+    label.textContent = bossLabel || 'BOSS';
     label.style.cssText = `
-      position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
-      color: #fdd835; font-weight: 900; font-size: 11px;
-      font-family: 'Nunito', sans-serif;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-      letter-spacing: 1px;
+      position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+      color: #fdd835; font-weight: 900; font-size: 12px;
+      font-family: 'Noto Sans KR', sans-serif;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.8);
+      letter-spacing: 0.5px;
       white-space: nowrap;
+      padding: 2px 8px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(253,216,53,0.5);
+      border-radius: 99px;
     `;
     el.appendChild(label);
   }
@@ -391,19 +475,57 @@ function safeDrawImage(ctx, img, x, y, w, h) {
   }
 }
 
-// ───── 무기 이미지 캐시 ─────
-const weaponImgCache = {};
+// ───── 무기 이미지 캐시 + 배경 제거 ─────
+const weaponImgCache = {};       // 원본
+const weaponCleanedCache = {};   // 검은 배경 제거된 캔버스
 function getWeaponImg(key) {
   if (!weaponImgCache[key]) {
     const def = WEAPON_DEFS[key];
     if (def) {
       const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.src = def.icon;
-      // crossOrigin 안 씀 - 캔버스 tainted 되지만 그리기는 됨
       weaponImgCache[key] = img;
+      // 로드 완료 시 cleaned 버전 만들기
+      img.addEventListener('load', () => makeCleanedImage(key, img));
+      // 실패 시 crossOrigin 없이 재시도
+      img.addEventListener('error', () => {
+        const fallback = new Image();
+        fallback.src = def.icon;
+        weaponImgCache[key] = fallback;
+      });
     }
   }
   return weaponImgCache[key];
+}
+
+function makeCleanedImage(key, img) {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    // 검은 픽셀 (배경) 투명 처리
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imgData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i+1], b = data[i+2];
+      // 거의 검은색 (모든 채널 40 미만)이면 투명
+      if (r < 40 && g < 40 && b < 40) {
+        data[i+3] = 0;
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    weaponCleanedCache[key] = canvas;
+  } catch(e) {
+    console.warn('cleaned image fail (CORS?)', key, e);
+    // CORS 에러 시 원본 사용
+  }
+}
+
+function getCleanWeaponImg(key) {
+  return weaponCleanedCache[key] || weaponImgCache[key];
 }
 
 // ───── 입력 ─────
@@ -483,6 +605,20 @@ async function startGame() {
   G.gems = [];
   G.effects = [];
   G.orbitals = [];
+  G.items = [];
+  G.obstacles = [];
+  // 시작 오브젝트 (나무/바위 30개 무작위 배치)
+  for (let i = 0; i < 30; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 200 + Math.random() * 800;
+    G.obstacles.push({
+      x: Math.cos(ang) * dist,
+      y: Math.sin(ang) * dist,
+      type: Math.random() < 0.6 ? 'tree' : 'rock',
+      size: 30 + Math.random() * 20,
+      seed: Math.random(),
+    });
+  }
 
   // 시작 무기 (활)
   G.weapons = [];
@@ -514,14 +650,10 @@ function addWeapon(key) {
     lastFire: 0,
   };
   G.weapons.push(w);
-  // orbit / orb 무기는 회전 객체 생성
+  // orbit 무기 (도끼) - 회전 객체
   if (def.style === 'orbit') {
     for (let i = 0; i < (def.orbitCount || 1); i++) {
       G.orbitals.push({ weapon: w, kind: 'orbit', angle: (i / (def.orbitCount||1)) * Math.PI * 2 });
-    }
-  } else if (def.style === 'orb') {
-    for (let i = 0; i < (def.orbCount || 3); i++) {
-      G.orbitals.push({ weapon: w, kind: 'orb', angle: (i / (def.orbCount||3)) * Math.PI * 2 });
     }
   }
 }
@@ -548,11 +680,121 @@ function update(dt, now) {
   updateEnemies(dt, now);
   updateProjectiles(dt);
   updateGems(dt);
+  updateItems(dt);
+  updateObstacles(dt);
   updateEffects(dt);
   updateOrbitals(dt);
   updateWeapons(dt, now);
   updateSpawning(dt);
   updateHUD();
+}
+
+// 아이템 업데이트 (자석으로 끌어오기 / 픽업)
+function updateItems(dt) {
+  const p = G.player;
+  for (let i = G.items.length - 1; i >= 0; i--) {
+    const it = G.items[i];
+    it.bounce = (it.bounce || 0) + dt * 5;
+    const dx = p.x - it.x, dy = p.y - it.y;
+    const dist = Math.hypot(dx, dy);
+    if (dist < p.radius + it.pickupRadius) {
+      // 효과 발동
+      applyItem(it.type);
+      // 픽업 이펙트
+      G.effects.push({
+        x: it.x, y: it.y, life: 0.4, maxLife: 0.4, radius: 0,
+        update(dt) { this.radius = (1-this.life/this.maxLife) * 50; },
+        draw(ctx) {
+          const sx = this.x - G.camX + G.W/2;
+          const sy = this.y - G.camY + G.H/2;
+          const a = this.life / this.maxLife;
+          ctx.strokeStyle = `rgba(255,255,200, ${a})`;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(sx, sy, this.radius, 0, Math.PI*2);
+          ctx.stroke();
+        }
+      });
+      G.items.splice(i, 1);
+    } else if (dist < 200) {
+      // 가까이 가면 살짝 끌어옴
+      it.x += (dx/dist) * 200 * dt;
+      it.y += (dy/dist) * 200 * dt;
+    }
+  }
+}
+
+// 오브젝트 (나무/바위) 업데이트 - 멀리 가면 제거, 새 거 생성
+function updateObstacles(dt) {
+  const p = G.player;
+  const farLimit = 1500;
+  // 너무 먼 거 제거
+  for (let i = G.obstacles.length - 1; i >= 0; i--) {
+    const o = G.obstacles[i];
+    if (Math.hypot(o.x - p.x, o.y - p.y) > farLimit) {
+      G.obstacles.splice(i, 1);
+    }
+  }
+  // 부족하면 새로 생성 (시야 밖에)
+  while (G.obstacles.length < 30) {
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 500 + Math.random() * 600;
+    G.obstacles.push({
+      x: p.x + Math.cos(ang) * dist,
+      y: p.y + Math.sin(ang) * dist,
+      type: Math.random() < 0.6 ? 'tree' : 'rock',
+      size: 30 + Math.random() * 20,
+      seed: Math.random(),
+    });
+  }
+}
+
+// 아이템 효과 적용
+function applyItem(type) {
+  const p = G.player;
+  if (type === 'meat') {
+    // 고기 - HP 50% 회복
+    const heal = Math.round(p.maxHp * 0.5);
+    p.hp = Math.min(p.maxHp, p.hp + heal);
+    addFloatingText(p.x, p.y - 40, '+' + heal + ' HP', '#4caf50', true);
+  } else if (type === 'bomb') {
+    // 폭탄 - 화면 안 모든 적 즉사 (보스는 50% 데미지)
+    const screenRange = Math.max(G.W, G.H) * 0.7;
+    for (const e of G.enemies) {
+      if (Math.hypot(e.x - p.x, e.y - p.y) < screenRange) {
+        if (e.boss) e.hp -= e.maxHp * 0.5;
+        else e.hp = 0;
+      }
+    }
+    addFloatingText(p.x, p.y - 40, '💣 BOOM!', '#ff5252', true);
+    // 화면 흔들기 효과
+    G.effects.push({
+      x: p.x, y: p.y, life: 0.5, maxLife: 0.5, radius: 0, maxRadius: screenRange,
+      update(dt) { this.radius = (1-this.life/this.maxLife) * this.maxRadius; },
+      draw(ctx) {
+        const sx = this.x - G.camX + G.W/2;
+        const sy = this.y - G.camY + G.H/2;
+        const a = this.life / this.maxLife;
+        ctx.strokeStyle = `rgba(255,80,80, ${a})`;
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        ctx.arc(sx, sy, this.radius, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.fillStyle = `rgba(255,200,100, ${a*0.2})`;
+        ctx.beginPath();
+        ctx.arc(sx, sy, this.radius, 0, Math.PI*2);
+        ctx.fill();
+      }
+    });
+  } else if (type === 'magnet') {
+    // 자석 - 모든 보석 즉시 흡수
+    let total = 0;
+    for (const g of G.gems) total += g.value;
+    G.exp += total * G.passives.expMul;
+    G.gems = [];
+    addFloatingText(p.x, p.y - 40, '🧲 +' + total + ' EXP', '#9b87f5', true);
+    while (G.exp >= G.expToNext) levelUp();
+  }
 }
 
 function updatePlayer(dt) {
@@ -607,6 +849,7 @@ function updateEnemies(dt, now) {
       G.enemies.splice(i, 1);
       G.kills++;
       dropGem(e.x, e.y, e.boss ? 5 : 1);
+      tryDropItem(e.x, e.y, e.boss);
       if (e.boss) {
         p.hp = Math.min(p.maxHp, p.hp + Math.round(p.maxHp * 0.3));
         addFloatingText(p.x, p.y - 40, 'BOSS KILL!', '#fdd835', true);
@@ -727,7 +970,7 @@ function updateOrbitals(dt) {
 
 function updateWeapons(dt, now) {
   for (const w of G.weapons) {
-    if (w.style === 'orbit' || w.style === 'orb') continue; // 자동
+    if (w.style === 'orbit') continue; // orbit은 orbital이 자동 처리
     const cd = w.cooldown * G.passives.cdMul;
     if (now - w.lastFire >= cd) {
       fireWeapon(w, now);
@@ -916,36 +1159,120 @@ function fireWeapon(w, now) {
       }
       break;
     }
-    case 'meteor': {  // 의식의 곤봉 - 망치 떨어트리기
+    case 'sweep': {  // 의식의 곤봉 - 한 방향 휘두르기
       const target = findNearestEnemy();
       if (!target) return;
-      const cnt = w.level || 1;
+      const dx = target.x - p.x, dy = target.y - p.y;
+      const baseAngle = Math.atan2(dy, dx);
+      const range = w.range * G.passives.rangeMul;
+      const swingArc = Math.PI * 0.7; // 부채꼴 각도 (약 126도)
+      // 휘두르기 명중 - 적이 부채꼴 안에 있는지
+      for (const e of G.enemies) {
+        const ed = Math.hypot(e.x - p.x, e.y - p.y);
+        if (ed > range + e.radius) continue;
+        const ea = Math.atan2(e.y - p.y, e.x - p.x);
+        let diff = Math.abs(((ea - baseAngle + Math.PI*3) % (Math.PI*2)) - Math.PI);
+        if (diff < swingArc / 2) {
+          applyHit(e, p.atk * w.damage * G.passives.atkMul * 0.25, p);
+          // 넉백
+          const knockDist = 30;
+          e.x += Math.cos(ea) * knockDist;
+          e.y += Math.sin(ea) * knockDist;
+        }
+      }
+      // 휘두르기 이펙트 (곤봉이 호를 그리며 휘둘러짐)
+      G.effects.push({
+        x: p.x, y: p.y, baseAngle, range, arc: swingArc,
+        life: 0.35, maxLife: 0.35,
+        draw(ctx) {
+          const sx = this.x - G.camX + G.W/2;
+          const sy = this.y - G.camY + G.H/2;
+          const t = 1 - this.life / this.maxLife; // 0 -> 1
+          const alpha = this.life / this.maxLife;
+          // 휘두르는 현재 각도 (start -> end)
+          const startA = this.baseAngle - this.arc/2;
+          const endA = this.baseAngle + this.arc/2;
+          const curA = startA + (endA - startA) * t;
+          // 부채꼴 잔상 (회를 그림)
+          ctx.save();
+          ctx.translate(sx, sy);
+          // 잔상 호
+          ctx.strokeStyle = `rgba(255,200,100, ${alpha * 0.6})`;
+          ctx.lineWidth = 8;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.arc(0, 0, this.range * 0.85, startA, curA);
+          ctx.stroke();
+          // 빛나는 호
+          ctx.shadowColor = '#ffcc55';
+          ctx.shadowBlur = 16;
+          ctx.strokeStyle = `rgba(255,255,200, ${alpha * 0.9})`;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(0, 0, this.range * 0.85, startA, curA);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+          // 곤봉 이미지 (현재 휘두르는 위치에)
+          const cx = Math.cos(curA) * this.range * 0.7;
+          const cy = Math.sin(curA) * this.range * 0.7;
+          const img = getCleanWeaponImg('hammer');
+          if (img && (img.complete !== false)) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(curA + Math.PI/4);
+            const sz = 60;
+            try { ctx.drawImage(img, -sz/2, -sz/2, sz, sz); } catch(e) {}
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+      });
+      break;
+    }
+    case 'falling_stone': {  // 합성 돌9 - 하늘에서 떨어지기
+      // 가장 가까운 적 위에 돌 N개 떨어뜨림
+      const lv = w.level || 1;
+      const cnt = Math.min(3 + lv, 8);
+      const range = w.range * G.passives.rangeMul;
       for (let i = 0; i < cnt; i++) {
         setTimeout(() => {
-          const tx = target.x + (Math.random() - 0.5) * 60;
-          const ty = target.y + (Math.random() - 0.5) * 60;
-          // 망치 떨어지는 이펙트
+          // 화면 안 랜덤한 적 또는 랜덤 위치
+          const eligibleEnemies = G.enemies.filter(e =>
+            Math.hypot(e.x - p.x, e.y - p.y) < range
+          );
+          let tx, ty;
+          if (eligibleEnemies.length > 0) {
+            const target = eligibleEnemies[Math.floor(Math.random() * eligibleEnemies.length)];
+            tx = target.x + (Math.random() - 0.5) * 40;
+            ty = target.y + (Math.random() - 0.5) * 40;
+          } else {
+            // 적 없으면 플레이어 주변
+            const ang = Math.random() * Math.PI * 2;
+            const rd = Math.random() * range;
+            tx = p.x + Math.cos(ang) * rd;
+            ty = p.y + Math.sin(ang) * rd;
+          }
+          // 돌 떨어지는 이펙트
           G.effects.push({
-            x: tx, y: ty, startTime: performance.now(),
-            life: 0.6, maxLife: 0.6,
-            update(dt) {},
+            x: tx, y: ty,
+            life: 0.7, maxLife: 0.7,
             draw(ctx) {
               const sx = this.x - G.camX + G.W/2;
               const sy = this.y - G.camY + G.H/2;
-              const t = 1 - this.life / this.maxLife;
-              const img = getWeaponImg('hammer');
-              if (img && img.complete) {
-                const sz = 60;
-                const fallY = sy - (1-t)*200;
+              const t = 1 - this.life / this.maxLife; // 0 -> 1
+              const img = getCleanWeaponImg('stone');
+              if (img && (img.complete !== false)) {
+                const sz = 50;
+                const fallY = sy - (1-t)*250;
                 ctx.save();
                 ctx.translate(sx, fallY);
-                ctx.rotate(t * Math.PI * 2);
-                ctx.drawImage(img, -sz/2, -sz/2, sz, sz);
+                ctx.rotate(t * Math.PI * 3);
+                try { ctx.drawImage(img, -sz/2, -sz/2, sz, sz); } catch(e) {}
                 ctx.restore();
-                // 그림자
-                ctx.fillStyle = `rgba(0,0,0, ${0.4 + t*0.3})`;
+                // 그림자 (점점 진해짐)
+                ctx.fillStyle = `rgba(0,0,0, ${0.3 + t*0.4})`;
                 ctx.beginPath();
-                ctx.ellipse(sx, sy + 5, 25*t, 8*t, 0, 0, Math.PI*2);
+                ctx.ellipse(sx, sy + 5, 20 + t*10, 6 + t*4, 0, 0, Math.PI*2);
                 ctx.fill();
               }
             }
@@ -953,33 +1280,40 @@ function fireWeapon(w, now) {
           // 충격 시점 (떨어질 때)
           setTimeout(() => {
             G.effects.push({
-              x: tx, y: ty, radius: 0, maxRadius: 80,
-              life: 0.4, maxLife: 0.4,
+              x: tx, y: ty, radius: 0, maxRadius: 70,
+              life: 0.35, maxLife: 0.35,
               update(dt) { this.radius = (1-this.life/this.maxLife) * this.maxRadius; },
               draw(ctx) {
                 const sx = this.x - G.camX + G.W/2;
                 const sy = this.y - G.camY + G.H/2;
                 const a = this.life / this.maxLife;
-                ctx.strokeStyle = `rgba(255,150,50, ${a})`;
-                ctx.lineWidth = 6;
+                ctx.strokeStyle = `rgba(150,140,120, ${a})`;
+                ctx.lineWidth = 5;
                 ctx.beginPath();
                 ctx.arc(sx, sy, this.radius, 0, Math.PI*2);
                 ctx.stroke();
-                ctx.fillStyle = `rgba(255,200,100, ${a*0.3})`;
-                ctx.beginPath();
-                ctx.arc(sx, sy, this.radius, 0, Math.PI*2);
-                ctx.fill();
+                // 흙 먼지 파편
+                for (let k = 0; k < 6; k++) {
+                  const ang = (k/6) * Math.PI*2;
+                  const r = this.radius;
+                  const px = sx + Math.cos(ang) * r;
+                  const py = sy + Math.sin(ang) * r;
+                  ctx.fillStyle = `rgba(100,80,60, ${a*0.7})`;
+                  ctx.beginPath();
+                  ctx.arc(px, py, 4, 0, Math.PI*2);
+                  ctx.fill();
+                }
               }
             });
             // 데미지
             for (const e of G.enemies) {
               const d = Math.hypot(e.x - tx, e.y - ty);
-              if (d < 80) {
+              if (d < 70) {
                 applyHit(e, p.atk * w.damage * G.passives.atkMul * 0.3, p);
               }
             }
-          }, 600);
-        }, i * 200);
+          }, 700);
+        }, i * 150);
       }
       break;
     }
@@ -1027,8 +1361,10 @@ function findNearestEnemy() {
 function updateSpawning(dt) {
   G.spawnTimer -= dt;
   if (G.spawnTimer <= 0) {
-    spawnEnemy();
-    G.spawnTimer = Math.max(0.15, 1.2 / G.difficultyMul);
+    // 시간에 따라 더 많이 스폰 (한 번에 1~3마리)
+    const burst = Math.min(3, 1 + Math.floor(G.time / 60));
+    for (let i = 0; i < burst; i++) spawnEnemy();
+    G.spawnTimer = Math.max(0.1, 0.8 / G.difficultyMul);
   }
   G.bossTimer -= dt;
   if (G.bossTimer <= 0) {
@@ -1039,21 +1375,31 @@ function updateSpawning(dt) {
 
 function spawnEnemy() {
   const angle = Math.random() * Math.PI * 2;
-  const dist = Math.max(G.W, G.H) * 0.7;
+  const dist = Math.max(G.W, G.H) * 0.65;
   const x = G.player.x + Math.cos(angle) * dist;
   const y = G.player.y + Math.sin(angle) * dist;
   const enemyPets = PET_DATA.filter(p => p.attr && Object.values(p.attr).some(v => v > 0));
   const ep = enemyPets[Math.floor(Math.random() * enemyPets.length)];
   const lvMul = G.difficultyMul;
+  // 더 강한 적
   const e = {
     x, y, name: ep.name, attr: ep.attr, radius: 22,
-    hp: Math.round(20 * lvMul), maxHp: Math.round(20 * lvMul),
-    atk: Math.round(15 * lvMul),
-    speed: 80 + Math.random() * 40,
+    hp: Math.round(40 * lvMul), maxHp: Math.round(40 * lvMul),
+    atk: Math.round(35 * lvMul),  // 데미지 강화 (15 → 35)
+    speed: 90 + Math.random() * 50,  // 속도 증가
     boss: false, frozenUntil: 0,
     dom: createPetDOM(ep.name, ep.image, false, false),
   };
   G.enemies.push(e);
+}
+
+// 랭커 닉네임 가져오기
+function getRandomRanker(petName) {
+  const list = RANKING_DATA[petName];
+  if (!list || list.length === 0) return null;
+  // TOP3 중 랜덤
+  const top = list.slice(0, 3);
+  return top[Math.floor(Math.random() * top.length)];
 }
 
 function spawnBoss() {
@@ -1061,24 +1407,54 @@ function spawnBoss() {
   const dist = Math.max(G.W, G.H) * 0.7;
   const x = G.player.x + Math.cos(angle) * dist;
   const y = G.player.y + Math.sin(angle) * dist;
-  const strongPets = PET_DATA.filter(p => p.attr).filter(p => {
+  // 랭킹 있는 펫 우선 (보스 닉네임 표시 가능)
+  const rankedPets = PET_DATA.filter(p => p.attr && RANKING_DATA[p.name]);
+  const strongPets = rankedPets.length > 0 ? rankedPets : PET_DATA.filter(p => p.attr).filter(p => {
     const s = (p.attr['지']||0)+(p.attr['수']||0)+(p.attr['화']||0)+(p.attr['풍']||0);
     return s >= 8;
   });
   const ep = strongPets[Math.floor(Math.random() * strongPets.length)] || PET_DATA[0];
+  // 랭커 닉네임
+  const ranker = getRandomRanker(ep.name);
+  const bossLabel = ranker ? `${ranker.nickname}의 ${ep.name}` : ep.name;
   const e = {
-    x, y, name: ep.name, attr: ep.attr, radius: 45,
-    hp: Math.round(300 * G.difficultyMul), maxHp: Math.round(300 * G.difficultyMul),
-    atk: Math.round(35 * G.difficultyMul),
-    speed: 60, boss: true, frozenUntil: 0,
-    dom: createPetDOM(ep.name, ep.image, false, true),
+    x, y, name: ep.name, attr: ep.attr, radius: 50,
+    hp: Math.round(500 * G.difficultyMul), maxHp: Math.round(500 * G.difficultyMul),
+    atk: Math.round(60 * G.difficultyMul),
+    speed: 70, boss: true, frozenUntil: 0,
+    bossLabel,
+    dom: createPetDOM(ep.name, ep.image, false, true, bossLabel),
   };
   G.enemies.push(e);
-  addFloatingText(x, y - 60, '⚠️ 보스 등장!', '#ff5252', true);
+  addFloatingText(x, y - 60, '⚠️ ' + bossLabel + ' 등장!', '#ff5252', true);
 }
 
 function dropGem(x, y, value) {
   G.gems.push({ x, y, value, bounce: 0 });
+}
+
+// 아이템 드롭 (적 잡으면 가끔)
+function tryDropItem(x, y, isBoss) {
+  const roll = Math.random();
+  let type = null;
+  if (isBoss) {
+    // 보스는 무조건 좋은거
+    const items = ['meat', 'bomb', 'magnet'];
+    type = items[Math.floor(Math.random() * items.length)];
+  } else {
+    // 일반 적: 2% 확률로 아이템
+    if (roll < 0.005) type = 'bomb';       // 0.5%
+    else if (roll < 0.015) type = 'magnet'; // 1%
+    else if (roll < 0.035) type = 'meat';   // 2%
+  }
+  if (type) {
+    G.items.push({
+      x, y, type,
+      bounce: 0,
+      pickupRadius: 30,
+      createdAt: performance.now(),
+    });
+  }
 }
 
 function attrMul(atkAttr, defAttr) {
@@ -1135,8 +1511,12 @@ function render() {
   vig.addColorStop(1, 'rgba(0,0,0,0.5)');
   ctx.fillStyle = vig;
   ctx.fillRect(0, 0, G.W, G.H);
+  // 오브젝트 (배경 위, 펫 뒤)
+  for (const o of G.obstacles) drawObstacle(o);
   // 보석
   for (const g of G.gems) drawGem(g);
+  // 아이템
+  for (const it of G.items) drawItem(it);
   // 발사체
   for (const pr of G.projectiles) drawProjectile(pr);
   // 회전 무기
@@ -1147,6 +1527,90 @@ function render() {
       try { ef.draw(ctx); } catch(e) {}
     }
   }
+}
+
+// 나무/바위 그리기
+function drawObstacle(o) {
+  const sx = o.x - G.camX + G.W/2;
+  const sy = o.y - G.camY + G.H/2;
+  if (sx < -100 || sx > G.W + 100 || sy < -100 || sy > G.H + 100) return;
+  const ctx = G.ctx;
+  if (o.type === 'tree') {
+    // 그림자
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(sx, sy + o.size*0.4, o.size*0.7, o.size*0.2, 0, 0, Math.PI*2);
+    ctx.fill();
+    // 줄기
+    ctx.fillStyle = '#4a3020';
+    ctx.fillRect(sx - 4, sy - o.size*0.2, 8, o.size*0.5);
+    // 잎 (3겹 - 가장 큰 거 어두운 색)
+    ctx.fillStyle = '#1a3a10';
+    ctx.beginPath();
+    ctx.arc(sx, sy - o.size*0.3, o.size*0.8, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#2a5a18';
+    ctx.beginPath();
+    ctx.arc(sx - o.size*0.2, sy - o.size*0.4, o.size*0.55, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#3a7028';
+    ctx.beginPath();
+    ctx.arc(sx + o.size*0.15, sy - o.size*0.35, o.size*0.4, 0, Math.PI*2);
+    ctx.fill();
+    // 하이라이트
+    ctx.fillStyle = '#5a9038';
+    ctx.beginPath();
+    ctx.arc(sx + o.size*0.2, sy - o.size*0.5, o.size*0.15, 0, Math.PI*2);
+    ctx.fill();
+  } else {
+    // 바위
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(sx, sy + o.size*0.3, o.size*0.6, o.size*0.18, 0, 0, Math.PI*2);
+    ctx.fill();
+    // 바위 본체
+    ctx.fillStyle = '#5a5040';
+    ctx.beginPath();
+    ctx.ellipse(sx, sy, o.size*0.6, o.size*0.45, 0, 0, Math.PI*2);
+    ctx.fill();
+    // 어두운 부분
+    ctx.fillStyle = '#3a3020';
+    ctx.beginPath();
+    ctx.ellipse(sx + o.size*0.1, sy + o.size*0.1, o.size*0.5, o.size*0.35, 0, 0, Math.PI*2);
+    ctx.fill();
+    // 하이라이트
+    ctx.fillStyle = '#8a8070';
+    ctx.beginPath();
+    ctx.ellipse(sx - o.size*0.15, sy - o.size*0.15, o.size*0.3, o.size*0.18, 0, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+// 아이템 그리기
+function drawItem(it) {
+  const sx = it.x - G.camX + G.W/2;
+  const sy = it.y - G.camY + G.H/2;
+  if (sx < -30 || sx > G.W + 30 || sy < -30 || sy > G.H + 30) return;
+  const bob = Math.sin(it.bounce) * 5;
+  const ctx = G.ctx;
+  // 빛나는 후광
+  const glow = ctx.createRadialGradient(sx, sy + bob, 0, sx, sy + bob, 30);
+  let glowColor;
+  if (it.type === 'meat') glowColor = 'rgba(255,180,100,0.6)';
+  else if (it.type === 'bomb') glowColor = 'rgba(255,80,80,0.6)';
+  else glowColor = 'rgba(155,135,245,0.6)';
+  glow.addColorStop(0, glowColor);
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath();
+  ctx.arc(sx, sy + bob, 30, 0, Math.PI*2);
+  ctx.fill();
+  // 이모지 (큰 글씨로)
+  ctx.font = '32px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const emoji = it.type === 'meat' ? '🍖' : (it.type === 'bomb' ? '💣' : '🧲');
+  ctx.fillText(emoji, sx, sy + bob);
 }
 
 function drawProjectile(pr) {
@@ -1249,13 +1713,13 @@ function drawOrbital(o) {
   const sx = o.x - G.camX + G.W/2;
   const sy = o.y - G.camY + G.H/2;
   const key = o.kind === 'orbit' ? 'axe' : 'stone';
-  const img = getWeaponImg(key);
+  const img = getCleanWeaponImg(key);
   G.ctx.save();
   G.ctx.translate(sx, sy);
   G.ctx.rotate(o.angle * (o.kind === 'orbit' ? 4 : 1));
-  if (img && img.complete) {
+  if (img && (img.complete !== false)) {
     const sz = o.kind === 'orbit' ? 50 : 35;
-    G.ctx.drawImage(img, -sz/2, -sz/2, sz, sz);
+    try { G.ctx.drawImage(img, -sz/2, -sz/2, sz, sz); } catch(e) {}
   } else {
     G.ctx.fillStyle = '#9b87f5';
     G.ctx.beginPath();
@@ -1347,9 +1811,6 @@ function buildUpgradeOptions() {
         if (w.style === 'orbit' && w.level === 3) {
           // 3렙에 도끼 1개 추가
           G.orbitals.push({ weapon: w, kind: 'orbit', angle: Math.PI });
-        }
-        if (w.style === 'orb' && w.level === 3) {
-          G.orbitals.push({ weapon: w, kind: 'orb', angle: Math.PI });
         }
       },
     });
