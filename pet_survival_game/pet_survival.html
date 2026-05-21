@@ -37,11 +37,9 @@
   #game-canvas {
     position: fixed;
     inset: 0;
-    background:
-      radial-gradient(ellipse at center, #1a1a3a 0%, #0a0a1a 70%, #000 100%);
+    background: #1a3a1a;
     width: 100vw;
     height: 100vh;
-    cursor: crosshair;
   }
 
   /* ─── 메뉴 화면 ─── */
@@ -300,11 +298,14 @@
     padding: 6px 10px;
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 12px;
+    gap: 6px;
+    font-size: 11px;
     font-weight: 800;
     backdrop-filter: blur(8px);
+    white-space: pre-line;
+    line-height: 1.2;
   }
+  .weapon-icon img { display: block; }
   .weapon-icon-emoji { font-size: 18px; }
   .weapon-icon-lv {
     background: var(--gold);
