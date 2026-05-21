@@ -15207,7 +15207,7 @@
   },
   {
     "name": "퀸토끼",
-    "image": "https://wind01.net/info/img/placeholder.gif",
+    "image": "https://wind01.net/info/img/300567.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": false,
@@ -15285,7 +15285,7 @@
   },
   {
     "name": "표범",
-    "image": "https://wind01.net/info/img/placeholder.gif",
+    "image": "https://wind01.net/info/img/160180.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": false,
@@ -15307,6 +15307,279 @@
       "atk": 2.371,
       "def": 1.73,
       "agi": 0.688
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "마그노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "2등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 8,
+      "수": 0,
+      "화": 0,
+      "풍": 2
+    },
+    "ic": {
+      "hp": 49.17,
+      "atk": 10.455,
+      "def": 7.287,
+      "agi": 5.39
+    },
+    "sg": {
+      "hp": 10.616,
+      "atk": 2.257,
+      "def": 1.573,
+      "agi": 1.163
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "매그노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "2등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 0,
+      "수": 8,
+      "화": 2,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 50.49,
+      "atk": 10.664,
+      "def": 6.902,
+      "agi": 5.17
+    },
+    "sg": {
+      "hp": 10.901,
+      "atk": 2.302,
+      "def": 1.49,
+      "agi": 1.116
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "맘그노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "2등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 8,
+      "풍": 2
+    },
+    "ic": {
+      "hp": 48.51,
+      "atk": 11.049,
+      "def": 6.891,
+      "agi": 5.39
+    },
+    "sg": {
+      "hp": 10.473,
+      "atk": 2.385,
+      "def": 1.487,
+      "agi": 1.163
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "머그노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "2등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 2,
+      "수": 0,
+      "화": 0,
+      "풍": 8
+    },
+    "ic": {
+      "hp": 49.39,
+      "atk": 10.455,
+      "def": 7.089,
+      "agi": 5.83
+    },
+    "sg": {
+      "hp": 10.663,
+      "atk": 2.257,
+      "def": 1.53,
+      "agi": 1.258
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "매트노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "1등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 5,
+      "수": 0,
+      "화": 0,
+      "풍": 5
+    },
+    "ic": {
+      "hp": 49.39,
+      "atk": 10.664,
+      "def": 7.1,
+      "agi": 5.61
+    },
+    "sg": {
+      "hp": 10.663,
+      "atk": 2.302,
+      "def": 1.533,
+      "agi": 1.211
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "맘트노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "1등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 0,
+      "수": 5,
+      "화": 5,
+      "풍": 0
+    },
+    "ic": {
+      "hp": 50.05,
+      "atk": 11.082,
+      "def": 6.924,
+      "agi": 5.17
+    },
+    "sg": {
+      "hp": 10.806,
+      "atk": 2.392,
+      "def": 1.495,
+      "agi": 1.116
+    },
+    "rebirth_ic": {
+      "hp": 55.8,
+      "atk": 11.646,
+      "def": 6.678,
+      "agi": 8.28
+    },
+    "rebirth_sg": {
+      "hp": 11.043,
+      "atk": 2.304,
+      "def": 1.321,
+      "agi": 1.638
+    },
+    "skins": []
+  },
+  {
+    "name": "다란트노",
+    "image": "https://wind01.net/info/img/placeholder.gif",
+    "grade": "1등급",
+    "mount": false,
+    "rebirth": false,
+    "obtain": "트노류 페트병(진영전 보상)",
+    "attr": {
+      "지": 0,
+      "수": 0,
+      "화": 0,
+      "풍": 10
+    },
+    "ic": {
+      "hp": 48.73,
+      "atk": 10.62,
+      "def": 6.462,
+      "agi": 6.49
+    },
+    "sg": {
+      "hp": 10.521,
+      "atk": 2.293,
+      "def": 1.395,
+      "agi": 1.401
     },
     "rebirth_ic": {
       "hp": 55.8,
