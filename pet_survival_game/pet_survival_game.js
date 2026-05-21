@@ -635,6 +635,8 @@ function updateProjectiles(dt) {
     pr.x += pr.vx * dt;
     pr.y += pr.vy * dt;
     pr.life -= dt;
+    // 회전 (눈꽃 등)
+    if (pr.rotSpeed) pr.rotation = (pr.rotation || 0) + pr.rotSpeed * dt;
     if (pr.life <= 0) { G.projectiles.splice(i, 1); continue; }
     let hit = false;
     for (const e of G.enemies) {
@@ -765,7 +767,7 @@ function fireWeapon(w, now) {
       }
       break;
     }
-    case 'thrust': {  // 헤티아의 창 - 직선 찌르기
+    case 'thrust': {  // 헤티아의 창 - 확! 찌르기
       const target = findNearestEnemy();
       if (!target) return;
       const dx = target.x - p.x, dy = target.y - p.y;
@@ -773,7 +775,7 @@ function fireWeapon(w, now) {
       const angle = Math.atan2(dy, dx);
       const len = w.thrustLen * G.passives.rangeMul;
       const wid = w.thrustWidth;
-      // 적 명중
+      // 적 명중 (관통)
       for (const e of G.enemies) {
         const ex = e.x - p.x, ey = e.y - p.y;
         const proj = ex * Math.cos(angle) + ey * Math.sin(angle);
@@ -782,26 +784,65 @@ function fireWeapon(w, now) {
           applyHit(e, p.atk * w.damage * G.passives.atkMul * 0.25, p);
         }
       }
-      // 이펙트
+      // 빠르고 강렬한 찌르기 이펙트
       G.effects.push({
         x: p.x, y: p.y, angle, len, wid,
-        life: 0.3, maxLife: 0.3, weaponKey: 'spear',
+        life: 0.2, maxLife: 0.2,
         draw(ctx) {
           const sx = this.x - G.camX + G.W/2;
           const sy = this.y - G.camY + G.H/2;
+          const t = 1 - this.life / this.maxLife;
+          const alpha = this.life / this.maxLife;
+          // 빠르게 뻗어나가는 줄기 (0~0.3는 빨리 확장, 그 후 페이드)
+          const extendT = Math.min(1, t / 0.3);
+          const visibleLen = this.len * extendT;
           ctx.save();
           ctx.translate(sx, sy);
           ctx.rotate(this.angle);
-          const t = 1 - this.life / this.maxLife;
-          // 빛 줄기
-          ctx.fillStyle = `rgba(253,216,53, ${0.4*(1-t)})`;
-          ctx.fillRect(0, -this.wid/2, this.len * (0.5 + t*0.5), this.wid);
-          // 창 이미지
-          const img = getWeaponImg('spear');
-          if (img && img.complete) {
-            const sz = 60;
-            ctx.drawImage(img, this.len * (0.3 + t*0.6) - sz/2, -sz/2, sz, sz);
+          // 외곽 빛 (그라데이션)
+          const grad = ctx.createLinearGradient(0, 0, visibleLen, 0);
+          grad.addColorStop(0, `rgba(255,255,255, ${alpha * 0.9})`);
+          grad.addColorStop(0.7, `rgba(253,216,53, ${alpha * 0.7})`);
+          grad.addColorStop(1, `rgba(245,165,35, 0)`);
+          ctx.fillStyle = grad;
+          // 길쭉한 다이아몬드 모양
+          ctx.beginPath();
+          ctx.moveTo(0, -this.wid/2);
+          ctx.lineTo(visibleLen * 0.95, -this.wid/4);
+          ctx.lineTo(visibleLen, 0);
+          ctx.lineTo(visibleLen * 0.95, this.wid/4);
+          ctx.lineTo(0, this.wid/2);
+          ctx.closePath();
+          ctx.fill();
+          // 안쪽 강한 코어 (밝은 선)
+          ctx.shadowColor = '#fdd835';
+          ctx.shadowBlur = 20;
+          ctx.strokeStyle = `rgba(255,255,255, ${alpha})`;
+          ctx.lineWidth = 6;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(visibleLen, 0);
+          ctx.stroke();
+          // 끝부분 폭발 (창끝 임팩트)
+          if (extendT > 0.5) {
+            ctx.shadowBlur = 30;
+            ctx.fillStyle = `rgba(255,255,255, ${alpha})`;
+            ctx.beginPath();
+            ctx.arc(visibleLen, 0, 12 + (1-alpha)*8, 0, Math.PI*2);
+            ctx.fill();
+            // 빛 줄기들 (방사형)
+            ctx.strokeStyle = `rgba(253,216,53, ${alpha * 0.8})`;
+            ctx.lineWidth = 2;
+            for (let k = 0; k < 6; k++) {
+              const a = (k / 6) * Math.PI * 2;
+              ctx.beginPath();
+              ctx.moveTo(visibleLen, 0);
+              ctx.lineTo(visibleLen + Math.cos(a) * 18, Math.sin(a) * 18);
+              ctx.stroke();
+            }
           }
+          ctx.shadowBlur = 0;
           ctx.restore();
         }
       });
@@ -831,10 +872,10 @@ function fireWeapon(w, now) {
               }
             }
           }
-          // 이펙트
+          // 이펙트 - 할퀴는 자국 (이미지 없음)
           G.effects.push({
             x: p.x, y: p.y, angle,
-            life: 0.25, maxLife: 0.25, weaponKey: 'claw',
+            life: 0.35, maxLife: 0.35,
             draw(ctx) {
               const sx = this.x - G.camX + G.W/2;
               const sy = this.y - G.camY + G.H/2;
@@ -842,20 +883,31 @@ function fireWeapon(w, now) {
               ctx.translate(sx, sy);
               ctx.rotate(this.angle);
               const t = 1 - this.life / this.maxLife;
-              // 할퀸 자국
-              ctx.strokeStyle = `rgba(255,80,80, ${0.8*(1-t)})`;
-              ctx.lineWidth = 4;
+              const alpha = this.life / this.maxLife;
+              // 할퀸 자국 3줄 (긴 곡선 + 두꺼움 + 빛남)
+              const length = 130 + t * 60;
               for (let j = -1; j <= 1; j++) {
+                // 빛나는 배경 (블러)
+                ctx.shadowColor = '#ff3838';
+                ctx.shadowBlur = 12;
+                ctx.strokeStyle = `rgba(255,50,50, ${alpha * 0.8})`;
+                ctx.lineWidth = 6;
+                ctx.lineCap = 'round';
                 ctx.beginPath();
-                ctx.moveTo(20, j*15);
-                ctx.quadraticCurveTo(60 + t*30, j*20, 100 + t*30, j*25);
+                const startX = 25;
+                const endX = length;
+                const offsetY = j * 18;
+                ctx.moveTo(startX, offsetY * 0.5);
+                ctx.quadraticCurveTo((startX + endX)/2, offsetY * 1.2, endX, offsetY);
                 ctx.stroke();
-              }
-              // 발톱 이미지
-              const img = getWeaponImg('claw');
-              if (img && img.complete) {
-                const sz = 40;
-                ctx.drawImage(img, 50 + t*40 - sz/2, -sz/2, sz, sz);
+                // 안쪽 밝은 줄
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = `rgba(255,255,255, ${alpha * 0.9})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(startX, offsetY * 0.5);
+                ctx.quadraticCurveTo((startX + endX)/2, offsetY * 1.2, endX, offsetY);
+                ctx.stroke();
               }
               ctx.restore();
             }
@@ -931,51 +983,32 @@ function fireWeapon(w, now) {
       }
       break;
     }
-    case 'freeze': {  // 얼음 손톱 - 얼리기
+    case 'freeze': {  // 얼음 손톱 - 눈꽃결정 발사
+      const target = findNearestEnemy();
+      if (!target) return;
       const range = w.range * G.passives.rangeMul;
-      // 범위 안 적 모두 얼림 + 데미지
-      const hit = [];
-      for (const e of G.enemies) {
-        if (Math.hypot(e.x - p.x, e.y - p.y) < range) {
-          applyHit(e, p.atk * w.damage * G.passives.atkMul * 0.2, p, 'freeze');
-          hit.push(e);
-        }
+      if (Math.hypot(target.x - p.x, target.y - p.y) > range) return;
+      // 3방향으로 눈꽃 발사 (메인 + 좌우)
+      const baseDx = target.x - p.x, baseDy = target.y - p.y;
+      const baseAngle = Math.atan2(baseDy, baseDx);
+      const spread = 0.3;
+      const angles = [baseAngle - spread, baseAngle, baseAngle + spread];
+      for (const ang of angles) {
+        const sp = 400;
+        G.projectiles.push({
+          x: p.x, y: p.y,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp,
+          radius: 14,
+          damage: p.atk * w.damage * G.passives.atkMul * 0.18,
+          life: 1.2,
+          type: 'snowflake',
+          special: 'freeze',
+          rotation: 0,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          pierce: 1,
+        });
       }
-      // 얼음 폭풍 이펙트
-      G.effects.push({
-        x: p.x, y: p.y, radius: 0, maxRadius: range,
-        life: 0.6, maxLife: 0.6,
-        update(dt) { this.radius = (1-this.life/this.maxLife) * this.maxRadius; },
-        draw(ctx) {
-          const sx = this.x - G.camX + G.W/2;
-          const sy = this.y - G.camY + G.H/2;
-          const a = this.life / this.maxLife;
-          // 얼음 파편들
-          for (let i = 0; i < 8; i++) {
-            const ang = (i / 8) * Math.PI * 2 + (1 - a) * 0.5;
-            const r = this.radius * (0.5 + ((i*7)%3)/3*0.5);
-            const ex = sx + Math.cos(ang) * r;
-            const ey = sy + Math.sin(ang) * r;
-            ctx.fillStyle = `rgba(150,220,255, ${a})`;
-            ctx.strokeStyle = `rgba(255,255,255, ${a})`;
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            const sz = 8;
-            ctx.moveTo(ex, ey - sz);
-            ctx.lineTo(ex + sz*0.6, ey);
-            ctx.lineTo(ex, ey + sz);
-            ctx.lineTo(ex - sz*0.6, ey);
-            ctx.closePath();
-            ctx.fill(); ctx.stroke();
-          }
-          // 중앙 얼음 광채
-          ctx.strokeStyle = `rgba(150,220,255, ${a*0.6})`;
-          ctx.lineWidth = 3;
-          ctx.beginPath();
-          ctx.arc(sx, sy, this.radius, 0, Math.PI*2);
-          ctx.stroke();
-        }
-      });
       break;
     }
   }
@@ -1119,28 +1152,96 @@ function render() {
 function drawProjectile(pr) {
   const sx = pr.x - G.camX + G.W/2;
   const sy = pr.y - G.camY + G.H/2;
+  const ctx = G.ctx;
   if (pr.type === 'arrow') {
-    // 화살: 진행 방향으로
+    // 화살 그리기 (활 이미지 X)
     const angle = Math.atan2(pr.vy, pr.vx);
-    G.ctx.save();
-    G.ctx.translate(sx, sy);
-    G.ctx.rotate(angle);
-    const img = getWeaponImg('bow');
-    if (img && img.complete) {
-      G.ctx.drawImage(img, -16, -16, 32, 32);
-    } else {
-      G.ctx.fillStyle = pr.color;
-      G.ctx.fillRect(-6, -2, 14, 4);
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.rotate(angle);
+    // 화살대 (갈색)
+    ctx.fillStyle = '#8B5A2B';
+    ctx.fillRect(-16, -1.5, 28, 3);
+    // 화살촉 (회색 삼각형)
+    ctx.fillStyle = '#c0c0c0';
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(18, 0);
+    ctx.lineTo(12, -5);
+    ctx.lineTo(12, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // 화살깃 (뒤쪽 깃털)
+    ctx.fillStyle = '#fdd835';
+    ctx.beginPath();
+    ctx.moveTo(-16, 0);
+    ctx.lineTo(-22, -4);
+    ctx.lineTo(-19, 0);
+    ctx.lineTo(-22, 4);
+    ctx.closePath();
+    ctx.fill();
+    // 빛나는 효과
+    ctx.shadowColor = '#fdd835';
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = 'rgba(253,216,53,0.5)';
+    ctx.fillRect(-16, -0.5, 28, 1);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  } else if (pr.type === 'snowflake') {
+    // 눈꽃결정
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.rotate(pr.rotation || 0);
+    // 빛나는 배경
+    ctx.shadowColor = '#aaddff';
+    ctx.shadowBlur = 15;
+    // 6방향 눈꽃 가지
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    const arms = 6;
+    const size = pr.radius;
+    for (let i = 0; i < arms; i++) {
+      const a = (i / arms) * Math.PI * 2;
+      const tx = Math.cos(a) * size;
+      const ty = Math.sin(a) * size;
+      // 메인 가지
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+      // 작은 가지 (V자)
+      const midX = Math.cos(a) * size * 0.6;
+      const midY = Math.sin(a) * size * 0.6;
+      const perpA = a + Math.PI / 2;
+      ctx.beginPath();
+      ctx.moveTo(midX, midY);
+      ctx.lineTo(midX + Math.cos(a + Math.PI*0.7) * size*0.3, midY + Math.sin(a + Math.PI*0.7) * size*0.3);
+      ctx.moveTo(midX, midY);
+      ctx.lineTo(midX + Math.cos(a - Math.PI*0.7) * size*0.3, midY + Math.sin(a - Math.PI*0.7) * size*0.3);
+      ctx.stroke();
     }
-    G.ctx.restore();
+    // 중앙 빛
+    ctx.fillStyle = '#aaddff';
+    ctx.beginPath();
+    ctx.arc(0, 0, 4, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(0, 0, 2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.restore();
   } else {
-    G.ctx.fillStyle = pr.color || '#fff';
-    G.ctx.shadowColor = pr.color || '#fff';
-    G.ctx.shadowBlur = 12;
-    G.ctx.beginPath();
-    G.ctx.arc(sx, sy, pr.radius, 0, Math.PI*2);
-    G.ctx.fill();
-    G.ctx.shadowBlur = 0;
+    ctx.fillStyle = pr.color || '#fff';
+    ctx.shadowColor = pr.color || '#fff';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(sx, sy, pr.radius, 0, Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
   }
 }
 
