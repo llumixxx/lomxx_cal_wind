@@ -55,7 +55,7 @@
           border-bottom: 1px solid #ede9ff;
           position: sticky;
           top: 0;
-          z-index: 100;
+          z-index: 9999;
           font-family: 'Noto Sans KR', sans-serif;
         }
         .nav-item { position: relative; }
@@ -104,7 +104,7 @@
           display: none;
           flex-direction: column;
           gap: 2px;
-          z-index: 200;
+          z-index: 10000;
           animation: dropdownIn 0.15s ease;
         }
         @keyframes dropdownIn {
