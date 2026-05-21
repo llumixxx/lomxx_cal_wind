@@ -1326,18 +1326,78 @@
       animation: tamagoIdle 3s ease-in-out infinite;
     }
     .battle-fighter-img img { width: 75%; height: 75%; object-fit: contain; }
-    .battle-fighter-img.attacking { animation: attackBounce .4s ease; }
-    .battle-fighter-img.hit { animation: hitShake .4s ease; }
-    @keyframes attackBounce {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.2) rotate(-10deg); }
+    .battle-fighter-img.attacking { animation: attackLunge .5s cubic-bezier(.34,1.56,.64,1); }
+    .battle-fighter-img.hit { animation: hitImpact .5s cubic-bezier(.36,.07,.19,.97); }
+    @keyframes attackLunge {
+      0%   { transform: scale(1) translateX(0) rotate(0); }
+      25%  { transform: scale(0.85) translateX(-12px) rotate(-8deg); }
+      50%  { transform: scale(1.35) translateX(25px) rotate(15deg); filter: drop-shadow(0 0 20px rgba(255,200,50,.8)) brightness(1.3); }
+      70%  { transform: scale(1.25) translateX(30px) rotate(10deg); filter: drop-shadow(0 0 15px rgba(255,200,50,.6)); }
+      100% { transform: scale(1) translateX(0) rotate(0); filter: none; }
     }
-    @keyframes hitShake {
-      0%,100% { transform: translateX(0); }
-      20% { transform: translateX(-8px) rotate(-5deg); }
-      40% { transform: translateX(8px) rotate(5deg); }
-      60% { transform: translateX(-5px); }
-      80% { transform: translateX(5px); }
+    @keyframes hitImpact {
+      0%   { transform: translateX(0) rotate(0); filter: brightness(1); }
+      10%  { transform: translateX(-15px) rotate(-12deg); filter: brightness(2) sepia(1) hue-rotate(-30deg); }
+      20%  { transform: translateX(18px) rotate(15deg); filter: brightness(1.8) sepia(1) hue-rotate(-30deg); }
+      30%  { transform: translateX(-12px) rotate(-10deg); filter: brightness(1.6); }
+      40%  { transform: translateX(10px) rotate(8deg) scale(0.9); filter: brightness(1.4); }
+      50%  { transform: translateX(-8px) rotate(-6deg); filter: brightness(1.2); }
+      70%  { transform: translateX(5px) scale(0.95); }
+      100% { transform: translateX(0) rotate(0) scale(1); filter: none; }
+    }
+
+    /* 🌀 화면 흔들기 (피격 임팩트) */
+    .battle-arena.shake-impact { animation: arenaShake .3s ease-in-out; }
+    @keyframes arenaShake {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-4px, -2px) rotate(-0.3deg); }
+      20% { transform: translate(5px, 3px) rotate(0.3deg); }
+      30% { transform: translate(-5px, 2px) rotate(-0.2deg); }
+      40% { transform: translate(4px, -3px) rotate(0.2deg); }
+      50% { transform: translate(-3px, 2px); }
+      60% { transform: translate(3px, -1px); }
+      70% { transform: translate(-2px, 1px); }
+      80% { transform: translate(1px, 0); }
+    }
+
+    /* 데미지 팝업 (강화) */
+    .damage-pop {
+      position: absolute;
+      font-size: 36px; font-weight: 900;
+      font-family: 'Nunito', sans-serif;
+      color: #ff3838;
+      text-shadow:
+        3px 3px 0 #fff, -3px -3px 0 #fff,
+        3px -3px 0 #fff, -3px 3px 0 #fff,
+        0 0 8px rgba(255,56,56,.5);
+      pointer-events: none;
+      animation: damagePopBig .9s cubic-bezier(.34,1.56,.64,1) forwards;
+      z-index: 100;
+      letter-spacing: -1px;
+    }
+    .damage-pop.crit {
+      color: #ffd700;
+      font-size: 50px;
+      text-shadow:
+        4px 4px 0 #c84800, -4px -4px 0 #c84800,
+        4px -4px 0 #c84800, -4px 4px 0 #c84800,
+        0 0 20px rgba(255,215,0,.8);
+      animation: damagePopCrit 1.1s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    @keyframes damagePopBig {
+      0%   { transform: translateY(10px) scale(0.3) rotate(-15deg); opacity: 0; }
+      20%  { transform: translateY(-10px) scale(1.6) rotate(8deg); opacity: 1; }
+      40%  { transform: translateY(-25px) scale(1.2) rotate(-5deg); opacity: 1; }
+      60%  { transform: translateY(-45px) scale(1.1) rotate(0); opacity: 1; }
+      100% { transform: translateY(-90px) scale(0.9) rotate(0); opacity: 0; }
+    }
+    @keyframes damagePopCrit {
+      0%   { transform: translateY(10px) scale(0.2) rotate(-30deg); opacity: 0; }
+      15%  { transform: translateY(-15px) scale(2.0) rotate(15deg); opacity: 1; filter: drop-shadow(0 0 16px gold); }
+      30%  { transform: translateY(-30px) scale(1.5) rotate(-10deg); opacity: 1; }
+      50%  { transform: translateY(-50px) scale(1.3) rotate(5deg); opacity: 1; }
+      75%  { transform: translateY(-75px) scale(1.1) rotate(0); opacity: 0.9; }
+      100% { transform: translateY(-110px) scale(0.9) rotate(0); opacity: 0; }
     }
     .battle-fighter-name {
       font-size: 14px; font-weight: 900; color: var(--t1);
@@ -1412,29 +1472,6 @@
     @keyframes vsPulse {
       0%,100% { transform: scale(1); }
       50% { transform: scale(1.15); }
-    }
-
-    /* 데미지 팝업 */
-    .damage-pop {
-      position: absolute;
-      font-size: 32px; font-weight: 900;
-      font-family: 'Nunito', sans-serif;
-      color: #ff3838;
-      text-shadow:
-        2px 2px 0 #fff, -2px -2px 0 #fff,
-        2px -2px 0 #fff, -2px 2px 0 #fff;
-      pointer-events: none;
-      animation: damagePop 1s ease-out forwards;
-      z-index: 10;
-    }
-    .damage-pop.crit {
-      color: #fdd835;
-      font-size: 42px;
-    }
-    @keyframes damagePop {
-      0%   { transform: translateY(0) scale(0.5); opacity: 1; }
-      30%  { transform: translateY(-30px) scale(1.4); opacity: 1; }
-      100% { transform: translateY(-70px) scale(1); opacity: 0; }
     }
 
     /* 전투 로그 */
@@ -2252,7 +2289,8 @@ function onNickInput(side) {
   }
 
   if (matched.length === 0) {
-    sugg.style.display = 'none';
+    sugg.innerHTML = `<div class="nick-suggestion-item" style="color:var(--t3);font-weight:600;cursor:default;">😢 "${input.value}" 매칭 없음</div>`;
+    sugg.style.display = 'block';
     return;
   }
 
@@ -2266,8 +2304,11 @@ function onNickInput(side) {
   }).join('');
   sugg.style.display = 'block';
 
-  // 입력 변경시 펫 목록 업데이트
-  onBattleNickChange(side);
+  // 정확히 일치하는 닉이 있으면 자동으로 펫 검색
+  const exact = allNicks.find(n => n.toLowerCase() === query);
+  if (exact || query === '') {
+    onBattleNickChange(side);
+  }
 }
 
 // 추천 항목 클릭
@@ -2555,30 +2596,50 @@ async function runBattle(me, opp) {
 
     function showDamagePop(who, dmg, isCrit) {
       try {
+        const fighter = document.getElementById('fighter-' + who);
+        if (!fighter) {
+          console.warn('[Battle] damagePop: fighter not found', who);
+          return;
+        }
+        const imgEl = fighter.querySelector('.battle-fighter-img');
+        if (!imgEl) {
+          console.warn('[Battle] damagePop: img not found', who);
+          return;
+        }
         const pop = document.createElement('div');
         pop.className = 'damage-pop' + (isCrit ? ' crit' : '');
         pop.textContent = (isCrit ? 'CRIT! ' : '') + '-' + dmg;
-        const imgEl = document.getElementById(who + '-img');
-        const arenaEl = document.getElementById('battle-arena');
-        if (!imgEl || !arenaEl) return;
-        const rect = imgEl.getBoundingClientRect();
-        const arenaRect = arenaEl.getBoundingClientRect();
-        pop.style.left = (rect.left - arenaRect.left + rect.width / 2 - 20) + 'px';
-        pop.style.top = (rect.top - arenaRect.top - 10) + 'px';
-        arenaEl.appendChild(pop);
-        setTimeout(() => pop.remove(), 1000);
+        // 펫 이미지 기준 절대 위치 (fighter 안에 추가)
+        fighter.style.position = 'relative';
+        const imgRect = imgEl.getBoundingClientRect();
+        const fighterRect = fighter.getBoundingClientRect();
+        pop.style.position = 'absolute';
+        pop.style.left = (imgRect.left - fighterRect.left + imgRect.width / 2 - 30) + 'px';
+        pop.style.top = (imgRect.top - fighterRect.top - 10) + 'px';
+        fighter.appendChild(pop);
+        setTimeout(() => pop.remove(), 1200);
       } catch(e) { console.warn('damagePop err', e); }
     }
 
     function animateAttack(attacker, defender) {
-      const aEl = document.getElementById(attacker + '-img');
-      const dEl = document.getElementById(defender + '-img');
+      const aFighter = document.getElementById('fighter-' + attacker);
+      const dFighter = document.getElementById('fighter-' + defender);
+      const aEl = aFighter ? aFighter.querySelector('.battle-fighter-img') : null;
+      const dEl = dFighter ? dFighter.querySelector('.battle-fighter-img') : null;
       if (aEl) aEl.classList.add('attacking');
-      if (dEl) dEl.classList.add('hit');
+      if (dEl) {
+        dEl.classList.add('hit');
+        // 화면 흔들기 (피격 임팩트)
+        const arena = document.getElementById('battle-arena');
+        if (arena) {
+          arena.classList.add('shake-impact');
+          setTimeout(() => arena.classList.remove('shake-impact'), 300);
+        }
+      }
       setTimeout(() => {
         if (aEl) aEl.classList.remove('attacking');
         if (dEl) dEl.classList.remove('hit');
-      }, 400);
+      }, 500);
     }
 
     // 시작 로그
