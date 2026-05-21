@@ -1,34 +1,46 @@
 (function() {
-  const MENUS = [
-    { href: 'index.html',        label: '🏠 환각 계산기' },
-    { href: 'pokedex.html',      label: '🐾 펫 도감' },
-    { href: 'sim.html',          label: '🎮 시뮬레이터' },
-    { href: 'pet_ranking.html',  label: '🏆 펫 랭킹' },
-    { href: 'pet_worldcup.html', label: '🐾 이상형 월드컵' },
-    { href: 'pet_recommend.html',label: '✨ 펫 추천' },
-    { href: 'pet_survival_game/pet_survival.html', label: '🦇 펫 서바이벌' },
-    { href: 'windrogue.html',    label: '⚔️ 윈드로그' },
-    { href: 'raise.html',        label: '👑 프린세스 펫 메이커' },
-    { href: 'daily.html',        label: '📈 STOCK·WIND' },
+  // ─── 메뉴 구조: 카테고리별 그룹 ───
+  const MENU_GROUPS = [
+    {
+      label: '🏠 홈',
+      href: 'index.html',
+    },
+    {
+      label: '🐾 펫 정보',
+      items: [
+        { href: 'pokedex.html',       label: '📖 펫 도감' },
+        { href: 'pet_ranking.html',   label: '🏆 펫 랭킹' },
+        { href: 'pet_recommend.html', label: '✨ 펫 추천' },
+        { href: 'pet_worldcup.html',  label: '🐾 이상형 월드컵' },
+      ],
+    },
+    {
+      label: '🎮 시뮬레이터',
+      href: 'sim.html',
+    },
+    {
+      label: '🎲 미니게임',
+      items: [
+        { href: 'pet_survival_game/pet_survival.html', label: '🦇 펫 서바이벌' },
+        { href: 'windrogue.html',                       label: '⚔️ 윈드로그' },
+        { href: 'raise.html',                           label: '👑 프린세스 펫 메이커' },
+      ],
+    },
+    {
+      label: '📊 경제',
+      href: 'daily.html',
+    },
   ];
 
   function injectNav() {
-    // 이미 삽입됐으면 스킵
     if (document.getElementById('global-nav')) return;
 
-    // 현재 페이지 파악
     const path = location.pathname;
-    const parts = path.split('/').filter(Boolean);
-    const current = parts[parts.length - 1] || 'index.html';
-    // 폴더 깊이 (마지막 파일명 제외)
-    // 예: /repo/file.html → 깊이 0 (루트)
-    //     /repo/subfolder/file.html → 깊이 1 (../ 필요)
-    // GitHub Pages: /repoName/sub/file.html → repo 다음부터 깊이 계산
-    // 간단하게: pet_survival_game 폴더 안인지 체크
+    const current = path.split('/').pop() || 'index.html';
     const inSubfolder = path.includes('/pet_survival_game/');
     const prefix = inSubfolder ? '../' : '';
 
-    // 스타일 삽입
+    // 스타일
     if (!document.getElementById('global-nav-style')) {
       const style = document.createElement('style');
       style.id = 'global-nav-style';
@@ -36,69 +48,185 @@
         #global-nav {
           display: flex;
           justify-content: center;
-          gap: 7px;
+          gap: 6px;
           flex-wrap: wrap;
-          padding: 10px 16px;
+          padding: 10px 14px;
           background: #fff;
-          border-bottom: 1.5px solid #e8e3ff;
+          border-bottom: 1px solid #ede9ff;
           position: sticky;
           top: 0;
           z-index: 100;
+          font-family: 'Noto Sans KR', sans-serif;
         }
-        #global-nav a {
+        .nav-item { position: relative; }
+        .nav-link {
+          display: inline-block;
           text-decoration: none;
           background: #f7f5ff;
           border: 1.5px solid #e8e3ff;
           border-radius: 99px;
-          padding: 6px 14px;
-          font-size: 12px;
+          padding: 7px 16px;
+          font-size: 12.5px;
           font-weight: 700;
           color: #7b72a8;
-          font-family: 'Noto Sans KR', sans-serif;
+          cursor: pointer;
           transition: all .15s;
           white-space: nowrap;
+          user-select: none;
         }
-        #global-nav a:hover {
+        .nav-link:hover, .nav-item.open > .nav-link {
           border-color: #9b87f5;
           color: #6c5ce7;
           background: #ede9ff;
         }
-        #global-nav a.nav-active {
+        .nav-link.nav-active {
           background: linear-gradient(135deg, #9b87f5, #f587b8);
           color: #fff;
           border-color: transparent;
+        }
+        .nav-link.has-children::after {
+          content: '▾';
+          margin-left: 4px;
+          font-size: 9px;
+          opacity: 0.7;
+        }
+        .nav-dropdown {
+          position: absolute;
+          top: calc(100% + 6px);
+          left: 50%;
+          transform: translateX(-50%);
+          background: #fff;
+          border: 1.5px solid #e8e3ff;
+          border-radius: 14px;
+          padding: 6px;
+          box-shadow: 0 8px 24px rgba(155,135,245,0.18);
+          min-width: 170px;
+          display: none;
+          flex-direction: column;
+          gap: 2px;
+          z-index: 200;
+          animation: dropdownIn 0.15s ease;
+        }
+        @keyframes dropdownIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+          to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .nav-item.open > .nav-dropdown { display: flex; }
+        .nav-dropdown a {
+          text-decoration: none;
+          color: #5b5388;
+          font-size: 12.5px;
+          font-weight: 700;
+          padding: 8px 14px;
+          border-radius: 10px;
+          white-space: nowrap;
+          transition: all .12s;
+        }
+        .nav-dropdown a:hover {
+          background: linear-gradient(135deg, #f7f5ff, #ffe9f2);
+          color: #6c5ce7;
+        }
+        .nav-dropdown a.nav-active {
+          background: linear-gradient(135deg, #9b87f5, #f587b8);
+          color: #fff;
+        }
+        .nav-item.has-active > .nav-link {
+          border-color: #f587b8;
+          color: #6c5ce7;
+          background: #fdeaf3;
+        }
+        @media (max-width: 600px) {
+          #global-nav { gap: 4px; padding: 8px 10px; }
+          .nav-link { padding: 6px 12px; font-size: 12px; }
+          .nav-dropdown { min-width: 150px; }
         }
       `;
       document.head.appendChild(style);
     }
 
-    // nav 렌더
     const nav = document.createElement('div');
     nav.id = 'global-nav';
-    nav.innerHTML = MENUS.map(m => {
-      // 펫 서바이벌은 폴더 안 페이지
-      const isSurvival = m.href.includes('pet_survival_game/');
-      let href;
-      if (isSurvival) {
-        // 서바이벌은 폴더 안이므로 - 루트에선 그대로, 폴더 안에선 같은 폴더의 pet_survival.html
-        href = inSubfolder ? 'pet_survival.html' : m.href;
-      } else {
-        // 일반 페이지 - 폴더 안에선 ../ 붙이기
-        href = prefix + m.href;
-      }
-      // active 체크 (파일명만 비교)
-      const targetFile = m.href.split('/').pop();
-      const isActive = targetFile === current;
-      return `<a href="${href}"${isActive ? ' class="nav-active"' : ''}>${m.label}</a>`;
-    }).join('');
 
-    // body 맨 앞에 삽입
+    MENU_GROUPS.forEach(group => {
+      const item = document.createElement('div');
+      item.className = 'nav-item';
+
+      if (group.items) {
+        // 드롭다운 그룹
+        const hasActive = group.items.some(it => it.href.split('/').pop() === current);
+
+        const btn = document.createElement('span');
+        btn.className = 'nav-link has-children';
+        if (hasActive) item.classList.add('has-active');
+        btn.textContent = group.label;
+        item.appendChild(btn);
+
+        const dropdown = document.createElement('div');
+        dropdown.className = 'nav-dropdown';
+        group.items.forEach(it => {
+          const a = document.createElement('a');
+          const targetFile = it.href.split('/').pop();
+          const isActive = targetFile === current;
+          let href;
+          if (it.href.includes('pet_survival_game/')) {
+            href = inSubfolder ? 'pet_survival.html' : it.href;
+          } else {
+            href = prefix + it.href;
+          }
+          a.href = href;
+          a.textContent = it.label;
+          if (isActive) a.classList.add('nav-active');
+          dropdown.appendChild(a);
+        });
+        item.appendChild(dropdown);
+
+        // 호버 + 클릭
+        let hoverTimer;
+        item.addEventListener('mouseenter', () => {
+          clearTimeout(hoverTimer);
+          closeAllDropdowns();
+          item.classList.add('open');
+        });
+        item.addEventListener('mouseleave', () => {
+          hoverTimer = setTimeout(() => item.classList.remove('open'), 200);
+        });
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const isOpen = item.classList.contains('open');
+          closeAllDropdowns();
+          if (!isOpen) item.classList.add('open');
+        });
+      } else {
+        const a = document.createElement('a');
+        a.className = 'nav-link';
+        const targetFile = group.href.split('/').pop();
+        const isActive = targetFile === current;
+        let href;
+        if (group.href.includes('pet_survival_game/')) {
+          href = inSubfolder ? 'pet_survival.html' : group.href;
+        } else {
+          href = prefix + group.href;
+        }
+        a.href = href;
+        a.textContent = group.label;
+        if (isActive) a.classList.add('nav-active');
+        item.appendChild(a);
+      }
+
+      nav.appendChild(item);
+    });
+
     if (document.body) {
       document.body.insertBefore(nav, document.body.firstChild);
     }
+
+    document.addEventListener('click', () => closeAllDropdowns());
   }
 
-  // DOM이 준비된 시점에 실행
+  function closeAllDropdowns() {
+    document.querySelectorAll('.nav-item.open').forEach(el => el.classList.remove('open'));
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', injectNav);
   } else {
