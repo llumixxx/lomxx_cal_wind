@@ -13,8 +13,8 @@ const ATTR_COLORS = { '지': '#a8c068', '수': '#7ab8e0', '화': '#ff7a5a', '풍
 
 async function loadGameData() {
   try {
-    // 펫 정보
-    const r = await fetch('pet_info_data.json?t=' + Date.now());
+    // 펫 정보 (상위 폴더에서 가져오기)
+    const r = await fetch('../pet_info_data.json?t=' + Date.now());
     const pets = await r.json();
     PET_DATA = pets;
     pets.forEach(p => {
