@@ -664,7 +664,7 @@
   },
   {
     "name": "꼬꼬비",
-    "image": "https://wind01.net/info/img/100262.png",
+    "image": "https://wind01.net/info/img/100262.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -922,7 +922,7 @@
   },
   {
     "name": "베로로크",
-    "image": "https://wind01.net/info/img/100268.png",
+    "image": "https://wind01.net/info/img/100268.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1078,7 +1078,7 @@
   },
   {
     "name": "북이",
-    "image": "https://wind01.net/info/img/100272.png",
+    "image": "https://wind01.net/info/img/100272.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1156,7 +1156,7 @@
   },
   {
     "name": "돌북이",
-    "image": "https://wind01.net/info/img/100274.png",
+    "image": "https://wind01.net/info/img/100274.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1273,7 +1273,7 @@
   },
   {
     "name": "타로곤",
-    "image": "https://wind01.net/info/img/100277.png",
+    "image": "https://wind01.net/info/img/100277.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1351,7 +1351,7 @@
   },
   {
     "name": "보크곤",
-    "image": "https://wind01.net/info/img/100393.png",
+    "image": "https://wind01.net/info/img/100393.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -1624,7 +1624,7 @@
   },
   {
     "name": "코로카스",
-    "image": "https://wind01.net/info/img/100285.png",
+    "image": "https://wind01.net/info/img/100285.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1819,7 +1819,7 @@
   },
   {
     "name": "카르기안",
-    "image": "https://wind01.net/info/img/100392.png",
+    "image": "https://wind01.net/info/img/100392.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1858,7 +1858,7 @@
   },
   {
     "name": "리비노",
-    "image": "https://wind01.net/info/img/100287.png",
+    "image": "https://wind01.net/info/img/100287.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1908,7 +1908,7 @@
   },
   {
     "name": "얀기로",
-    "image": "https://wind01.net/info/img/100288.png",
+    "image": "https://wind01.net/info/img/100288.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -1943,7 +1943,18 @@
       "def": 1.454,
       "agi": 1.262
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/100288_1_9900.gif",
+        "vp": 9900
+      },
+      {
+        "title": "외형 2",
+        "image": "https://wind01.net/info/img/100288_2_19900.gif",
+        "vp": 19900
+      }
+    ]
   },
   {
     "name": "반보로",
@@ -1985,12 +1996,12 @@
     "skins": [
       {
         "title": "외형 1",
-        "image": "https://wind01.net/info/img/100288_1_9900.gif",
+        "image": "https://wind01.net/info/img/100289_1_9900.gif",
         "vp": 9900
       },
       {
         "title": "외형 2",
-        "image": "https://wind01.net/info/img/100288_2_19900.gif",
+        "image": "https://wind01.net/info/img/100289_2_19900.gif",
         "vp": 19900
       }
     ]
@@ -2292,7 +2303,7 @@
   },
   {
     "name": "케이비",
-    "image": "https://wind01.net/info/img/100296.png",
+    "image": "https://wind01.net/info/img/100296.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -2487,7 +2498,7 @@
   },
   {
     "name": "투르돈",
-    "image": "https://wind01.net/info/img/100309.png",
+    "image": "https://wind01.net/info/img/100309.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -2916,7 +2927,7 @@
   },
   {
     "name": "베르가",
-    "image": "https://wind01.net/info/img/100327.gif",
+    "image": "https://wind01.net/info/img/100327.png",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -3006,7 +3017,23 @@
       "def": 1.366,
       "agi": 1.673
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/100328_1_9900.gif",
+        "vp": 9900
+      },
+      {
+        "title": "외형 2",
+        "image": "https://wind01.net/info/img/100328_2_14900.gif",
+        "vp": 14900
+      },
+      {
+        "title": "외형 3",
+        "image": "https://wind01.net/info/img/100328_3_4900_re.gif",
+        "vp": 4900
+      }
+    ]
   },
   {
     "name": "고르고르",
@@ -3315,7 +3342,7 @@
   },
   {
     "name": "쟈그라",
-    "image": "https://wind01.net/info/img/100340.png",
+    "image": "https://wind01.net/info/img/100340.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -3510,7 +3537,7 @@
   },
   {
     "name": "비트로스",
-    "image": "https://wind01.net/info/img/100345.gif",
+    "image": "https://wind01.net/info/img/100345.png",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -3545,23 +3572,7 @@
       "def": 2.003,
       "agi": 0.831
     },
-    "skins": [
-      {
-        "title": "외형 1",
-        "image": "https://wind01.net/info/img/100328_1_9900.gif",
-        "vp": 9900
-      },
-      {
-        "title": "외형 2",
-        "image": "https://wind01.net/info/img/100328_2_14900.gif",
-        "vp": 14900
-      },
-      {
-        "title": "외형 3",
-        "image": "https://wind01.net/info/img/100328_3_4900_re.gif",
-        "vp": 4900
-      }
-    ]
+    "skins": []
   },
   {
     "name": "가가로스",
@@ -4612,7 +4623,7 @@
   },
   {
     "name": "골로스",
-    "image": "https://wind01.net/info/img/100374.png",
+    "image": "https://wind01.net/info/img/100374.gif",
     "grade": "1등급",
     "mount": true,
     "rebirth": true,
@@ -5203,7 +5214,7 @@
   },
   {
     "name": "카우거",
-    "image": "https://wind01.net/info/img/105312.png",
+    "image": "https://wind01.net/info/img/105312.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -5281,7 +5292,7 @@
   },
   {
     "name": "크랩",
-    "image": "https://wind01.net/info/img/103096.png",
+    "image": "https://wind01.net/info/img/103096.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -5320,7 +5331,7 @@
   },
   {
     "name": "킹크랩",
-    "image": "https://wind01.net/info/img/103095.png",
+    "image": "https://wind01.net/info/img/103095.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -5437,7 +5448,7 @@
   },
   {
     "name": "쿠아",
-    "image": "https://wind01.net/info/img/103210.png",
+    "image": "https://wind01.net/info/img/103210.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -5515,7 +5526,7 @@
   },
   {
     "name": "슈우",
-    "image": "https://wind01.net/info/img/160193.png",
+    "image": "https://wind01.net/info/img/160193.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -5628,7 +5639,18 @@
       "def": 1.552,
       "agi": 1.306
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/100906_1_14900.gif",
+        "vp": 14900
+      },
+      {
+        "title": "외형 2",
+        "image": "https://wind01.net/info/img/100906_2_4900.gif",
+        "vp": 4900
+      }
+    ]
   },
   {
     "name": "흑귀",
@@ -5671,7 +5693,7 @@
   },
   {
     "name": "토라",
-    "image": "https://wind01.net/info/img/105084.gif",
+    "image": "https://wind01.net/info/img/105084.png",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -5866,7 +5888,7 @@
   },
   {
     "name": "갈푸스",
-    "image": "https://wind01.net/info/img/105079.png",
+    "image": "https://wind01.net/info/img/105079.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -5940,11 +5962,17 @@
       "def": 1.844,
       "agi": 0.593
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/105125_1_14900.gif",
+        "vp": 14900
+      }
+    ]
   },
   {
     "name": "구루마루",
-    "image": "https://wind01.net/info/img/105204.png",
+    "image": "https://wind01.net/info/img/105204.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -5983,7 +6011,7 @@
   },
   {
     "name": "차크론",
-    "image": "https://wind01.net/info/img/102739.png",
+    "image": "https://wind01.net/info/img/102739.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -6306,7 +6334,7 @@
   },
   {
     "name": "아코로비",
-    "image": "https://wind01.net/info/img/160195.png",
+    "image": "https://wind01.net/info/img/160195.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -6462,7 +6490,7 @@
   },
   {
     "name": "흑호",
-    "image": "https://wind01.net/info/img/160122.png",
+    "image": "https://wind01.net/info/img/160122.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -6579,7 +6607,7 @@
   },
   {
     "name": "라스키",
-    "image": "https://wind01.net/info/img/100853.png",
+    "image": "https://wind01.net/info/img/100853.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -6774,7 +6802,7 @@
   },
   {
     "name": "가우",
-    "image": "https://wind01.net/info/img/160120.png",
+    "image": "https://wind01.net/info/img/160120.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7008,7 +7036,7 @@
   },
   {
     "name": "크로아치",
-    "image": "https://wind01.net/info/img/102635.png",
+    "image": "https://wind01.net/info/img/102635.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7125,7 +7153,7 @@
   },
   {
     "name": "바라쿠스",
-    "image": "https://wind01.net/info/img/103169.png",
+    "image": "https://wind01.net/info/img/103169.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7164,7 +7192,7 @@
   },
   {
     "name": "테로노돈",
-    "image": "https://wind01.net/info/img/102629.png",
+    "image": "https://wind01.net/info/img/102629.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7242,7 +7270,7 @@
   },
   {
     "name": "라이쿠스",
-    "image": "https://wind01.net/info/img/102634.png",
+    "image": "https://wind01.net/info/img/102634.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7316,7 +7344,13 @@
       "def": 1.352,
       "agi": 1.686
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/102639_1_9900.gif",
+        "vp": 9900
+      }
+    ]
   },
   {
     "name": "흑기린",
@@ -7359,7 +7393,7 @@
   },
   {
     "name": "우라노스",
-    "image": "https://wind01.net/info/img/103248.png",
+    "image": "https://wind01.net/info/img/103248.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7433,7 +7467,13 @@
       "def": 1.54,
       "agi": 1.258
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/200203_1_29900.gif",
+        "vp": 29900
+      }
+    ]
   },
   {
     "name": "카로스",
@@ -7527,7 +7567,7 @@
   },
   {
     "name": "타비스",
-    "image": "https://wind01.net/info/img/200206.png",
+    "image": "https://wind01.net/info/img/200206.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -7812,7 +7852,7 @@
   },
   {
     "name": "본드래곤",
-    "image": "https://wind01.net/info/img/103125.png",
+    "image": "https://wind01.net/info/img/103125.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -8062,7 +8102,7 @@
   },
   {
     "name": "울푸스",
-    "image": "https://wind01.net/info/img/105082.gif",
+    "image": "https://wind01.net/info/img/105082.png",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -8531,7 +8571,18 @@
       "def": 1.416,
       "agi": 1.353
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/101819_1_19900.gif",
+        "vp": 19900
+      },
+      {
+        "title": "외형 2",
+        "image": "https://wind01.net/info/img/101819_2_19900.gif",
+        "vp": 19900
+      }
+    ]
   },
   {
     "name": "나비드래곤",
@@ -9060,7 +9111,7 @@
   },
   {
     "name": "흑모",
-    "image": "https://wind01.net/info/img/300265.png",
+    "image": "https://wind01.net/info/img/300265.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -9095,7 +9146,13 @@
       "def": 1.796,
       "agi": 0.593
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/300265_1_14900.gif",
+        "vp": 14900
+      }
+    ]
   },
   {
     "name": "지가로스",
@@ -9188,7 +9245,7 @@
   },
   {
     "name": "페가수스",
-    "image": "https://wind01.net/info/img/300256.png",
+    "image": "https://wind01.net/info/img/300256.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -9223,7 +9280,13 @@
       "def": 1.347,
       "agi": 1.686
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/300256_1_14900.gif",
+        "vp": 14900
+      }
+    ]
   },
   {
     "name": "데라",
@@ -9383,7 +9446,7 @@
   },
   {
     "name": "라루루",
-    "image": "https://wind01.net/info/img/100846.png",
+    "image": "https://wind01.net/info/img/100846.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -9422,7 +9485,7 @@
   },
   {
     "name": "키라비",
-    "image": "https://wind01.net/info/img/100858.png",
+    "image": "https://wind01.net/info/img/100858.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -9461,7 +9524,7 @@
   },
   {
     "name": "노보스",
-    "image": "https://wind01.net/info/img/100890.png",
+    "image": "https://wind01.net/info/img/100890.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -9656,7 +9719,7 @@
   },
   {
     "name": "블루카비트",
-    "image": "https://wind01.net/info/img/100856.png",
+    "image": "https://wind01.net/info/img/100856.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -10151,7 +10214,7 @@
   },
   {
     "name": "가이록스",
-    "image": "https://wind01.net/info/img/103114.png",
+    "image": "https://wind01.net/info/img/103114.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -10229,7 +10292,7 @@
   },
   {
     "name": "비트로돈",
-    "image": "https://wind01.net/info/img/103233.png",
+    "image": "https://wind01.net/info/img/103233.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -10268,7 +10331,7 @@
   },
   {
     "name": "볼케",
-    "image": "https://wind01.net/info/img/105103.png",
+    "image": "https://wind01.net/info/img/105103.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -10999,7 +11062,7 @@
   },
   {
     "name": "주작",
-    "image": "https://wind01.net/info/img/103178.png",
+    "image": "https://wind01.net/info/img/103178.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -11044,7 +11107,7 @@
   },
   {
     "name": "흑갈푸스",
-    "image": "https://wind01.net/info/img/160114.gif",
+    "image": "https://wind01.net/info/img/160114.png",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -11440,7 +11503,7 @@
   },
   {
     "name": "푸비토스",
-    "image": "https://wind01.net/info/img/100891.png",
+    "image": "https://wind01.net/info/img/100891.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -11880,7 +11943,7 @@
   },
   {
     "name": "자라북",
-    "image": "https://wind01.net/info/img/100841.png",
+    "image": "https://wind01.net/info/img/100841.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -12042,7 +12105,7 @@
   },
   {
     "name": "기비노",
-    "image": "https://wind01.net/info/img/100850.gif",
+    "image": "https://wind01.net/info/img/100850.png",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -12077,7 +12140,18 @@
       "def": 1.414,
       "agi": 1.306
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/100850_1_9900.gif",
+        "vp": 9900
+      },
+      {
+        "title": "외형 2",
+        "image": "https://wind01.net/info/img/100850_2_19900.gif",
+        "vp": 19900
+      }
+    ]
   },
   {
     "name": "비룡",
@@ -12119,13 +12193,8 @@
     "skins": [
       {
         "title": "외형 1",
-        "image": "https://wind01.net/info/img/100850_1_9900.gif",
-        "vp": 9900
-      },
-      {
-        "title": "외형 2",
-        "image": "https://wind01.net/info/img/100850_2_19900.gif",
-        "vp": 19900
+        "image": "https://wind01.net/info/img/300511_1_39900.gif",
+        "vp": 39900
       }
     ]
   },
@@ -12338,7 +12407,7 @@
   },
   {
     "name": "그리프스",
-    "image": "https://wind01.net/info/img/300527.png",
+    "image": "https://wind01.net/info/img/300527.gif",
     "grade": "2등급",
     "mount": false,
     "rebirth": true,
@@ -12373,7 +12442,13 @@
       "def": 1.307,
       "agi": 1.828
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/300527_1_19900.gif",
+        "vp": 19900
+      }
+    ]
   },
   {
     "name": "아마란스",
@@ -12574,13 +12649,7 @@
       "def": 1.423,
       "agi": 1.306
     },
-    "skins": [
-      {
-        "title": "외형 1",
-        "image": "https://wind01.net/info/img/103069_1_19900.gif",
-        "vp": 19900
-      }
-    ]
+    "skins": []
   },
   {
     "name": "아이스드래곤",
@@ -12622,13 +12691,8 @@
     "skins": [
       {
         "title": "외형 1",
-        "image": "https://wind01.net/info/img/103121_1_14900.gif",
-        "vp": 14900
-      },
-      {
-        "title": "외형 2",
-        "image": "https://wind01.net/info/img/103121_2_29900.gif",
-        "vp": 29900
+        "image": "https://wind01.net/info/img/103069_1_19900.gif",
+        "vp": 19900
       }
     ]
   },
@@ -12868,7 +12932,7 @@
   },
   {
     "name": "푸포린",
-    "image": "https://wind01.net/info/img/102461.png",
+    "image": "https://wind01.net/info/img/102461.gif",
     "grade": "일반",
     "mount": true,
     "rebirth": true,
@@ -13031,7 +13095,13 @@
       "def": 1.452,
       "agi": 1.496
     },
-    "skins": []
+    "skins": [
+      {
+        "title": "외형 1",
+        "image": "https://wind01.net/info/img/300239_1_39900.gif",
+        "vp": 39900
+      }
+    ]
   },
   {
     "name": "광룡",
@@ -13115,13 +13185,7 @@
       "def": 1.397,
       "agi": 0.878
     },
-    "skins": [
-      {
-        "title": "외형 1",
-        "image": "https://wind01.net/info/img/300239_1_39900.gif",
-        "vp": 39900
-      }
-    ]
+    "skins": []
   },
   {
     "name": "도르도르",
@@ -14034,7 +14098,7 @@
   },
   {
     "name": "슬픔",
-    "image": "https://wind01.net/info/img/301067.gif",
+    "image": "https://wind01.net/info/img/301067.png",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14190,7 +14254,7 @@
   },
   {
     "name": "증오",
-    "image": "https://wind01.net/info/img/301063.png",
+    "image": "https://wind01.net/info/img/301063.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14268,7 +14332,7 @@
   },
   {
     "name": "샌드골램",
-    "image": "https://wind01.net/info/img/130420.png",
+    "image": "https://wind01.net/info/img/130420.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14664,7 +14728,7 @@
   },
   {
     "name": "기로",
-    "image": "https://wind01.net/info/img/300569.png",
+    "image": "https://wind01.net/info/img/300569.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14703,7 +14767,7 @@
   },
   {
     "name": "기노",
-    "image": "https://wind01.net/info/img/300570.png",
+    "image": "https://wind01.net/info/img/300570.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14820,7 +14884,7 @@
   },
   {
     "name": "잔비노",
-    "image": "https://wind01.net/info/img/103276.png",
+    "image": "https://wind01.net/info/img/103276.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14859,7 +14923,7 @@
   },
   {
     "name": "청기로",
-    "image": "https://wind01.net/info/img/103274.png",
+    "image": "https://wind01.net/info/img/103274.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -14976,7 +15040,7 @@
   },
   {
     "name": "기보로",
-    "image": "https://wind01.net/info/img/103272.png",
+    "image": "https://wind01.net/info/img/103272.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -15093,7 +15157,7 @@
   },
   {
     "name": "레오빈",
-    "image": "https://wind01.net/info/img/300405.png",
+    "image": "https://wind01.net/info/img/300405.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": true,
@@ -15249,7 +15313,7 @@
   },
   {
     "name": "마그노",
-    "image": "https://wind01.net/info/img/300585.gif",
+    "image": "https://wind01.net/info/img/300585.png",
     "grade": "2등급",
     "mount": false,
     "rebirth": true,
@@ -15405,7 +15469,7 @@
   },
   {
     "name": "매트노",
-    "image": "https://wind01.net/info/img/300581.png",
+    "image": "https://wind01.net/info/img/300581.gif",
     "grade": "1등급",
     "mount": false,
     "rebirth": true,
@@ -15557,13 +15621,7 @@
       "def": 1.226,
       "agi": 1.638
     },
-    "skins": [
-      {
-        "title": "외형 1",
-        "image": "https://wind01.net/info/img/301080_1_29900.gif",
-        "vp": 29900
-      }
-    ]
+    "skins": []
   },
   {
     "name": "화이트드래곤",
@@ -15686,13 +15744,7 @@
       "def": 1.511,
       "agi": 1.448
     },
-    "skins": [
-      {
-        "title": "외형 1",
-        "image": "https://wind01.net/info/img/300539_1_39900.gif",
-        "vp": 39900
-      }
-    ]
+    "skins": []
   },
   {
     "name": "적호",
@@ -15819,7 +15871,7 @@
   },
   {
     "name": "사이록스",
-    "image": "https://wind01.net/info/img/103115.png",
+    "image": "https://wind01.net/info/img/103115.gif",
     "grade": "일반",
     "mount": false,
     "rebirth": false,
