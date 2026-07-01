@@ -15819,7 +15819,7 @@
     "image": "https://wind01.net/info/img/300254.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "미선의 편지 B",
     "attr": {
       "지": 0,
@@ -15840,16 +15840,16 @@
       "agi": 0.451
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 50.05,
+      "atk": 10.103,
+      "def": 11.687,
+      "agi": 2.31
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.806,
+      "atk": 2.181,
+      "def": 2.523,
+      "agi": 0.498
     },
     "skins": []
   },
@@ -15858,7 +15858,7 @@
     "image": "https://wind01.net/info/img/300252.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "미선의 편지 A",
     "attr": {
       "지": 8,
@@ -15879,16 +15879,16 @@
       "agi": 0.451
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 50.05,
+      "atk": 9.311,
+      "def": 12.479,
+      "agi": 2.31
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.806,
+      "atk": 2.01,
+      "def": 2.694,
+      "agi": 0.498
     },
     "skins": []
   },
@@ -15897,7 +15897,7 @@
     "image": "https://wind01.net/info/img/103115.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "미선의 편지 B",
     "attr": {
       "지": 0,
@@ -15918,15 +15918,15 @@
       "agi": 1.638
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
+      "hp": 56.125,
+      "atk": 11.843,
+      "def": 6.893,
       "agi": 8.875
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
+      "hp": 10.663,
+      "atk": 2.25,
+      "def": 1.309,
       "agi": 1.686
     },
     "skins": []
@@ -15936,7 +15936,7 @@
     "image": "https://wind01.net/info/img/105100.gif",
     "grade": "일반",
     "mount": true,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "미선의 편지 A",
     "attr": {
       "지": 0,
@@ -15957,16 +15957,16 @@
       "agi": 1.685
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 44.044,
+      "atk": 9.964,
+      "def": 5.41,
+      "agi": 7.475
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.245,
+      "atk": 2.317,
+      "def": 1.258,
+      "agi": 1.738
     },
     "skins": []
   },
@@ -15975,7 +15975,7 @@
     "image": "https://wind01.net/info/img/103102.gif",
     "grade": "2등급",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "26 월드컵 페트병",
     "attr": {
       "지": 0,
@@ -15996,16 +15996,16 @@
       "agi": 1.685
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 44.044,
+      "atk": 9.964,
+      "def": 5.41,
+      "agi": 7.475
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.245,
+      "atk": 2.317,
+      "def": 1.258,
+      "agi": 1.738
     },
     "skins": []
   },
@@ -16014,7 +16014,7 @@
     "image": "https://wind01.net/info/img/103152.gif",
     "grade": "2등급",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "26 월드컵 페트병",
     "attr": {
       "지": 0,
@@ -16035,16 +16035,16 @@
       "agi": 2.034
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 43.67,
+      "atk": 8.739,
+      "def": 4.977,
+      "agi": 8.91
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.222,
+      "atk": 2.045,
+      "def": 1.165,
+      "agi": 2.085
     },
     "skins": []
   },
@@ -16053,7 +16053,7 @@
     "image": "https://wind01.net/info/img/103153.gif",
     "grade": "2등급",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "26 월드컵 페트병",
     "attr": {
       "지": 0,
@@ -16074,16 +16074,16 @@
       "agi": 1.982
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 44.55,
+      "atk": 8.772,
+      "def": 5.208,
+      "agi": 8.69
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
+      "hp": 10.428,
+      "atk": 2.053,
       "def": 1.219,
-      "agi": 1.686
+      "agi": 2.034
     },
     "skins": []
   },
@@ -16092,7 +16092,7 @@
     "image": "https://wind01.net/info/img/103250.gif",
     "grade": "1등급",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "26 월드컵 페트병",
     "attr": {
       "지": 1,
@@ -16113,16 +16113,16 @@
       "agi": 0.403
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 63.125,
+      "atk": 11.981,
+      "def": 11.756,
+      "agi": 2.125
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 11.993,
+      "atk": 2.276,
+      "def": 2.233,
+      "agi": 0.403
     },
     "skins": []
   },
@@ -16131,7 +16131,7 @@
     "image": "https://wind01.net/info/img/100892.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "땅의 미로(동68 남68) (골드볼라)",
     "attr": {
       "지": 8,
@@ -16152,16 +16152,16 @@
       "agi": 0.451
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 74.06,
+      "atk": 12.48,
+      "def": 13.992,
+      "agi": 2.66
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 12.563,
+      "atk": 2.117,
+      "def": 2.373,
+      "agi": 0.451
     },
     "skins": []
   },
@@ -16170,7 +16170,7 @@
     "image": "https://wind01.net/info/img/100878.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "전사의 숲(동75 남75)",
     "attr": {
       "지": 8,
@@ -16191,16 +16191,16 @@
       "agi": 0.767
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 28.77,
+      "atk": 6.044,
+      "def": 6.674,
+      "agi": 2.17
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.172,
+      "atk": 2.137,
+      "def": 2.359,
+      "agi": 0.767
     },
     "skins": []
   },
@@ -16209,7 +16209,7 @@
     "image": "https://wind01.net/info/img/100862.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "전사의 숲(동223 남253)",
     "attr": {
       "지": 10,
@@ -16230,16 +16230,16 @@
       "agi": 1.116
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 55.559,
+      "atk": 11.31,
+      "def": 9.15,
+      "agi": 5.88
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.996,
+      "atk": 2.238,
+      "def": 1.81,
+      "agi": 1.163
     },
     "skins": []
   },
@@ -16248,7 +16248,7 @@
     "image": "https://wind01.net/info/img/170048.gif",
     "grade": "일반",
     "mount": true,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
       "지": 0,
@@ -16269,16 +16269,16 @@
       "agi": 1.591
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 53.875,
+      "atk": 12.081,
+      "def": 7.581,
+      "agi": 8.625
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.236,
+      "atk": 2.295,
+      "def": 1.44,
+      "agi": 1.638
     },
     "skins": []
   },
@@ -16287,7 +16287,7 @@
     "image": "https://wind01.net/info/img/170023.gif",
     "grade": "일반",
     "mount": true,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
       "지": 0,
@@ -16308,16 +16308,16 @@
       "agi": 2.192
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 33.9,
+      "atk": 7.545,
+      "def": 3.585,
+      "agi": 8.1
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 9.407,
+      "atk": 2.093,
+      "def": 0.994,
+      "agi": 2.247
     },
     "skins": []
   },
@@ -16326,7 +16326,7 @@
     "image": "https://wind01.net/info/img/170031.gif",
     "grade": "일반",
     "mount": true,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
       "지": 0,
@@ -16347,16 +16347,16 @@
       "agi": 1.353
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 61.155,
+      "atk": 13.898,
+      "def": 8.552,
+      "agi": 7.965
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.758,
+      "atk": 2.445,
+      "def": 1.504,
+      "agi": 1.401
     },
     "skins": []
   },
@@ -16365,7 +16365,7 @@
     "image": "https://wind01.net/info/img/160033.gif",
     "grade": "일반",
     "mount": true,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "지원 페트(VP 5500)",
     "attr": {
       "지": 0,
@@ -16386,16 +16386,16 @@
       "agi": 1.353
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 59.125,
+      "atk": 12.443,
+      "def": 7.943,
+      "agi": 7.375
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 11.233,
+      "atk": 2.364,
+      "def": 1.509,
+      "agi": 1.401
     },
     "skins": []
   },
@@ -16404,7 +16404,7 @@
     "image": "https://wind01.net/info/img/300291.gif",
     "grade": "1등급",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "레이드 상점(마칸류 랜덤상자-10%)",
     "attr": {
       "지": 0,
@@ -16425,16 +16425,16 @@
       "agi": 1.733
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 58.625,
+      "atk": 11.918,
+      "def": 6.968,
+      "agi": 9.375
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 11.138,
+      "atk": 2.264,
+      "def": 1.324,
+      "agi": 1.781
     },
     "skins": []
   },
@@ -16443,7 +16443,7 @@
     "image": "https://wind01.net/info/img/300292.gif",
     "grade": "1등급",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "레이드 상점(마칸류 랜덤상자-10%)",
     "attr": {
       "지": 5,
@@ -16464,16 +16464,16 @@
       "agi": 1.686
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 61.625,
+      "atk": 11.781,
+      "def": 7.506,
+      "agi": 9.125
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 11.708,
+      "atk": 2.238,
+      "def": 1.426,
+      "agi": 1.733
     },
     "skins": []
   },
@@ -16482,7 +16482,7 @@
     "image": "https://wind01.net/info/img/300289.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "레이드 상점(마칸류 랜덤상자-20%)",
     "attr": {
       "지": 9,
@@ -16503,15 +16503,15 @@
       "agi": 1.638
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
+      "hp": 58.375,
+      "atk": 11.468,
+      "def": 7.643,
       "agi": 8.875
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
+      "hp": 11.091,
+      "atk": 2.179,
+      "def": 1.452,
       "agi": 1.686
     },
     "skins": []
@@ -16521,7 +16521,7 @@
     "image": "https://wind01.net/info/img/300290.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "레이드 상점(마칸류 랜덤상자-20%)",
     "attr": {
       "지": 0,
@@ -16542,15 +16542,15 @@
       "agi": 1.638
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
+      "hp": 60.125,
+      "atk": 11.493,
+      "def": 7.443,
       "agi": 8.875
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
+      "hp": 11.423,
+      "atk": 2.183,
+      "def": 1.414,
       "agi": 1.686
     },
     "skins": []
@@ -16560,7 +16560,7 @@
     "image": "https://wind01.net/info/img/300287.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "레이드 상점(마칸류 랜덤상자-20%)",
     "attr": {
       "지": 0,
@@ -16581,15 +16581,15 @@
       "agi": 1.638
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
+      "hp": 57.375,
+      "atk": 11.893,
+      "def": 7.168,
       "agi": 8.875
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
+      "hp": 10.901,
+      "atk": 2.259,
+      "def": 1.362,
       "agi": 1.686
     },
     "skins": []
@@ -16599,7 +16599,7 @@
     "image": "https://wind01.net/info/img/300288.gif",
     "grade": "일반",
     "mount": false,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "레이드 상점(마칸류 랜덤상자-20%)",
     "attr": {
       "지": 1,
@@ -16620,16 +16620,16 @@
       "agi": 1.828
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 56.375,
+      "atk": 10.918,
+      "def": 7.093,
+      "agi": 9.875
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 10.711,
+      "atk": 2.074,
+      "def": 1.347,
+      "agi": 1.876
     },
     "skins": []
   },
@@ -16638,7 +16638,7 @@
     "image": "https://wind01.net/info/img/170014.gif",
     "grade": "2등급",
     "mount": true,
-    "rebirth": false,
+    "rebirth": true,
     "obtain": "1차 맘모스 쿠폰 (25회)",
     "attr": {
       "지": 7,
@@ -16659,16 +16659,94 @@
       "agi": 1.306
     },
     "rebirth_ic": {
-      "hp": 54.375,
-      "atk": 12.493,
-      "def": 6.418,
-      "agi": 8.875
+      "hp": 60.75,
+      "atk": 14.827,
+      "def": 11.317,
+      "agi": 8.55
     },
     "rebirth_sg": {
-      "hp": 10.331,
-      "atk": 2.373,
-      "def": 1.219,
-      "agi": 1.686
+      "hp": 9.618,
+      "atk": 2.347,
+      "def": 1.791,
+      "agi": 1.353
+    },
+    "skins": []
+  },
+  {
+    "name": "독룡",
+    "image": "https://wind01.net/info/img/300509.gif",
+    "grade": "일반",
+    "mount": false,
+    "rebirth": true,
+    "obtain": "개인 듀얼 페트",
+    "attr": {
+      "지": 8,
+      "수": 0,
+      "화": 0,
+      "풍": 2
+    },
+    "ic": {
+      "hp": 53.125,
+      "atk": 11.806,
+      "def": 7.531,
+      "agi": 8.125
+    },
+    "sg": {
+      "hp": 10.093,
+      "atk": 2.243,
+      "def": 1.43,
+      "agi": 1.543
+    },
+    "rebirth_ic": {
+      "hp": 55.875,
+      "atk": 12.368,
+      "def": 7.643,
+      "agi": 8.375
+    },
+    "rebirth_sg": {
+      "hp": 10.616,
+      "atk": 2.35,
+      "def": 1.452,
+      "agi": 1.591
+    },
+    "skins": []
+  },
+  {
+    "name": "베이",
+    "image": "https://wind01.net/info/img/160127.gif",
+    "grade": "일반",
+    "mount": false,
+    "rebirth": true,
+    "obtain": "가우린 (동465 남197)",
+    "attr": {
+      "지": 1,
+      "수": 0,
+      "화": 0,
+      "풍": 9
+    },
+    "ic": {
+      "hp": 39.5,
+      "atk": 8.205,
+      "def": 7.125,
+      "agi": 2.5
+    },
+    "sg": {
+      "hp": 10.566,
+      "atk": 2.194,
+      "def": 1.905,
+      "agi": 0.668
+    },
+    "rebirth_ic": {
+      "hp": 41.699,
+      "atk": 8.665,
+      "def": 7.405,
+      "agi": 2.5
+    },
+    "rebirth_sg": {
+      "hp": 11.154,
+      "atk": 2.317,
+      "def": 1.98,
+      "agi": 0.668
     },
     "skins": []
   }
