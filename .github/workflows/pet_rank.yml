@@ -1,0 +1,33 @@
+name: pet-rank
+
+on:
+  schedule:
+    - cron: "0 15 * * *"      # 매일 한국시간 자정 (UTC 15:00)
+  workflow_dispatch:           # 버튼으로 수동 실행도 가능
+
+permissions:
+  contents: write
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: install
+        run: pip install requests
+
+      - name: crawl
+        run: python pet_rank_api.py
+
+      - name: commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add pet_ranking_data.json
+          git diff --staged --quiet || git commit -m "펫 랭킹 자동 갱신 $(date -u +'%Y-%m-%d')"
+          git push
