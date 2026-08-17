@@ -1,8 +1,8 @@
 [
   {
-    "timestamp": "2026-08-16T15:21:21.058111",
-    "date": "2026-08-16",
-    "time": "15:21:21",
+    "timestamp": "2026-08-17T15:23:04.073591",
+    "date": "2026-08-17",
+    "time": "15:23:04",
     "total_pets": 413,
     "pets": [
       {
@@ -1359,19 +1359,19 @@
           {
             "rank": 2,
             "nickname": "최형배",
-            "level": 132,
-            "exp": "1392 (10.35)",
-            "attack": "264 (1.97)",
-            "defense": "202 (1.5)",
-            "speed": "240 (1.79)",
-            "score": "139.847",
-            "hp_num": 1392,
-            "atk_num": 264,
-            "def_num": 202,
-            "spd_num": 240,
-            "total_num": 2098,
-            "score_num": 139.847,
-            "updated": "2026-08-16 20:55:52"
+            "level": 133,
+            "exp": "1403 (10.36)",
+            "attack": "266 (1.97)",
+            "defense": "203 (1.5)",
+            "speed": "242 (1.79)",
+            "score": "140.847",
+            "hp_num": 1403,
+            "atk_num": 266,
+            "def_num": 203,
+            "spd_num": 242,
+            "total_num": 2114,
+            "score_num": 140.847,
+            "updated": "2026-08-17 00:24:43"
           }
         ]
       },
@@ -3821,7 +3821,7 @@
             "spd_num": 101,
             "total_num": 2187,
             "score_num": 147.959,
-            "updated": "2026-08-16 17:10:40"
+            "updated": "2026-08-17 12:10:20"
           }
         ]
       },
@@ -5108,19 +5108,19 @@
           {
             "rank": 1,
             "nickname": "벵골호랑이",
-            "level": 130,
-            "exp": "1096 (8.33)",
-            "attack": "226 (1.72)",
-            "defense": "205 (1.56)",
-            "speed": "220 (1.67)",
-            "score": "137.037",
-            "hp_num": 1096,
-            "atk_num": 226,
-            "def_num": 205,
-            "spd_num": 220,
-            "total_num": 1747,
-            "score_num": 137.037,
-            "updated": "2026-08-16 20:50:03"
+            "level": 134,
+            "exp": "1129 (8.33)",
+            "attack": "233 (1.72)",
+            "defense": "211 (1.56)",
+            "speed": "227 (1.68)",
+            "score": "141.038",
+            "hp_num": 1129,
+            "atk_num": 233,
+            "def_num": 211,
+            "spd_num": 227,
+            "total_num": 1800,
+            "score_num": 141.038,
+            "updated": "2026-08-17 20:12:18"
           },
           {
             "rank": 2,
@@ -8716,25 +8716,7 @@
       {
         "name": "투이",
         "enemybase_id": 244,
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "와라와라",
-            "level": 140,
-            "exp": "2009 (13.95)",
-            "attack": "302 (2.1)",
-            "defense": "254 (1.77)",
-            "speed": "91 (0.63)",
-            "score": "147.991",
-            "hp_num": 2009,
-            "atk_num": 302,
-            "def_num": 254,
-            "spd_num": 91,
-            "total_num": 2656,
-            "score_num": 147.991,
-            "updated": "2026-08-13 10:26:27"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": [
           {
             "rank": 1,
@@ -9734,19 +9716,19 @@
           {
             "rank": 2,
             "nickname": "벵골호랑이",
-            "level": 137,
-            "exp": "2015 (14.24)",
-            "attack": "272 (1.93)",
-            "defense": "255 (1.81)",
-            "speed": "96 (0.68)",
-            "score": "144.98",
-            "hp_num": 2015,
-            "atk_num": 272,
-            "def_num": 255,
-            "spd_num": 96,
-            "total_num": 2638,
-            "score_num": 144.98,
-            "updated": "2026-08-16 10:56:50"
+            "level": 139,
+            "exp": "2043 (14.24)",
+            "attack": "276 (1.93)",
+            "defense": "258 (1.8)",
+            "speed": "98 (0.69)",
+            "score": "146.98",
+            "hp_num": 2043,
+            "atk_num": 276,
+            "def_num": 258,
+            "spd_num": 98,
+            "total_num": 2675,
+            "score_num": 146.98,
+            "updated": "2026-08-18 00:18:31"
           },
           {
             "rank": 3,
@@ -11759,7 +11741,7 @@
             "spd_num": 210,
             "total_num": 1849,
             "score_num": 124.793,
-            "updated": "2026-08-06 19:20:06"
+            "updated": "2026-08-17 20:00:05"
           }
         ]
       },
@@ -11947,7 +11929,7 @@
             "spd_num": 160,
             "total_num": 2719,
             "score_num": 148.246,
-            "updated": "2026-08-16 17:10:40"
+            "updated": "2026-08-17 12:10:20"
           },
           {
             "rank": 2,
@@ -14140,7 +14122,7 @@
             "spd_num": 238,
             "total_num": 2268,
             "score_num": 147.944,
-            "updated": "2026-08-06 19:20:06"
+            "updated": "2026-08-17 20:00:05"
           }
         ]
       },
@@ -19055,7 +19037,7 @@
             "spd_num": 175,
             "total_num": 1985,
             "score_num": 128.927,
-            "updated": "2026-08-16 17:42:35"
+            "updated": "2026-08-17 18:46:03"
           }
         ]
       },
@@ -19275,7 +19257,7 @@
             "spd_num": 182,
             "total_num": 2282,
             "score_num": 147.941,
-            "updated": "2026-08-15 00:42:23"
+            "updated": "2026-08-17 22:03:58"
           },
           {
             "rank": 2,
@@ -21676,7 +21658,7 @@
             "spd_num": 254,
             "total_num": 2245,
             "score_num": 146.933,
-            "updated": "2026-08-17 00:13:50"
+            "updated": "2026-08-18 00:04:55"
           }
         ]
       },
@@ -24806,7 +24788,7 @@
             "spd_num": 167,
             "total_num": 1860,
             "score_num": 117.06,
-            "updated": "2026-08-16 17:42:35"
+            "updated": "2026-08-17 18:46:03"
           }
         ]
       },
@@ -24921,7 +24903,7 @@
             "spd_num": 187,
             "total_num": 2215,
             "score_num": 147.647,
-            "updated": "2026-08-15 12:23:37"
+            "updated": "2026-08-17 23:05:48"
           },
           {
             "rank": 4,
@@ -25141,23 +25123,6 @@
         "general_ranking": [
           {
             "rank": 1,
-            "nickname": "장로",
-            "level": 138,
-            "exp": "2104 (14.75)",
-            "attack": "309 (2.17)",
-            "defense": "247 (1.74)",
-            "speed": "85 (0.6)",
-            "score": "146.192",
-            "hp_num": 2104,
-            "atk_num": 309,
-            "def_num": 247,
-            "spd_num": 85,
-            "total_num": 2745,
-            "score_num": 146.192,
-            "updated": "2026-08-16 21:28:58"
-          },
-          {
-            "rank": 2,
             "nickname": "금복희",
             "level": 130,
             "exp": "1972 (14.64)",
@@ -25174,7 +25139,7 @@
             "updated": "2026-06-20 15:57:03"
           },
           {
-            "rank": 3,
+            "rank": 2,
             "nickname": "올해는버텨줘",
             "level": 127,
             "exp": "1923 (14.6)",
@@ -25191,7 +25156,7 @@
             "updated": "2026-03-25 12:14:22"
           },
           {
-            "rank": 4,
+            "rank": 3,
             "nickname": "오토방구",
             "level": 120,
             "exp": "1818 (14.58)",
@@ -25208,7 +25173,7 @@
             "updated": "2026-05-11 22:07:33"
           },
           {
-            "rank": 5,
+            "rank": 4,
             "nickname": "장로",
             "level": 114,
             "exp": "1728 (14.56)",
@@ -25242,6 +25207,23 @@
             "total_num": 2886,
             "score_num": 148.498,
             "updated": "2026-08-10 23:33:26"
+          },
+          {
+            "rank": 2,
+            "nickname": "장로",
+            "level": 128,
+            "exp": "2034 (15.34)",
+            "attack": "303 (2.29)",
+            "defense": "239 (1.8)",
+            "speed": "80 (0.61)",
+            "score": "136.535",
+            "hp_num": 2034,
+            "atk_num": 303,
+            "def_num": 239,
+            "spd_num": 80,
+            "total_num": 2656,
+            "score_num": 136.535,
+            "updated": "2026-08-17 23:02:53"
           }
         ]
       },
@@ -26446,36 +26428,36 @@
           {
             "rank": 3,
             "nickname": "고루루",
-            "level": 125,
-            "exp": "1418 (10.98)",
-            "attack": "309 (2.4)",
-            "defense": "181 (1.4)",
-            "speed": "155 (1.2)",
-            "score": "132.744",
-            "hp_num": 1418,
-            "atk_num": 309,
-            "def_num": 181,
-            "spd_num": 155,
-            "total_num": 2063,
-            "score_num": 132.744,
-            "updated": "2026-08-16 23:37:42"
+            "level": 137,
+            "exp": "1550 (10.98)",
+            "attack": "338 (2.4)",
+            "defense": "198 (1.4)",
+            "speed": "170 (1.21)",
+            "score": "144.752",
+            "hp_num": 1550,
+            "atk_num": 338,
+            "def_num": 198,
+            "spd_num": 170,
+            "total_num": 2256,
+            "score_num": 144.752,
+            "updated": "2026-08-17 19:10:17"
           },
           {
             "rank": 4,
             "nickname": "와라와라",
-            "level": 120,
-            "exp": "1365 (10.99)",
-            "attack": "296 (2.39)",
-            "defense": "175 (1.41)",
-            "speed": "150 (1.21)",
-            "score": "127.756",
-            "hp_num": 1365,
-            "atk_num": 296,
-            "def_num": 175,
-            "spd_num": 150,
-            "total_num": 1986,
-            "score_num": 127.756,
-            "updated": "2026-08-16 23:54:54"
+            "level": 130,
+            "exp": "1474 (10.98)",
+            "attack": "319 (2.38)",
+            "defense": "189 (1.41)",
+            "speed": "162 (1.21)",
+            "score": "137.746",
+            "hp_num": 1474,
+            "atk_num": 319,
+            "def_num": 189,
+            "spd_num": 162,
+            "total_num": 2144,
+            "score_num": 137.746,
+            "updated": "2026-08-17 21:15:40"
           },
           {
             "rank": 5,
@@ -26801,23 +26783,6 @@
         "general_ranking": [
           {
             "rank": 1,
-            "nickname": "고루루",
-            "level": 137,
-            "exp": "1453 (10.29)",
-            "attack": "295 (2.09)",
-            "defense": "175 (1.24)",
-            "speed": "243 (1.72)",
-            "score": "144.623",
-            "hp_num": 1453,
-            "atk_num": 295,
-            "def_num": 175,
-            "spd_num": 243,
-            "total_num": 2166,
-            "score_num": 144.623,
-            "updated": "2026-08-16 23:28:44"
-          },
-          {
-            "rank": 2,
             "nickname": "무웅",
             "level": 120,
             "exp": "1277 (10.28)",
@@ -26885,6 +26850,23 @@
             "total_num": 2313,
             "score_num": 147.939,
             "updated": "2026-07-30 21:27:02"
+          },
+          {
+            "rank": 4,
+            "nickname": "고루루",
+            "level": 119,
+            "exp": "1335 (10.83)",
+            "attack": "272 (2.21)",
+            "defense": "156 (1.27)",
+            "speed": "219 (1.78)",
+            "score": "126.97",
+            "hp_num": 1335,
+            "atk_num": 272,
+            "def_num": 156,
+            "spd_num": 219,
+            "total_num": 1982,
+            "score_num": 126.97,
+            "updated": "2026-08-17 23:50:24"
           }
         ]
       },
@@ -26985,19 +26967,19 @@
           {
             "rank": 1,
             "nickname": "건들건들",
-            "level": 134,
-            "exp": "1353 (9.79)",
-            "attack": "314 (2.27)",
-            "defense": "196 (1.42)",
-            "speed": "192 (1.39)",
-            "score": "141.53",
-            "hp_num": 1353,
-            "atk_num": 314,
-            "def_num": 196,
-            "spd_num": 192,
-            "total_num": 2055,
-            "score_num": 141.53,
-            "updated": "2026-08-16 15:21:12"
+            "level": 135,
+            "exp": "1362 (9.78)",
+            "attack": "317 (2.28)",
+            "defense": "197 (1.42)",
+            "speed": "193 (1.39)",
+            "score": "142.528",
+            "hp_num": 1362,
+            "atk_num": 317,
+            "def_num": 197,
+            "spd_num": 193,
+            "total_num": 2069,
+            "score_num": 142.528,
+            "updated": "2026-08-17 22:03:58"
           },
           {
             "rank": 2,
@@ -27917,19 +27899,19 @@
           {
             "rank": 3,
             "nickname": "짤랑잘랑중새",
-            "level": 132,
-            "exp": "1491 (10.92)",
-            "attack": "334 (2.45)",
-            "defense": "193 (1.41)",
-            "speed": "197 (1.44)",
-            "score": "140.034",
-            "hp_num": 1491,
-            "atk_num": 334,
-            "def_num": 193,
-            "spd_num": 197,
-            "total_num": 2215,
-            "score_num": 140.034,
-            "updated": "2026-08-16 22:39:56"
+            "level": 137,
+            "exp": "1546 (10.92)",
+            "attack": "346 (2.45)",
+            "defense": "200 (1.41)",
+            "speed": "204 (1.44)",
+            "score": "145.031",
+            "hp_num": 1546,
+            "atk_num": 346,
+            "def_num": 200,
+            "spd_num": 204,
+            "total_num": 2296,
+            "score_num": 145.031,
+            "updated": "2026-08-17 12:10:20"
           },
           {
             "rank": 4,
@@ -28144,6 +28126,23 @@
         "general_ranking": [
           {
             "rank": 1,
+            "nickname": "건들건들",
+            "level": 125,
+            "exp": "1288 (9.97)",
+            "attack": "298 (2.31)",
+            "defense": "156 (1.21)",
+            "speed": "200 (1.55)",
+            "score": "132.556",
+            "hp_num": 1288,
+            "atk_num": 298,
+            "def_num": 156,
+            "spd_num": 200,
+            "total_num": 1942,
+            "score_num": 132.556,
+            "updated": "2026-08-18 00:02:34"
+          },
+          {
+            "rank": 2,
             "nickname": "풍백",
             "level": 114,
             "exp": "1165 (9.85)",
@@ -28217,23 +28216,6 @@
           {
             "rank": 1,
             "nickname": "장로",
-            "level": 136,
-            "exp": "1509 (10.73)",
-            "attack": "319 (2.27)",
-            "defense": "209 (1.49)",
-            "speed": "195 (1.39)",
-            "score": "143.837",
-            "hp_num": 1509,
-            "atk_num": 319,
-            "def_num": 209,
-            "spd_num": 195,
-            "total_num": 2232,
-            "score_num": 143.837,
-            "updated": "2026-08-16 23:20:21"
-          },
-          {
-            "rank": 2,
-            "nickname": "장로",
             "level": 129,
             "exp": "1432 (10.71)",
             "attack": "302 (2.27)",
@@ -28247,25 +28229,59 @@
             "total_num": 2112,
             "score_num": 136.779,
             "updated": "2026-08-15 23:32:02"
+          },
+          {
+            "rank": 2,
+            "nickname": "짤랑잘랑중새",
+            "level": 128,
+            "exp": "1425 (10.74)",
+            "attack": "298 (2.25)",
+            "defense": "196 (1.48)",
+            "speed": "184 (1.39)",
+            "score": "135.811",
+            "hp_num": 1425,
+            "atk_num": 298,
+            "def_num": 196,
+            "spd_num": 184,
+            "total_num": 2103,
+            "score_num": 135.811,
+            "updated": "2026-08-17 23:24:14"
           }
         ],
         "rebirth_ranking": [
           {
             "rank": 1,
             "nickname": "부평팔콘펀치",
-            "level": 104,
-            "exp": "1219 (11.21)",
-            "attack": "255 (2.35)",
-            "defense": "162 (1.5)",
-            "speed": "157 (1.45)",
-            "score": "112.095",
-            "hp_num": 1219,
-            "atk_num": 255,
-            "def_num": 162,
-            "spd_num": 157,
-            "total_num": 1793,
-            "score_num": 112.095,
-            "updated": "2026-08-17 00:13:49"
+            "level": 125,
+            "exp": "1459 (11.25)",
+            "attack": "306 (2.36)",
+            "defense": "195 (1.51)",
+            "speed": "186 (1.44)",
+            "score": "133.119",
+            "hp_num": 1459,
+            "atk_num": 306,
+            "def_num": 195,
+            "spd_num": 186,
+            "total_num": 2146,
+            "score_num": 133.119,
+            "updated": "2026-08-18 00:04:52"
+          },
+          {
+            "rank": 2,
+            "nickname": "장로",
+            "level": 122,
+            "exp": "1431 (11.3)",
+            "attack": "302 (2.39)",
+            "defense": "191 (1.51)",
+            "speed": "183 (1.45)",
+            "score": "130.171",
+            "hp_num": 1431,
+            "atk_num": 302,
+            "def_num": 191,
+            "spd_num": 183,
+            "total_num": 2107,
+            "score_num": 130.171,
+            "updated": "2026-08-18 00:07:08"
           }
         ]
       },
@@ -28289,7 +28305,7 @@
             "spd_num": 244,
             "total_num": 2250,
             "score_num": 147.863,
-            "updated": "2026-08-17 00:13:49"
+            "updated": "2026-08-18 00:04:52"
           },
           {
             "rank": 2,
@@ -28523,26 +28539,26 @@
             "spd_num": 249,
             "total_num": 1574,
             "score_num": 118.314,
-            "updated": "2026-08-17 00:13:50"
+            "updated": "2026-08-18 00:04:55"
           }
         ],
         "rebirth_ranking": [
           {
             "rank": 1,
             "nickname": "의지",
-            "level": 105,
-            "exp": "1006 (9.36)",
-            "attack": "224 (2.09)",
-            "defense": "105 (0.98)",
-            "speed": "241 (2.24)",
-            "score": "112.647",
-            "hp_num": 1006,
-            "atk_num": 224,
-            "def_num": 105,
-            "spd_num": 241,
-            "total_num": 1576,
-            "score_num": 112.647,
-            "updated": "2026-08-17 00:17:20"
+            "level": 121,
+            "exp": "1163 (9.42)",
+            "attack": "257 (2.08)",
+            "defense": "123 (1)",
+            "speed": "277 (2.24)",
+            "score": "128.679",
+            "hp_num": 1163,
+            "atk_num": 257,
+            "def_num": 123,
+            "spd_num": 277,
+            "total_num": 1820,
+            "score_num": 128.679,
+            "updated": "2026-08-18 00:04:55"
           }
         ]
       },
@@ -28565,7 +28581,7 @@
             "spd_num": 188,
             "total_num": 2145,
             "score_num": 142.72,
-            "updated": "2026-08-16 17:42:35"
+            "updated": "2026-08-17 18:46:03"
           }
         ],
         "rebirth_ranking": [
@@ -28686,7 +28702,7 @@
             "spd_num": 197,
             "total_num": 2193,
             "score_num": 147.899,
-            "updated": "2026-08-17 00:13:49"
+            "updated": "2026-08-18 00:04:52"
           }
         ]
       },
