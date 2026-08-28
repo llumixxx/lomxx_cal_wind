@@ -1,8 +1,8 @@
 [
   {
-    "timestamp": "2026-08-26T16:14:06.304036",
-    "date": "2026-08-26",
-    "time": "16:14:06",
+    "timestamp": "2026-08-28T00:24:55.724722",
+    "date": "2026-08-28",
+    "time": "00:24:55",
     "total_pets": 413,
     "pets": [
       {
@@ -2430,19 +2430,19 @@
           {
             "rank": 2,
             "nickname": "벵골호랑이",
-            "level": 126,
-            "exp": "1195 (9.38)",
-            "attack": "213 (1.67)",
-            "defense": "316 (2.48)",
-            "speed": "88 (0.7)",
-            "score": "133.192",
-            "hp_num": 1195,
-            "atk_num": 213,
-            "def_num": 316,
-            "spd_num": 88,
-            "total_num": 1812,
-            "score_num": 133.192,
-            "updated": "2026-08-26 22:46:10"
+            "level": 133,
+            "exp": "1261 (9.38)",
+            "attack": "225 (1.67)",
+            "defense": "334 (2.48)",
+            "speed": "93 (0.7)",
+            "score": "140.201",
+            "hp_num": 1261,
+            "atk_num": 225,
+            "def_num": 334,
+            "spd_num": 93,
+            "total_num": 1913,
+            "score_num": 140.201,
+            "updated": "2026-08-28 05:53:42"
           }
         ],
         "rebirth_ranking": []
@@ -14728,7 +14728,7 @@
             "spd_num": 207,
             "total_num": 2151,
             "score_num": 143.626,
-            "updated": "2026-08-27 01:02:30"
+            "updated": "2026-08-27 22:55:13"
           }
         ],
         "rebirth_ranking": []
@@ -15679,25 +15679,7 @@
       {
         "name": "핑코",
         "enemybase_id": 90013,
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "꽃돌",
-            "level": 140,
-            "exp": "1402 (9.72)",
-            "attack": "326 (2.26)",
-            "defense": "176 (1.22)",
-            "speed": "222 (1.54)",
-            "score": "147.451",
-            "hp_num": 1402,
-            "atk_num": 326,
-            "def_num": 176,
-            "spd_num": 222,
-            "total_num": 2126,
-            "score_num": 147.451,
-            "updated": "2026-04-07 23:12:19"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": [
           {
             "rank": 1,
@@ -20013,23 +19995,6 @@
             "total_num": 2402,
             "score_num": 147.998,
             "updated": "2026-07-14 18:04:18"
-          },
-          {
-            "rank": 2,
-            "nickname": "장로",
-            "level": 125,
-            "exp": "1491 (11.56)",
-            "attack": "324 (2.52)",
-            "defense": "251 (1.95)",
-            "speed": "77 (0.6)",
-            "score": "132.954",
-            "hp_num": 1491,
-            "atk_num": 324,
-            "def_num": 251,
-            "spd_num": 77,
-            "total_num": 2143,
-            "score_num": 132.954,
-            "updated": "2026-08-27 01:11:01"
           }
         ]
       },
@@ -23076,25 +23041,7 @@
       {
         "name": "가스트",
         "enemybase_id": 70139,
-        "general_ranking": [
-          {
-            "rank": 1,
-            "nickname": "닭",
-            "level": 139,
-            "exp": "1362 (9.51)",
-            "attack": "298 (2.08)",
-            "defense": "187 (1.31)",
-            "speed": "262 (1.83)",
-            "score": "146.601",
-            "hp_num": 1362,
-            "atk_num": 298,
-            "def_num": 187,
-            "spd_num": 262,
-            "total_num": 2109,
-            "score_num": 146.601,
-            "updated": "2026-08-26 22:18:57"
-          }
-        ],
+        "general_ranking": [],
         "rebirth_ranking": [
           {
             "rank": 1,
@@ -23112,6 +23059,23 @@
             "total_num": 2224,
             "score_num": 147.876,
             "updated": "2026-05-22 07:15:14"
+          },
+          {
+            "rank": 2,
+            "nickname": "닭",
+            "level": 130,
+            "exp": "1359 (10.12)",
+            "attack": "293 (2.19)",
+            "defense": "186 (1.39)",
+            "speed": "246 (1.84)",
+            "score": "137.942",
+            "hp_num": 1359,
+            "atk_num": 293,
+            "def_num": 186,
+            "spd_num": 246,
+            "total_num": 2084,
+            "score_num": 137.942,
+            "updated": "2026-08-27 21:51:17"
           }
         ]
       },
@@ -25678,6 +25642,23 @@
         "rebirth_ranking": [
           {
             "rank": 1,
+            "nickname": "닭",
+            "level": 140,
+            "exp": "1506 (10.42)",
+            "attack": "325 (2.25)",
+            "defense": "189 (1.31)",
+            "speed": "262 (1.81)",
+            "score": "147.98",
+            "hp_num": 1506,
+            "atk_num": 325,
+            "def_num": 189,
+            "spd_num": 262,
+            "total_num": 2282,
+            "score_num": 147.98,
+            "updated": "2026-08-27 16:47:28"
+          },
+          {
+            "rank": 2,
             "nickname": "Jio",
             "level": 140,
             "exp": "1504 (10.41)",
@@ -25692,23 +25673,6 @@
             "total_num": 2275,
             "score_num": 147.941,
             "updated": "2026-07-16 09:38:39"
-          },
-          {
-            "rank": 2,
-            "nickname": "닭",
-            "level": 137,
-            "exp": "1475 (10.43)",
-            "attack": "318 (2.25)",
-            "defense": "185 (1.31)",
-            "speed": "257 (1.82)",
-            "score": "144.982",
-            "hp_num": 1475,
-            "atk_num": 318,
-            "def_num": 185,
-            "spd_num": 257,
-            "total_num": 2235,
-            "score_num": 144.982,
-            "updated": "2026-08-27 01:05:53"
           }
         ]
       },
@@ -25732,7 +25696,7 @@
             "spd_num": 230,
             "total_num": 2374,
             "score_num": 148.106,
-            "updated": "2026-08-26 01:26:15"
+            "updated": "2026-08-27 10:32:11"
           },
           {
             "rank": 2,
@@ -27633,7 +27597,7 @@
             "spd_num": 179,
             "total_num": 1990,
             "score_num": 127.973,
-            "updated": "2026-08-26 05:21:09"
+            "updated": "2026-08-27 22:31:43"
           }
         ]
       },
@@ -28622,7 +28586,25 @@
       {
         "name": "적룡",
         "enemybase_id": 70260,
-        "general_ranking": [],
+        "general_ranking": [
+          {
+            "rank": 1,
+            "nickname": "장로",
+            "level": 126,
+            "exp": "1259 (9.66)",
+            "attack": "284 (2.18)",
+            "defense": "184 (1.42)",
+            "speed": "205 (1.58)",
+            "score": "133.592",
+            "hp_num": 1259,
+            "atk_num": 284,
+            "def_num": 184,
+            "spd_num": 205,
+            "total_num": 1932,
+            "score_num": 133.592,
+            "updated": "2026-08-28 09:02:11"
+          }
+        ],
         "rebirth_ranking": []
       },
       {
@@ -28632,6 +28614,23 @@
         "rebirth_ranking": [
           {
             "rank": 1,
+            "nickname": "장로",
+            "level": 140,
+            "exp": "1349 (9.47)",
+            "attack": "299 (2.1)",
+            "defense": "141 (0.99)",
+            "speed": "321 (2.25)",
+            "score": "147.712",
+            "hp_num": 1349,
+            "atk_num": 299,
+            "def_num": 141,
+            "spd_num": 321,
+            "total_num": 2110,
+            "score_num": 147.712,
+            "updated": "2026-08-27 23:03:32"
+          },
+          {
+            "rank": 2,
             "nickname": "의지",
             "level": 135,
             "exp": "1294 (9.41)",
@@ -28646,23 +28645,6 @@
             "total_num": 2024,
             "score_num": 142.666,
             "updated": "2026-08-22 10:28:57"
-          },
-          {
-            "rank": 2,
-            "nickname": "장로",
-            "level": 129,
-            "exp": "1245 (9.47)",
-            "attack": "276 (2.1)",
-            "defense": "130 (0.99)",
-            "speed": "296 (2.25)",
-            "score": "136.711",
-            "hp_num": 1245,
-            "atk_num": 276,
-            "def_num": 130,
-            "spd_num": 296,
-            "total_num": 1947,
-            "score_num": 136.711,
-            "updated": "2026-08-27 00:45:50"
           },
           {
             "rank": 3,
